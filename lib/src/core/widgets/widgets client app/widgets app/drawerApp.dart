@@ -1,4 +1,5 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/features/authentication/login/data.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({
@@ -133,7 +134,9 @@ class _MyDrawerState extends State<MyDrawer> {
           SideMenuTile(
             icon: FontAwesomeIcons.rightFromBracket,
             title: 'تسجيل خروج',
-            onTap: () {},
+            onTap: () {
+              logout(context);
+            },
           ),
         ],
       ),

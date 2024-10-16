@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/authentication/forgot%20password/presentation.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/presentation.dart';
-import 'package:maintenance_app/src/features/client%20app/privacy%20and%20settings/support%20&%20about%20us%20pages/concat%20info%20page/presentation.dart';
+
+import 'application.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
@@ -42,77 +43,96 @@ class _LoginPageState extends State<LoginPage> {
             ),
             AppSizedBox.kVSpace15,
             Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    CustomInputField(
-                        hintText: 'ادخل البريد الإلكتروني',
-                        icon: CupertinoIcons.mail_solid,
-                        validators: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'عفوا.البريد الإلكتروني مطلوب';
-                          }
-                          if (!RegExp(
-                                  r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
-                              .hasMatch(value)) {
-                            return 'عفوا.البريد الإلكتروني غير صحيح';
-                          }
-                          return null;
-                        },
-                        controller: usernameController),
-                    AppSizedBox.kVSpace10,
-                    CustomInputFieldPassword(
-                      controller: passwordController,
+              key: _formKey,
+              child: Column(
+                children: [
+                  CustomInputField(
+                      hintText: 'ادخل البريد الإلكتروني',
+                      icon: CupertinoIcons.mail_solid,
                       validators: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'عفوا.كلمة المرور مطلوبة';
+                          return 'عفوا.البريد الإلكتروني مطلوب';
                         }
-                        if (value.length < 8) {
-                          return 'عفوا.يجب أن تكون كلمة المرور 8 أحرف وأكثر';
-                        }
-                        if (!value.contains(RegExp(r'[a-zA-Z]'))) {
-                          return 'عفوا.يجب أن تحتوي كلمة المرور على حروف';
+                        if (!RegExp(
+                                r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+                            .hasMatch(value)) {
+                          return 'عفوا.البريد الإلكتروني غير صحيح';
                         }
                         return null;
                       },
-                      hintText: 'ادخل كلمة المرور',
-                      icon: CupertinoIcons.lock_circle_fill,
-                    ),
-                    AppSizedBox.kVSpace10,
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ForgotPasswordPage(),
-                            ));
-                      },
-                      child: Container(
-                          alignment: Alignment.centerLeft,
-                          margin: const EdgeInsets.only(left: 20),
-                          child: const CustomStyledText(
-                            text: 'هل نسيت كلمة المرور ؟',
-                            fontWeight: FontWeight.w500,
-                            textColor: Colors.grey,
-                            fontSize: 14,
-                          )),
-                    ),
-                  ],
-                )),
+                      controller: usernameController),
+                  AppSizedBox.kVSpace10,
+                  CustomInputFieldPassword(
+                    controller: passwordController,
+                    validators: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'عفوا.كلمة المرور مطلوبة';
+                      }
+                      if (value.length < 8) {
+                        return 'عفوا.يجب أن تكون كلمة المرور 8 أحرف وأكثر';
+                      }
+                      if (!value.contains(RegExp(r'[a-zA-Z]'))) {
+                        return 'عفوا.يجب أن تحتوي كلمة المرور على حروف';
+                      }
+                      return null;
+                    },
+                    hintText: 'ادخل كلمة المرور',
+                    icon: CupertinoIcons.lock_circle_fill,
+                  ),
+                  AppSizedBox.kVSpace10,
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ForgotPasswordPage(),
+                          ));
+                    },
+                    child: Container(
+                        alignment: Alignment.centerLeft,
+                        margin: const EdgeInsets.only(left: 20),
+                        child: const CustomStyledText(
+                          text: 'هل نسيت كلمة المرور ؟',
+                          fontWeight: FontWeight.w500,
+                          textColor: Colors.grey,
+                          fontSize: 14,
+                        )),
+                  ),
+                ],
+              ),
+            ),
             AppSizedBox.kVSpace10,
-            CustomButton(
-              text: "تسجيل دخول",
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
+            BlocConsumer<LoginCubit, LoginState>(
+              listener: (context, state) {
+                if (state is LoginSuccess) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const HomePage(),
                     ),
                   );
-                  // ignore: avoid_print
-                  print("تم التحقق من البيانات بنجاح");
+                } else if (state is LoginFailure) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text("فشل تسجيل دخول , حاول  مرة اخرى")),
+                  );
                 }
+              },
+              builder: (context, state) {
+                if (state is LoginLoading) {
+                  return const CircularProgressIndicator();
+                }
+                return CustomButton(
+                  text: "تسجيل دخول",
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      context.read<LoginCubit>().login(
+                            usernameController.text,
+                            passwordController.text,
+                          );
+                    }
+                  },
+                );
               },
             ),
             AppSizedBox.kVSpace5,
