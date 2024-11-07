@@ -2,10 +2,12 @@
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import '../../../core/constants/url.dart';
 import 'domain.dart';
 
-class ApiService {
-  final String baseUrl = 'https://localhost:7090/api/Account/Login';
+class ApiLoginService {
+  final String baseUrl = "${Url.baseUrl}/api/account/login";
+
   Future<LoginResponse> login(String email, String password) async {
     final url = Uri.parse(baseUrl);
     final response = await http.post(
@@ -14,13 +16,19 @@ class ApiService {
         'Content-Type': 'application/json',
       },
       body: convert.jsonEncode(
-          {'email': email, 'password': password, 'rememberMe': true}),
+          {'email': email, 'password': password, 'fcmToken': 'string'}),
     );
+
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = convert.jsonDecode(response.body);
-      return LoginResponse.fromJson(data);
+      final data = convert.jsonDecode(response.body);
+
+      if (data['data'] != null) {
+        return LoginResponse.fromJson(data);
+      } else {
+        throw Exception('Login failed: data is null');
+      }
     } else {
-      throw const Text('Failed to login');
+      throw Exception('Failed to login');
     }
   }
 }

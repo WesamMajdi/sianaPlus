@@ -1,4 +1,7 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/successPage.dart';
+
+import 'application.dart';
 
 class ConcatInfoPage extends StatefulWidget {
   const ConcatInfoPage({super.key});
@@ -114,10 +117,42 @@ class _ConcatInfoPageState extends State<ConcatInfoPage> {
                         return null;
                       },
                     ),
-                    CustomButton(
-                      text: 'ارسال رأي',
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {}
+                    BlocConsumer<ContactUsCubit, ContactUsState>(
+                      listener: (context, state) {
+                        if (state is ContactUsSuccess) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SuccessPage(
+                                  message: "تمت العملية بنجاح"),
+                            ),
+                          );
+                          nameController.clear();
+                          emailController.clear();
+                          phonenumberController.clear();
+                          opinionController.clear();
+                        } else if (state is ContactUsFailure) {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content:
+                                  Text('فشل إرسال الرسالة: ${state.error}')));
+                        }
+                      },
+                      builder: (context, state) {
+                        if (state is ContactUsLoading) {
+                          return const CircularProgressIndicator();
+                        }
+                        return CustomButton(
+                          text: 'ارسال رأي',
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              context.read<ContactUsCubit>().createContactUs(
+                                  nameController.text,
+                                  emailController.text,
+                                  phonenumberController.text,
+                                  opinionController.text);
+                            }
+                          },
+                        );
                       },
                     ),
                   ],

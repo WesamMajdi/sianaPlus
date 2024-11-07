@@ -1,0 +1,34 @@
+import '../../../core/constants/url.dart';
+import 'domain.dart';
+import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'dart:convert' as convert;
+import 'package:http/http.dart' as http;
+
+class ApiSignUpService {
+  final String signUpUrl = "${Url.baseUrl}/api/account/registerCustomer";
+
+  Future<SignUpResponse> signUp(String fullName, String email, String password,
+      String confirmPassword, String phoneNumber) async {
+    final url = Uri.parse(signUpUrl);
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: convert.jsonEncode({
+        'fullName': fullName,
+        'email': email,
+        'password': password,
+        'confirmPassword': confirmPassword,
+        'phoneNumber': phoneNumber,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = convert.jsonDecode(response.body);
+      return SignUpResponse.fromJson(data);
+    } else {
+      throw Exception('Failed to register');
+    }
+  }
+}

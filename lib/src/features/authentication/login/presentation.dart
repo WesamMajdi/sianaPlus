@@ -68,12 +68,7 @@ class _LoginPageState extends State<LoginPage> {
                       if (value == null || value.isEmpty) {
                         return 'عفوا.كلمة المرور مطلوبة';
                       }
-                      if (value.length < 8) {
-                        return 'عفوا.يجب أن تكون كلمة المرور 8 أحرف وأكثر';
-                      }
-                      if (!value.contains(RegExp(r'[a-zA-Z]'))) {
-                        return 'عفوا.يجب أن تحتوي كلمة المرور على حروف';
-                      }
+
                       return null;
                     },
                     hintText: 'ادخل كلمة المرور',
@@ -112,10 +107,9 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   );
                 } else if (state is LoginFailure) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text("فشل تسجيل دخول , حاول  مرة اخرى")),
-                  );
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text("فشل تسجيل الدخول: ${state.error}"),
+                  ));
                 }
               },
               builder: (context, state) {

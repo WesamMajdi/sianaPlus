@@ -2,6 +2,10 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/authentication/login/application.dart';
 import 'package:maintenance_app/src/features/authentication/login/data.dart';
+import 'package:maintenance_app/src/features/authentication/sign%20up/application.dart';
+import 'package:maintenance_app/src/features/authentication/sign%20up/data.dart';
+import 'package:maintenance_app/src/features/client%20app/privacy%20and%20settings/support%20&%20about%20us%20pages/concat%20info%20page/application.dart';
+import 'package:maintenance_app/src/features/client%20app/privacy%20and%20settings/support%20&%20about%20us%20pages/concat%20info%20page/data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +19,12 @@ void main() async {
       providers: [
         BlocProvider<ThemeChangerBloc>.value(value: themeChangerBloc),
         BlocProvider<LocalizationBloc>.value(value: localizationBloc),
-        BlocProvider<LoginCubit>(create: (context) => LoginCubit(ApiService())),
+        BlocProvider<LoginCubit>(
+            create: (context) => LoginCubit(ApiLoginService())),
+        BlocProvider<SignUpCubit>(
+            create: (context) => SignUpCubit(ApiSignUpService())),
+        BlocProvider<ContactUsCubit>(
+            create: (context) => ContactUsCubit(ApiContactUsService())),
       ],
       child:
           MyApp(themeChangerBloc: themeChangerBloc, isLoggedIn: token != null),

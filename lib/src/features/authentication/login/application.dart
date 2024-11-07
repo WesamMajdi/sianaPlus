@@ -4,7 +4,7 @@ import 'domain.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  final ApiService apiService;
+  final ApiLoginService apiService;
 
   LoginCubit(this.apiService) : super(LoginInitial());
 
@@ -14,7 +14,7 @@ class LoginCubit extends Cubit<LoginState> {
 
       final loginResponse = await apiService.login(email, password);
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', loginResponse.token);
+      await prefs.setString('token', loginResponse.data.token);
 
       emit(LoginSuccess(loginResponse));
     } catch (e) {
@@ -35,6 +35,6 @@ class LoginSuccess extends LoginState {
 }
 
 class LoginFailure extends LoginState {
-  String? error = "فشل تسجيل دخول , حاول  مرة اخرى";
+  String error;
   LoginFailure(this.error);
 }
