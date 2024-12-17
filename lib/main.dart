@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:geolocator/geolocator.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/network/connectivity_cubit.dart';
 import 'package:maintenance_app/src/features/authentication/login/application.dart';
 import 'package:maintenance_app/src/features/authentication/login/data.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/application.dart';
@@ -14,6 +16,21 @@ void main() async {
   final themeChangerBloc = ThemeChangerBloc(prefs);
   String? token = prefs.getString('token');
 
+  LocationPermission permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    permission = await Geolocator.requestPermission();
+  }
+
+  await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+      .then((Position position) async{
+        debugPrint( position.latitude.toString());
+        debugPrint( position.longitude.toString());
+    await prefs.setDouble('latitude', position.latitude);
+    await prefs.setDouble('longitude', position.longitude);
+  }).catchError((e) {
+
+  });
+
   runApp(
     MultiBlocProvider(
       providers: [
@@ -23,6 +40,9 @@ void main() async {
             create: (context) => LoginCubit(ApiLoginService())),
         BlocProvider<SignUpCubit>(
             create: (context) => SignUpCubit(ApiSignUpService())),
+        BlocProvider<ConnectivityCubit>(
+          create: (context) => ConnectivityCubit(),
+        ),
         BlocProvider<ContactUsCubit>(
             create: (context) => ContactUsCubit(ApiContactUsService())),
       ],
@@ -61,13 +81,7 @@ class MyApp extends StatelessWidget {
                   ? ThemeData.light()
                   : ThemeData.dark(),
               themeMode: ThemeMode.system,
-              // theme: ThemeData(
-              //   popupMenuTheme: PopupMenuThemeData(
-              //     shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.circular(15),
-              //     ),
-              //   ),
-              // ),
+
               debugShowCheckedModeBanner: false,
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
@@ -76,11 +90,43 @@ class MyApp extends StatelessWidget {
                 designSize: const Size(360, 640),
                 splitScreenMode: true,
                 builder: (context, state) {
-                  return isLoggedIn ? const HomePage() : const SplashPage();
+                  return  MultiBlocListener(listeners: [
+
+                    BlocListener<ConnectivityCubit, ConnectivityStatus>(
+                      listener: (context, status) async{
+                        if (status == ConnectivityStatus.disconnected) {
+                          _showNoConnectionBanner(context, ConnectivityStatus.disconnected);
+                        }
+
+                        if (status == ConnectivityStatus.connected) {
+                          _showNoConnectionBanner(context, ConnectivityStatus.connected);
+                        }
+                      },
+                    ),
+                  ], child: isLoggedIn ? const HomePage() : const SplashPage());
+                  // return ;
                 },
               ),
             );
           },
         ));
+  }
+
+  void _showNoConnectionBanner(
+      BuildContext context, ConnectivityStatus disconnected) {
+    switch (disconnected) {
+      case ConnectivityStatus.connected:
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content:
+            Text('تم الاتصال بالانترنت'),backgroundColor: Colors.green.shade800,));
+
+        break;
+      case ConnectivityStatus.disconnected:
+        // AppLogger.success('not connected');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content:
+            Text('لا يوجد اتصال بالإنترنت'), backgroundColor: Colors.red.shade800));
+        break;
+    }
   }
 }

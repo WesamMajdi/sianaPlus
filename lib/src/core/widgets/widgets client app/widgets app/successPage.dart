@@ -43,7 +43,7 @@ class SuccessPage extends StatelessWidget {
                 Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
-                primary: AppColors.secondaryColor,
+                // primary: AppColors.secondaryColor,
               ),
               child: const CustomStyledText(
                 text: "العودة",

@@ -159,7 +159,7 @@ class InfoCard extends StatelessWidget {
       children: [
         SizedBox(
           width: 75,
-          height: 75,
+          height: 70,
           child: CircleAvatar(
             backgroundColor: AppColors.secondaryColor,
             child: Image.asset('assets/images/siana_plus_logo2.png'),
