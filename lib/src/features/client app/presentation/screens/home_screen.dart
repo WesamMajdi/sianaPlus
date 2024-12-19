@@ -1,7 +1,9 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/features/client%20app/categorys%20page/data.dart';
 import 'package:maintenance_app/src/features/client%20app/home%20page/domain.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+
+import '../controller/cubits/category_cubit.dart';
+import '../controller/states/category_state.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -103,45 +105,65 @@ class ItemsCategory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 50,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          final category = categories[index];
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-            child: Container(
-              height: 70,
-              padding: const EdgeInsets.symmetric(
-                  horizontal: AppPadding.mediumPadding,
-                  vertical: AppPadding.smallPadding),
-              decoration: BoxDecoration(
-                // boxShadow: shadowList,
-                border: Border.all(
-                  color: AppColors.secondaryColor,
-                  width: 0.6,
-                ),
-                color: Colors.grey.withOpacity(0.2),
+    return BlocBuilder<CategoryCubit,CategoryState>(
+      builder:(context,state){
+        switch (state.mainCategoryStatus){
+          case MainCategoryStatus.initial:
+          case MainCategoryStatus.loading:
+            return const Center(child: CircularProgressIndicator(),);
 
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Container(
-                margin: const EdgeInsets.only(top: 3),
-                child: Center(
-                  child: CustomStyledText(
-                    text: category.name,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+          case MainCategoryStatus.failure:
+            return Text(state.errorMessage!);
+
+          case MainCategoryStatus.success:
+            if(state.categories.isNotEmpty){
+              return  SizedBox(
+                height: 50,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: state.categories.length,
+                  itemBuilder: (context, index) {
+                    final category = state.categories[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                      child: Container(
+                        height: 70,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: AppPadding.mediumPadding,
+                            vertical: AppPadding.smallPadding),
+                        decoration: BoxDecoration(
+                          // boxShadow: shadowList,
+                          border: Border.all(
+                            color: AppColors.secondaryColor,
+                            width: 0.6,
+                          ),
+                          color: Colors.grey.withOpacity(0.2),
+
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 3),
+                          child: Center(
+                            child: CustomStyledText(
+                              text: category.name,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-              ),
-            ),
-          );
-        },
-      ),
+              );
+            }
+        }
+
+        return Text ('Some thing error');
+
+      },
     );
+    // return
   }
 }
 

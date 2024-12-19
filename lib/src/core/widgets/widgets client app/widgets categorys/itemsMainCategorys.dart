@@ -1,6 +1,8 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/client%20app/categorys%20page/domain.dart';
 
+import '../../../../features/client app/domain/entities/category/category_entity.dart';
+
 class ItemsMainCategorys extends StatelessWidget {
   const ItemsMainCategorys({
     super.key,
@@ -9,7 +11,7 @@ class ItemsMainCategorys extends StatelessWidget {
   });
 
   final int selectedMainCategoryId;
-  final MainCategory category;
+  final Category category;
 
   @override
   Widget build(BuildContext context) {

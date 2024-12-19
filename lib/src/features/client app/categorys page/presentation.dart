@@ -2,6 +2,8 @@
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20categorys/itemsMainCategorys.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20categorys/itemsSubCategorys.dart';
 import '../../../core/export file/exportfiles.dart';
+import '../presentation/controller/cubits/category_cubit.dart';
+import '../presentation/controller/states/category_state.dart';
 import 'data.dart';
 import 'domain.dart';
 
@@ -39,28 +41,50 @@ class _CategoryPageState extends State<CategoryPage> {
               textColor: AppColors.secondaryColor,
             ),
           ),
-          Container(
-            height: 50,
-            color: (Theme.of(context).brightness == Brightness.dark
-                ? Colors.transparent
-                : Colors.white),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: categories.length,
-              itemBuilder: (context, index) {
-                final category = categories[index];
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedMainCategoryId = category.id;
-                    });
-                  },
-                  child: ItemsMainCategorys(
-                      selectedMainCategoryId: selectedMainCategoryId,
-                      category: category),
-                );
-              },
-            ),
+          BlocBuilder<CategoryCubit, CategoryState>(
+            builder: (context, state) {
+              switch (state.mainCategoryStatus) {
+                case MainCategoryStatus.initial:
+                case MainCategoryStatus.loading:
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+
+                case MainCategoryStatus.failure:
+                  return Text(state.errorMessage!);
+
+                case MainCategoryStatus.success:
+                  if (state.categories.isNotEmpty) {
+                    return Container(
+                      height: 50,
+                      color: (Theme.of(context).brightness == Brightness.dark
+                          ? Colors.transparent
+                          : Colors.white),
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: state.categories.length,
+                        itemBuilder: (context, index) {
+                          final category = state.categories[index];
+                          return GestureDetector(
+                            onTap: () async{
+                              setState(() {
+                                selectedMainCategoryId = category.id;
+                              });
+
+                            await  context.read<CategoryCubit>().fetchSubCategories(mainCategoryId: category.id);
+                            },
+                            child: ItemsMainCategorys(
+                                selectedMainCategoryId: selectedMainCategoryId,
+                                category: category),
+                          );
+                        },
+                      ),
+                    );
+                  }
+              }
+
+              return Text('Some thing error');
+            },
           ),
           AppSizedBox.kVSpace20,
           Container(

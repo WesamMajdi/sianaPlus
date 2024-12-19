@@ -1,18 +1,20 @@
+import '../domain/entities/category/category_entity.dart';
 import 'domain.dart';
 
-final List<MainCategory> categories = [
-  MainCategory(
-      id: 1,
-      name: 'الأجهزة المنزلية',
-      imagePath: 'assets/images/Household_items.jpeg'),
-  MainCategory(
-      id: 2,
-      name: 'قطع الغيار',
-      imagePath: 'assets/images/Microwave spare parts.jpeg'),
-  MainCategory(
-      id: 3,
-      name: 'أدوات السيارات',
-      imagePath: 'assets/images/download (2).jpeg'),
+final List<Category> categories = [
+  // MainCategory(
+  //     id: 1,
+  //     name: 'الأجهزة المنزلية',
+  //
+  //     image: 'assets/images/Household_items.jpeg', description: ''),
+  // MainCategory(
+  //     id: 2,
+  //     name: 'قطع الغيار',
+  //     image: 'assets/images/Microwave spare parts.jpeg',description: ''),
+  // MainCategory(
+  //     id: 3,
+  //     name: 'أدوات السيارات',
+  //     image: 'assets/images/download (2).jpeg',description: ''),
 ];
 final List<SubCategory> subcategories = [
   SubCategory(

@@ -1,16 +1,20 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:geolocator/geolocator.dart';
+import 'package:maintenance_app/src/core/di/dependency_injection.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/network/connectivity_cubit.dart';
 import 'package:maintenance_app/src/features/authentication/login/application.dart';
 import 'package:maintenance_app/src/features/authentication/login/data.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/application.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/data.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/home_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/privacy%20and%20settings/support%20&%20about%20us%20pages/concat%20info%20page/application.dart';
 import 'package:maintenance_app/src/features/client%20app/privacy%20and%20settings/support%20&%20about%20us%20pages/concat%20info%20page/data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await init();
   final localizationBloc = LocalizationBloc();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final themeChangerBloc = ThemeChangerBloc(prefs);
@@ -45,6 +49,10 @@ void main() async {
         ),
         BlocProvider<ContactUsCubit>(
             create: (context) => ContactUsCubit(ApiContactUsService())),
+
+
+        BlocProvider<CategoryCubit>(
+            create: (context) => getIt<CategoryCubit>()..fetchCategories()),
       ],
       child:
           MyApp(themeChangerBloc: themeChangerBloc, isLoggedIn: token != null),

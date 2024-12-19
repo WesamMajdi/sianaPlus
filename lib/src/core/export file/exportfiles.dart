@@ -9,7 +9,6 @@ export 'package:flutter_gen/gen_l10n/app_localizations.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:internet_connection_checker/internet_connection_checker.dart';
 export 'package:connectivity_plus/connectivity_plus.dart';
-export 'package:maintenance_app/src/features/client%20app/home%20page/presentation.dart';
 export 'package:maintenance_app/src/core/constants/constants.dart';
 export 'package:lottie/lottie.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/customInputField.dart';
