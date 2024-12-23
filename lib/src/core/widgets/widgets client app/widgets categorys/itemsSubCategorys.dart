@@ -58,7 +58,7 @@ class ItemsSubCategorys extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            const ProductPage(),
+                                             ProductPage(categoryId:subCategory.id),
                                       ),
                                     );
                                   },
@@ -81,7 +81,7 @@ class ItemsSubCategorys extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const ProductPage(),
+                                  builder: (context) =>  ProductPage(categoryId:subCategory.id,),
                                 ),
                               );
                             },

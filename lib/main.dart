@@ -79,6 +79,7 @@ class MyApp extends StatelessWidget {
           BlocProvider<ThemeChangerBloc>(
             create: (context) => themeChangerBloc,
           ),
+
         ],
         child: BlocBuilder<ThemeChangerBloc, ThemeChangerState>(
           builder: (context, themeState) {

@@ -1,6 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/category_state.dart';
+
+import '../../domain/entities/product_entity.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   final Product product;
@@ -19,22 +23,22 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   @override
   void initState() {
     super.initState();
-    _quantity = widget.product.quantity;
+    _quantity = widget.product.count?? 0;
   }
 
-  void _increaseQuantity() {
-    setState(() {
-      _quantity++;
-    });
-  }
-
-  void _decreaseQuantity() {
-    if (_quantity > 1) {
-      setState(() {
-        _quantity--;
-      });
-    }
-  }
+  // void _increaseQuantity() {
+  //   setState(() {
+  //     _quantity++;
+  //   });
+  // }
+  //
+  // void _decreaseQuantity() {
+  //   if (_quantity > 1) {
+  //     setState(() {
+  //       _quantity--;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -54,10 +58,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
-                  child: Image.asset(
-                    widget.product.imagePath,
-                    height: 300,
-                  ),
+                  // child: Image.asset(
+                  //   widget.product.image ??'',
+                  //   height: 300,
+                  // ),
+
+                  child: Container(width: 100,height: 100,color: Colors.amber,),
+
                 ),
               ),
             ),
@@ -72,7 +79,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomStyledText(
-                        text: widget.product.name,
+                        text: widget.product.name!,
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         textColor: AppColors.secondaryColor,
@@ -85,25 +92,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      RatingBar.builder(
-                        initialRating: widget.product.rating,
-                        minRating: 1,
-                        direction: Axis.horizontal,
-                        itemCount: 5,
-                        itemPadding: const EdgeInsets.symmetric(horizontal: 2),
-                        itemBuilder: (context, _) => const Icon(
-                          Icons.star,
-                          size: 14,
-                          color: AppColors.secondaryColor,
-                        ),
-                        onRatingUpdate: (rating) {
-                          print(rating);
-                        },
-                      ),
+
                       Row(
                         children: [
                           InkWell(
-                            onTap: _increaseQuantity,
+                            onTap:() =>  context.read<CategoryCubit>().increaseQuantity(widget.product.id.toString()),
                             child: Container(
                               padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
@@ -117,17 +110,19 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               ),
                             ),
                           ),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 10),
-                            child: CustomStyledText(
-                              text: "$_quantity",
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              textColor: AppColors.secondaryColor,
+                          BlocBuilder<CategoryCubit,CategoryState>(
+                            builder: (context, state) => Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 10),
+                              child: CustomStyledText(
+                                text: "${widget.product.count}",
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                textColor: AppColors.secondaryColor,
+                              ),
                             ),
                           ),
                           InkWell(
-                            onTap: _decreaseQuantity,
+                            onTap: () => context.read<CategoryCubit>().decreaseQuantity(widget.product.id.toString()),
                             child: Container(
                               padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
@@ -150,7 +145,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: Text(
                       textAlign: TextAlign.justify,
-                      widget.product.description,
+                      widget.product.details!,
                       style: const TextStyle(
                         color: Colors.grey,
                         fontSize: 17,
@@ -170,17 +165,17 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                       AppSizedBox.kWSpace10,
                       Row(
                         children: [
-                          for (int i = 0; i < widget.product.colors.length; i++)
-                            Container(
-                              height: 30,
-                              width: 30,
-                              alignment: Alignment.center,
-                              margin: const EdgeInsets.symmetric(horizontal: 5),
-                              decoration: BoxDecoration(
-                                  boxShadow: shadowList,
-                                  borderRadius: BorderRadius.circular(30),
-                                  color: widget.product.colors[i]),
-                            )
+                          // for (int i = 0; i < widget.product.colors.length; i++)
+                          //   Container(
+                          //     height: 30,
+                          //     width: 30,
+                          //     alignment: Alignment.center,
+                          //     margin: const EdgeInsets.symmetric(horizontal: 5),
+                          //     decoration: BoxDecoration(
+                          //         boxShadow: shadowList,
+                          //         borderRadius: BorderRadius.circular(30),
+                          //         color:Colors.blue),
+                          //   )
                         ],
                       )
                     ],

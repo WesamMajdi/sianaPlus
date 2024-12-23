@@ -38,7 +38,7 @@ export 'dart:io';
 export 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/customTextErea.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20products/bottombarToProductDetailes.dart';
 export 'package:maintenance_app/src/features/client%20app/products/products%20page/data.dart';
-export 'package:maintenance_app/src/features/client%20app/products/products%20page/domain.dart';
+// export 'package:maintenance_app/src/features/client%20app/products/products%20page/domain.dart';
 export 'package:maintenance_app/src/features/client%20app/products/search%20product%20page/presentation.dart';
 export 'package:maintenance_app/src/features/client%20app/privacy%20and%20settings/account%20pages/account%20settings%20page/presentation.dart';
 export 'package:maintenance_app/src/features/client%20app/privacy%20and%20settings/support%20&%20about%20us%20pages/Report%20a%20problem%20page/presentation.dart';

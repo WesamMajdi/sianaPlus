@@ -86,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            const ItemsProduct(),
+             // ItemsProduct(),
             AppSizedBox.kVSpace20
           ],
         ),

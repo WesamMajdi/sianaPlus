@@ -1,4 +1,8 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/category_state.dart';
+
+import '../../../../features/client app/domain/entities/product_entity.dart';
 
 class BottombarToProductDetailes extends StatelessWidget {
   final Product product;
@@ -9,7 +13,7 @@ class BottombarToProductDetailes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomAppBar(
+    return BlocBuilder<CategoryCubit,CategoryState>(builder: (context, state) => BottomAppBar(
       child: Container(
         decoration: BoxDecoration(
           color: (Theme.of(context).brightness == Brightness.dark
@@ -24,7 +28,7 @@ class BottombarToProductDetailes extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CustomStyledText(
-              text: "\$${product.price}",
+              text: "\$${state.totalAmount}",
               fontSize: 24,
               fontWeight: FontWeight.w900,
             ),
@@ -38,8 +42,10 @@ class BottombarToProductDetailes extends StatelessWidget {
                         const EdgeInsets.symmetric(
                             vertical: 13, horizontal: 15)),
                     backgroundColor:
-                        MaterialStateProperty.all(AppColors.secondaryColor)),
+                    MaterialStateProperty.all(AppColors.secondaryColor)),
                 onPressed: () {
+                  context.read<CategoryCubit>().addProductToCart(product);
+                  // print( context.read<CategoryCubit>().state.cartItems.toString());
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -55,6 +61,6 @@ class BottombarToProductDetailes extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ),);
   }
 }

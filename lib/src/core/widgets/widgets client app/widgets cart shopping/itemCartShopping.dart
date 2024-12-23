@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/product_entity.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
 
 class CartShoppingItem extends StatelessWidget {
-  final CartItemModel item;
+  final Product item;
 
   const CartShoppingItem({super.key, required this.item});
 
@@ -29,7 +31,8 @@ class CartShoppingItem extends StatelessWidget {
             height: 70,
             width: 70,
             margin: const EdgeInsets.only(left: 15),
-            child: Image.asset(item.imagePath),
+            // child: Image.asset(item.image!),
+            child: Container(width: 100,height: 100,color: Colors.amber,),
           ),
           AppSizedBox.kWSpace15,
           Column(
@@ -37,14 +40,16 @@ class CartShoppingItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomStyledText(
-                text: item.name,
+                // text: item.name!,
+                text: item.name!,
                 textColor: AppColors.secondaryColor,
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
               ),
               AppSizedBox.kVSpace10,
               CustomStyledText(
-                text: "\$${item.price.toStringAsFixed(2)}",
+                text: "\$${item.price?.toStringAsFixed(2)}",
+                // text: "\$${100.toStringAsFixed(2)}",
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               ),
@@ -57,21 +62,28 @@ class CartShoppingItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color: Colors.grey.withOpacity(0.2)),
-                    child: Icon(FontAwesomeIcons.trash,
-                        color: (Theme.of(context).brightness == Brightness.dark
-                            ? AppColors.lightGrayColor
-                            : Colors.red),
-                        size: 18),
+                  InkWell(
+                    onTap: () =>context.read<CategoryCubit>().removeItem(item.id.toString())
+                    ,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: Colors.grey.withOpacity(0.2)),
+                      child: Icon(FontAwesomeIcons.trash,
+                          color: (Theme.of(context).brightness == Brightness.dark
+                              ? AppColors.lightGrayColor
+                              : Colors.red),
+                          size: 18),
+                    ),
                   ),
                   Row(
                     children: [
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          context.read<CategoryCubit>().increaseQuantity(item.id.toString());
+
+                        },
                         child: Container(
                           padding: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
@@ -88,14 +100,18 @@ class CartShoppingItem extends StatelessWidget {
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 10),
                         child: CustomStyledText(
-                          text: "${item.quantity}",
+                          text: "${item.count}",
+                          // text: "${5}",
                           fontWeight: FontWeight.w900,
                           fontSize: 18,
                           textColor: AppColors.secondaryColor,
                         ),
                       ),
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          context.read<CategoryCubit>().decreaseQuantity(item.id.toString());
+
+                        },
                         child: Container(
                           padding: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
