@@ -10,7 +10,8 @@ class ConnectivityCubit extends Cubit<ConnectivityStatus> {
 
   ConnectivityCubit() : super(ConnectivityStatus.connected) {
     _initializeConnectivity();
-    _connectivitySubscription = _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
   }
 
   Future<void> _initializeConnectivity() async {

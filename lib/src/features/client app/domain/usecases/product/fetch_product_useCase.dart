@@ -1,7 +1,7 @@
 // fetch_categories_usecase.dart
 import 'package:dartz/dartz.dart';
-import 'package:maintenance_app/src/features/client%20app/data/model/product_model.dart';
-import 'package:maintenance_app/src/features/client%20app/domain/entities/product_entity.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/product/product_model.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/repositories/product/product_repository.dart';
 
 import '../../../../../core/error/failure.dart';
@@ -16,7 +16,8 @@ class ProductsUseCase {
 
   ProductsUseCase(this.repository);
 
-  Future<Either<Failure,  PaginatedResponse<Product>>> getProductsByCategory(PaginationParams paginationParams) {
+  Future<Either<Failure, PaginatedResponse<Product>>> getProductsByCategory(
+      PaginationParams paginationParams) {
     return repository.getProductsByCategory(paginationParams);
   }
 }

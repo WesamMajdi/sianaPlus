@@ -1,5 +1,5 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/features/client%20app/favourite%20page/domain.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/favourite/favourite_entity.dart';
 
 class FavouriteCard extends StatelessWidget {
   final Favourite item;

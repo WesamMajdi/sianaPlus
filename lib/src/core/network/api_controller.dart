@@ -18,8 +18,8 @@ class ApiController {
 
   Future<http.Response> get(Uri url,
       {Map<String, String>? headers,
-        int timeToLive = 0,
-        bool isRefresh = false}) async {
+      int timeToLive = 0,
+      bool isRefresh = false}) async {
     try {
       if (isRefresh) {
         cacheData.remove(url.toString());
@@ -30,11 +30,11 @@ class ApiController {
         }
       }
       http.Response response = await http
-          .get(url, headers: headers ?? {"Content-Type": "application/json"},)
-          .timeout(Duration(
-          seconds:30
-
-      ), onTimeout: () {
+          .get(
+        url,
+        headers: headers ?? {"Content-Type": "application/json"},
+      )
+          .timeout(const Duration(seconds: 30), onTimeout: () {
         // This block executes if the request times out
         throw TimeOutExeption(
             errorMessage: 'Request took longer than 30 seconds.');
@@ -52,14 +52,13 @@ class ApiController {
   }
 
   Future<http.Response> post(
-      Uri url, {
-        Map<String, String>? headers,
-        Object? body,
-        Encoding? encoding,
-        int timeAlive = 30,
-      }) async {
+    Uri url, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
+    int timeAlive = 30,
+  }) async {
     try {
-
       final Map<String, String> finalHeaders = {
         'Content-Type': 'application/json',
         ...?headers,
@@ -87,12 +86,12 @@ class ApiController {
   }
 
   Future<Map> patch(
-      Uri url, {
-        Map<String, String>? headers,
-        Object? body,
-        Encoding? encoding,
-        required BuildContext context,
-      }) async {
+    Uri url, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
+    required BuildContext context,
+  }) async {
     http.Response response = await http.patch(url,
         headers: headers ?? {"Content-Type": "application/json"},
         body: body,
@@ -106,12 +105,12 @@ class ApiController {
   }
 
   Future<Map> delete(
-      Uri url, {
-        Map<String, String>? headers,
-        Object? body,
-        Encoding? encoding,
-        required BuildContext context,
-      }) async {
+    Uri url, {
+    Map<String, String>? headers,
+    Object? body,
+    Encoding? encoding,
+    required BuildContext context,
+  }) async {
     http.Response response = await http.delete(url,
         headers: headers ?? {"Content-Type": "application/json"},
         body: body,

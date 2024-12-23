@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/features/client%20app/domain/entities/product_entity.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
 
 class CartShoppingItem extends StatelessWidget {
@@ -32,7 +32,11 @@ class CartShoppingItem extends StatelessWidget {
             width: 70,
             margin: const EdgeInsets.only(left: 15),
             // child: Image.asset(item.image!),
-            child: Container(width: 100,height: 100,color: Colors.amber,),
+            child: Container(
+              width: 100,
+              height: 100,
+              color: Colors.amber,
+            ),
           ),
           AppSizedBox.kWSpace15,
           Column(
@@ -63,17 +67,19 @@ class CartShoppingItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   InkWell(
-                    onTap: () =>context.read<CategoryCubit>().removeItem(item.id.toString())
-                    ,
+                    onTap: () => context
+                        .read<CategoryCubit>()
+                        .removeItem(item.id.toString()),
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
                           color: Colors.grey.withOpacity(0.2)),
                       child: Icon(FontAwesomeIcons.trash,
-                          color: (Theme.of(context).brightness == Brightness.dark
-                              ? AppColors.lightGrayColor
-                              : Colors.red),
+                          color:
+                              (Theme.of(context).brightness == Brightness.dark
+                                  ? AppColors.lightGrayColor
+                                  : Colors.red),
                           size: 18),
                     ),
                   ),
@@ -81,8 +87,9 @@ class CartShoppingItem extends StatelessWidget {
                     children: [
                       InkWell(
                         onTap: () {
-                          context.read<CategoryCubit>().increaseQuantity(item.id.toString());
-
+                          context
+                              .read<CategoryCubit>()
+                              .increaseQuantity(item.id.toString());
                         },
                         child: Container(
                           padding: const EdgeInsets.all(5),
@@ -109,8 +116,9 @@ class CartShoppingItem extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () {
-                          context.read<CategoryCubit>().decreaseQuantity(item.id.toString());
-
+                          context
+                              .read<CategoryCubit>()
+                              .decreaseQuantity(item.id.toString());
                         },
                         child: Container(
                           padding: const EdgeInsets.all(5),

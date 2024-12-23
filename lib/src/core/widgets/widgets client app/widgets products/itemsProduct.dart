@@ -1,10 +1,10 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/features/client%20app/domain/entities/product_entity.dart';
-import 'package:maintenance_app/src/features/client%20app/products/product%20details%20page/presentation.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/product/details_product_screen.dart';
 
 class ItemsProduct extends StatefulWidget {
-  List<Product> products=[];
-  ItemsProduct({super.key,required this.products});
+  List<Product> products = [];
+  ItemsProduct({super.key, required this.products});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -31,8 +31,9 @@ class _ItemsProductState extends State<ItemsProduct> {
     return Column(
       children: [
         GridView.builder(
-          itemCount:
-              visibleItems < widget.products.length ? visibleItems :  widget.products.length,
+          itemCount: visibleItems < widget.products.length
+              ? visibleItems
+              : widget.products.length,
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -40,7 +41,7 @@ class _ItemsProductState extends State<ItemsProduct> {
             childAspectRatio: 0.68,
           ),
           itemBuilder: (context, index) {
-            final product =  widget.products[index];
+            final product = widget.products[index];
             return Container(
               padding: const EdgeInsets.only(
                   left: AppPadding.mediumPadding,
@@ -67,7 +68,8 @@ class _ItemsProductState extends State<ItemsProduct> {
                               borderRadius: BorderRadius.circular(20)),
                           child: Center(
                             child: CustomStyledText(
-                              text: "%${( widget.products[index].discount! * 100).toInt()}",
+                              text:
+                                  "%${(widget.products[index].discount! * 100).toInt()}",
                               textColor: Colors.white,
                               fontSize: 16,
                             ),
@@ -76,7 +78,7 @@ class _ItemsProductState extends State<ItemsProduct> {
                       else
                         const Spacer(),
                       Icon(
-                        widget.products[index].isFavorite?? false
+                        widget.products[index].isFavorite ?? false
                             ? Icons.favorite
                             : Icons.favorite_border,
                         color: Colors.red,
@@ -88,8 +90,8 @@ class _ItemsProductState extends State<ItemsProduct> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              ProductDetailsPage(product: widget.products[index]),
+                          builder: (context) => ProductDetailsPage(
+                              product: widget.products[index]),
                         ),
                       );
                     },
@@ -100,7 +102,11 @@ class _ItemsProductState extends State<ItemsProduct> {
                       //   width: 120,
                       //   height: 95,
                       // ),
-                      child: Container(width: 100,height: 100,color: Colors.blue,),
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        color: Colors.blue,
+                      ),
                     ),
                   ),
                   AppSizedBox.kVSpace10,
@@ -119,7 +125,8 @@ class _ItemsProductState extends State<ItemsProduct> {
                   Container(
                     alignment: Alignment.centerRight,
                     child: CustomStyledText(
-                      text: truncateTextDescription(widget.products[index].details!),
+                      text: truncateTextDescription(
+                          widget.products[index].details!),
                       fontSize: 12,
                       textColor: Colors.grey,
                     ),

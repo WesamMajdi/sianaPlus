@@ -1,11 +1,11 @@
-
 class ApiSetting {
   static String get baseUrl => 'http://ebrahim995-001-site3.ktempurl.com/api';
 
-
   static String get getMainCategory => '$baseUrl/Categories/GetMainCategories';
-  static String get getSubCategory => '$baseUrl/Categories/GetCategoriesByMainCategory';
-  static String get getProductByCategory => '$baseUrl/Products/GetProductsByCategory';
+  static String get getSubCategory =>
+      '$baseUrl/Categories/GetCategoriesByMainCategory';
+  static String get getProductByCategory =>
+      '$baseUrl/Products/GetProductsByCategory';
 
   // // Auth endpoints
   // static String get login => ;

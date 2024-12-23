@@ -53,6 +53,7 @@ String truncateTextDescription(String text, {int maxLength = 40}) {
 
 List<BoxShadow> shadowList = [
   BoxShadow(
+      // ignore: deprecated_member_use
       color: Colors.grey.withOpacity(0.5),
       blurRadius: 10,
       spreadRadius: 3,

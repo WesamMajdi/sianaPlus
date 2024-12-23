@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 
-import '../../../../features/client app/domain/entities/product_entity.dart';
+import '../../../../features/client app/domain/entities/product/product_entity.dart';
 
 class ItemAppBarToProductDetails extends StatelessWidget {
   final Product product;

@@ -27,9 +27,12 @@ class UnauthorizedFailure extends Failure {
 class NoInternetConnectionFailure extends Failure {
   NoInternetConnectionFailure({required super.message});
 }
+
 class NotFoundFailure extends Failure {
   NotFoundFailure({required super.message});
-}class TooManyRequestsFailure extends Failure {
+}
+
+class TooManyRequestsFailure extends Failure {
   TooManyRequestsFailure({required super.message});
 }
 

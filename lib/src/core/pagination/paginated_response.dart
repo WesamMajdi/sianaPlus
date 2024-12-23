@@ -10,18 +10,17 @@ class PaginatedResponse<T> {
   });
 
   factory PaginatedResponse.fromJson(
-      Map<String, dynamic> json,
-      T Function(Map<String, dynamic>) fromJson,
-      ) {
-
+    Map<String, dynamic> json,
+    T Function(Map<String, dynamic>) fromJson,
+  ) {
     return PaginatedResponse(
       items: (json['data'] as List)
           .map((item) => fromJson(item as Map<String, dynamic>))
           .toList(),
-      paginatedMeta: PaginatedMeta.fromJson(json['meta'] as Map<String, dynamic>),
+      paginatedMeta:
+          PaginatedMeta.fromJson(json['meta'] as Map<String, dynamic>),
     );
   }
 
   bool get hasNextPage => paginatedMeta.page < paginatedMeta.pages;
-
 }

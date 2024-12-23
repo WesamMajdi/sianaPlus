@@ -1,12 +1,12 @@
-
-
 import 'package:equatable/equatable.dart';
-import 'package:maintenance_app/src/features/client%20app/domain/entities/product_entity.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
 
 import '../../../domain/entities/category/category_entity.dart';
 
 enum MainCategoryStatus { initial, loading, success, failure }
+
 enum SubCategoryStatus { initial, loading, success, failure }
+
 enum ProductStatus { initial, loading, success, failure }
 
 class CategoryState extends Equatable {
@@ -20,11 +20,10 @@ class CategoryState extends Equatable {
   int categoryCurrentPage;
   int productCurrentPage;
   final String? errorMessage;
-   Map<String, Product> cartItems;
+  Map<String, Product> cartItems;
   final double? totalAmount;
 
   CategoryState({
-
     this.mainCategoryStatus = MainCategoryStatus.initial,
     this.productStatus = ProductStatus.initial,
     this.subCategoryStatus = SubCategoryStatus.initial,
@@ -57,11 +56,11 @@ class CategoryState extends Equatable {
       mainCategoryStatus: mainCategoryStatus ?? this.mainCategoryStatus,
       subCategoryStatus: subCategoryStatus ?? this.subCategoryStatus,
       productStatus: productStatus ?? this.productStatus,
-
       categories: categories ?? this.categories,
       products: products ?? this.products,
       subCategories: subCategories ?? this.subCategories,
-      hasCategoryReachedMax: hasCategoryReachedMax ?? this.hasCategoryReachedMax,
+      hasCategoryReachedMax:
+          hasCategoryReachedMax ?? this.hasCategoryReachedMax,
       categoryCurrentPage: categoryCurrentPage ?? this.categoryCurrentPage,
       productCurrentPage: productCurrentPage ?? this.productCurrentPage,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -72,17 +71,17 @@ class CategoryState extends Equatable {
 
   @override
   List<Object?> get props => [
-    mainCategoryStatus,
-    subCategoryStatus,
-    productStatus,
-    categories,
-    products,
-    subCategories,
-    hasCategoryReachedMax,
-    categoryCurrentPage,
-    productCurrentPage,
-    errorMessage,
-    cartItems,
-    totalAmount,
-  ];
+        mainCategoryStatus,
+        subCategoryStatus,
+        productStatus,
+        categories,
+        products,
+        subCategories,
+        hasCategoryReachedMax,
+        categoryCurrentPage,
+        productCurrentPage,
+        errorMessage,
+        cartItems,
+        totalAmount,
+      ];
 }

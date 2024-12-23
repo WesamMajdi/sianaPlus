@@ -1,5 +1,5 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/features/client%20app/orders/orders%20page/domain.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/orders/orders_entity.dart';
 
 class ItemsOrdersDetails extends StatelessWidget {
   final Order order;
