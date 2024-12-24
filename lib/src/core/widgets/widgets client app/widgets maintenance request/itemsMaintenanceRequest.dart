@@ -37,42 +37,27 @@ class ItemsMaintenanceRequest extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.all(AppPadding.largePadding),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Column(
               children: [
-                Column(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Container(
-                      margin: const EdgeInsets.only(top: 8),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 6.2, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.secondaryColor,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Container(
-                        margin: const EdgeInsets.only(top: 3),
-                        child: CustomStyledText(
-                          text: '$i',
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          textColor: Colors.white,
-                        ),
-                      ),
+                    CustomStyledText(
+                      text: 'رقم الطلب #$i',
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
-                ),
-                AppSizedBox.kWSpace20,
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
                     const CustomStyledText(
-                      text: 'الثلاجة',
+                      text: 'اصلاح ثلاجة',
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       textColor: AppColors.secondaryColor,
                     ),
-                    AppSizedBox.kVSpace10,
+                  ],
+                ),
+                AppSizedBox.kVSpace10,
+                Row(
+                  children: [
                     CustomStyledText(
                       text: truncateTextDescription(
                         'الثلاجة لا تعمل بشكل جيد، يوجد تسريب مياه من الداخل، وأحيانًا تتوقف عن التبريد فجأة.',
@@ -81,7 +66,7 @@ class ItemsMaintenanceRequest extends StatelessWidget {
                       textColor: Colors.grey,
                     ),
                   ],
-                ),
+                )
               ],
             ),
           ),

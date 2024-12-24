@@ -1,4 +1,5 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/checkout/checkout_screen.dart';
 import '../../../../features/client app/presentation/controller/cubits/category_cubit.dart';
 import '../../../../features/client app/presentation/controller/states/category_state.dart';
 
@@ -76,7 +77,7 @@ class BottomBarCartTotal extends StatelessWidget {
             ),
             AppSizedBox.kVSpace10,
             SizedBox(
-              width: double.infinity, // عرض الزر ليشغل كل المساحة المتاحة
+              width: double.infinity,
               child: ElevatedButton.icon(
                 style: ButtonStyle(
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
@@ -91,7 +92,12 @@ class BottomBarCartTotal extends StatelessWidget {
                       WidgetStateProperty.all(AppColors.secondaryColor),
                 ),
                 onPressed: () {
-                  print("تم دفع المبلغ ");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CreditCardFormScreen(),
+                    ),
+                  );
                 },
                 icon: const Icon(
                   FontAwesomeIcons.creditCard,

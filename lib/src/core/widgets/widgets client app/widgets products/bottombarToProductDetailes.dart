@@ -28,15 +28,15 @@ class BottombarToProductDetailes extends StatelessWidget {
               ),
               ElevatedButton.icon(
                   style: ButtonStyle(
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20)),
                       ),
-                      padding: MaterialStateProperty.all(
+                      padding: WidgetStateProperty.all(
                           const EdgeInsets.symmetric(
                               vertical: 13, horizontal: 15)),
                       backgroundColor:
-                          MaterialStateProperty.all(AppColors.secondaryColor)),
+                          WidgetStateProperty.all(AppColors.secondaryColor)),
                   onPressed: () {
                     context.read<CategoryCubit>().addProductToCart(product);
                     // print( context.read<CategoryCubit>().state.cartItems.toString());
