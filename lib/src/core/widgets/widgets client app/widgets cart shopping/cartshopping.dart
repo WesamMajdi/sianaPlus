@@ -69,36 +69,26 @@ class CartShopping extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       drawer: const MyDrawer(),
       appBar: const AppBarApplication(text: "سلة التسوق"),
-      body: Column(
-        children: [
-          Expanded(
-            // child: ListView.builder(
-            //   itemCount: items.length,
-            //   itemBuilder: (context, index) {
-            //     return CartShoppingItem(item: items[index]);
-            //   },
-            // ),
-        child: BlocBuilder<CategoryCubit,CategoryState>(
-              builder: (context, state) {
-                if (state.cartItems.isEmpty) {
-                  return const Center(
-                    child: Text('سلة التسوق فارغة'),
-                  );
-                }
-                return ListView.builder(
-                  itemCount: state.cartItems.length,
-                  itemBuilder: (context, index) {
-                    final product = state.cartItems.values.toList()[index];
-                    return CartShoppingItem(item:product);
-                    // print(state.cartItems.toString());
-                  },
-                );
-              }
-    ))]),
+      body: Column(children: [
+        Expanded(child: BlocBuilder<CategoryCubit, CategoryState>(
+            builder: (context, state) {
+          if (state.cartItems.isEmpty) {
+            return const Center(
+              child: Text('سلة التسوق فارغة'),
+            );
+          }
+          return ListView.builder(
+            itemCount: state.cartItems.length,
+            itemBuilder: (context, index) {
+              final product = state.cartItems.values.toList()[index];
+              return CartShoppingItem(item: product);
+            },
+          );
+        }))
+      ]),
       bottomNavigationBar: const BottomBarCartTotal(),
     );
   }

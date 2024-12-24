@@ -16,13 +16,6 @@ class BottombarToProductDetailes extends StatelessWidget {
     return BlocBuilder<CategoryCubit, CategoryState>(
       builder: (context, state) => BottomAppBar(
         child: Container(
-          decoration: BoxDecoration(
-            color: (Theme.of(context).brightness == Brightness.dark
-                ? Colors.transparent
-                : Colors.white),
-            borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-          ),
           height: 70,
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(

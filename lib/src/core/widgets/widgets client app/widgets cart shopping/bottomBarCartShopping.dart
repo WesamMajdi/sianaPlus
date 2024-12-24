@@ -10,58 +10,100 @@ class BottomBarCartTotal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
+      height: 220,
       child:
           BlocBuilder<CategoryCubit, CategoryState>(builder: (context, state) {
-        return Container(
-          decoration: BoxDecoration(
-              color: (Theme.of(context).brightness == Brightness.dark
-                  ? Colors.transparent
-                  : Colors.white),
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20), topRight: Radius.circular(20))),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    const CustomStyledText(
-                      text: "المجموع:",
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22,
-                      textColor: AppColors.secondaryColor,
-                    ),
-                    AppSizedBox.kWSpace10,
-                    CustomStyledText(
-                      text: "\$${state.totalAmount!.toStringAsFixed(2)}",
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      textColor: AppColors.secondaryColor,
-                    ),
-                  ],
-                ),
-                ElevatedButton.icon(
-                    style: ButtonStyle(
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                        ),
-                        backgroundColor: MaterialStateProperty.all(
-                            AppColors.secondaryColor)),
-                    onPressed: () {
-                      print("تم دفع المبلغ ");
-                    },
-                    icon: const Icon(FontAwesomeIcons.check),
-                    label: const CustomStyledText(
-                      text: "دفع المبلغ",
-                      fontSize: 18,
-                      textColor: Colors.black,
-                    ))
-              ],
+        return Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const CustomStyledText(
+                    text: "المجموع الفرعي:",
+                    fontSize: 18,
+                  ),
+                  CustomStyledText(
+                    text: "\$${state.totalAmount!.toStringAsFixed(2)}",
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ],
+              ),
             ),
-          ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const CustomStyledText(
+                    text: "نسبة الخصم:",
+                    fontSize: 18,
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 30),
+                    child: const CustomStyledText(
+                      text: "0%",
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(
+              color: Color.fromARGB(255, 219, 219, 219),
+              indent: 5,
+              endIndent: 5,
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const CustomStyledText(
+                    text: "المجموع الكلي:",
+                    fontSize: 18,
+                  ),
+                  CustomStyledText(
+                    text: "\$${state.totalAmount!.toStringAsFixed(2)}",
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ],
+              ),
+            ),
+            AppSizedBox.kVSpace10,
+            SizedBox(
+              width: double.infinity, // عرض الزر ليشغل كل المساحة المتاحة
+              child: ElevatedButton.icon(
+                style: ButtonStyle(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  padding: WidgetStateProperty.all(
+                    const EdgeInsets.symmetric(vertical: 13, horizontal: 15),
+                  ),
+                  backgroundColor:
+                      WidgetStateProperty.all(AppColors.secondaryColor),
+                ),
+                onPressed: () {
+                  print("تم دفع المبلغ ");
+                },
+                icon: const Icon(
+                  FontAwesomeIcons.creditCard,
+                  color: Colors.white,
+                ),
+                label: const CustomStyledText(
+                  text: "دفع المبلغ",
+                  textColor: Colors.white,
+                ),
+              ),
+            )
+          ],
         );
       }),
     );

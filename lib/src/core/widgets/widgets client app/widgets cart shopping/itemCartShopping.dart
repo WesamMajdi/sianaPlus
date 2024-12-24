@@ -21,12 +21,6 @@ class CartShoppingItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(10)),
       child: Row(
         children: [
-          Radio(
-            value: "",
-            groupValue: "",
-            onChanged: (index) {},
-            activeColor: AppColors.secondaryColor,
-          ),
           Container(
             height: 70,
             width: 70,
