@@ -8,7 +8,7 @@ import 'package:maintenance_app/src/features/authentication/login/data.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/application.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/data.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/screens/home_screen.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/privacy%20and%20settings/support%20&%20about%20us%20pages/concat%20info%20page/application.dart';
 import 'package:maintenance_app/src/features/client%20app/privacy%20and%20settings/support%20&%20about%20us%20pages/concat%20info%20page/data.dart';
 
@@ -26,14 +26,12 @@ void main() async {
   }
 
   await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-      .then((Position position) async{
-        debugPrint( position.latitude.toString());
-        debugPrint( position.longitude.toString());
+      .then((Position position) async {
+    debugPrint(position.latitude.toString());
+    debugPrint(position.longitude.toString());
     await prefs.setDouble('latitude', position.latitude);
     await prefs.setDouble('longitude', position.longitude);
-  }).catchError((e) {
-
-  });
+  }).catchError((e) {});
 
   runApp(
     MultiBlocProvider(
@@ -49,8 +47,6 @@ void main() async {
         ),
         BlocProvider<ContactUsCubit>(
             create: (context) => ContactUsCubit(ApiContactUsService())),
-
-
         BlocProvider<CategoryCubit>(
             create: (context) => getIt<CategoryCubit>()..fetchCategories()),
       ],
@@ -79,7 +75,6 @@ class MyApp extends StatelessWidget {
           BlocProvider<ThemeChangerBloc>(
             create: (context) => themeChangerBloc,
           ),
-
         ],
         child: BlocBuilder<ThemeChangerBloc, ThemeChangerState>(
           builder: (context, themeState) {
@@ -90,7 +85,6 @@ class MyApp extends StatelessWidget {
                   ? ThemeData.light()
                   : ThemeData.dark(),
               themeMode: ThemeMode.system,
-
               debugShowCheckedModeBanner: false,
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
@@ -99,16 +93,17 @@ class MyApp extends StatelessWidget {
                 designSize: const Size(360, 640),
                 splitScreenMode: true,
                 builder: (context, state) {
-                  return  MultiBlocListener(listeners: [
-
+                  return MultiBlocListener(listeners: [
                     BlocListener<ConnectivityCubit, ConnectivityStatus>(
-                      listener: (context, status) async{
+                      listener: (context, status) async {
                         if (status == ConnectivityStatus.disconnected) {
-                          _showNoConnectionBanner(context, ConnectivityStatus.disconnected);
+                          _showNoConnectionBanner(
+                              context, ConnectivityStatus.disconnected);
                         }
 
                         if (status == ConnectivityStatus.connected) {
-                          _showNoConnectionBanner(context, ConnectivityStatus.connected);
+                          _showNoConnectionBanner(
+                              context, ConnectivityStatus.connected);
                         }
                       },
                     ),
@@ -126,15 +121,16 @@ class MyApp extends StatelessWidget {
     switch (disconnected) {
       case ConnectivityStatus.connected:
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content:
-            Text('تم الاتصال بالانترنت'),backgroundColor: Colors.green.shade800,));
+          content: const CustomStyledText(text: 'تم الاتصال بالانترنت'),
+          backgroundColor: Colors.green.shade800,
+        ));
 
         break;
       case ConnectivityStatus.disconnected:
         // AppLogger.success('not connected');
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content:
-            Text('لا يوجد اتصال بالإنترنت'), backgroundColor: Colors.red.shade800));
+            content: const CustomStyledText(text: 'لا يوجد اتصال بالإنترنت'),
+            backgroundColor: Colors.red.shade800));
         break;
     }
   }

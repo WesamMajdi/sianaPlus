@@ -1,6 +1,6 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/screens/favourite_screen.dart';
-import '../../../../features/client app/presentation/screens/home_screen.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/favorite/favourite_screen.dart';
+import '../../../../features/client app/presentation/screens/home/home_screen.dart';
 
 class BottomAppBarApplication extends StatelessWidget {
   final int currentIndex;

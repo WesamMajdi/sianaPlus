@@ -5,5 +5,5 @@ List<Map> brandes = [
   {'name': 'Haier', 'imagePath': 'assets/brands/Haier.png'},
   {'name': 'Siemens', 'imagePath': 'assets/brands/Siemens.png'},
   {'name': 'Philips', 'imagePath': 'assets/brands/Philips.png'},
-  {'name': 'Whirlpool', 'imagePath': 'assets/brands/whirlpool.png.png'}
+  {'name': 'Whirlpool', 'imagePath': 'assets/brands/whirlpool.png'}
 ];

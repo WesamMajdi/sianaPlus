@@ -3,7 +3,7 @@ import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/authentication/forgot%20password/presentation.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/presentation.dart';
 
-import '../../client app/presentation/screens/home_screen.dart';
+import '../../client app/presentation/screens/home/home_screen.dart';
 import 'application.dart';
 
 class LoginPage extends StatefulWidget {

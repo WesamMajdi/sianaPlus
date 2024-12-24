@@ -1,7 +1,7 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/authentication/login/data.dart';
 import 'package:maintenance_app/src/features/client%20app/categorys%20page/presentation.dart';
-import '../../../../features/client app/presentation/screens/home_screen.dart';
+import '../../../../features/client app/presentation/screens/home/home_screen.dart';
 
 class MyDrawer extends StatefulWidget {
   const MyDrawer({
@@ -18,6 +18,7 @@ class _MyDrawerState extends State<MyDrawer> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Drawer(
+      shape: const RoundedRectangleBorder(),
       shadowColor: AppColors.secondaryColor,
       width: screenWidth * 0.71,
       child: ListView(

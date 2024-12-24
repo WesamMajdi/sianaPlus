@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/application.dart';
 
-import '../../client app/presentation/screens/home_screen.dart';
+import '../../client app/presentation/screens/home/home_screen.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});

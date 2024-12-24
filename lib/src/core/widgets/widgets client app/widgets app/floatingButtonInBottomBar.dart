@@ -8,6 +8,7 @@ class FloatingButtonInBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
+      shape: const CircleBorder(),
       backgroundColor: AppColors.secondaryColor,
       onPressed: () {
         Navigator.pushReplacement(

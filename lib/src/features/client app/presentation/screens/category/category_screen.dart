@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20categorys/itemsMainCategorys.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20categorys/itemsSubCategorys.dart';
 
-import '../../../../core/export file/exportfiles.dart';
-import '../../categorys page/data.dart';
-import '../../categorys page/domain.dart';
+import '../../../../../core/export file/exportfiles.dart';
+import '../../../categorys page/data.dart';
+import '../../../categorys page/domain.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});

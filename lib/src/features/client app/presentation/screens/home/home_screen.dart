@@ -1,9 +1,8 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/features/client%20app/home%20page/domain.dart';
+import 'package:maintenance_app/src/features/client%20app/data/data_sources/brand/brand_data_source.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-
-import '../controller/cubits/category_cubit.dart';
-import '../controller/states/category_state.dart';
+import '../../controller/cubits/category_cubit.dart';
+import '../../controller/states/category_state.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -86,7 +85,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-             // ItemsProduct(),
+            // ItemsProduct(),
             AppSizedBox.kVSpace20
           ],
         ),
@@ -105,19 +104,21 @@ class ItemsCategory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CategoryCubit,CategoryState>(
-      builder:(context,state){
-        switch (state.mainCategoryStatus){
+    return BlocBuilder<CategoryCubit, CategoryState>(
+      builder: (context, state) {
+        switch (state.mainCategoryStatus) {
           case MainCategoryStatus.initial:
           case MainCategoryStatus.loading:
-            return const Center(child: CircularProgressIndicator(),);
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
 
           case MainCategoryStatus.failure:
             return Text(state.errorMessage!);
 
           case MainCategoryStatus.success:
-            if(state.categories.isNotEmpty){
-              return  SizedBox(
+            if (state.categories.isNotEmpty) {
+              return SizedBox(
                 height: 50,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
@@ -125,7 +126,8 @@ class ItemsCategory extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final category = state.categories[index];
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 5),
                       child: Container(
                         height: 70,
                         padding: const EdgeInsets.symmetric(
@@ -159,8 +161,7 @@ class ItemsCategory extends StatelessWidget {
             }
         }
 
-        return Text ('Some thing error');
-
+        return Text('Some thing error');
       },
     );
     // return
