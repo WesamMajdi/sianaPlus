@@ -16,13 +16,24 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
-  int selectedMainCategoryId = 1;
+  // int selectedMainCategoryId = 1;
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
 
+    context.read<CategoryCubit>().selectCategory(
+      categoryId:  context.read<CategoryCubit>().state.categories.first.id,
+    );
+    context.read<CategoryCubit>().fetchSubCategories(
+      mainCategoryId: context.read<CategoryCubit>().state.categories.first.id,
+    );
+  }
   @override
   Widget build(BuildContext context) {
-    List<SubCategory> filteredSubCategories = subcategories
-        .where((sub) => sub.parentId == selectedMainCategoryId)
-        .toList();
+    // List<SubCategory> filteredSubCategories = subcategories
+    //     .where((sub) => sub.parentId == selectedMainCategoryId)
+    //     .toList();
 
     return Scaffold(
       drawer: const MyDrawer(),
@@ -67,18 +78,23 @@ class _CategoryPageState extends State<CategoryPage> {
                           final category = state.categories[index];
                           return GestureDetector(
                             onTap: () async {
-                              setState(() {
-                                selectedMainCategoryId = category.id;
-                              });
+                              // setState(() {
+                              //   selectedMainCategoryId = category.id;
+                              // });
 
+                               context
+                                  .read<CategoryCubit>()
+                                  .selectCategory(categoryId: category.id);
                               await context
                                   .read<CategoryCubit>()
                                   .fetchSubCategories(
                                       mainCategoryId: category.id);
                             },
-                            child: ItemsMainCategorys(
-                                selectedMainCategoryId: selectedMainCategoryId,
-                                category: category),
+                            child: ItemsMainCategories(
+                                state: state,
+                                category: category
+
+                            ),
                           );
                         },
                       ),
@@ -100,7 +116,7 @@ class _CategoryPageState extends State<CategoryPage> {
               textColor: AppColors.secondaryColor,
             ),
           ),
-          ItemsSubCategorys(filteredSubCategories: filteredSubCategories),
+          ItemsSubCategorys(),
         ],
       ),
     );

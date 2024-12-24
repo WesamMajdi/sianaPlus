@@ -1,4 +1,5 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/features/client%20app/categorys%20page/presentation.dart';
 import 'package:maintenance_app/src/features/client%20app/data/data_sources/brand/brand_data_source.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../../controller/cubits/category_cubit.dart';
@@ -128,32 +129,49 @@ class ItemsCategory extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 5, vertical: 5),
-                      child: Container(
-                        height: 70,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: AppPadding.mediumPadding,
-                            vertical: AppPadding.smallPadding),
-                        decoration: BoxDecoration(
-                          // boxShadow: shadowList,
-                          border: Border.all(
-                            color: AppColors.secondaryColor,
-                            width: 0.6,
-                          ),
-                          color: Colors.grey.withOpacity(0.2),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CategoryPage(),
+                            )
 
-                          borderRadius: BorderRadius.circular(20),
-                        ),
+                          );
+                          context.read<CategoryCubit>().selectCategory(
+                            categoryId: category.id,
+                          );
+                          context.read<CategoryCubit>().fetchSubCategories(
+                                mainCategoryId: category.id,
+                              );
+                        },
                         child: Container(
-                          margin: const EdgeInsets.only(top: 3),
-                          child: Center(
-                            child: CustomStyledText(
-                              text: category.name,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                          height: 70,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: AppPadding.mediumPadding,
+                              vertical: AppPadding.smallPadding),
+                          decoration: BoxDecoration(
+                            // boxShadow: shadowList,
+                            border: Border.all(
+                              color: AppColors.secondaryColor,
+                              width: 0.6,
+                            ),
+                            color: Colors.grey.withOpacity(0.2),
+
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 3),
+                            child: Center(
+                              child: CustomStyledText(
+                                text: category.name,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                      )
                     );
                   },
                 ),

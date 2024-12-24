@@ -13,8 +13,11 @@ class BottomBarCartTotal extends StatelessWidget {
     return BottomAppBar(
       height: 220,
       child:
-          BlocBuilder<CategoryCubit, CategoryState>(builder: (context, state) {
-        return Column(
+          BlocBuilder<CategoryCubit, CategoryState>(
+              builder: (context, state) {
+                final totalAmount = state.totalAmount ?? 0.0;
+
+                return Column(
           children: [
             Container(
               margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -26,7 +29,7 @@ class BottomBarCartTotal extends StatelessWidget {
                     fontSize: 18,
                   ),
                   CustomStyledText(
-                    text: "\$${state.totalAmount!.toStringAsFixed(2)}",
+                    text: "\$${totalAmount.toStringAsFixed(2)}",
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
@@ -68,7 +71,7 @@ class BottomBarCartTotal extends StatelessWidget {
                     fontSize: 18,
                   ),
                   CustomStyledText(
-                    text: "\$${state.totalAmount!.toStringAsFixed(2)}",
+                    text: "\$${totalAmount.toStringAsFixed(2)}",
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
                   ),
@@ -111,7 +114,8 @@ class BottomBarCartTotal extends StatelessWidget {
             )
           ],
         );
-      }),
+      }
+      ),
     );
   }
 }

@@ -29,6 +29,7 @@ void main() async {
       .then((Position position) async {
     debugPrint(position.latitude.toString());
     debugPrint(position.longitude.toString());
+
     await prefs.setDouble('latitude', position.latitude);
     await prefs.setDouble('longitude', position.longitude);
   }).catchError((e) {});
@@ -127,7 +128,6 @@ class MyApp extends StatelessWidget {
 
         break;
       case ConnectivityStatus.disconnected:
-        // AppLogger.success('not connected');
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: const CustomStyledText(text: 'لا يوجد اتصال بالإنترنت'),
             backgroundColor: Colors.red.shade800));

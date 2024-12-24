@@ -18,10 +18,11 @@ class CategoryState extends Equatable {
   final List<Product> products;
   final bool hasCategoryReachedMax;
   int categoryCurrentPage;
+  int selectedCategoryId;
   int productCurrentPage;
   final String? errorMessage;
   Map<String, Product> cartItems;
-  final double? totalAmount;
+   double? totalAmount=0;
 
   CategoryState({
     this.mainCategoryStatus = MainCategoryStatus.initial,
@@ -33,9 +34,10 @@ class CategoryState extends Equatable {
     this.hasCategoryReachedMax = false,
     this.categoryCurrentPage = 1,
     this.productCurrentPage = 1,
+    this.selectedCategoryId =0,
     this.errorMessage,
     required this.cartItems,
-    this.totalAmount,
+    this.totalAmount=0,
   });
 
   CategoryState copyWith({
@@ -48,9 +50,10 @@ class CategoryState extends Equatable {
     bool? hasCategoryReachedMax,
     int? categoryCurrentPage,
     int? productCurrentPage,
+    int? selectedCategoryId,
     String? errorMessage,
     Map<String, Product>? cartItems,
-    double? totalAmount,
+    double? totalAmount=0,
   }) {
     return CategoryState(
       mainCategoryStatus: mainCategoryStatus ?? this.mainCategoryStatus,
@@ -59,6 +62,7 @@ class CategoryState extends Equatable {
       categories: categories ?? this.categories,
       products: products ?? this.products,
       subCategories: subCategories ?? this.subCategories,
+      selectedCategoryId: selectedCategoryId ?? this.selectedCategoryId,
       hasCategoryReachedMax:
           hasCategoryReachedMax ?? this.hasCategoryReachedMax,
       categoryCurrentPage: categoryCurrentPage ?? this.categoryCurrentPage,
@@ -82,6 +86,7 @@ class CategoryState extends Equatable {
         productCurrentPage,
         errorMessage,
         cartItems,
+        selectedCategoryId,
         totalAmount,
       ];
 }

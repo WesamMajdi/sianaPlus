@@ -51,16 +51,16 @@ class _CategoryPageState extends State<CategoryPage> {
               itemCount: categories.length,
               itemBuilder: (context, index) {
                 final category = categories[index];
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedMainCategoryId = category.id;
-                    });
-                  },
-                  child: ItemsMainCategorys(
-                      selectedMainCategoryId: selectedMainCategoryId,
-                      category: category),
-                );
+                // return GestureDetector(
+                //   onTap: () {
+                //     setState(() {
+                //       selectedMainCategoryId = category.id;
+                //     });
+                //   },
+                //   child: ItemsMainCategorys(
+                //       selectedMainCategoryId: selectedMainCategoryId,
+                //       category: category),
+                // );
               },
             ),
           ),
@@ -75,7 +75,7 @@ class _CategoryPageState extends State<CategoryPage> {
               textColor: AppColors.secondaryColor,
             ),
           ),
-          ItemsSubCategorys(filteredSubCategories: filteredSubCategories),
+          ItemsSubCategorys(),
         ],
       ),
     );

@@ -2,15 +2,16 @@ import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/client%20app/categorys%20page/domain.dart';
 
 import '../../../../features/client app/domain/entities/category/category_entity.dart';
+import '../../../../features/client app/presentation/controller/states/category_state.dart';
 
-class ItemsMainCategorys extends StatelessWidget {
-  const ItemsMainCategorys({
+class ItemsMainCategories extends StatelessWidget {
+  const ItemsMainCategories({
     super.key,
-    required this.selectedMainCategoryId,
+    required this.state,
     required this.category,
   });
 
-  final int selectedMainCategoryId;
+  final CategoryState state;
   final Category category;
 
   @override
@@ -24,13 +25,13 @@ class ItemsMainCategorys extends StatelessWidget {
             vertical: AppPadding.smallPadding),
         decoration: BoxDecoration(
           // boxShadow: shadowList,
-          border: selectedMainCategoryId == category.id
+          border: state.selectedCategoryId ==category.id
               ? null
               : Border.all(
                   color: AppColors.secondaryColor,
                   width: 0.6,
                 ),
-          color: selectedMainCategoryId == category.id
+          color: state.selectedCategoryId ==category.id
               ? AppColors.secondaryColor
               : Colors.grey.withOpacity(0.2),
           borderRadius: BorderRadius.circular(20),
@@ -40,7 +41,7 @@ class ItemsMainCategorys extends StatelessWidget {
           child: Center(
             child: CustomStyledText(
               text: category.name,
-              textColor: selectedMainCategoryId == category.id
+              textColor: state.selectedCategoryId == category.id
                   ? Colors.white
                   : AppColors.secondaryColor,
               fontWeight: FontWeight.bold,

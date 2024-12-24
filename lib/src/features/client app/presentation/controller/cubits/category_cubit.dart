@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/usecases/product/fetch_product_useCase.dart';
@@ -58,6 +57,10 @@ class CategoryCubit extends Cubit<CategoryState> {
       (products) => emit(state.copyWith(
           productStatus: ProductStatus.success, products: products.items)),
     );
+  }
+
+  selectCategory({required int categoryId}){
+    emit(state.copyWith(selectedCategoryId:categoryId));
   }
 
   void addProductToCart(Product productItem) {

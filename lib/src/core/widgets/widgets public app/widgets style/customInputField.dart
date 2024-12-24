@@ -190,6 +190,7 @@ class CustomInputFielLocation extends StatefulWidget {
   final IconData icon;
   final FormFieldValidator<String>? validators;
   final TextEditingController? controller;
+  final bool? enabled;
 
   const CustomInputFielLocation({
     super.key,
@@ -197,6 +198,7 @@ class CustomInputFielLocation extends StatefulWidget {
     required this.icon,
     this.validators,
     this.controller,
+    this.enabled=true,
   });
 
   @override
@@ -213,6 +215,7 @@ class _CustomInputFielLocationState extends State<CustomInputFielLocation> {
       padding: const EdgeInsets.symmetric(
           horizontal: AppPadding.mediumPadding, vertical: 5),
       child: TextFormField(
+        enabled: widget.enabled,
         controller: widget.controller,
         validator: widget.validators,
         obscureText: _obscureText,

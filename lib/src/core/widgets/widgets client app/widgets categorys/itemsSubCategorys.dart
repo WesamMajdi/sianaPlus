@@ -7,10 +7,8 @@ import '../../../../features/client app/presentation/controller/cubits/category_
 class ItemsSubCategorys extends StatelessWidget {
   const ItemsSubCategorys({
     Key? key,
-    required this.filteredSubCategories,
   }) : super(key: key);
 
-  final List<SubCategory> filteredSubCategories;
 
   @override
   Widget build(BuildContext context) {
