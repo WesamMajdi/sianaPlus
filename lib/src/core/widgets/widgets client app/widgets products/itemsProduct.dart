@@ -97,16 +97,15 @@ class _ItemsProductState extends State<ItemsProduct> {
                     },
                     child: Container(
                       margin: const EdgeInsets.all(10),
-                      // child: Image.asset(
-                      //   product.image ??'',
-                      //   width: 120,
-                      //   height: 95,
-                      // ),
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        color: Colors.blue,
+                      child: Image.asset(
+                        'assets/images/refrigerator.jpeg',
+                        fit: BoxFit.fill,
                       ),
+                      // child: Container(
+                      //   width: 100,
+                      //   height: 100,
+                      //   color: Colors.blue,
+                      // ),
                     ),
                   ),
                   AppSizedBox.kVSpace10,

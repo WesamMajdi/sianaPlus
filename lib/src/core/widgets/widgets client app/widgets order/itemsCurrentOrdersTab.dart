@@ -8,7 +8,13 @@ class CurrentOrdersTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (currentOrders.isEmpty) {
-      return const CustomStyledText(text: "لاتوجد بيانات");
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [CustomStyledText(text: 'لا توجد طلبات حالية')],
+        ),
+      );
     } else {
       return ListView.builder(
         itemCount: currentOrders.length,

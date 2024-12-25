@@ -60,13 +60,14 @@ class ItemsSubCategorys extends StatelessWidget {
                                     );
                                   },
                                   child: Align(
-                                    // child: Image.network(
-                                    //   subCategory.image,
-                                    // ),
-                                    child: Container(
-                                      height: 100,
-                                      width: 100,
+                                    child: Image.asset(
+                                      'assets/images/Untitled-2.png',
+                                      fit: BoxFit.fill,
                                     ),
+                                    // child: Container(
+                                    //   height: 100,
+                                    //   width: 100,
+                                    // ),
                                   ),
                                 )
                               ],

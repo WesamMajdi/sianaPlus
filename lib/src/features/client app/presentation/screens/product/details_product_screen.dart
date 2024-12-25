@@ -44,16 +44,16 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
-                  // child: Image.asset(
-                  //   widget.product.image ??'',
-                  //   height: 300,
-                  // ),
-
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    color: Colors.amber,
+                  child: Image.asset(
+                    'assets/images/Untitled-2.png',
+                    fit: BoxFit.fill,
                   ),
+
+                  // child: Container(
+                  //   width: 100,
+                  //   height: 100,
+                  //   color: Colors.amber,
+                  // ),
                 ),
               ),
             ),

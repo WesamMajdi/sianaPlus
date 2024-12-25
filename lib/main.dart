@@ -122,14 +122,16 @@ class MyApp extends StatelessWidget {
     switch (disconnected) {
       case ConnectivityStatus.connected:
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: const CustomStyledText(text: 'تم الاتصال بالانترنت'),
+          content: const CustomStyledText(
+              text: 'تم الاتصال بالانترنت', textColor: Colors.white),
           backgroundColor: Colors.green.shade800,
         ));
 
         break;
       case ConnectivityStatus.disconnected:
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: const CustomStyledText(text: 'لا يوجد اتصال بالإنترنت'),
+            content: const CustomStyledText(
+                text: 'لا يوجد اتصال بالإنترنت', textColor: Colors.white),
             backgroundColor: Colors.red.shade800));
         break;
     }

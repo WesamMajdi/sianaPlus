@@ -102,7 +102,6 @@ class CartShoppingItem extends StatelessWidget {
                         margin: const EdgeInsets.symmetric(horizontal: 10),
                         child: CustomStyledText(
                           text: "${item.count}",
-                          // text: "${5}",
                           fontWeight: FontWeight.w900,
                           fontSize: 18,
                           textColor: AppColors.secondaryColor,

@@ -17,18 +17,20 @@ class CategoryPage extends StatefulWidget {
 
 class _CategoryPageState extends State<CategoryPage> {
   // int selectedMainCategoryId = 1;
-@override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
     context.read<CategoryCubit>().selectCategory(
-      categoryId:  context.read<CategoryCubit>().state.categories.first.id,
-    );
+          categoryId: context.read<CategoryCubit>().state.categories.first.id,
+        );
     context.read<CategoryCubit>().fetchSubCategories(
-      mainCategoryId: context.read<CategoryCubit>().state.categories.first.id,
-    );
+          mainCategoryId:
+              context.read<CategoryCubit>().state.categories.first.id,
+        );
   }
+
   @override
   Widget build(BuildContext context) {
     // List<SubCategory> filteredSubCategories = subcategories
@@ -82,7 +84,7 @@ class _CategoryPageState extends State<CategoryPage> {
                               //   selectedMainCategoryId = category.id;
                               // });
 
-                               context
+                              context
                                   .read<CategoryCubit>()
                                   .selectCategory(categoryId: category.id);
                               await context
@@ -91,10 +93,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                       mainCategoryId: category.id);
                             },
                             child: ItemsMainCategories(
-                                state: state,
-                                category: category
-
-                            ),
+                                state: state, category: category),
                           );
                         },
                       ),

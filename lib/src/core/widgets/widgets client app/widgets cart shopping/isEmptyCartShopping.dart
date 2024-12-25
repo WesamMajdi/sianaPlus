@@ -5,13 +5,29 @@ class IsEmptyCartShopping extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      drawer: MyDrawer(),
-      appBar: AppBarApplication(text: "سلة التسوق"),
+    return Scaffold(
+      drawer: const MyDrawer(),
+      appBar: const AppBarApplication(text: "سلة التسوق"),
       body: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [CustomStyledText(text: 'لا توجد بيانات')],
+          children: [
+            Lottie.asset(
+              'assets/animations/cart_empty.json',
+              width: 300,
+              height: 300,
+              repeat: false,
+              delegates: LottieDelegates(
+                values: [
+                  ValueDelegate.color(
+                    const ['**'],
+                    value: AppColors.secondaryColor,
+                  ),
+                ],
+              ),
+            ),
+            const CustomStyledText(text: 'لا توجد بيانات')
+          ],
         ),
       ),
     );

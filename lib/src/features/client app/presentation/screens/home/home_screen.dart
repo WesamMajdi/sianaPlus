@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
                   Padding(
                     padding: EdgeInsets.only(right: 20, bottom: 5),
                     child: CustomStyledText(
-                      text: "تسوق اونلاين",
+                      text: "افضل المنتجات",
                       fontWeight: FontWeight.w700,
                       fontSize: 18,
                       textColor: AppColors.secondaryColor,
@@ -86,7 +86,103 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            // ItemsProduct(),
+            GridView.builder(
+                itemCount: 5,
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.68,
+                ),
+                itemBuilder: (context, index) {
+                  return Container(
+                    padding: const EdgeInsets.only(
+                        left: AppPadding.mediumPadding,
+                        right: AppPadding.mediumPadding,
+                        top: 10),
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                    decoration: BoxDecoration(
+                        boxShadow: shadowList,
+                        color: (Theme.of(context).brightness == Brightness.dark
+                            ? Colors.black54
+                            : Colors.white),
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 5),
+                              decoration: BoxDecoration(
+                                  color: AppColors.secondaryColor,
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: const Center(
+                                child: CustomStyledText(
+                                  text: "%15",
+                                  textColor: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            const Spacer(),
+                            const Icon(
+                              Icons.favorite,
+                              color: Colors.red,
+                            ),
+                          ],
+                        ),
+                        Image.asset(
+                          'assets/images/refrigerator.jpeg',
+                          fit: BoxFit.fill,
+                        ),
+                        AppSizedBox.kVSpace10,
+                        Container(
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.only(
+                            bottom: 5,
+                          ),
+                          child: CustomStyledText(
+                            text: truncateTextTitle("ثلاجة LG"),
+                            fontSize: 17,
+                            textColor: AppColors.secondaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.centerRight,
+                          child: CustomStyledText(
+                            text: truncateTextDescription('ثلاجة LG ممتازة'),
+                            fontSize: 12,
+                            textColor: Colors.grey,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CustomStyledText(
+                                text: "\$500",
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                textColor: AppColors.secondaryColor,
+                              ),
+                              Icon(FontAwesomeIcons.cartPlus,
+                                  color: (Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white
+                                      : Colors.black),
+                                  size: 22),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
             AppSizedBox.kVSpace20
           ],
         ),
@@ -127,52 +223,49 @@ class ItemsCategory extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final category = state.categories[index];
                     return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 5),
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CategoryPage(),
-                            )
-
-                          );
-                          context.read<CategoryCubit>().selectCategory(
-                            categoryId: category.id,
-                          );
-                          context.read<CategoryCubit>().fetchSubCategories(
-                                mainCategoryId: category.id,
-                              );
-                        },
-                        child: Container(
-                          height: 70,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: AppPadding.mediumPadding,
-                              vertical: AppPadding.smallPadding),
-                          decoration: BoxDecoration(
-                            // boxShadow: shadowList,
-                            border: Border.all(
-                              color: AppColors.secondaryColor,
-                              width: 0.6,
-                            ),
-                            color: Colors.grey.withOpacity(0.2),
-
-                            borderRadius: BorderRadius.circular(20),
-                          ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 5),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CategoryPage(),
+                                ));
+                            context.read<CategoryCubit>().selectCategory(
+                                  categoryId: category.id,
+                                );
+                            context.read<CategoryCubit>().fetchSubCategories(
+                                  mainCategoryId: category.id,
+                                );
+                          },
                           child: Container(
-                            margin: const EdgeInsets.only(top: 3),
-                            child: Center(
-                              child: CustomStyledText(
-                                text: category.name,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                            height: 70,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: AppPadding.mediumPadding,
+                                vertical: AppPadding.smallPadding),
+                            decoration: BoxDecoration(
+                              // boxShadow: shadowList,
+                              border: Border.all(
+                                color: AppColors.secondaryColor,
+                                width: 0.6,
+                              ),
+                              color: Colors.grey.withOpacity(0.2),
+
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 3),
+                              child: Center(
+                                child: CustomStyledText(
+                                  text: category.name,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      )
-                    );
+                        ));
                   },
                 ),
               );

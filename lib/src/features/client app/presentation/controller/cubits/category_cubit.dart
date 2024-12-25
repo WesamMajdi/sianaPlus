@@ -59,8 +59,8 @@ class CategoryCubit extends Cubit<CategoryState> {
     );
   }
 
-  selectCategory({required int categoryId}){
-    emit(state.copyWith(selectedCategoryId:categoryId));
+  selectCategory({required int categoryId}) {
+    emit(state.copyWith(selectedCategoryId: categoryId));
   }
 
   void addProductToCart(Product productItem) {
@@ -118,7 +118,6 @@ class CategoryCubit extends Cubit<CategoryState> {
     final totalAmount = updatedItems.fold(0.0, (sum, item) {
       return sum + (item.price! * item.count!);
     });
-    print(totalAmount);
     emit(state.copyWith(products: updatedItems, totalAmount: totalAmount));
   }
 
