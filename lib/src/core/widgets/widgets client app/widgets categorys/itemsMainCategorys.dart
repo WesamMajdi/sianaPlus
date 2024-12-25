@@ -17,21 +17,20 @@ class ItemsMainCategories extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
       child: Container(
         height: 70,
         padding: const EdgeInsets.symmetric(
             horizontal: AppPadding.mediumPadding,
             vertical: AppPadding.smallPadding),
         decoration: BoxDecoration(
-          // boxShadow: shadowList,
-          border: state.selectedCategoryId ==category.id
+          border: state.selectedCategoryId == category.id
               ? null
               : Border.all(
                   color: AppColors.secondaryColor,
                   width: 0.6,
                 ),
-          color: state.selectedCategoryId ==category.id
+          color: state.selectedCategoryId == category.id
               ? AppColors.secondaryColor
               : Colors.grey.withOpacity(0.2),
           borderRadius: BorderRadius.circular(20),
@@ -45,7 +44,7 @@ class ItemsMainCategories extends StatelessWidget {
                   ? Colors.white
                   : AppColors.secondaryColor,
               fontWeight: FontWeight.bold,
-              fontSize: 18,
+              fontSize: 16,
             ),
           ),
         ),

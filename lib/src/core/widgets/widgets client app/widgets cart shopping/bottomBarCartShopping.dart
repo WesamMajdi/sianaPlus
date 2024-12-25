@@ -13,11 +13,10 @@ class BottomBarCartTotal extends StatelessWidget {
     return BottomAppBar(
       height: 220,
       child:
-          BlocBuilder<CategoryCubit, CategoryState>(
-              builder: (context, state) {
-                final totalAmount = state.totalAmount ?? 0.0;
+          BlocBuilder<CategoryCubit, CategoryState>(builder: (context, state) {
+        final totalAmount = state.totalAmount ?? 0.0;
 
-                return Column(
+        return Column(
           children: [
             Container(
               margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
@@ -114,8 +113,7 @@ class BottomBarCartTotal extends StatelessWidget {
             )
           ],
         );
-      }
-      ),
+      }),
     );
   }
 }

@@ -9,7 +9,6 @@ class ItemsSubCategorys extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CategoryCubit, CategoryState>(
@@ -115,9 +114,10 @@ class ItemsSubCategorys extends StatelessWidget {
                                     fontSize: 14,
                                   ),
                                   AppSizedBox.kVSpace20,
+                                  AppSizedBox.kVSpace10,
                                   const CustomStyledText(
-                                    text: "عدد المنتجات",
-                                    fontSize: 20,
+                                    text: "عدد الاصناف",
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                   AppSizedBox.kVSpace5,
@@ -138,11 +138,13 @@ class ItemsSubCategorys extends StatelessWidget {
                 ),
               );
             } else {
-              return Text('No Data');
+              return const Column(
+                children: [CustomStyledText(text: 'لا توجد اصناف')],
+              );
             }
         }
 
-        return Text('Some thing error');
+        return const Text('Some thing error');
       },
     );
   }

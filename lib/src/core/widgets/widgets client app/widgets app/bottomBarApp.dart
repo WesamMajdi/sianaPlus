@@ -13,18 +13,24 @@ class BottomAppBarApplication extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
+      height: 65,
       shape: const CircularNotchedRectangle(),
       notchMargin: 8.0,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           IconButton(
-            icon: Icon(
-              currentIndex == 0 ? Icons.home : Icons.home_outlined,
-              color: currentIndex == 0
-                  ? AppColors.secondaryColor
-                  : Colors.grey.withOpacity(0.8),
-              size: 35,
+            icon: Row(
+              children: [
+                Icon(
+                  currentIndex == 0 ? Icons.home : Icons.home_outlined,
+                  color: currentIndex == 0
+                      ? AppColors.secondaryColor
+                      // ignore: deprecated_member_use
+                      : Colors.grey.withOpacity(0.8),
+                  size: 35,
+                ),
+              ],
             ),
             onPressed: () {
               if (currentIndex != 0) {

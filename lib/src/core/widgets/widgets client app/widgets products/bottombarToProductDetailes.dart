@@ -47,7 +47,10 @@ class BottombarToProductDetailes extends StatelessWidget {
                       ),
                     );
                   },
-                  icon: const Icon(FontAwesomeIcons.cartPlus),
+                  icon: const Icon(
+                    FontAwesomeIcons.cartPlus,
+                    color: Colors.white,
+                  ),
                   label: const CustomStyledText(
                     text: "اضافة الى سلة",
                     textColor: Colors.white,

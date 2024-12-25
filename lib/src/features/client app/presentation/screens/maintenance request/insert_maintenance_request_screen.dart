@@ -41,16 +41,21 @@ class _InsertMaintenanceRequestPageState
                     const CustomLabelText(
                       text: 'اسم الجهاز',
                     ),
-                    CustomInputField(
-                      controller: devicenameController,
-                      hintText: 'ادخل اسم الجهاز',
+                    CustomSearchDropdown(
+                      hintText: 'اختر اسم الجهاز',
                       validators: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'عفوا.اسم الجهاز مطلوب';
+                          return 'عفوا.يرجي اختيار اسم الجهاز';
                         }
                         return null;
                       },
-                      icon: Icons.text_fields,
+                      items: const [
+                        'ثلاجة ',
+                        'غسالة ',
+                        'مكيف',
+                        'مروحة ',
+                        'استشوار',
+                      ],
                     ),
                     const CustomLabelText(
                       text: 'شركة الجهاز',

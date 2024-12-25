@@ -56,7 +56,12 @@ class _ProductPageState extends State<ProductPage> {
                     if (state.products.isNotEmpty) {
                       return ItemsProduct(products: state.products);
                     } else {
-                      return Text('No Data');
+                      return const Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [CustomStyledText(text: 'لا توجد منتجات')],
+                        ),
+                      );
                     }
                 }
 

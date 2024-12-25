@@ -9,18 +9,10 @@ class MapPickerScreen extends StatefulWidget {
 }
 
 class _MapPickerScreenState extends State<MapPickerScreen> {
-
   // I want to get current positopn how can I get that
-
-
-
-
-
-
 
   late GoogleMapController _mapController;
   LatLng _selectedLocation = LatLng(37.7749, -122.4194); // Default location
-
 
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
@@ -31,8 +23,9 @@ class _MapPickerScreenState extends State<MapPickerScreen> {
       _selectedLocation = position;
     });
   }
-@override
-  initState(){
+
+  @override
+  initState() {
     super.initState();
     _getCurrentLocation();
   }
@@ -76,6 +69,7 @@ class _MapPickerScreenState extends State<MapPickerScreen> {
       CameraUpdate.newLatLng(_selectedLocation),
     );
   }
+
   void _confirmLocation() {
     Navigator.pop(context, _selectedLocation);
   }
@@ -84,7 +78,8 @@ class _MapPickerScreenState extends State<MapPickerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pick Location', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('Pick Location',
+            style: TextStyle(fontWeight: FontWeight.bold)),
         actions: [
           IconButton(
             icon: Icon(Icons.check),

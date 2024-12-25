@@ -26,6 +26,7 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
       });
     }
   }
+
   TextEditingController locationController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,7 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
               child: Column(
             children: [
               GestureDetector(
-                onTap:_openMapPicker,
+                onTap: _openMapPicker,
                 child: CustomInputFielLocation(
                   hintText: 'حدد موقعك',
                   enabled: false,
