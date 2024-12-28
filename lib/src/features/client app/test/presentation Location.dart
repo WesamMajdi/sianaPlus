@@ -35,7 +35,6 @@ class MapSampleState extends State<MapSample> {
   }
 }
 
-
 // Future<void> getUserLocation() async {
 //   Location location = Location();
 //   bool _serviceEnabled;
