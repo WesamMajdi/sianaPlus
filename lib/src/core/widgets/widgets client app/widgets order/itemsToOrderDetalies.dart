@@ -2,7 +2,7 @@ import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/orders/orders_entity.dart';
 
 class ItemsOrdersDetails extends StatelessWidget {
-  final Order order;
+  final OrderEntity order;
 
   const ItemsOrdersDetails({
     super.key,
@@ -44,14 +44,14 @@ class ItemsOrdersDetails extends StatelessWidget {
                         activeColor: AppColors.secondaryColor,
                       ),
                       CustomStyledText(
-                        text: order.serviceName,
+                        text: 'order.serviceName',
                         fontSize: 20,
                         textColor: AppColors.secondaryColor,
                       ),
                     ],
                   ),
                   CustomStyledText(
-                    text: order.price.toString(),
+                    text: 'order.price.toString()',
                     fontSize: 20,
                   ),
                 ],

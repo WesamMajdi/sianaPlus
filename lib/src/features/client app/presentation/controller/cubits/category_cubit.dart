@@ -31,7 +31,7 @@ class CategoryCubit extends Cubit<CategoryState> {
 
   Future<void> fetchSubCategories(
       {bool refresh = false, int mainCategoryId = 0}) async {
-    emit(state.copyWith(subCategoryStatus: SubCategoryStatus.loading));
+    emit(state.copyWith(subCategoryStatus: SubCategoryStatus.loading,selectedCategoryId: mainCategoryId));
     final page = refresh ? 1 : state.categoryCurrentPage;
     final result = await categoriesUseCase.getSubCategories(
         PaginationParams(page: page, mainCategoryId: mainCategoryId));

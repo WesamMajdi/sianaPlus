@@ -230,11 +230,11 @@ class ItemsCategory extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => CategoryPage(),
+                                  builder: (context) => CategoryPage(fromHomeScreen:true),
                                 ));
-                            context.read<CategoryCubit>().selectCategory(
-                                  categoryId: category.id,
-                                );
+                            // context.read<CategoryCubit>().selectCategory(
+                            //       categoryId: category.id,
+                            //     );
                             context.read<CategoryCubit>().fetchSubCategories(
                                   mainCategoryId: category.id,
                                 );

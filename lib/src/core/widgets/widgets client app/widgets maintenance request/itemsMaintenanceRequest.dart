@@ -1,13 +1,21 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20maintenance%20request/mainteanceRequestDetalies.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model_request.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/orders/orders_entity.dart';
+
+import '../../../../features/client app/presentation/controller/states/order_state.dart';
 
 class ItemsMaintenanceRequest extends StatelessWidget {
   const ItemsMaintenanceRequest({
     super.key,
     required this.i,
+    required this.itemEntity,
+    required this.state,
   });
 
   final int i;
+  final ItemsEntity itemEntity;
+  final OrderState state;
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +24,7 @@ class ItemsMaintenanceRequest extends StatelessWidget {
         showDialog(
             context: context,
             builder: (BuildContext context) {
-              return const MainteanceRequestDetalies();
+              return  MainteanceRequestDetalies(itemsEntity: itemEntity,);
             });
       },
       child: Padding(
@@ -47,8 +55,8 @@ class ItemsMaintenanceRequest extends StatelessWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
-                    const CustomStyledText(
-                      text: 'اصلاح ثلاجة',
+                     CustomStyledText(
+                      text: 'اصلاح ${itemEntity.item!.name}',
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       textColor: AppColors.secondaryColor,
@@ -60,7 +68,7 @@ class ItemsMaintenanceRequest extends StatelessWidget {
                   children: [
                     CustomStyledText(
                       text: truncateTextDescription(
-                        'الثلاجة لا تعمل بشكل جيد، يوجد تسريب مياه من الداخل، وأحيانًا تتوقف عن التبريد فجأة.',
+                          itemEntity.description!
                       ),
                       fontSize: 14,
                       textColor: Colors.grey,

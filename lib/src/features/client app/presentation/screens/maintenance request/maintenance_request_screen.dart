@@ -1,6 +1,10 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20maintenance%20request/itemsMaintenanceRequest.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model_request.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
+import 'package:win32/win32.dart';
 
 import '../map/map_picker_screen.dart';
 
@@ -14,6 +18,7 @@ class MaintenanceRequestPage extends StatefulWidget {
 class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
   LatLng? _pickedLocation;
 
+  // Opens the map picker screen
   Future<void> _openMapPicker() async {
     final result = await Navigator.push(
       context,
@@ -27,43 +32,139 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
     }
   }
 
-  TextEditingController locationController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: const MyDrawer(),
-      appBar: const AppBarApplication(text: 'طلب صيانة'),
-      body: ListView(
-        children: [
-          Form(
-              child: Column(
-            children: [
-              GestureDetector(
-                onTap: _openMapPicker,
-                child: CustomInputFielLocation(
-                  hintText: 'حدد موقعك',
-                  enabled: false,
-                  icon: Icons.location_off_rounded,
-                  controller: locationController,
-                ),
-              ),
-              AppSizedBox.kVSpace10,
-              CustomButton(
-                text: 'اضافة طلب',
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          const InsertMaintenanceRequestPage(),
+    return BlocBuilder<OrderCubit, OrderState>(
+      builder: (context, state) => Scaffold(
+        drawer: const MyDrawer(),
+        appBar: const AppBarApplication(text: 'طلب صيانة'),
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  // Location Picker
+                  Form(
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          onTap: _openMapPicker,
+                          child: CustomInputFielLocation(
+                            hintText: _pickedLocation != null
+                                ? '${_pickedLocation!.longitude}, ${_pickedLocation!.latitude}'
+                                : 'حدد موقعك',
+                            enabled: false,
+                            icon: Icons.location_off_rounded,
+                            controller: locationController,
+                          ),
+                        ),
+                        AppSizedBox.kVSpace10,
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: state.notifyCustomerOfTheCost,
+                              onChanged: (value) {
+                                context
+                                    .read<OrderCubit>()
+                                    .toggleNotifyCustomerOfTheCost(value!);
+                              },
+                            ),
+                            const Text('Notify customer of the cost'),
+                          ],
+                        ),
+                        CustomButton(
+                          text: 'اضافة جهاز',
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    InsertMaintenanceRequestPage(
+                                  latLong: _pickedLocation,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                  );
-                },
+                  ),
+                  AppSizedBox.kVSpace20,
+
+                  // Orders List
+                  BlocBuilder<OrderCubit, OrderState>(
+                    builder: (context, state) {
+                      if (state.itemStatus == ItemStatus.loading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (state.itemStatus == ItemStatus.failure) {
+                        return const Center(child: Text('فشلت العملية'));
+                      }
+                      if (state.itemStatus == ItemStatus.success &&
+                          state.orderItems.isNotEmpty) {
+                        return ListView.builder(
+                          shrinkWrap: true, // Important for nesting scrolls
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: state.orderItems.length,
+                          itemBuilder: (context, index) {
+                            return ItemsMaintenanceRequest(
+                              state: state,
+                              i: index,
+                              itemEntity: state.orderItems[index],
+                              // order: ,
+                            );
+                          },
+                        );
+                      }
+                      return const Center(child: Text('لا توجد طلبات صيانة'));
+                    },
+                  ),
+
+                  state.orderItems.isNotEmpty
+                      ? BlocListener<OrderCubit,OrderState>(listener: (context, state) {
+                        if(state.orderCreationStatus == OrderCreationStatus.success){
+                          Navigator.pop(context);
+                        }
+                  },
+                    child:Column(children: [
+                      AppSizedBox.kVSpace20,
+                      state.orderCreationStatus==OrderCreationStatus.loading?Center(child: CircularProgressIndicator(),):  CustomButton(
+                        text: 'اضافة طلب',
+                        onPressed: () async {
+                          final createOrder= CreateOrderRequest(
+                            total: 0,
+                            discount: 0,
+                            locationForDelivery: '${_pickedLocation!.latitude},${_pickedLocation!.longitude}',
+                            notifyCustomerOfTheCost: state.notifyCustomerOfTheCost,
+                            handReceipt: HandReceipt(
+                              items: state.orderItems
+                                  .map((e) => Items(
+                                  itemId: e.item!.id,
+                                  colorId: e.color!.id,
+                                  companyId: e.company!.id,
+                                  description: e.description!
+                              ))
+                                  .toList(),
+                            ),
+                          );
+                          await context.read<OrderCubit>().createOrderMaintenance(createOrder);
+
+
+
+
+
+                        },
+                      ),
+                    ]),
+                  )
+                      : const Text(''),
+                ],
               ),
-            ],
-          )),
-          for (int i = 1; i <= 10; i++) ItemsMaintenanceRequest(i: i),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

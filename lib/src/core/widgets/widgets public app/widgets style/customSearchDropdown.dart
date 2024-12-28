@@ -1,18 +1,21 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:dropdown_search/dropdown_search.dart';
 
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/orders/color_entery.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
 
 class CustomSearchDropdown extends StatefulWidget {
-  final List<String> items;
+  final List<OrderEntery> items;
   final String hintText;
-  final FormFieldValidator<String>? validators;
+  final FormFieldValidator<OrderEntery>? validators;
+   void Function(OrderEntery?)? onChanged;
 
-  const CustomSearchDropdown({
+   CustomSearchDropdown({
     Key? key,
     required this.items,
     required this.hintText,
     this.validators,
+    this.onChanged,
   }) : super(key: key);
 
   @override
@@ -26,7 +29,8 @@ class _CustomSearchDropdownState extends State<CustomSearchDropdown> {
       padding: const EdgeInsets.symmetric(horizontal: AppPadding.mediumPadding),
       child: Column(
         children: [
-          DropdownSearch<String>(
+          DropdownSearch<OrderEntery>(
+            itemAsString: (item) => item.name!,
               items: widget.items,
               compareFn: (item1, item2) {
                 return item1 == item2;
@@ -83,7 +87,7 @@ class _CustomSearchDropdownState extends State<CustomSearchDropdown> {
                     children: [
                       ListTile(
                         title: CustomStyledText(
-                          text: item,
+                          text: item.name!,
                           textColor:
                               (Theme.of(context).brightness == Brightness.dark
                                   ? Colors.white
@@ -128,10 +132,9 @@ class _CustomSearchDropdownState extends State<CustomSearchDropdown> {
                   ),
                 ),
               ),
-              onChanged: (value) {
-                print('Selected value: $value');
-              },
-              validator: widget.validators),
+              onChanged: widget.onChanged,
+              validator: widget.validators
+          ),
         ],
       ),
     );

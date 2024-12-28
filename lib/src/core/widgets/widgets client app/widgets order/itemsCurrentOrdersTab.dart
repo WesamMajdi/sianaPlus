@@ -61,7 +61,7 @@ class CurrentOrdersTab extends StatelessWidget {
                               ),
                               AppSizedBox.kVSpace5,
                               CustomStyledText(
-                                text: order.serviceName,
+                                text: 'order.serviceName',
                                 textColor: AppColors.secondaryColor,
                                 fontSize: 20,
                               ),
@@ -80,7 +80,7 @@ class CurrentOrdersTab extends StatelessWidget {
                                     fontSize: 16,
                                   ),
                                   CustomStyledText(
-                                    text: "${order.price}\$",
+                                    text: "${'order.price'}\$",
                                     fontSize: 14,
                                   ),
                                 ],
@@ -95,7 +95,7 @@ class CurrentOrdersTab extends StatelessWidget {
                                     fontSize: 16,
                                   ),
                                   CustomStyledText(
-                                    text: "${order.status} ",
+                                    text: "${'order.status'} ",
                                     fontSize: 14,
                                   ),
                                 ],

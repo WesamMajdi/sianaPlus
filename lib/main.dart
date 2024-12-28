@@ -8,6 +8,7 @@ import 'package:maintenance_app/src/features/authentication/login/data.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/application.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/data.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/privacy%20and%20settings/support%20&%20about%20us%20pages/concat%20info%20page/application.dart';
 import 'package:maintenance_app/src/features/client%20app/privacy%20and%20settings/support%20&%20about%20us%20pages/concat%20info%20page/data.dart';
@@ -50,6 +51,9 @@ void main() async {
             create: (context) => ContactUsCubit(ApiContactUsService())),
         BlocProvider<CategoryCubit>(
             create: (context) => getIt<CategoryCubit>()..fetchCategories()),
+
+        BlocProvider<OrderCubit>(
+            create: (context) => getIt<OrderCubit>()..initOrdersRequirements()),
       ],
       child:
           MyApp(themeChangerBloc: themeChangerBloc, isLoggedIn: token != null),

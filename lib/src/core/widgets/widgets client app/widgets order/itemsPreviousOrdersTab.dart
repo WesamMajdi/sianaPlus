@@ -55,7 +55,7 @@ class PreviousOrdersTab extends StatelessWidget {
                               ),
                               AppSizedBox.kVSpace5,
                               CustomStyledText(
-                                text: order.serviceName,
+                                text:' order.serviceName',
                                 textColor: AppColors.secondaryColor,
                                 fontSize: 20,
                               ),
@@ -74,7 +74,7 @@ class PreviousOrdersTab extends StatelessWidget {
                                     fontSize: 16,
                                   ),
                                   CustomStyledText(
-                                    text: "${order.price}\$",
+                                    text: "${'order.price'}\$",
                                     fontSize: 14,
                                   ),
                                 ],
@@ -89,7 +89,7 @@ class PreviousOrdersTab extends StatelessWidget {
                                     fontSize: 16,
                                   ),
                                   CustomStyledText(
-                                    text: "${order.deliveryTime} ",
+                                    text: "${'order.deliveryTime'} ",
                                     fontSize: 14,
                                   ),
                                 ],

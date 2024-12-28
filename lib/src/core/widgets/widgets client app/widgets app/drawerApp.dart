@@ -53,7 +53,7 @@ class _MyDrawerState extends State<MyDrawer> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const CategoryPage(),
+                    builder: (context) =>  CategoryPage(),
                   ));
             },
           ),

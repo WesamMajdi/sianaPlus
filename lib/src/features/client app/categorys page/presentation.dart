@@ -8,7 +8,8 @@ import 'data.dart';
 import 'domain.dart';
 
 class CategoryPage extends StatefulWidget {
-  const CategoryPage({super.key});
+  bool fromHomeScreen;
+   CategoryPage({super.key,this.fromHomeScreen=false});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -21,14 +22,17 @@ class _CategoryPageState extends State<CategoryPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    context.read<CategoryCubit>().selectCategory(
-          categoryId: context.read<CategoryCubit>().state.categories.first.id,
-        );
-    context.read<CategoryCubit>().fetchSubCategories(
-          mainCategoryId:
-              context.read<CategoryCubit>().state.categories.first.id,
-        );
+    !widget.fromHomeScreen ? context.read<CategoryCubit>().fetchSubCategories(
+              mainCategoryId:
+                  context.read<CategoryCubit>().state.categories.first.id,
+            ): null;
+    // context.read<CategoryCubit>().state.selectedCategoryId ==null? context.read<CategoryCubit>().selectCategory(
+    //       categoryId: context.read<CategoryCubit>().state.categories.first.id,
+    //     ): null ;
+    // context.read<CategoryCubit>().fetchSubCategories(
+    //       mainCategoryId:
+    //           context.read<CategoryCubit>().state.categories.first.id,
+    //     );
   }
 
   @override
