@@ -1,7 +1,7 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 
-class OrdersPage extends StatelessWidget {
-  const OrdersPage({Key? key}) : super(key: key);
+class OrderedProductPage extends StatelessWidget {
+  const OrderedProductPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class OrdersPage extends StatelessWidget {
             margin: const EdgeInsets.only(left: 60),
             child: const Center(
               child: CustomStyledText(
-                text: 'طلباتي',
+                text: 'طلبات المنتجات',
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
                 textColor: AppColors.secondaryColor,

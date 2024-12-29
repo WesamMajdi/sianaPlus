@@ -4,8 +4,6 @@ import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model_request.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
-import 'package:win32/win32.dart';
-
 import '../map/map_picker_screen.dart';
 
 class MaintenanceRequestPage extends StatefulWidget {
@@ -45,7 +43,6 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
             Expanded(
               child: ListView(
                 children: [
-                  // Location Picker
                   Form(
                     child: Column(
                       children: [
@@ -56,7 +53,7 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                                 ? '${_pickedLocation!.longitude}, ${_pickedLocation!.latitude}'
                                 : 'حدد موقعك',
                             enabled: false,
-                            icon: Icons.location_off_rounded,
+                            icon: Icons.location_on_rounded,
                             controller: locationController,
                           ),
                         ),
@@ -71,7 +68,8 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                                     .toggleNotifyCustomerOfTheCost(value!);
                               },
                             ),
-                            const Text('Notify customer of the cost'),
+                            const CustomStyledText(
+                                text: 'سيتم إبلاغ العميل بالتكلفة'),
                           ],
                         ),
                         CustomButton(
@@ -118,47 +116,53 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                           },
                         );
                       }
-                      return const Center(child: Text('لا توجد طلبات صيانة'));
+                      return const Center(
+                          child: CustomStyledText(text: 'لا توجد طلبات صيانة'));
                     },
                   ),
 
                   state.orderItems.isNotEmpty
-                      ? BlocListener<OrderCubit,OrderState>(listener: (context, state) {
-                        if(state.orderCreationStatus == OrderCreationStatus.success){
-                          Navigator.pop(context);
-                        }
-                  },
-                    child:Column(children: [
-                      AppSizedBox.kVSpace20,
-                      state.orderCreationStatus==OrderCreationStatus.loading?Center(child: CircularProgressIndicator(),):  CustomButton(
-                        text: 'اضافة طلب',
-                        onPressed: () async {
-                          final createOrder= CreateOrderRequest(
-                            total: 0,
-                            discount: 0,
-                            locationForDelivery: '${_pickedLocation!.latitude},${_pickedLocation!.longitude}',
-                            notifyCustomerOfTheCost: state.notifyCustomerOfTheCost,
-                            handReceipt: HandReceipt(
-                              items: state.orderItems
-                                  .map((e) => Items(
-                                  itemId: e.item!.id,
-                                  colorId: e.color!.id,
-                                  companyId: e.company!.id,
-                                  description: e.description!
-                              ))
-                                  .toList(),
-                            ),
-                          );
-                          await context.read<OrderCubit>().createOrderMaintenance(createOrder);
-
-
-
-
-
-                        },
-                      ),
-                    ]),
-                  )
+                      ? BlocListener<OrderCubit, OrderState>(
+                          listener: (context, state) {
+                            if (state.orderCreationStatus ==
+                                OrderCreationStatus.success) {
+                              Navigator.pop(context);
+                            }
+                          },
+                          child: Column(children: [
+                            AppSizedBox.kVSpace20,
+                            state.orderCreationStatus ==
+                                    OrderCreationStatus.loading
+                                ? const Center(
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : CustomButton(
+                                    text: 'اضافة طلب',
+                                    onPressed: () async {
+                                      final createOrder = CreateOrderRequest(
+                                        total: 0,
+                                        discount: 0,
+                                        locationForDelivery:
+                                            '${_pickedLocation!.latitude},${_pickedLocation!.longitude}',
+                                        notifyCustomerOfTheCost:
+                                            state.notifyCustomerOfTheCost,
+                                        handReceipt: HandReceipt(
+                                          items: state.orderItems
+                                              .map((e) => Items(
+                                                  itemId: e.item!.id,
+                                                  colorId: e.color!.id,
+                                                  companyId: e.company!.id,
+                                                  description: e.description!))
+                                              .toList(),
+                                        ),
+                                      );
+                                      await context
+                                          .read<OrderCubit>()
+                                          .createOrderMaintenance(createOrder);
+                                    },
+                                  ),
+                          ]),
+                        )
                       : const Text(''),
                 ],
               ),

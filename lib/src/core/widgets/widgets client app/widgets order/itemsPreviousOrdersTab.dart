@@ -1,6 +1,6 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/client%20app/data/data_sources/orders/orders_data_source.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/screens/orders/details_orders_screen.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/orders_maintenance/details_orders_screen.dart';
 
 class PreviousOrdersTab extends StatelessWidget {
   const PreviousOrdersTab({Key? key}) : super(key: key);
@@ -55,7 +55,7 @@ class PreviousOrdersTab extends StatelessWidget {
                               ),
                               AppSizedBox.kVSpace5,
                               CustomStyledText(
-                                text:' order.serviceName',
+                                text: ' order.serviceName',
                                 textColor: AppColors.secondaryColor,
                                 fontSize: 20,
                               ),

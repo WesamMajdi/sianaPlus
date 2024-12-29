@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/appBarApp.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/customStyledText.dart';
 
+// ignore: use_key_in_widget_constructors
 class MapPickerScreen extends StatefulWidget {
   @override
   _MapPickerScreenState createState() => _MapPickerScreenState();
@@ -12,7 +14,8 @@ class _MapPickerScreenState extends State<MapPickerScreen> {
   // I want to get current positopn how can I get that
 
   late GoogleMapController _mapController;
-  LatLng _selectedLocation = LatLng(37.7749, -122.4194); // Default location
+  LatLng _selectedLocation =
+      const LatLng(37.7749, -122.4194); // Default location
 
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
@@ -77,12 +80,11 @@ class _MapPickerScreenState extends State<MapPickerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Pick Location',
-            style: TextStyle(fontWeight: FontWeight.bold)),
+      appBar: AppBarApplicationArrow(
+        text: "حدد موقعك",
         actions: [
           IconButton(
-            icon: Icon(Icons.check),
+            icon: const Icon(Icons.check),
             onPressed: _confirmLocation,
           )
         ],
@@ -98,7 +100,7 @@ class _MapPickerScreenState extends State<MapPickerScreen> {
             onTap: _onTap,
             markers: {
               Marker(
-                markerId: MarkerId('selected-location'),
+                markerId: const MarkerId('selected-location'),
                 position: _selectedLocation,
               ),
             },
@@ -109,11 +111,11 @@ class _MapPickerScreenState extends State<MapPickerScreen> {
             right: 20,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 15),
-                textStyle: TextStyle(fontSize: 16),
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                textStyle: const TextStyle(fontSize: 16),
               ),
               onPressed: _confirmLocation,
-              child: Text('Confirm Location'),
+              child: const CustomStyledText(text: 'تأكيد الموقع'),
             ),
           ),
         ],

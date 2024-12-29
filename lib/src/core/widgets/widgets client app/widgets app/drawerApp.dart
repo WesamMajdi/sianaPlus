@@ -1,6 +1,7 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/authentication/login/data.dart';
 import 'package:maintenance_app/src/features/client%20app/categorys%20page/presentation.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/ordered_product/ordered_product_screen.dart';
 import '../../../../features/client app/presentation/screens/home/home_screen.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -53,7 +54,7 @@ class _MyDrawerState extends State<MyDrawer> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>  CategoryPage(),
+                    builder: (context) => CategoryPage(),
                   ));
             },
           ),
@@ -82,12 +83,24 @@ class _MyDrawerState extends State<MyDrawer> {
           ),
           SideMenuTile(
             icon: FontAwesomeIcons.boxOpen,
-            title: 'طلباتي',
+            title: ' طلبات المنتجات',
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const OrdersPage(),
+                    builder: (context) => const OrderedProductPage(),
+                  ));
+            },
+          ),
+
+          SideMenuTile(
+            icon: FontAwesomeIcons.toolbox,
+            title: 'طلبات الصيانة',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const OrdersMaintenancePage(),
                   ));
             },
           ),
