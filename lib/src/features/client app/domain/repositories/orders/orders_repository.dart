@@ -1,4 +1,3 @@
-
 // category_repository.dart
 import 'package:dartz/dartz.dart';
 import 'package:maintenance_app/src/core/network/base_response.dart';
@@ -13,6 +12,10 @@ abstract class OrderRepository {
   Future<Either<Failure, BaseResponse<List<OrderEntery>>>> getColorList();
   Future<Either<Failure, BaseResponse<List<OrderEntery>>>> getItemsList();
   Future<Either<Failure, BaseResponse<List<OrderEntery>>>> getCompaniesList();
-  Future<Either<Failure, void>> createOrderMaintenance(CreateOrderRequest createOrderRequest);
-  Future<Either<Failure, PaginatedResponse<OrderEntity>>> getOrderMaintenanceByUser(PaginationParams paginationParams);
+  Future<Either<Failure, void>> createOrderMaintenance(
+      CreateOrderRequest createOrderRequest);
+  Future<Either<Failure, PaginatedResponse<OrderEntity>>>
+      getOrderMaintenanceByUser(PaginationParams paginationParams);
+  Future<Either<Failure, PaginatedResponse<OrderEntity>>>
+      getOrderCurrentMaintenanceItem(PaginationParams paginationParams);
 }

@@ -9,10 +9,10 @@ class CreateOrderRequest {
 
   CreateOrderRequest(
       {this.total,
-        this.discount,
-        this.locationForDelivery,
-        this.notifyCustomerOfTheCost,
-        this.handReceipt});
+      this.discount,
+      this.locationForDelivery,
+      this.notifyCustomerOfTheCost,
+      this.handReceipt});
 
   CreateOrderRequest.fromJson(Map<String, dynamic> json) {
     total = json['total'];
@@ -91,7 +91,15 @@ class ItemsEntity {
   OrderEntery? color;
   String? description;
 
-  ItemsEntity({this.item, this.company, this.color,this.description});
+  ItemsEntity({this.item, this.company, this.color, this.description});
+}
 
+class ItemsCurrentMaintenanceEntity {
+  OrderEntery? item;
+  OrderEntery? company;
+  OrderEntery? color;
+  String? description;
 
+  ItemsCurrentMaintenanceEntity(
+      {this.item, this.company, this.color, this.description});
 }

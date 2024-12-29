@@ -24,7 +24,9 @@ class ItemsMaintenanceRequest extends StatelessWidget {
         showDialog(
             context: context,
             builder: (BuildContext context) {
-              return  MainteanceRequestDetalies(itemsEntity: itemEntity,);
+              return MainteanceRequestDetalies(
+                itemsEntity: itemEntity,
+              );
             });
       },
       child: Padding(
@@ -55,7 +57,7 @@ class ItemsMaintenanceRequest extends StatelessWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
-                     CustomStyledText(
+                    CustomStyledText(
                       text: 'اصلاح ${itemEntity.item!.name}',
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -67,9 +69,7 @@ class ItemsMaintenanceRequest extends StatelessWidget {
                 Row(
                   children: [
                     CustomStyledText(
-                      text: truncateTextDescription(
-                          itemEntity.description!
-                      ),
+                      text: truncateTextDescription(itemEntity.description!),
                       fontSize: 14,
                       textColor: Colors.grey,
                     ),

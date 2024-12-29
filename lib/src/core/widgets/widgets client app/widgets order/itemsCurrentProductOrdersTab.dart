@@ -1,19 +1,27 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/client%20app/data/data_sources/orders/orders_data_source.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model_request.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/orders_maintenance/details_orders_screen.dart';
 
-class PreviousOrdersTab extends StatelessWidget {
-  const PreviousOrdersTab({Key? key}) : super(key: key);
+class CurrentProductOrdersTab extends StatelessWidget {
+  const CurrentProductOrdersTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (previousOrders.isEmpty) {
-      return const CustomStyledText(text: 'لا توجد بيانات');
+    if (currentOrders.isEmpty) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [CustomStyledText(text: 'لا توجد طلبات حالية')],
+        ),
+      );
     } else {
       return ListView.builder(
-        itemCount: previousOrders.length,
+        itemCount: currentOrders.length,
         itemBuilder: (context, index) {
-          final order = previousOrders[index];
+          final order = currentOrders[index];
           return Padding(
               padding: const EdgeInsets.symmetric(
                   horizontal: AppPadding.mediumPadding,
@@ -55,7 +63,7 @@ class PreviousOrdersTab extends StatelessWidget {
                               ),
                               AppSizedBox.kVSpace5,
                               CustomStyledText(
-                                text: ' order.serviceName',
+                                text: 'order.serviceName',
                                 textColor: AppColors.secondaryColor,
                                 fontSize: 20,
                               ),
@@ -83,13 +91,13 @@ class PreviousOrdersTab extends StatelessWidget {
                               Row(
                                 children: [
                                   const CustomStyledText(
-                                    text: "وقت الانتهاء: ",
+                                    text: "الحالة: ",
                                     textColor: AppColors.secondaryColor,
                                     fontWeight: FontWeight.w800,
                                     fontSize: 16,
                                   ),
                                   CustomStyledText(
-                                    text: "${'order.deliveryTime'} ",
+                                    text: "${'order.status'} ",
                                     fontSize: 14,
                                   ),
                                 ],

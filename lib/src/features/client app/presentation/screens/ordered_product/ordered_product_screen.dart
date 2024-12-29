@@ -49,10 +49,7 @@ class OrderedProductPage extends StatelessWidget {
           ),
         ),
         body: const TabBarView(
-          children: [
-            CurrentOrdersTab(),
-            PreviousOrdersTab(),
-          ],
+          children: [PreviousProductOrdersTab(), CurrentProductOrdersTab()],
         ),
       ),
     );

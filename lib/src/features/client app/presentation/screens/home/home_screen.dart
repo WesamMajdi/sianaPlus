@@ -1,7 +1,7 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/features/client%20app/categorys%20page/presentation.dart';
 import 'package:maintenance_app/src/features/client%20app/data/data_sources/brand/brand_data_source.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/category/category_screen.dart';
 import '../../controller/cubits/category_cubit.dart';
 import '../../controller/states/category_state.dart';
 
@@ -230,7 +230,8 @@ class ItemsCategory extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => CategoryPage(fromHomeScreen:true),
+                                  builder: (context) =>
+                                      CategoryPage(fromHomeScreen: true),
                                 ));
                             // context.read<CategoryCubit>().selectCategory(
                             //       categoryId: category.id,

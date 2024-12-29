@@ -1,4 +1,9 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20order/itemCurrentMaintenanceOrderTab.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20order/itemsPerviousMaintenanceOrderTab.dart';
+import 'package:maintenance_app/src/features/client%20app/data/data_sources/orders/orders_data_source.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
 
 class OrdersMaintenancePage extends StatelessWidget {
   const OrdersMaintenancePage({Key? key}) : super(key: key);
@@ -48,10 +53,35 @@ class OrdersMaintenancePage extends StatelessWidget {
             ),
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
-            CurrentOrdersTab(),
-            PreviousOrdersTab(),
+            BlocBuilder<OrderCubit, OrderState>(
+              builder: (context, state) {
+                if (state.itemStatus == ItemStatus.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state.itemStatus == ItemStatus.failure) {
+                  return const Center(child: Text('فشلت العملية'));
+                }
+                if (state.itemStatus == ItemStatus.success &&
+                    state.orderItems.isNotEmpty) {
+                  return ListView.builder(
+                    shrinkWrap: true, // Important for nesting scrolls
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: state.orderItems.length,
+                    itemBuilder: (context, index) {
+                      return CurrentMaintenanceOrdersTab(
+                        state: state,
+                        itemEntity: state.orderItems[index],
+                      );
+                    },
+                  );
+                }
+                return const Center(
+                    child: CustomStyledText(text: 'لا توجد طلبات صيانة'));
+              },
+            ),
+            PreviousMaintenanceOrdersTab()
           ],
         ),
       ),

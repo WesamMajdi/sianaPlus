@@ -7,24 +7,23 @@ class ApiSetting {
   static String get getProductByCategory =>
       '$baseUrl/Products/GetProductsByCategory';
 
-  static String get getColorList =>
-      '$baseUrl/List/GetColorList';
+  static String get getColorList => '$baseUrl/List/GetColorList';
 
-  static String get getItemList =>
-      '$baseUrl/List/GetItemList';
+  static String get getItemList => '$baseUrl/List/GetItemList';
 
-  static String get getCompaniesList =>
-      '$baseUrl/List/GetCompanyList';
+  static String get getCompaniesList => '$baseUrl/List/GetCompanyList';
 
   static String get createOrderMaintenance =>
       '$baseUrl/OrderMaintenances/CreateOrderMaintenance';
-
 
   static String get getOrderMaintenanceByUser =>
       '$baseUrl/OrderMaintenances/GetOrderMaintenanceByUser';
 
   static String get getOrderMaintenanceItem =>
       '$baseUrl/OrderMaintenances/GetOrderMaintenanceItem';
+
+  static String get getOrderCurrentMaintenanceItem =>
+      '$baseUrl/OrderMaintenances/GetOrderMaintenanceByUserNew';
 
   // // Auth endpoints
   // static String get login => ;

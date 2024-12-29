@@ -16,12 +16,11 @@ class OrderRepositoryImpl implements OrderRepository {
 
   OrderRepositoryImpl(this.remoteDataSource);
 
-
   @override
-  Future<Either<Failure, BaseResponse<List<OrderEntery>>>> getCompaniesList() async{
+  Future<Either<Failure, BaseResponse<List<OrderEntery>>>>
+      getCompaniesList() async {
     try {
-      final response =
-      await remoteDataSource.getCompaniesList();
+      final response = await remoteDataSource.getCompaniesList();
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
@@ -29,10 +28,10 @@ class OrderRepositoryImpl implements OrderRepository {
   }
 
   @override
-  Future<Either<Failure, BaseResponse<List<OrderEntery>>>> getItemsList() async{
+  Future<Either<Failure, BaseResponse<List<OrderEntery>>>>
+      getItemsList() async {
     try {
-      final response =
-      await remoteDataSource.getItemsList();
+      final response = await remoteDataSource.getItemsList();
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
@@ -40,10 +39,10 @@ class OrderRepositoryImpl implements OrderRepository {
   }
 
   @override
-  Future<Either<Failure, BaseResponse<List<OrderEntery>>>> getColorList() async{
+  Future<Either<Failure, BaseResponse<List<OrderEntery>>>>
+      getColorList() async {
     try {
-      final response =
-      await remoteDataSource.getColorList();
+      final response = await remoteDataSource.getColorList();
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
@@ -51,9 +50,10 @@ class OrderRepositoryImpl implements OrderRepository {
   }
 
   @override
-  Future<Either<Failure, void>> createOrderMaintenance(CreateOrderRequest createOrderRequest)async {
+  Future<Either<Failure, void>> createOrderMaintenance(
+      CreateOrderRequest createOrderRequest) async {
     try {
-          await remoteDataSource.createOrderMaintenance(createOrderRequest);
+      await remoteDataSource.createOrderMaintenance(createOrderRequest);
       return Right(null);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
@@ -61,15 +61,26 @@ class OrderRepositoryImpl implements OrderRepository {
   }
 
   @override
-  Future<Either<Failure, PaginatedResponse<OrderModel>>> getOrderMaintenanceByUser(PaginationParams paginationParams) async{
+  Future<Either<Failure, PaginatedResponse<OrderModel>>>
+      getOrderMaintenanceByUser(PaginationParams paginationParams) async {
     try {
       final response =
-      await remoteDataSource.getOrderMaintenanceByUser(paginationParams);
+          await remoteDataSource.getOrderMaintenanceByUser(paginationParams);
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
     }
   }
 
-
+  @override
+  Future<Either<Failure, PaginatedResponse<OrderModel>>>
+      getOrderCurrentMaintenanceItem(PaginationParams paginationParams) async {
+    try {
+      final response =
+          await remoteDataSource.getCurrentOrderByUser(paginationParams);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
 }

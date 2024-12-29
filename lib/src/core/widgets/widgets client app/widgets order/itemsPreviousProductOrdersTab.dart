@@ -2,24 +2,18 @@ import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/client%20app/data/data_sources/orders/orders_data_source.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/orders_maintenance/details_orders_screen.dart';
 
-class CurrentOrdersTab extends StatelessWidget {
-  const CurrentOrdersTab({Key? key}) : super(key: key);
+class PreviousProductOrdersTab extends StatelessWidget {
+  const PreviousProductOrdersTab({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (currentOrders.isEmpty) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [CustomStyledText(text: 'لا توجد طلبات حالية')],
-        ),
-      );
+    if (previousOrders.isEmpty) {
+      return const CustomStyledText(text: 'لا توجد بيانات');
     } else {
       return ListView.builder(
-        itemCount: currentOrders.length,
+        itemCount: previousOrders.length,
         itemBuilder: (context, index) {
-          final order = currentOrders[index];
+          final order = previousOrders[index];
           return Padding(
               padding: const EdgeInsets.symmetric(
                   horizontal: AppPadding.mediumPadding,
@@ -61,7 +55,7 @@ class CurrentOrdersTab extends StatelessWidget {
                               ),
                               AppSizedBox.kVSpace5,
                               CustomStyledText(
-                                text: 'order.serviceName',
+                                text: ' order.serviceName',
                                 textColor: AppColors.secondaryColor,
                                 fontSize: 20,
                               ),
@@ -89,13 +83,13 @@ class CurrentOrdersTab extends StatelessWidget {
                               Row(
                                 children: [
                                   const CustomStyledText(
-                                    text: "الحالة: ",
+                                    text: "وقت الانتهاء: ",
                                     textColor: AppColors.secondaryColor,
                                     fontWeight: FontWeight.w800,
                                     fontSize: 16,
                                   ),
                                   CustomStyledText(
-                                    text: "${'order.status'} ",
+                                    text: "${'order.deliveryTime'} ",
                                     fontSize: 14,
                                   ),
                                 ],
