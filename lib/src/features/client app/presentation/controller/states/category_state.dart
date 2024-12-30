@@ -14,6 +14,7 @@ class CategoryState extends Equatable {
   final SubCategoryStatus subCategoryStatus;
   final ProductStatus productStatus;
   final List<Category> categories;
+  final List<Product> favouriteProducts;
   final List<Category> subCategories;
   final List<Product> products;
   final bool hasCategoryReachedMax;
@@ -30,6 +31,7 @@ class CategoryState extends Equatable {
     this.subCategoryStatus = SubCategoryStatus.initial,
     this.categories = const <Category>[],
     this.products = const <Product>[],
+    this.favouriteProducts = const <Product>[],
     this.subCategories = const <Category>[],
     this.hasCategoryReachedMax = false,
     this.categoryCurrentPage = 1,
@@ -47,6 +49,7 @@ class CategoryState extends Equatable {
     List<Category>? categories,
     List<Category>? subCategories,
     List<Product>? products,
+    List<Product>? favouriteProducts,
     bool? hasCategoryReachedMax,
     int? categoryCurrentPage,
     int? productCurrentPage,
@@ -61,6 +64,7 @@ class CategoryState extends Equatable {
       productStatus: productStatus ?? this.productStatus,
       categories: categories ?? this.categories,
       products: products ?? this.products,
+      favouriteProducts: favouriteProducts ?? this.favouriteProducts,
       subCategories: subCategories ?? this.subCategories,
       selectedCategoryId: selectedCategoryId ?? this.selectedCategoryId,
       hasCategoryReachedMax:
@@ -80,6 +84,7 @@ class CategoryState extends Equatable {
         productStatus,
         categories,
         products,
+    favouriteProducts,
         subCategories,
         hasCategoryReachedMax,
         categoryCurrentPage,

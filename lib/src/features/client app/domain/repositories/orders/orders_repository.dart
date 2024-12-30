@@ -15,7 +15,7 @@ abstract class OrderRepository {
   Future<Either<Failure, void>> createOrderMaintenance(
       CreateOrderRequest createOrderRequest);
   Future<Either<Failure, PaginatedResponse<OrderEntity>>>
-      getOrderMaintenanceByUser(PaginationParams paginationParams);
-  Future<Either<Failure, PaginatedResponse<OrderEntity>>>
-      getOrderCurrentMaintenanceItem(PaginationParams paginationParams);
+  getOrderMaintenanceByUserNew(PaginationParams paginationParams);
+  // Future<Either<Failure, PaginatedResponse<OrderEntity>>>
+  //     getOrderCurrentMaintenanceItem(PaginationParams paginationParams);
 }

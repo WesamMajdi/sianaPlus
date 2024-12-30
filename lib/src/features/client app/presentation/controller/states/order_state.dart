@@ -8,8 +8,9 @@ import '../../../data/model/orders/orders_model_request.dart';
 import '../../../domain/entities/category/category_entity.dart';
 
 enum OrderCreationStatus { initial, loading, success, failure }
+enum OrderStatus { initial, loading, success, failure }
 
-enum ItemStatus { initial, loading, success, failure }
+enum ItemOrdersStatus { initial, loading, success, failure }
 
 enum ColorStatus { initial, loading, success, failure }
 
@@ -19,7 +20,8 @@ enum CompaniesStatus { initial, loading, success, failure }
 
 class OrderState extends Equatable {
   final OrderCreationStatus orderCreationStatus;
-  final ItemStatus itemStatus;
+  final OrderStatus orderStatus;
+  final ItemOrdersStatus itemOrdersStatus;
   final ColorStatus colorStatus;
   final ItemsStatus itemsStatus;
   final CompaniesStatus companiesStatus;
@@ -27,7 +29,8 @@ class OrderState extends Equatable {
   List<OrderEntery> colorsList;
   List<OrderEntery> itemsList;
   List<OrderEntery> companiesList;
-  List<ItemsEntity> orderItems;
+  List<ItemsEntity> items;
+  List<OrderEntity> ordersItems;
   final OrderEntery? selectedColor;
   final OrderEntery? selectedItem;
   final OrderEntery? selectedCompany;
@@ -36,13 +39,15 @@ class OrderState extends Equatable {
   OrderState({
     this.orderCreationStatus = OrderCreationStatus.initial,
     this.colorStatus = ColorStatus.initial,
-    this.itemStatus = ItemStatus.initial,
+    this.orderStatus = OrderStatus.initial,
+    this.itemOrdersStatus = ItemOrdersStatus.initial,
     this.itemsStatus = ItemsStatus.initial,
     this.companiesStatus = CompaniesStatus.initial,
     this.colorsList = const <OrderEntery>[],
     this.itemsList = const <OrderEntery>[],
+    this.ordersItems = const <OrderEntity>[],
     this.companiesList = const <OrderEntery>[],
-    this.orderItems = const <ItemsEntity>[],
+    this.items = const <ItemsEntity>[],
     this.selectedColor,
     this.orderCurrentPage = 1,
     this.selectedItem,
@@ -53,14 +58,16 @@ class OrderState extends Equatable {
   OrderState copyWith(
       {OrderCreationStatus? orderCreationStatus,
       ColorStatus? colorStatus,
-      ItemStatus? ordersStatus,
+      ItemOrdersStatus? itemOrdersStatus,
       ItemsStatus? itemsStatus,
+        OrderStatus? orderStatus,
       int? orderCurrentPage,
       CompaniesStatus? companiesStatus,
       List<OrderEntery>? colorsList,
+      List<OrderEntity>?ordersItems,
       List<OrderEntery>? itemsList,
       List<OrderEntery>? companiesList,
-      List<ItemsEntity>? orderItems,
+      List<ItemsEntity>? items,
       OrderEntery? selectedColor,
       OrderEntery? selectedItem,
       OrderEntery? selectedCompany,
@@ -69,15 +76,17 @@ class OrderState extends Equatable {
       orderCreationStatus: orderCreationStatus ?? this.orderCreationStatus,
       colorStatus: colorStatus ?? this.colorStatus,
       orderCurrentPage: orderCurrentPage ?? this.orderCurrentPage,
-      itemStatus: ordersStatus ?? this.itemStatus,
+      itemOrdersStatus: itemOrdersStatus ?? this.itemOrdersStatus,
       itemsStatus: itemsStatus ?? this.itemsStatus,
       companiesStatus: companiesStatus ?? this.companiesStatus,
       colorsList: colorsList ?? this.colorsList,
+      orderStatus: orderStatus ?? this.orderStatus,
       notifyCustomerOfTheCost:
           notifyCustomerOfTheCost ?? this.notifyCustomerOfTheCost,
       itemsList: itemsList ?? this.itemsList,
+      ordersItems: ordersItems ?? this.ordersItems,
       companiesList: companiesList ?? this.companiesList,
-      orderItems: orderItems ?? this.orderItems,
+      items: items ?? this.items,
       selectedColor: selectedColor ?? this.selectedColor,
       selectedItem: selectedItem ?? this.selectedItem,
       selectedCompany: selectedCompany ?? this.selectedCompany,
@@ -88,12 +97,14 @@ class OrderState extends Equatable {
   List<Object?> get props => [
         orderCreationStatus,
         colorStatus,
-        itemStatus,
+    itemOrdersStatus,
         itemsStatus,
         companiesStatus,
         colorsList,
         itemsList,
-        orderItems,
+        items,
+    orderStatus,
+    ordersItems,
         companiesList,
         selectedCompany,
         selectedItem,

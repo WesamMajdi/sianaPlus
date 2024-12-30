@@ -1,8 +1,10 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/favourite/favourite_entity.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
 
 class FavouriteCard extends StatelessWidget {
-  final Favourite item;
+  final Product item;
 
   const FavouriteCard({super.key, required this.item});
 
@@ -34,10 +36,10 @@ class FavouriteCard extends StatelessWidget {
                 topLeft: Radius.circular(15),
                 bottomLeft: Radius.circular(15),
               ),
-              image: DecorationImage(
-                image: AssetImage(item.imagePath),
-                fit: BoxFit.cover,
-              ),
+              // image: DecorationImage(
+              //   image: AssetImage(item.image!),
+              //   fit: BoxFit.cover,
+              // ),
             ),
           ),
           AppSizedBox.kWSpace20,
@@ -48,14 +50,14 @@ class FavouriteCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomStyledText(
-                    text: item.name,
+                    text: item.name!,
                     fontSize: 20,
                     textColor: AppColors.secondaryColor,
                     fontWeight: FontWeight.bold,
                   ),
                   AppSizedBox.kVSpace5,
                   CustomStyledText(
-                      text: truncateTextDescription(item.description),
+                      text: truncateTextDescription(item.details!),
                       fontSize: 14,
                       textColor: Colors.grey),
                 ],
@@ -64,7 +66,9 @@ class FavouriteCard extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.favorite, color: Colors.red),
-            onPressed: () {},
+            onPressed: () {
+              context.read<CategoryCubit>().deleteItemFromFavourite(item.id!);
+            },
           ),
         ],
       ),

@@ -1,28 +1,22 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/utilities/extensions.dart';
 import 'package:maintenance_app/src/features/client%20app/data/data_sources/orders/orders_data_source.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model_request.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/orders/orders_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/orders_maintenance/details_orders_screen.dart';
 
 class CurrentMaintenanceOrdersTab extends StatelessWidget {
-  final ItemsEntity itemEntity;
+  final OrderEntity orderEntity;
   final OrderState state;
 
   const CurrentMaintenanceOrdersTab(
-      {Key? key, required this.itemEntity, required this.state})
+      {Key? key, required this.orderEntity, required this.state})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (currentOrders.isEmpty) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [CustomStyledText(text: 'لا توجد طلبات حالية')],
-        ),
-      );
-    } else {
+
       return Padding(
           padding: const EdgeInsets.symmetric(
               horizontal: AppPadding.mediumPadding,
@@ -47,7 +41,7 @@ class CurrentMaintenanceOrdersTab extends StatelessWidget {
                         builder: (context) => const OrdersDetailsPage(),
                       ));
                 },
-                child: Padding(
+                child:  Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: AppPadding.mediumPadding,
                       vertical: AppPadding.mediumPadding),
@@ -59,19 +53,19 @@ class CurrentMaintenanceOrdersTab extends StatelessWidget {
                         children: [
                           AppSizedBox.kVSpace10,
                           CustomStyledText(
-                            text: "طلب #${""}",
+                            text: "طلب #${orderEntity!.id}",
                             fontSize: 16,
                           ),
                           AppSizedBox.kVSpace5,
                           CustomStyledText(
-                            text: itemEntity.item!.name!,
+                            text: 'itemEntity.item!.name!',
                             textColor: AppColors.secondaryColor,
                             fontSize: 20,
                           ),
                           AppSizedBox.kVSpace5,
                         ],
                       ),
-                      const Column(
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
@@ -83,7 +77,7 @@ class CurrentMaintenanceOrdersTab extends StatelessWidget {
                                 fontSize: 16,
                               ),
                               CustomStyledText(
-                                text: "${'order.price'}\$",
+                                text: "${orderEntity.totalAfterDiscount}\$",
                                 fontSize: 14,
                               ),
                             ],
@@ -91,14 +85,14 @@ class CurrentMaintenanceOrdersTab extends StatelessWidget {
                           AppSizedBox.kVSpace5,
                           Row(
                             children: [
-                              CustomStyledText(
+                              const CustomStyledText(
                                 text: "الحالة: ",
                                 textColor: AppColors.secondaryColor,
                                 fontWeight: FontWeight.w800,
                                 fontSize: 16,
                               ),
                               CustomStyledText(
-                                text: "${'order.status'} ",
+                                text: "${OrderMaintenanceStatusExtension.fromId(orderEntity.orderMaintenanceStatus!).name} ",
                                 fontSize: 14,
                               ),
                             ],
@@ -109,6 +103,6 @@ class CurrentMaintenanceOrdersTab extends StatelessWidget {
                   ),
                 ),
               )));
-    }
+    // }
   }
 }

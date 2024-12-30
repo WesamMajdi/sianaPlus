@@ -1,5 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/category_state.dart';
 
 import '../../../../features/client app/domain/entities/product/product_entity.dart';
 
@@ -12,7 +14,7 @@ class ItemAppBarToProductDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return BlocBuilder<CategoryCubit,CategoryState>(builder: (context, state) => Container(
       color: Colors.transparent,
       padding: const EdgeInsets.all(20),
       child: Row(
@@ -41,20 +43,25 @@ class ItemAppBarToProductDetails extends StatelessWidget {
                 textColor: AppColors.secondaryColor,
               )),
           const Spacer(),
-          if (product.isFavorite ?? false)
-            const Icon(
-              Icons.favorite,
-              size: 30,
-              color: Colors.red,
-            )
-          else
-            const Icon(
-              Icons.favorite_border,
-              size: 30,
-              color: Colors.red,
-            )
+
+          IconButton(onPressed: ()async {
+          await  context.read<CategoryCubit>().createFavorite(productId: product.id!);
+
+          }, icon: Icon(
+            product.isFavorite! ?  Icons.favorite : Icons.favorite_border,
+            size: 30,
+            color: Colors.red,
+          ))
+          // if (product.isFavorite ?? false)
+          //   const
+          // else
+          //   const Icon(
+          //     Icons.favorite_border,
+          //     size: 30,
+          //     color: Colors.red,
+          //   )
         ],
       ),
-    );
+    ),);
   }
 }

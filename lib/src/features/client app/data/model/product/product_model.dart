@@ -12,7 +12,7 @@ class ProductModel extends Product {
     count = json['count'];
     cost = json['cost'];
     countOrder = json['countOrder'];
-    isFavorite = json['isFavorite'];
+    isFavorite = json['isFavorite'] ?? false;
     products = json['products'];
   }
 

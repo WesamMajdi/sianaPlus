@@ -23,6 +23,6 @@ class Product {
       this.count,
       this.cost,
       this.countOrder,
-      this.isFavorite,
+      this.isFavorite=false,
       this.products});
 }

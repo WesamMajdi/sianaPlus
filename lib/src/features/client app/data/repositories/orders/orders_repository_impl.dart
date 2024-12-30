@@ -62,25 +62,25 @@ class OrderRepositoryImpl implements OrderRepository {
 
   @override
   Future<Either<Failure, PaginatedResponse<OrderModel>>>
-      getOrderMaintenanceByUser(PaginationParams paginationParams) async {
+  getOrderMaintenanceByUserNew(PaginationParams paginationParams) async {
     try {
       final response =
-          await remoteDataSource.getOrderMaintenanceByUser(paginationParams);
+          await remoteDataSource.getOrderMaintenanceByUserNew(paginationParams);
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
     }
   }
 
-  @override
-  Future<Either<Failure, PaginatedResponse<OrderModel>>>
-      getOrderCurrentMaintenanceItem(PaginationParams paginationParams) async {
-    try {
-      final response =
-          await remoteDataSource.getCurrentOrderByUser(paginationParams);
-      return Right(response);
-    } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
-    }
-  }
+  // @override
+  // Future<Either<Failure, PaginatedResponse<OrderModel>>>
+  //     getOrderCurrentMaintenanceItem(PaginationParams paginationParams) async {
+  //   try {
+  //     final response =
+  //         await remoteDataSource.getCurrentOrderByUser(paginationParams);
+  //     return Right(response);
+  //   } catch (e) {
+  //     return Left(ServerFailure(message: e.toString()));
+  //   }
+  // }
 }

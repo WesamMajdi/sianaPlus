@@ -50,7 +50,7 @@ void main() async {
         BlocProvider<ContactUsCubit>(
             create: (context) => ContactUsCubit(ApiContactUsService())),
         BlocProvider<CategoryCubit>(
-            create: (context) => getIt<CategoryCubit>()..fetchCategories()),
+            create: (context) => getIt<CategoryCubit>()..fetchCategories()..getProductFavorite()),
 
         BlocProvider<OrderCubit>(
             create: (context) => getIt<OrderCubit>()..initOrdersRequirements()),

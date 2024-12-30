@@ -18,14 +18,14 @@ class OrderCubit extends Cubit<OrderState> {
 
   void saveItem({required Items item, ItemsEntity? itemsEntity}) {
     emit(state.copyWith(
-      ordersStatus: ItemStatus.loading,
+      itemOrdersStatus: ItemOrdersStatus.loading,
     ));
     orderItems?.add(itemsEntity!); // Save the order locally in the orders map
 
     // Emit the updated state to notify the UI
     emit(state.copyWith(
-      ordersStatus: ItemStatus.success,
-      orderItems: orderItems,
+      itemOrdersStatus: ItemOrdersStatus.success,
+      items: orderItems,
     ));
   }
 
@@ -34,6 +34,7 @@ class OrderCubit extends Cubit<OrderState> {
       fetchColorList(),
       fetchItemsList(),
       fetchCompaniesList(),
+      getOrderMaintenanceByUserNew()
     ]);
   }
 
@@ -92,7 +93,7 @@ class OrderCubit extends Cubit<OrderState> {
     result.fold(
           (failure) => emit(state.copyWith(orderCreationStatus: OrderCreationStatus.failure)),
           (_) {
-            emit(state.copyWith(orderCreationStatus: OrderCreationStatus.success,orderItems:[],notifyCustomerOfTheCost: false));
+            emit(state.copyWith(orderCreationStatus: OrderCreationStatus.success,items:[],notifyCustomerOfTheCost: false));
 
           } ,
     );
@@ -102,20 +103,20 @@ class OrderCubit extends Cubit<OrderState> {
 
 
 
-  // Future<void> getOrderMaintenanceByUser(
-  //     {bool refresh = false}) async {
-  //   emit(state.copyWith(ordersStatus: OrdersStatus.loading));
-  //   final page = refresh ? 1 : state.orderCurrentPage;
-  //   final result = await orderUseCase.getOrderMaintenanceByUser(
-  //       PaginationParams(page: page));
-  //   result.fold(
-  //         (failure) => emit(state.copyWith(
-  //           ordersStatus: OrdersStatus.failure
-  //         )),
-  //         (orders) => emit(state.copyWith(
-  //             ordersStatus: OrdersStatus.success, orderItems: orders.items
-  //       )),
-  //   );
-  // }
+  Future<void> getOrderMaintenanceByUserNew(
+      {bool refresh = false}) async {
+    emit(state.copyWith(orderStatus:OrderStatus.loading));
+    final page = refresh ? 1 : state.orderCurrentPage;
+    final result = await orderUseCase.getOrderMaintenanceByUserNew(
+        PaginationParams(page: page));
+    result.fold(
+          (failure) => emit(state.copyWith(
+              orderStatus: OrderStatus.failure
+          )),
+          (orders) => emit(state.copyWith(
+              orderStatus: OrderStatus.success, ordersItems: orders.items
+        )),
+    );
+  }
 
 }
