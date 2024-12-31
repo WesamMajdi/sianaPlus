@@ -22,4 +22,37 @@ class ProductRepositoryImpl implements ProductRepository {
       return Left(ServerFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> createFavorite(PaginationParams paginationParams) async {
+    try {
+      final response =
+      await remoteDataSource.createFavorite(paginationParams);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteFavorite(PaginationParams paginationParams) async {
+    try {
+      final response =
+      await remoteDataSource.deleteFavorite(paginationParams);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteAllFavorite() async {
+    try {
+      final response =
+      await remoteDataSource.deleteAllFavorite();
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
 }

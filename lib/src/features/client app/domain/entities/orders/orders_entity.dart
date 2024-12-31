@@ -1,52 +1,31 @@
+enum OrderMaintenanceStatus {
+  newOrder, // ID 1
+  takeFromCustomer, // ID 2
+  deliveryToBranch, // ID 3
+  maintenanceEnd, // ID 4
+  takeFromBranch, // ID 5
+  returnToCustomer, // ID 6
+  completed // ID 7
+}
 class OrderEntity {
   int? id;
-  String? item;
-  String? company;
-  String? color;
-  String? description;
-  Null? specifiedCost;
-  String? notifyCustomerOfTheCost;
-  Null? costNotifiedToTheCustomer;
-  Null? costFrom;
-  Null? costTo;
-  String? urgent;
-  Null? itemBarcode;
-  Null? warrantyDaysNumber;
-  Null? collectedAmount;
-  Null? collectionDate;
-  Null? deliveryDate;
-  int? maintenanceRequestStatus;
-  String? maintenanceRequestStatusMessage;
-  Null? technicianId;
-  Null? itemBarcodeFilePath;
-  Null? convertToBranch;
-  Null? branchId;
-  Null? branchName;
-  Null? convertBranchName;
+  String? customerName;
+  String? customerPhoneNumber;
+  int? total;
+  int? discount;
+  int? totalAfterDiscount;
+  int? handReceiptId;
+  DateTime? deliveryDate;
+  int? orderMaintenanceStatus;
 
   OrderEntity(
       {this.id,
-        this.item,
-        this.company,
-        this.color,
-        this.description,
-        this.specifiedCost,
-        this.notifyCustomerOfTheCost,
-        this.costNotifiedToTheCustomer,
-        this.costFrom,
-        this.costTo,
-        this.urgent,
-        this.itemBarcode,
-        this.warrantyDaysNumber,
-        this.collectedAmount,
-        this.collectionDate,
+        this.customerName,
+        this.customerPhoneNumber,
+        this.total,
+        this.discount,
+        this.totalAfterDiscount,
+        this.handReceiptId,
         this.deliveryDate,
-        this.maintenanceRequestStatus,
-        this.maintenanceRequestStatusMessage,
-        this.technicianId,
-        this.itemBarcodeFilePath,
-        this.convertToBranch,
-        this.branchId,
-        this.branchName,
-        this.convertBranchName});
+        this.orderMaintenanceStatus});
 }

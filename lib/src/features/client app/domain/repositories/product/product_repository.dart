@@ -12,4 +12,8 @@ import '../../entities/category/category_entity.dart';
 abstract class ProductRepository {
   Future<Either<Failure, PaginatedResponse<Product>>> getProductsByCategory(
       PaginationParams paginationParams);
+
+  Future<Either<Failure, void>> createFavorite(PaginationParams paginationParams);
+  Future<Either<Failure, void>> deleteFavorite(PaginationParams paginationParams);
+  Future<Either<Failure, void>> deleteAllFavorite();
 }

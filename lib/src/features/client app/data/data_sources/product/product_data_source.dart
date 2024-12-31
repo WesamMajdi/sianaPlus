@@ -34,7 +34,7 @@ class ProductRemoteDataSource {
           headers: {
             'Content-Type': 'application/json',
             'Authorization':
-                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjI1NjQ4OSwiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.Ae61Mp5aJXaouVJu3Utp2jSXLN5pStMAnKT9TSPc2J0'
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQxOTY3MSwiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.Ve1L0udmkLwjfGj59tqKnFH9aVTYUOIN0z6Sq562nL4'
           },
         );
         debugPrint(response.statusCode.toString());
@@ -58,6 +58,99 @@ class ProductRemoteDataSource {
           },
         );
         return productResponse.data!;
+      } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<void> createFavorite(PaginationParams paginationParams) async {
+    debugPrint(  Uri.parse(
+        '${ApiSetting.createFavorite}?productId=${paginationParams.productId}').toString());
+
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.post(
+          Uri.parse(
+              '${ApiSetting.createFavorite}?productId=${paginationParams.productId}'),
+          headers: {
+            // 'Content-Type': 'application/json',
+            'accept': '*/*',
+            'Authorization':
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQyNjI1MywiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.JfaaGg8S8V144mB2AMThD83drQ3EmGIuwqGi1SwSegU'
+          },
+        );
+        debugPrint(response.statusCode.toString());
+        print(response.body.toString());
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        debugPrint(responseBody.toString());
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+
+      } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<void> deleteFavorite(PaginationParams paginationParams) async {
+
+        debugPrint(  Uri.parse(
+            '${ApiSetting.deleteFavorite}?productId=${paginationParams.productId}').toString());
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.post(
+          Uri.parse(
+              '${ApiSetting.deleteFavorite}?productId=${paginationParams.productId}'),
+          headers: {
+            // 'Content-Type': 'application/json',
+            'accept': '*/*',
+            'Authorization':
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQyNjI1MywiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.JfaaGg8S8V144mB2AMThD83drQ3EmGIuwqGi1SwSegU'
+          },
+        );
+        debugPrint(response.statusCode.toString());
+        print(response.body.toString());
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        debugPrint(responseBody.toString());
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+
+      } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<void> deleteAllFavorite() async {
+           if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.post(
+          Uri.parse(
+              '${ApiSetting.deleteAllFavorite}'),
+          headers: {
+            // 'Content-Type': 'application/json',
+            'accept': '*/*',
+            'Authorization':
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQyNjI1MywiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.JfaaGg8S8V144mB2AMThD83drQ3EmGIuwqGi1SwSegU'
+          },
+        );
+        debugPrint(response.statusCode.toString());
+        print(response.body.toString());
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        debugPrint(responseBody.toString());
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+
       } on TimeOutExeption {
         rethrow;
       }

@@ -34,9 +34,9 @@ class OrderUseCase {
   }
 
 
-  Future<Either<Failure, PaginatedResponse<OrderEntity>>> getOrderMaintenanceByUser(
+  Future<Either<Failure, PaginatedResponse<OrderEntity>>> getOrderMaintenanceByUserNew(
       PaginationParams paginationParams) {
-    return repository.getOrderMaintenanceByUser(paginationParams);
+    return repository.getOrderMaintenanceByUserNew(paginationParams);
   }
 
 }

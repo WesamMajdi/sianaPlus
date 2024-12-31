@@ -20,4 +20,16 @@ class ProductsUseCase {
       PaginationParams paginationParams) {
     return repository.getProductsByCategory(paginationParams);
   }
+  Future<Either<Failure, void>> createFavorite(
+      PaginationParams paginationParams) {
+    return repository.createFavorite(paginationParams);
+  }
+  Future<Either<Failure, void>> deleteFavorite(
+      PaginationParams paginationParams) {
+    return repository.deleteFavorite(paginationParams);
+  }
+
+  Future<Either<Failure, void>> deleteAllFavorite() {
+    return repository.deleteAllFavorite();
+  }
 }

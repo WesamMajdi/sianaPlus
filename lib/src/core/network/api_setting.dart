@@ -6,6 +6,10 @@ class ApiSetting {
       '$baseUrl/Categories/GetCategoriesByMainCategory';
   static String get getProductByCategory =>
       '$baseUrl/Products/GetProductsByCategory';
+  static String get createFavorite => '$baseUrl/Products/CreateFavorite';
+
+  static String get deleteFavorite => '$baseUrl/Products/DeleteFavorite';
+  static String get deleteAllFavorite => '$baseUrl/Products/DeleteAllFavorite';
 
   static String get getColorList => '$baseUrl/List/GetColorList';
 
@@ -22,7 +26,7 @@ class ApiSetting {
   static String get getOrderMaintenanceItem =>
       '$baseUrl/OrderMaintenances/GetOrderMaintenanceItem';
 
-  static String get getOrderCurrentMaintenanceItem =>
+  static String get getOrderMaintenanceByUserNew =>
       '$baseUrl/OrderMaintenances/GetOrderMaintenanceByUserNew';
 
   // // Auth endpoints

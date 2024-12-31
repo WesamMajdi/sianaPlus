@@ -59,6 +59,60 @@ class CategoryCubit extends Cubit<CategoryState> {
     );
   }
 
+
+  Future<void> createFavorite({int productId = 0}) async {
+    final updatedItems = List<Product>.from(state.products);
+    final favouriteList  = List<Product>.from(state.favouriteProducts);
+
+    int productIndex = updatedItems.indexWhere((element) => element.id == productId);
+
+    if (productIndex != -1) {
+      updatedItems[productIndex].isFavorite = !updatedItems[productIndex].isFavorite!;
+      if (updatedItems[productIndex].isFavorite!) {
+        if (!favouriteList.any((item) => item.id == productId)) {
+          favouriteList.add(updatedItems[productIndex]);
+
+          emit(state.copyWith(products: updatedItems,favouriteProducts: favouriteList));
+
+          await productsUseCase.createFavorite(
+              PaginationParams(page: 0, productId: productId));
+        }
+      } else {
+        favouriteList.removeWhere((item) => item.id == productId);
+        emit(state.copyWith(products: updatedItems,favouriteProducts: favouriteList));
+
+        await productsUseCase.deleteFavorite(
+            PaginationParams(page: 0, productId: productId));
+      }
+    }
+
+
+
+  }
+
+
+  Future<void> deleteAllFavorite() async {
+    emit(state.copyWith(favouriteProducts: []));
+          await productsUseCase.deleteAllFavorite();
+
+  }
+
+  void getProductFavorite() async {
+    final products= List<Product>.from(state.products);
+    final favouriteProducts= List<Product>.from(state.favouriteProducts);
+
+
+    products.map(
+      (e) {
+        if (e.isFavorite!) {
+          favouriteProducts.add(e);
+        }
+      },
+    );
+
+    emit(state.copyWith(favouriteProducts: favouriteProducts));
+
+  }
   selectCategory({required int categoryId}) {
     emit(state.copyWith(selectedCategoryId: categoryId));
   }
@@ -129,6 +183,39 @@ class CategoryCubit extends Cubit<CategoryState> {
         .fold(0.0, (sum, item) => sum + (item.price! * item.count!));
 
     emit(state.copyWith(cartItems: updatedItems, totalAmount: totalAmount));
+  }
+
+  void toggleFavorite(int productId) {
+    final updatedItems = List<Product>.from(state.products);
+    final favouriteList  = List<Product>.from(state.favouriteProducts);
+
+    int productIndex = updatedItems.indexWhere((element) => element.id == productId);
+
+    if (productIndex != -1) {
+      updatedItems[productIndex].isFavorite = !updatedItems[productIndex].isFavorite!;
+      if (updatedItems[productIndex].isFavorite!) {
+        // Add only if it's marked as favorite
+        if (!favouriteList.contains(updatedItems[productIndex])) {
+          favouriteList.add(updatedItems[productIndex]);
+        }
+      } else {
+        // Remove if it's unmarked as favorite
+        favouriteList.removeWhere((item) => item.id == productId);
+      }    }
+
+
+    emit(state.copyWith(products: updatedItems,favouriteProducts: favouriteList));
+
+
+  }
+
+  void deleteItemFromFavourite(int productId) async{
+    final updatedItems = List<Product>.from(state.favouriteProducts);
+
+    updatedItems.removeWhere((element) => element.id == productId);
+
+    emit(state.copyWith(favouriteProducts: updatedItems));
+   await createFavorite(productId: productId);
   }
 
   void clearCart() {

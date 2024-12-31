@@ -57,22 +57,22 @@ class OrdersMaintenancePage extends StatelessWidget {
           children: [
             BlocBuilder<OrderCubit, OrderState>(
               builder: (context, state) {
-                if (state.itemStatus == ItemStatus.loading) {
+                if (state.orderStatus == OrderStatus.loading) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (state.itemStatus == ItemStatus.failure) {
+                if (state.orderStatus == OrderStatus.failure) {
                   return const Center(child: Text('فشلت العملية'));
                 }
-                if (state.itemStatus == ItemStatus.success &&
-                    state.orderItems.isNotEmpty) {
+                if (state.orderStatus == OrderStatus.success &&
+                    state.ordersItems.isNotEmpty) {
                   return ListView.builder(
                     shrinkWrap: true, // Important for nesting scrolls
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: state.orderItems.length,
+                    // physics: const NeverScrollableScrollPhysics(),
+                    itemCount: state.ordersItems.length,
                     itemBuilder: (context, index) {
                       return CurrentMaintenanceOrdersTab(
                         state: state,
-                        itemEntity: state.orderItems[index],
+                        orderEntity: state.ordersItems[index],
                       );
                     },
                   );

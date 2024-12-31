@@ -94,23 +94,23 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                   // Orders List
                   BlocBuilder<OrderCubit, OrderState>(
                     builder: (context, state) {
-                      if (state.itemStatus == ItemStatus.loading) {
+                      if (state.itemOrdersStatus == ItemOrdersStatus.loading) {
                         return const Center(child: CircularProgressIndicator());
                       }
-                      if (state.itemStatus == ItemStatus.failure) {
+                      if (state.itemOrdersStatus == ItemOrdersStatus.failure) {
                         return const Center(child: Text('فشلت العملية'));
                       }
-                      if (state.itemStatus == ItemStatus.success &&
-                          state.orderItems.isNotEmpty) {
+                      if (state.itemOrdersStatus == ItemOrdersStatus.success &&
+                          state.items.isNotEmpty) {
                         return ListView.builder(
                           shrinkWrap: true, // Important for nesting scrolls
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: state.orderItems.length,
+                          itemCount: state.items.length,
                           itemBuilder: (context, index) {
                             return ItemsMaintenanceRequest(
                               state: state,
                               i: index,
-                              itemEntity: state.orderItems[index],
+                              itemEntity: state.items[index],
                               // order: ,
                             );
                           },
@@ -121,7 +121,7 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                     },
                   ),
 
-                  state.orderItems.isNotEmpty
+                  state.items.isNotEmpty
                       ? BlocListener<OrderCubit, OrderState>(
                           listener: (context, state) {
                             if (state.orderCreationStatus ==
@@ -139,26 +139,39 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                                 : CustomButton(
                                     text: 'اضافة طلب',
                                     onPressed: () async {
-                                      final createOrder = CreateOrderRequest(
-                                        total: 0,
-                                        discount: 0,
-                                        locationForDelivery:
-                                            '${_pickedLocation!.latitude},${_pickedLocation!.longitude}',
-                                        notifyCustomerOfTheCost:
-                                            state.notifyCustomerOfTheCost,
-                                        handReceipt: HandReceipt(
-                                          items: state.orderItems
-                                              .map((e) => Items(
-                                                  itemId: e.item!.id,
-                                                  colorId: e.color!.id,
-                                                  companyId: e.company!.id,
-                                                  description: e.description!))
-                                              .toList(),
-                                        ),
-                                      );
-                                      await context
-                                          .read<OrderCubit>()
-                                          .createOrderMaintenance(createOrder);
+
+                                      if(_pickedLocation == null){
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(
+                                            backgroundColor: Colors.red,
+                                            behavior: SnackBarBehavior.floating,
+                                            content: Text('يجب تحديد الموقع'),
+                                          ),
+                                        );
+                                        return;
+                                      }else{
+                                        final createOrder = CreateOrderRequest(
+                                          total: 0,
+                                          discount: 0,
+                                          locationForDelivery:
+                                          '${_pickedLocation!.latitude},${_pickedLocation!.longitude}',
+                                          notifyCustomerOfTheCost:
+                                          state.notifyCustomerOfTheCost,
+                                          handReceipt: HandReceipt(
+                                            items: state.items
+                                                .map((e) => Items(
+                                                itemId: e.item!.id,
+                                                colorId: e.color!.id,
+                                                companyId: e.company!.id,
+                                                description: e.description!))
+                                                .toList(),
+                                          ),
+                                        );
+                                        await context
+                                            .read<OrderCubit>()
+                                            .createOrderMaintenance(createOrder);
+                                      }
+
                                     },
                                   ),
                           ]),
