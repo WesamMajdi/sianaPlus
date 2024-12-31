@@ -42,7 +42,8 @@ dependencies:
   get_it: ^8.0.1
   flutter_plugin_android_lifecycle: ^2.0.23
   flutter_credit_card: ^3.0.2
-
+  barcode_scan2: ^4.3.3
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

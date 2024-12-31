@@ -1,4 +1,5 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/profile/update_user_profile_screen.dart';
 
 class UserImageProfile extends StatelessWidget {
   const UserImageProfile({
@@ -36,13 +37,6 @@ class UserImageProfile extends StatelessWidget {
                   }),
                 ),
               ),
-            ),
-          ),
-          const Positioned(
-            bottom: 0,
-            left: 0,
-            child: UpdateImageInUserProfile(
-              color: Colors.black,
             ),
           ),
         ],

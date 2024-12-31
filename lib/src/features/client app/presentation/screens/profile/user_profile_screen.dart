@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/profile/update_user_profile_screen.dart';
 
 class UserProfilePage extends StatefulWidget {
   const UserProfilePage({super.key});
@@ -14,7 +15,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const MyDrawer(),
       appBar: const AppBarApplication(
         text: 'صفحتي الشخصية',
       ),
@@ -99,6 +99,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
               ],
             ),
           ),
+
           AppSizedBox.kVSpace10,
           Container(
             margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -124,6 +125,168 @@ class _UserProfilePageState extends State<UserProfilePage> {
               ],
             ),
           ),
+
+          // The table is displayed in the case of the technician application.
+          //   Table(
+          //   border: TableBorder(
+          //     borderRadius: BorderRadius.circular(15),
+          //     horizontalInside: const BorderSide(
+          //       color: Colors.grey,
+          //     ),
+          //     verticalInside: const BorderSide(
+          //       color: Colors.grey,
+          //     ),
+          //     top: const BorderSide(
+          //       color: Colors.grey,
+          //     ),
+          //     bottom: const BorderSide(
+          //       color: Colors.grey,
+          //     ),
+          //     left: const BorderSide(
+          //       color: Colors.grey,
+          //     ),
+          //     right: const BorderSide(
+          //       color: Colors.grey,
+          //     ),
+          //   ),
+          //   columnWidths: const <int, TableColumnWidth>{
+          //     0: FlexColumnWidth(3),
+          //     1: FlexColumnWidth(1),
+          //     2: FlexColumnWidth(1),
+          //   },
+          //   defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          //   children: <TableRow>[
+          //     TableRow(
+          //       decoration:
+          //           BoxDecoration(color: Colors.grey.withOpacity(0.1)),
+          //       children: const <Widget>[
+          //         Padding(
+          //           padding: EdgeInsets.all(8.0),
+          //           child: Center(
+          //             child: CustomStyledText(
+          //                 text: 'وقت الدخول', fontWeight: FontWeight.bold),
+          //           ),
+          //         ),
+          //         Padding(
+          //           padding: EdgeInsets.all(8.0),
+          //           child: Center(
+          //             child: CustomStyledText(
+          //                 text: 'الجهاز', fontWeight: FontWeight.bold),
+          //           ),
+          //         ),
+          //         Padding(
+          //           padding: EdgeInsets.all(8.0),
+          //           child: Center(
+          //             child: CustomStyledText(
+          //                 text: 'عنوان IP', fontWeight: FontWeight.bold),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //     const TableRow(
+          //       children: <Widget>[
+          //         Padding(
+          //           padding: EdgeInsets.all(8.0),
+          //           child: Center(
+          //             child: CustomStyledText(
+          //               text: "2024-09-06 11:46:38.3768835",
+          //               fontSize: 16,
+          //               textColor: Colors.black,
+          //             ),
+          //           ),
+          //         ),
+          //         Padding(
+          //           padding: EdgeInsets.all(8.0),
+          //           child: Center(
+          //             child: CustomStyledText(
+          //               text: "Mobile",
+          //               fontSize: 16,
+          //               textColor: Colors.black,
+          //             ),
+          //           ),
+          //         ),
+          //         Padding(
+          //           padding: EdgeInsets.all(8.0),
+          //           child: Center(
+          //             child: CustomStyledText(
+          //               text: "1::",
+          //               fontSize: 18,
+          //               textColor: Colors.black,
+          //             ),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //     const TableRow(
+          //       children: <Widget>[
+          //         Padding(
+          //           padding: EdgeInsets.all(8.0),
+          //           child: Center(
+          //             child: CustomStyledText(
+          //               text: "2024-09-08 11:46:38.3768835",
+          //               fontSize: 16,
+          //               textColor: Colors.black,
+          //             ),
+          //           ),
+          //         ),
+          //         Padding(
+          //           padding: EdgeInsets.all(8.0),
+          //           child: Center(
+          //             child: CustomStyledText(
+          //               text: "Mobile",
+          //               fontSize: 16,
+          //               textColor: Colors.black,
+          //             ),
+          //           ),
+          //         ),
+          //         Padding(
+          //           padding: EdgeInsets.all(8.0),
+          //           child: Center(
+          //             child: CustomStyledText(
+          //               text: "1::",
+          //               fontSize: 18,
+          //               textColor: Colors.black,
+          //             ),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //     const TableRow(
+          //       children: <Widget>[
+          //         Padding(
+          //           padding: EdgeInsets.all(8.0),
+          //           child: Center(
+          //             child: CustomStyledText(
+          //               text: "2024-09-06 11:46:38.3768835",
+          //               fontSize: 16,
+          //               textColor: Colors.black,
+          //             ),
+          //           ),
+          //         ),
+          //         Padding(
+          //           padding: EdgeInsets.all(8.0),
+          //           child: Center(
+          //             child: CustomStyledText(
+          //               text: "Mobile",
+          //               fontSize: 16,
+          //               textColor: Colors.black,
+          //             ),
+          //           ),
+          //         ),
+          //         Padding(
+          //           padding: EdgeInsets.all(8.0),
+          //           child: Center(
+          //             child: CustomStyledText(
+          //               text: "1::",
+          //               fontSize: 18,
+          //               textColor: Colors.black,
+          //             ),
+          //           ),
+          //         ),
+          //       ],
+          //     ),
+          //   ],
+          // ),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

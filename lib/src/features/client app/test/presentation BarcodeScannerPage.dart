@@ -1,47 +1,53 @@
-// import 'package:maintenance_app/src/core/utilities/barcode%20scanner%20service.dart';
-// import '../../../core/export file/exportfiles.dart';
+import 'package:flutter/material.dart';
+import 'package:barcode_scan2/barcode_scan2.dart';
 
-// class BarcodeScannerPage extends StatefulWidget {
-//   const BarcodeScannerPage({super.key});
+class BarcodeScannerPage extends StatefulWidget {
+  const BarcodeScannerPage({Key? key}) : super(key: key);
 
-//   @override
-//   // ignore: library_private_types_in_public_api
-//   _BarcodeScannerPageState createState() => _BarcodeScannerPageState();
-// }
+  @override
+  State<BarcodeScannerPage> createState() => _BarcodeScannerPageState();
+}
 
-// class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
-//   String barcodeResult = "لم يتم مسح الباركود";
-//   final BarcodeScannerService barcodeScannerService = BarcodeScannerService();
+class _BarcodeScannerPageState extends State<BarcodeScannerPage> {
+  String barcodeResult = "لم يتم مسح الباركود";
 
-//   Future<void> initiateScanBarcode() async {
-//     String barcode = await barcodeScannerService.scanBarcode();
-//     setState(() {
-//       barcodeResult = barcode;
-//     });
-//   }
+  Future<void> scanBarcode() async {
+    try {
+      var result = await BarcodeScanner.scan();
+      setState(() {
+        barcodeResult = result.rawContent.isEmpty
+            ? "لم يتم العثور على نتيجة"
+            : result.rawContent;
+      });
+    } catch (e) {
+      setState(() {
+        barcodeResult = "حدث خطأ أثناء مسح الباركود: $e";
+      });
+    }
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             const SizedBox(height: 20),
-//             ElevatedButton(
-//               onPressed: initiateScanBarcode,
-//               child: const CustomStyledText(
-//                 text: "مسح الباركود",
-//                 textColor: Colors.white,
-//               ),
-//             ),
-//             CustomStyledText(
-//               text: "نتيجة البحث : $barcodeResult",
-//               fontSize: 18,
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("قارئ الباركود"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: scanBarcode,
+              child: const Text("مسح الباركود"),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              "نتيجة البحث: $barcodeResult",
+              style: const TextStyle(fontSize: 18),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

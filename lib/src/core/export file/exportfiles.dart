@@ -44,12 +44,11 @@ export 'package:maintenance_app/src/features/client%20app/presentation/screens/p
 export 'package:maintenance_app/src/core/utilities/share%20app.dart';
 export 'package:maintenance_app/src/features/client%20app/presentation/screens/contant%20&%20display/display_screen.dart';
 export 'package:maintenance_app/src/features/client%20app/presentation/screens/contant%20&%20display/languages_screen.dart';
-export 'package:maintenance_app/src/features/client%20app/privacy%20and%20settings/support%20&%20about%20us%20pages/concat%20info%20page/presentation.dart';
+export 'package:maintenance_app/src/features/client%20app/concat%20info%20page/presentation.dart';
 export 'package:maintenance_app/src/features/authentication/change%20password/presentation.dart';
 export 'package:maintenance_app/src/features/client%20app/presentation/screens/account/account_information_screen.dart';
 export 'package:maintenance_app/src/core/network/network_utils.dart';
 export 'package:maintenance_app/src/features/authentication/login/presentation.dart';
-export 'package:maintenance_app/src/features/maintenance%20technician%20app/profile/update%20maintenance%20technician%20profile%20page/presentation.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/customSearchDropdown.dart';
 export 'package:maintenance_app/src/features/client%20app/presentation/screens/maintenance%20request/maintenance_request_screen.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20notifications/itemsNotifications.dart';

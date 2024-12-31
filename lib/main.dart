@@ -10,8 +10,10 @@ import 'package:maintenance_app/src/features/authentication/sign%20up/data.dart'
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
-import 'package:maintenance_app/src/features/client%20app/privacy%20and%20settings/support%20&%20about%20us%20pages/concat%20info%20page/application.dart';
-import 'package:maintenance_app/src/features/client%20app/privacy%20and%20settings/support%20&%20about%20us%20pages/concat%20info%20page/data.dart';
+import 'package:maintenance_app/src/features/client%20app/concat%20info%20page/application.dart';
+import 'package:maintenance_app/src/features/client%20app/concat%20info%20page/data.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/home_maintenance/home_maintenance_screen.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/maintenance_parts/maintenance_parts_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,7 +53,6 @@ void main() async {
             create: (context) => ContactUsCubit(ApiContactUsService())),
         BlocProvider<CategoryCubit>(
             create: (context) => getIt<CategoryCubit>()..fetchCategories()),
-
         BlocProvider<OrderCubit>(
             create: (context) => getIt<OrderCubit>()..initOrdersRequirements()),
       ],
@@ -98,21 +99,25 @@ class MyApp extends StatelessWidget {
                 designSize: const Size(360, 640),
                 splitScreenMode: true,
                 builder: (context, state) {
-                  return MultiBlocListener(listeners: [
-                    BlocListener<ConnectivityCubit, ConnectivityStatus>(
-                      listener: (context, status) async {
-                        if (status == ConnectivityStatus.disconnected) {
-                          _showNoConnectionBanner(
-                              context, ConnectivityStatus.disconnected);
-                        }
+                  return MultiBlocListener(
+                      listeners: [
+                        BlocListener<ConnectivityCubit, ConnectivityStatus>(
+                          listener: (context, status) async {
+                            if (status == ConnectivityStatus.disconnected) {
+                              _showNoConnectionBanner(
+                                  context, ConnectivityStatus.disconnected);
+                            }
 
-                        if (status == ConnectivityStatus.connected) {
-                          _showNoConnectionBanner(
-                              context, ConnectivityStatus.connected);
-                        }
-                      },
-                    ),
-                  ], child: isLoggedIn ? const HomePage() : const SplashPage());
+                            if (status == ConnectivityStatus.connected) {
+                              _showNoConnectionBanner(
+                                  context, ConnectivityStatus.connected);
+                            }
+                          },
+                        ),
+                      ],
+                      child: isLoggedIn
+                          ? const HomeMaintenanceScreen()
+                          : const SplashPage());
                   // return ;
                 },
               ),
