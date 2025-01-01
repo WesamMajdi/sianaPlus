@@ -136,7 +136,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  ..._getItemsBasedOnStatus(status),
+                  ..._getItemsBasedOnStatus(context, status),
                 ],
               ),
             );
@@ -175,20 +175,197 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
     );
   }
 
-  List<Widget> _getItemsBasedOnStatus(StatusEnum status) {
+  List<Widget> _getItemsBasedOnStatus(BuildContext context, StatusEnum status) {
     switch (status) {
       case StatusEnum.New:
+        return [
+          ListTile(
+            title: const CustomStyledText(
+              text: 'فحص القطعة',
+              fontSize: 20,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Container(
+                            width: 50,
+                            height: 5,
+                            margin: const EdgeInsets.only(bottom: 15, top: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 5),
+                          alignment: Alignment.topRight,
+                          child: const CustomStyledText(
+                            text: 'تحذير',
+                            fontSize: 20,
+                            textColor: AppColors.secondaryColor,
+                          ),
+                        ),
+                        Container(
+                          width: double.infinity,
+                          color: Colors.grey,
+                          height: 0.5,
+                        ),
+                      ],
+                    ),
+                    content: SizedBox(
+                      height: 35,
+                      width: 300,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            alignment: Alignment.topLeft,
+                            child: const CustomStyledText(
+                              text: 'هل أنت متأكد من استمرار العملية ؟',
+                              fontSize: 17.5,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.grey[500],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const CustomStyledText(
+                            text: "إلغاء",
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        style: TextButton.styleFrom(
+                          backgroundColor: AppColors.secondaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const CustomStyledText(
+                            text: "تأكيد",
+                            textColor: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ];
+      case StatusEnum.CheckItem:
         return [
           ListTile(
             title: const CustomStyledText(
               text: 'تحديد العطل',
               fontSize: 20,
             ),
-            onTap: () {},
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Container(
+                            width: 50,
+                            height: 5,
+                            margin: const EdgeInsets.only(bottom: 15),
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                        ),
+                        const CustomStyledText(
+                          text: 'تحديد العطل',
+                          fontSize: 18,
+                          textColor: AppColors.secondaryColor,
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 5),
+                          width: double.infinity,
+                          color: Colors.grey,
+                          height: 0.5,
+                        ),
+                      ],
+                    ),
+                    content: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const CustomStyledText(text: 'الوصف:', fontSize: 17),
+                        Texteara(
+                          hintText: 'ادخل الوصف',
+                          validators: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'عفوا.الوصف مطلوب';
+                            }
+                            return null;
+                          },
+                          // controller: descriptionController,
+                        )
+                      ],
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {},
+                        style: TextButton.styleFrom(
+                          backgroundColor: AppColors.secondaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const CustomStyledText(
+                            text: "موافق",
+                            textColor: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
           ),
           ListTile(
             title: const CustomStyledText(
               text: 'لا يمكن تحديد العطل',
+              fontSize: 20,
+            ),
+            onTap: () {},
+          ),
+        ];
+
+      case StatusEnum.DefineMalfunction:
+        return [
+          ListTile(
+            title: const CustomStyledText(
+              text: 'مكتمل',
               fontSize: 20,
             ),
             onTap: () {},
@@ -204,31 +381,22 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
             onTap: () {},
           ),
         ];
-      case StatusEnum.CheckItem:
-        return [
-          ListTile(
-            title: const CustomStyledText(
-              text: 'فحص العنصر',
-              fontSize: 20,
-            ),
-            onTap: () {},
-          ),
-        ];
-      case StatusEnum.DefineMalfunction:
-        return [
-          ListTile(
-            title: const CustomStyledText(
-              text: 'تعريف العطل',
-              fontSize: 20,
-            ),
-            onTap: () {},
-          ),
-        ];
+
       case StatusEnum.InformCustomerOfTheCost:
         return [
           ListTile(
             title: const CustomStyledText(
               text: 'إبلاغ العميل بالتكلفة',
+              fontSize: 20,
+            ),
+            onTap: () {},
+          ),
+        ];
+      case StatusEnum.ItemCannotBeServiced:
+        return [
+          ListTile(
+            title: const CustomStyledText(
+              text: 'ابلاغ العميل بعدم امكانية صيانة',
               fontSize: 20,
             ),
             onTap: () {},
@@ -268,27 +436,18 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
         return [
           ListTile(
             title: const CustomStyledText(
-              text: 'مكتمل',
+              text: 'إبلاغ العميل بانتهاء الصيانة',
               fontSize: 20,
             ),
             onTap: () {},
           ),
         ];
-      case StatusEnum.ItemCannotBeServiced:
-        return [
-          ListTile(
-            title: const CustomStyledText(
-              text: 'العنصر لا يمكن صيانته',
-              fontSize: 20,
-            ),
-            onTap: () {},
-          ),
-        ];
+
       case StatusEnum.Suspended:
         return [
           ListTile(
             title: const CustomStyledText(
-              text: 'موقوف',
+              text: 'فك التعليق',
               fontSize: 20,
             ),
             onTap: () {},
