@@ -53,7 +53,7 @@ class ItemsMaintenanceRequest extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     CustomStyledText(
-                      text: 'رقم الطلب #$i',
+                      text: 'رقم الطلب #${i + 1}',
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),

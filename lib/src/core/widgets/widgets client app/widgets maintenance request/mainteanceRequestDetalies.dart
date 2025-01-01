@@ -2,7 +2,7 @@ import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model_request.dart';
 
 class MainteanceRequestDetalies extends StatelessWidget {
-   MainteanceRequestDetalies({super.key,required this.itemsEntity});
+  MainteanceRequestDetalies({super.key, required this.itemsEntity});
   ItemsEntity itemsEntity;
 
   @override
@@ -41,9 +41,9 @@ class MainteanceRequestDetalies extends StatelessWidget {
             ],
           ),
           AppSizedBox.kVSpace10,
-           Row(
+          Row(
             children: [
-              CustomStyledText(
+              const CustomStyledText(
                 text: 'اسم القطعة :',
                 fontSize: 18,
               ),
@@ -57,32 +57,36 @@ class MainteanceRequestDetalies extends StatelessWidget {
           ),
           const Divider(),
           AppSizedBox.kVSpace10,
-           Row(
+          Row(
             children: [
-              CustomStyledText(
+              const CustomStyledText(
                 text: 'الشركة :',
                 fontSize: 18,
               ),
               AppSizedBox.kWSpace10,
               CustomStyledText(
-                  fontSize: 16, text: itemsEntity.company!.name!, textColor: Colors.grey),
+                  fontSize: 16,
+                  text: itemsEntity.company!.name!,
+                  textColor: Colors.grey),
             ],
           ),
           const Divider(),
           AppSizedBox.kVSpace10,
-           Row(
+          Row(
             children: [
-              CustomStyledText(
+              const CustomStyledText(
                 text: 'لون القطعة :',
                 fontSize: 18,
               ),
               AppSizedBox.kWSpace5,
               CustomStyledText(
-                  fontSize: 16, text: itemsEntity.color!.name!, textColor: Colors.grey),
+                  fontSize: 16,
+                  text: itemsEntity.color!.name!,
+                  textColor: Colors.grey),
             ],
           ),
           const Divider(),
-           Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const CustomStyledText(
@@ -90,8 +94,7 @@ class MainteanceRequestDetalies extends StatelessWidget {
               ),
               AppSizedBox.kVSpace10,
               CustomStyledText(
-                text:
-                itemsEntity.description!,
+                text: itemsEntity.description!,
                 textColor: Colors.grey,
               ),
             ],

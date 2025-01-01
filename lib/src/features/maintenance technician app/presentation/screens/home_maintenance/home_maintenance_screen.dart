@@ -110,7 +110,7 @@ class _HomeMaintenanceScreenState extends State<HomeMaintenanceScreen> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, childAspectRatio: 1.25),
+                      crossAxisCount: 2, childAspectRatio: 1.1),
                   itemCount: shortcuts.length,
                   itemBuilder: (context, index) {
                     return ShortcutHomeCard(

@@ -7,7 +7,7 @@ import 'package:maintenance_app/src/features/client%20app/presentation/controlle
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
 
 class InsertMaintenanceRequestPage extends StatefulWidget {
-   InsertMaintenanceRequestPage({super.key,required this.latLong});
+  InsertMaintenanceRequestPage({super.key, required this.latLong});
 
   final LatLng? latLong;
 
@@ -24,7 +24,7 @@ class _InsertMaintenanceRequestPageState
   TextEditingController causeofthebreakdownController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OrderCubit,OrderState>(
+    return BlocBuilder<OrderCubit, OrderState>(
       builder: (context, state) => Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: const AppBarApplicationArrow(
@@ -51,7 +51,6 @@ class _InsertMaintenanceRequestPageState
                         text: 'اسم الجهاز',
                       ),
                       CustomSearchDropdown(
-
                         hintText: 'اختر اسم الجهاز',
                         validators: (value) {
                           if (value == null) {
@@ -71,7 +70,7 @@ class _InsertMaintenanceRequestPageState
                         text: 'شركة الجهاز',
                       ),
                       CustomSearchDropdown(
-                        hintText:'اختر شركة الجهاز',
+                        hintText: 'اختر شركة الجهاز',
                         validators: (value) {
                           if (value == null) {
                             return 'عفوا.يرجي اختيار شركة الجهاز';
@@ -96,7 +95,6 @@ class _InsertMaintenanceRequestPageState
                         hintText: 'اختر لون القطعة',
                         items: state.colorsList,
                         onChanged: (p0) {
-
                           context.read<OrderCubit>().selectColor(p0!);
                         },
                       ),
@@ -116,27 +114,50 @@ class _InsertMaintenanceRequestPageState
                       AppSizedBox.kVSpace20,
                       state.orderCreationStatus == OrderCreationStatus.loading
                           ? const CircularProgressIndicator()
-                          :CustomButton(
-                        text: 'ارسال طلب',
-                        onPressed: () async{
-                          final createItem= Items(
-                              itemId: context.read<OrderCubit>().state.selectedItem!.id!,
-                              colorId: context.read<OrderCubit>().state.selectedColor!.id!,
-                              companyId: context.read<OrderCubit>().state.selectedCompany!.id!,
-                              description: causeofthebreakdownController.text
-                          );
-                          final createItemEntity= ItemsEntity(
-                              item: context.read<OrderCubit>().state.selectedItem!,
-                              color: context.read<OrderCubit>().state.selectedColor!,
-                              company: context.read<OrderCubit>().state.selectedCompany!,
-                              description: causeofthebreakdownController.text
-                          );
+                          : CustomButton(
+                              text: 'ارسال طلب',
+                              onPressed: () async {
+                                final createItem = Items(
+                                    itemId: context
+                                        .read<OrderCubit>()
+                                        .state
+                                        .selectedItem!
+                                        .id!,
+                                    colorId: context
+                                        .read<OrderCubit>()
+                                        .state
+                                        .selectedColor!
+                                        .id!,
+                                    companyId: context
+                                        .read<OrderCubit>()
+                                        .state
+                                        .selectedCompany!
+                                        .id!,
+                                    description:
+                                        causeofthebreakdownController.text);
+                                final createItemEntity = ItemsEntity(
+                                    item: context
+                                        .read<OrderCubit>()
+                                        .state
+                                        .selectedItem!,
+                                    color: context
+                                        .read<OrderCubit>()
+                                        .state
+                                        .selectedColor!,
+                                    company: context
+                                        .read<OrderCubit>()
+                                        .state
+                                        .selectedCompany!,
+                                    description:
+                                        causeofthebreakdownController.text);
 
-                          context.read<OrderCubit>().saveItem(item: createItem,itemsEntity:createItemEntity);
+                                context.read<OrderCubit>().saveItem(
+                                    item: createItem,
+                                    itemsEntity: createItemEntity);
 
-                          Navigator.pop(context);
-                        },
-                      ),
+                                Navigator.pop(context);
+                              },
+                            ),
                     ],
                   )),
             ],

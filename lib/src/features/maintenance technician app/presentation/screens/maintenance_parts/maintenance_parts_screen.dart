@@ -1,5 +1,7 @@
 import 'package:barcode_scan2/barcode_scan2.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/itemsToMaintenancePart.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
 
 class MaintenancePartsPage extends StatefulWidget {
@@ -31,27 +33,6 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
 
   TextEditingController searchController = TextEditingController();
 
-  final List<MaintenancePart> maintenanceParts = [
-    MaintenancePart(
-      maintenancePartName: 'مكيف هواء',
-      clientName: 'محمد أحمد',
-      clientPhone: '0501234567',
-      status: OrderStatus.New,
-    ),
-    MaintenancePart(
-      maintenancePartName: 'ثلاجة',
-      clientName: 'سارة خالد',
-      clientPhone: '0557654321',
-      status: OrderStatus.DeliveryToCustomer,
-    ),
-    MaintenancePart(
-      maintenancePartName: 'غسالة',
-      clientName: 'عبدالله علي',
-      clientPhone: '0569876543',
-      status: OrderStatus.Completed,
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +44,22 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
             AppSizedBox.kVSpace15,
             buildSearchBar(),
             AppSizedBox.kVSpace10,
-            buildBarcodeScanner(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Expanded(
+                      child: buildSearchDropdownStatus(
+                    orderStatuses,
+                    'ابحث عن الحالة ',
+                    (OrderStatus? selectedStatus) {},
+                  )),
+                  Container(child: buildBarcodeScanner()),
+                ],
+              ),
+            ),
+            AppSizedBox.kVSpace10,
             buildMaintenancePartsList(),
           ],
         ),
@@ -124,18 +120,14 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
 
   Widget buildBarcodeScanner() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(
-              Icons.qr_code_scanner,
-              size: 50,
-              color: Colors.blue,
-            ),
-            onPressed: scanBarcode,
-          ),
-        ],
+      padding: const EdgeInsets.all(8.0),
+      child: IconButton(
+        icon: const Icon(
+          Icons.qr_code_scanner,
+          size: 32,
+          color: AppColors.secondaryColor,
+        ),
+        onPressed: scanBarcode,
       ),
     );
   }
@@ -153,143 +145,108 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
       },
     );
   }
-}
 
-class MaintenancePartWidget extends StatelessWidget {
-  final MaintenancePart part;
-  const MaintenancePartWidget({
-    super.key,
-    required this.part,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppPadding.mediumPadding,
-          vertical: AppPadding.smallPadding),
-      child: Container(
-          decoration: BoxDecoration(
-            color: (Theme.of(context).brightness == Brightness.dark
-                ? Colors.black54
-                : Colors.white),
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.3),
+  Widget buildSearchDropdownStatus(List<OrderStatus> items, String hintText,
+      void Function(OrderStatus?)? onChanged) {
+    return DropdownSearch<OrderStatus>(
+      itemAsString: (item) => getText(item),
+      items: items,
+      compareFn: (item1, item2) {
+        return item1 == item2;
+      },
+      popupProps: PopupProps.menu(
+        menuProps: MenuProps(
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10))),
+        isFilterOnline: true,
+        showSearchBox: true,
+        showSelectedItems: true,
+        searchFieldProps: TextFieldProps(
+          decoration: InputDecoration(
+            hintText: 'ابحث هنا',
+            filled: true,
+            fillColor: Colors.grey.withOpacity(0.2),
+            errorStyle: const TextStyle(fontFamily: "Tajawal", fontSize: 14),
+            hintStyle: const TextStyle(
+                fontSize: 14, color: Colors.grey, fontFamily: "Tajawal"),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderSide:
+                  const BorderSide(color: AppColors.secondaryColor, width: 2.0),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide:
+                  const BorderSide(color: AppColors.secondaryColor, width: 2.0),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: AppPadding.mediumPadding,
+              horizontal: AppPadding.mediumPadding,
+            ),
+          ),
+          style: const TextStyle(
+            fontFamily: 'Tajawal',
+            fontSize: 16,
+          ),
+        ),
+        itemBuilder: (context, item, isSelected) {
+          return Column(
+            children: [
+              ListTile(
+                title: CustomStyledText(
+                  text: getText(item),
+                  textColor: (Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black),
+                ),
+                selected: isSelected,
               ),
             ],
+          );
+        },
+      ),
+      dropdownDecoratorProps: DropDownDecoratorProps(
+        dropdownSearchDecoration: InputDecoration(
+          hintText: hintText,
+          filled: true,
+          fillColor: Colors.grey.withOpacity(0.2),
+          errorStyle: const TextStyle(fontFamily: "Tajawal", fontSize: 14),
+          hintStyle: const TextStyle(
+              fontSize: 16, color: Colors.grey, fontFamily: "Tajawal"),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(15),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(AppPadding.largePadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CustomStyledText(
-                      text: part.maintenancePartName,
-                      fontSize: 18,
-                      textColor: AppColors.secondaryColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: getColor(part.status),
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 2, horizontal: 10),
-                        child: CustomStyledText(
-                          text: getText(part.status),
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                AppSizedBox.kVSpace10,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: [
-                        CustomStyledText(
-                          text: part.clientName,
-                          fontSize: 16,
-                          textColor: Colors.grey,
-                        ),
-                        AppSizedBox.kVSpace5,
-                        CustomStyledText(
-                          text: part.clientPhone,
-                          fontSize: 16,
-                          textColor: Colors.grey,
-                        ),
-                      ],
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('wwww'),
-                          ),
-                        );
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.only(top: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            CustomStyledText(
-                              text: 'تفاصيل',
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              textColor: Colors.white54,
-                            ),
-                            AppSizedBox.kWSpace10,
-                            Icon(
-                              FontAwesomeIcons.arrowLeft,
-                              size: 14,
-                              color: Colors.white54,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          )),
+          errorBorder: OutlineInputBorder(
+            borderSide:
+                const BorderSide(color: AppColors.secondaryColor, width: 2.0),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide:
+                const BorderSide(color: AppColors.secondaryColor, width: 2.0),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide.none,
+            borderRadius: BorderRadius.circular(15),
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: AppPadding.mediumPadding,
+            horizontal: AppPadding.mediumPadding,
+          ),
+        ),
+      ),
+      onChanged: onChanged,
     );
-  }
-
-  Color getColor(OrderStatus status) {
-    if (status == OrderStatus.New) {
-      return Colors.blue.shade500;
-    } else if (status == OrderStatus.TakeFromStorage) {
-      return Colors.orange.shade500;
-    } else if (status == OrderStatus.DeliveryToCustomer) {
-      return Colors.grey.shade500;
-    } else if (status == OrderStatus.Completed) {
-      return Colors.green.shade500;
-    }
-    return Colors.black;
-  }
-
-  String getText(OrderStatus status) {
-    if (status == OrderStatus.New) {
-      return 'جديد';
-    } else if (status == OrderStatus.TakeFromStorage) {
-      return 'تم أخذها من المخزن';
-    } else if (status == OrderStatus.DeliveryToCustomer) {
-      return 'تم توصيلها ';
-    } else if (status == OrderStatus.Completed) {
-      return 'مكتمل';
-    }
-    return 'غير معروف';
   }
 }
