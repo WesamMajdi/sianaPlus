@@ -1,19 +1,21 @@
 import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/itemsToMaintenancePart.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/itemsRecoveredMaintenanceParts.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
 
-class MaintenancePartsPage extends StatefulWidget {
-  const MaintenancePartsPage({
+class RecoveredMaintenancePartsPage extends StatefulWidget {
+  const RecoveredMaintenancePartsPage({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<MaintenancePartsPage> createState() => _MaintenancePartsPageState();
+  State<RecoveredMaintenancePartsPage> createState() =>
+      _RecoveredMaintenancePartsPageState();
 }
 
-class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
+class _RecoveredMaintenancePartsPageState
+    extends State<RecoveredMaintenancePartsPage> {
   String barcodeResult = "لم يتم مسح الباركود";
 
   Future<void> scanBarcode() async {
@@ -37,7 +39,7 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: const AppBarApplicationArrow(text: 'الصيانة أونلاين'),
+      appBar: const AppBarApplicationArrow(text: 'العناصر المعادة'),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -60,7 +62,7 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
               ),
             ),
             AppSizedBox.kVSpace10,
-            buildMaintenancePartsList(),
+            buildRecoveredMaintenancePartsList(),
           ],
         ),
       ),
@@ -132,14 +134,14 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
     );
   }
 
-  Widget buildMaintenancePartsList() {
+  Widget buildRecoveredMaintenancePartsList() {
     return ListView.builder(
       shrinkWrap: true,
       physics: const BouncingScrollPhysics(),
       itemCount: maintenanceParts.length,
       itemBuilder: (context, index) {
         final part = maintenanceParts[index];
-        return ItemsMaintenancePart(
+        return ItemsRecoveredMaintenancePart(
           part: part,
         );
       },

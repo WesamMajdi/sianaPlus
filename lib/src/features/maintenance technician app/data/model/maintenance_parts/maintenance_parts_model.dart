@@ -74,3 +74,17 @@ List<OrderStatus> orderStatuses = [
   OrderStatus.DeliveryToCustomer,
   OrderStatus.Completed,
 ];
+
+enum StatusEnum {
+  New,
+  ManagerApprovedReturn,
+  CheckItem,
+  DefineMalfunction,
+  InformCustomerOfTheCost,
+  NoResponseFromTheCustomer,
+  CustomerApproved,
+  EnterMaintenanceCost,
+  Completed,
+  ItemCannotBeServiced,
+  Suspended,
+}

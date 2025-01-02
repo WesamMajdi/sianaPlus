@@ -3,12 +3,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:maintenance_app/src/core/constants/constants.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/customStyledText.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/maintenance_parts/maintenance_parts_details_screen.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/maintenance_parts/maintenance_parts_screen.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/transferred_maintenance_parts/transferred_maintenance_parts_details_screen.dart';
 
-class ItemsMaintenancePart extends StatelessWidget {
+class ItemsRecoveredMaintenancePart extends StatelessWidget {
   final MaintenancePart part;
-  const ItemsMaintenancePart({
+  const ItemsRecoveredMaintenancePart({
     super.key,
     required this.part,
   });
@@ -20,7 +19,8 @@ class ItemsMaintenancePart extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const MaintenancePartsDetailsPage(),
+            builder: (context) =>
+                const TransferredMaintenancePartsDetailsPage(),
           ),
         );
       },

@@ -23,13 +23,6 @@ if (flutterVersionName == null) {
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-
-    // Add the Google services Gradle plugin
-    id 'com.google.gms.google-services'
-}
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
@@ -75,14 +68,4 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-     // Import the Firebase BoM (Bill of Materials)
-    implementation platform('com.google.firebase:firebase-bom:33.7.0')
-
-    // Add the dependency for Firebase Analytics
-    implementation 'com.google.firebase:firebase-analytics'
-
-    // TODO: Add the dependencies for other Firebase products you want to use
-    // Example:
-    // implementation 'com.google.firebase:firebase-auth'
-    // implementation 'com.google.firebase:firebase-database'
 }

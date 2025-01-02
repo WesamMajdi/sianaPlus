@@ -4,8 +4,8 @@ import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/cus
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customSureDialog.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
 
-class MaintenancePartsDetailsPage extends StatelessWidget {
-  const MaintenancePartsDetailsPage({super.key});
+class RecoveredMaintenancePartsDetailsPage extends StatelessWidget {
+  const RecoveredMaintenancePartsDetailsPage({super.key});
 
   @override
   Widget build(BuildContext context) {

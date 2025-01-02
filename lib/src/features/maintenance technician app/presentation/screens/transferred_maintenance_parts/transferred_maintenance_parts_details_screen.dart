@@ -4,8 +4,8 @@ import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/cus
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customSureDialog.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
 
-class MaintenancePartsDetailsPage extends StatelessWidget {
-  const MaintenancePartsDetailsPage({super.key});
+class TransferredMaintenancePartsDetailsPage extends StatelessWidget {
+  const TransferredMaintenancePartsDetailsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +36,8 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                     buildTableRow('الشركة', 'سامسونج'),
                     buildTableRow('اللون', 'أسود'),
                     buildTableRow('الوصف', 'ssssss'),
+                    buildTableRow('من', 'الفرع الرئيسي'),
+                    buildTableRow('الى', 'الفرع الجديد'),
                     buildTableRow('يتطلب إبلاغ العميل بالتكلفة؟', 'لا'),
                     buildTableRow('مستعجل', 'لا'),
                     buildTableRow('عدد أيام الضمان', '22'),

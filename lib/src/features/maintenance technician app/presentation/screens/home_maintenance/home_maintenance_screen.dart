@@ -1,6 +1,8 @@
 // ignore: use_key_in_widget_constructors
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/maintenance_parts/maintenance_parts_screen.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/recovered_maintenance_parts/recovered_maintenance_parts_page.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/transferred_maintenance_parts/transferred_maintenance_parts_screen.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/profile_maintenance/profile_maintenance.dart';
 
 class HomeMaintenanceScreen extends StatefulWidget {
@@ -144,12 +146,12 @@ final List<Map<String, Object>> shortcuts = [
   {
     'icon': FontAwesomeIcons.arrowRotateLeft,
     'label': 'العناصر المعادة',
-    //'page': ReturnedPartsPage(),
+    'page': const RecoveredMaintenancePartsPage(),
   },
   {
     'icon': FontAwesomeIcons.car,
     'label': 'القطع المحولة إلى الفرع',
-    //'page': TransferredPartsPage(),
+    'page': const TransferredMaintenancePartsPage(),
   },
   {
     'icon': FontAwesomeIcons.fileLines,
