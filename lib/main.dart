@@ -1,8 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:firebase_core/firebase_core.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:maintenance_app/src/core/di/dependency_injection.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/network/connectivity_cubit.dart';
+import 'package:maintenance_app/src/core/services/notification_service.dart';
 import 'package:maintenance_app/src/features/authentication/login/application.dart';
 import 'package:maintenance_app/src/features/authentication/login/data.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/application.dart';
@@ -12,11 +14,16 @@ import 'package:maintenance_app/src/features/client%20app/presentation/controlle
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/concat%20info%20page/application.dart';
 import 'package:maintenance_app/src/features/client%20app/concat%20info%20page/data.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/home_maintenance/home_maintenance_screen.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/maintenance_parts/maintenance_parts_screen.dart';
+
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await NotificationService().initialize();
+
   await init();
   final localizationBloc = LocalizationBloc();
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -123,7 +130,7 @@ class MyApp extends StatelessWidget {
                         ),
                       ],
                       child: isLoggedIn
-                          ? const HomeMaintenanceScreen()
+                          ? const HomePage()
                           : const SplashPage());
                   // return ;
                 },
