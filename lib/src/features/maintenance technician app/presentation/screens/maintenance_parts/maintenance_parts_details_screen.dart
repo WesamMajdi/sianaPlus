@@ -101,7 +101,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
   }
 
   Widget buildButtonWidget(BuildContext context) {
-    StatusEnum status = StatusEnum.Suspended;
+    StatusEnum status = StatusEnum.InformCustomerOfTheCost;
 
     return GestureDetector(
       onTap: () {
@@ -178,263 +178,458 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
   }
 
   List<Widget> _getItemsBasedOnStatus(BuildContext context, StatusEnum status) {
-    switch (status) {
-      case StatusEnum.New:
-        return [
-          ListTile(
-              title: const CustomStyledText(
-                text: 'فحص القطعة',
-                fontSize: 20,
-              ),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return CustomSureDialog(
-                      onConfirm: () {},
+    if (status case StatusEnum.New) {
+      return [
+        ListTile(
+            title: const CustomStyledText(
+              text: 'فحص القطعة',
+              fontSize: 20,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomSureDialog(
+                    onConfirm: () {},
+                  );
+                },
+              );
+            }),
+      ];
+    } else if (status case StatusEnum.CheckItem) {
+      return [
+        ListTile(
+          title: const CustomStyledText(
+            text: 'تحديد العطل',
+            fontSize: 20,
+          ),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CustomInputDialog(
+                  titleDialog: 'تحديد العطل',
+                  text: 'الوصف:',
+                  hintText: 'ادخل الوصف',
+                  // controller: ,
+                  validators: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'عفوا.الوصف مطلوب';
+                    }
+                    return null;
+                  },
+                  onConfirm: () {},
+                );
+              },
+            );
+          },
+        ),
+        ListTile(
+          title: const CustomStyledText(
+            text: 'لا يمكن تحديد العطل',
+            fontSize: 20,
+          ),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CustomSureDialog(
+                  onConfirm: () {},
+                );
+              },
+            );
+          },
+        ),
+      ];
+    } else if (status case StatusEnum.DefineMalfunction) {
+      return [
+        ListTile(
+          title: const CustomStyledText(
+            text: 'مكتمل',
+            fontSize: 20,
+          ),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CustomSureDialog(
+                  onConfirm: () {},
+                );
+              },
+            );
+          },
+        ),
+      ];
+    } else if (status case StatusEnum.ManagerApprovedReturn) {
+      return [
+        ListTile(
+          title: const CustomStyledText(
+            text: 'موافقة المدير على الإرجاع',
+            fontSize: 20,
+          ),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CustomSureDialog(
+                  onConfirm: () {},
+                );
+              },
+            );
+          },
+        ),
+      ];
+    } else if (status case StatusEnum.InformCustomerOfTheCost) {
+      return [
+        ListTile(
+          title: const CustomStyledText(
+            text: 'إبلاغ العميل بالتكلفة',
+            fontSize: 20,
+          ),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return ShowDilogInformCustomerOfTheCost();
+              },
+            );
+          },
+        ),
+      ];
+    } else if (status case StatusEnum.ItemCannotBeServiced) {
+      return [
+        ListTile(
+          title: const CustomStyledText(
+            text: 'ابلاغ العميل بعدم امكانية صيانة',
+            fontSize: 20,
+          ),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CustomSureDialog(
+                  onConfirm: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return CustomSureDialog(
+                          onConfirm: () {},
+                        );
+                      },
                     );
                   },
                 );
-              }),
-        ];
-      case StatusEnum.CheckItem:
-        return [
-          ListTile(
-            title: const CustomStyledText(
-              text: 'تحديد العطل',
-              fontSize: 20,
-            ),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CustomInputDialog(
-                    titleDialog: 'تحديد العطل',
-                    text: 'الوصف:',
-                    hintText: 'ادخل الوصف',
-                    // controller: ,
-                    validators: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'عفوا.الوصف مطلوب';
-                      }
-                      return null;
-                    },
-                    onConfirm: () {},
-                  );
-                },
-              );
-            },
+              },
+            );
+          },
+        ),
+      ];
+    } else if (status case StatusEnum.NoResponseFromTheCustomer) {
+      return [
+        ListTile(
+          title: const CustomStyledText(
+            text: 'لا توجد استجابة من العميل',
+            fontSize: 20,
           ),
-          ListTile(
-            title: const CustomStyledText(
-              text: 'لا يمكن تحديد العطل',
-              fontSize: 20,
-            ),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CustomSureDialog(
-                    onConfirm: () {},
-                  );
-                },
-              );
-            },
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CustomSureDialog(
+                  onConfirm: () {},
+                );
+              },
+            );
+          },
+        ),
+      ];
+    } else if (status case StatusEnum.CustomerApproved) {
+      return [
+        ListTile(
+          title: const CustomStyledText(
+            text: 'موافقة العميل',
+            fontSize: 20,
           ),
-        ];
-
-      case StatusEnum.DefineMalfunction:
-        return [
-          ListTile(
-            title: const CustomStyledText(
-              text: 'مكتمل',
-              fontSize: 20,
-            ),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CustomSureDialog(
-                    onConfirm: () {},
-                  );
-                },
-              );
-            },
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CustomSureDialog(
+                  onConfirm: () {},
+                );
+              },
+            );
+          },
+        ),
+      ];
+    } else if (status case StatusEnum.EnterMaintenanceCost) {
+      return [
+        ListTile(
+          title: const CustomStyledText(
+            text: 'إدخال تكلفة الصيانة',
+            fontSize: 20,
           ),
-        ];
-      case StatusEnum.ManagerApprovedReturn:
-        return [
-          ListTile(
-            title: const CustomStyledText(
-              text: 'موافقة المدير على الإرجاع',
-              fontSize: 20,
-            ),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CustomSureDialog(
-                    onConfirm: () {},
-                  );
-                },
-              );
-            },
+          onTap: () {},
+        ),
+      ];
+    } else if (status case StatusEnum.Completed) {
+      return [
+        ListTile(
+          title: const CustomStyledText(
+            text: 'إبلاغ العميل بانتهاء الصيانة',
+            fontSize: 20,
           ),
-        ];
-
-      case StatusEnum.InformCustomerOfTheCost:
-        return [
-          ListTile(
-            title: const CustomStyledText(
-              text: 'إبلاغ العميل بالتكلفة',
-              fontSize: 20,
-            ),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CustomSureDialog(
-                    onConfirm: () {},
-                  );
-                },
-              );
-            },
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CustomSureDialog(
+                  onConfirm: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return CustomSureDialog(
+                          onConfirm: () {},
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            );
+          },
+        ),
+      ];
+    } else {
+      return [
+        ListTile(
+          title: const CustomStyledText(
+            text: 'التعليق',
+            fontSize: 20,
           ),
-        ];
-      case StatusEnum.ItemCannotBeServiced:
-        return [
-          ListTile(
-            title: const CustomStyledText(
-              text: 'ابلاغ العميل بعدم امكانية صيانة',
-              fontSize: 20,
-            ),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CustomSureDialog(
-                    onConfirm: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return CustomSureDialog(
-                            onConfirm: () {},
-                          );
-                        },
-                      );
-                    },
-                  );
-                },
-              );
-            },
-          ),
-        ];
-      case StatusEnum.NoResponseFromTheCustomer:
-        return [
-          ListTile(
-            title: const CustomStyledText(
-              text: 'لا توجد استجابة من العميل',
-              fontSize: 20,
-            ),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CustomSureDialog(
-                    onConfirm: () {},
-                  );
-                },
-              );
-            },
-          ),
-        ];
-      case StatusEnum.CustomerApproved:
-        return [
-          ListTile(
-            title: const CustomStyledText(
-              text: 'موافقة العميل',
-              fontSize: 20,
-            ),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CustomSureDialog(
-                    onConfirm: () {},
-                  );
-                },
-              );
-            },
-          ),
-        ];
-      case StatusEnum.EnterMaintenanceCost:
-        return [
-          ListTile(
-            title: const CustomStyledText(
-              text: 'إدخال تكلفة الصيانة',
-              fontSize: 20,
-            ),
-            onTap: () {},
-          ),
-        ];
-      case StatusEnum.Completed:
-        return [
-          ListTile(
-            title: const CustomStyledText(
-              text: 'إبلاغ العميل بانتهاء الصيانة',
-              fontSize: 20,
-            ),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CustomSureDialog(
-                    onConfirm: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return CustomSureDialog(
-                            onConfirm: () {},
-                          );
-                        },
-                      );
-                    },
-                  );
-                },
-              );
-            },
-          ),
-        ];
-
-      case StatusEnum.Suspended:
-        return [
-          ListTile(
-            title: const CustomStyledText(
-              text: 'التعليق',
-              fontSize: 20,
-            ),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CustomInputDialog(
-                    titleDialog: 'تعليق الصيانة',
-                    text: 'سبب تعليق الصيانة:',
-                    hintText: 'ادخل سبب تعليق الصيانة',
-                    // controller: ,
-                    validators: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'عفوا.سبب تعليق الصيانة مطلوب';
-                      }
-                      return null;
-                    },
-                    onConfirm: () {},
-                  );
-                },
-              );
-            },
-          ),
-        ];
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CustomInputDialog(
+                  titleDialog: 'تعليق الصيانة',
+                  text: 'سبب تعليق الصيانة:',
+                  hintText: 'ادخل سبب تعليق الصيانة',
+                  // controller: ,
+                  validators: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'عفوا.سبب تعليق الصيانة مطلوب';
+                    }
+                    return null;
+                  },
+                  onConfirm: () {},
+                );
+              },
+            );
+          },
+        ),
+      ];
     }
+  }
+}
+
+class ShowDilogInformCustomerOfTheCost extends StatefulWidget {
+  const ShowDilogInformCustomerOfTheCost({
+    super.key,
+  });
+
+  @override
+  State<ShowDilogInformCustomerOfTheCost> createState() =>
+      _ShowDilogInformCustomerOfTheCostState();
+}
+
+class _ShowDilogInformCustomerOfTheCostState
+    extends State<ShowDilogInformCustomerOfTheCost> {
+  StatusEnum? statusEnum = StatusEnum.EnterMaintenanceCost;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(25),
+      ),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(
+              width: 50,
+              height: 5,
+              margin: const EdgeInsets.only(bottom: 15, top: 10),
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.only(bottom: 5),
+            alignment: Alignment.topRight,
+            child: const CustomStyledText(
+              text: 'اختر العملية',
+              fontSize: 20,
+              textColor: AppColors.secondaryColor,
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            color: Colors.grey,
+            height: 0.5,
+          ),
+        ],
+      ),
+      content: SizedBox(
+        height: 150,
+        width: 300,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Radio<StatusEnum>(
+                  value: StatusEnum.CustomerApproved,
+                  groupValue: statusEnum,
+                  onChanged: (StatusEnum? value) {
+                    setState(() {
+                      statusEnum = value;
+                    });
+                  },
+                  fillColor: WidgetStateProperty.resolveWith<Color>(
+                    (Set<WidgetState> states) {
+                      if (states.contains(WidgetState.selected)) {
+                        return AppColors.secondaryColor;
+                      }
+                      return Colors.grey;
+                    },
+                  ),
+                ),
+                const CustomStyledText(
+                  text: 'موافقة العميل',
+                  fontSize: 17,
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Radio<StatusEnum>(
+                  value: StatusEnum.CustomerRefused,
+                  groupValue: statusEnum,
+                  onChanged: (StatusEnum? value) {
+                    setState(() {
+                      statusEnum = value;
+                    });
+                  },
+                  fillColor: WidgetStateProperty.resolveWith<Color>(
+                    (Set<WidgetState> states) {
+                      if (states.contains(WidgetState.selected)) {
+                        return AppColors.secondaryColor;
+                      }
+                      return Colors.grey;
+                    },
+                  ),
+                ),
+                const CustomStyledText(
+                  text: 'رفض العميل',
+                  fontSize: 17,
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Radio<StatusEnum>(
+                  value: StatusEnum.NoResponseFromTheCustomer,
+                  groupValue: statusEnum,
+                  onChanged: (StatusEnum? value) {
+                    setState(() {
+                      statusEnum = value;
+                    });
+                  },
+                  fillColor: WidgetStateProperty.resolveWith<Color>(
+                    (Set<WidgetState> states) {
+                      if (states.contains(WidgetState.selected)) {
+                        return AppColors.secondaryColor;
+                      }
+                      return Colors.grey;
+                    },
+                  ),
+                ),
+                const CustomStyledText(
+                  text: 'لا يوجد رد من العميل',
+                  fontSize: 17,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          style: TextButton.styleFrom(
+            backgroundColor: Colors.grey[500],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+          ),
+          child: const CustomStyledText(
+            text: "إلغاء",
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            if (statusEnum == StatusEnum.CustomerApproved) {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomSureDialog(
+                    onConfirm: () {},
+                  );
+                },
+              );
+            } else if (statusEnum == StatusEnum.CustomerRefused) {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomInputDialog(
+                    titleDialog: 'رفض العميل',
+                    text: 'سبب رفض العميل للصيانة:',
+                    hintText: 'ادخل سبب رفض العميل للصيانة',
+                    // controller: ,
+                    validators: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'عفوا.سبب مطلوب';
+                      }
+                      return null;
+                    },
+                    onConfirm: () {},
+                  );
+                },
+              );
+            } else if (statusEnum == StatusEnum.NoResponseFromTheCustomer) {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomSureDialog(
+                    onConfirm: () {},
+                  );
+                },
+              );
+            }
+          },
+          style: TextButton.styleFrom(
+            backgroundColor: AppColors.secondaryColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+          ),
+          child: const CustomStyledText(text: "تأكيد", textColor: Colors.white),
+        ),
+      ],
+    );
   }
 }

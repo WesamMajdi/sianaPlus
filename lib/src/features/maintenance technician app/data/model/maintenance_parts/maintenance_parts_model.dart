@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:flutter/material.dart';
 
 class MaintenancePart {
@@ -76,15 +78,22 @@ List<OrderStatus> orderStatuses = [
 ];
 
 enum StatusEnum {
-  New,
+  WaitingManagerResponse,
   ManagerApprovedReturn,
+  ManagerRefusedReturn,
+  New,
   CheckItem,
   DefineMalfunction,
   InformCustomerOfTheCost,
-  NoResponseFromTheCustomer,
   CustomerApproved,
+  CustomerRefused,
+  NoResponseFromTheCustomer,
+  ItemCannotBeServiced,
+  NotifyCustomerOfTheInabilityToMaintain,
   EnterMaintenanceCost,
   Completed,
-  ItemCannotBeServiced,
+  NotifyCustomerOfMaintenanceEnd,
+  Delivered,
   Suspended,
+  RemovedFromMaintained
 }
