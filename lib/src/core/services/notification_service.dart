@@ -37,11 +37,11 @@ class NotificationService {
 
     try {
       // Check if Firebase is initialized
-      if (Firebase.apps.isEmpty) {
-        await Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        );
-      }
+      // if (Firebase.apps.isEmpty) {
+      //   await Firebase.initializeApp(
+      //     options: DefaultFirebaseOptions.currentPlatform,
+      //   );
+      // }
 
       // Request permission
       await _requestPermission();
