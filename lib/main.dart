@@ -114,25 +114,21 @@ class MyApp extends StatelessWidget {
                 designSize: const Size(360, 640),
                 splitScreenMode: true,
                 builder: (context, state) {
-                  return MultiBlocListener(
-                      listeners: [
-                        BlocListener<ConnectivityCubit, ConnectivityStatus>(
-                          listener: (context, status) async {
-                            if (status == ConnectivityStatus.disconnected) {
-                              _showNoConnectionBanner(
-                                  context, ConnectivityStatus.disconnected);
-                            }
+                  return MultiBlocListener(listeners: [
+                    BlocListener<ConnectivityCubit, ConnectivityStatus>(
+                      listener: (context, status) async {
+                        if (status == ConnectivityStatus.disconnected) {
+                          _showNoConnectionBanner(
+                              context, ConnectivityStatus.disconnected);
+                        }
 
-                            if (status == ConnectivityStatus.connected) {
-                              _showNoConnectionBanner(
-                                  context, ConnectivityStatus.connected);
-                            }
-                          },
-                        ),
-                      ],
-                      child: isLoggedIn
-                          ? const HomePage()
-                          : const SplashPage());
+                        if (status == ConnectivityStatus.connected) {
+                          _showNoConnectionBanner(
+                              context, ConnectivityStatus.connected);
+                        }
+                      },
+                    ),
+                  ], child: isLoggedIn ? const HomePage() : const SplashPage());
                   // return ;
                 },
               ),

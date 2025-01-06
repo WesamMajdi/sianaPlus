@@ -1,3 +1,4 @@
+import 'package:maintenance_app/src/core/network/global_token.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/orders/orders_entity.dart';
 
@@ -101,11 +102,10 @@ class OrderRemoteDataSource {
           headers: {
             'Content-Type': 'application/json',
             'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQxOTY3MSwiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.Ve1L0udmkLwjfGj59tqKnFH9aVTYUOIN0z6Sq562nL4'
+                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQxOTY3MSwiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.Ve1L0udmkLwjfGj59tqKnFH9aVTYUOIN0z6Sq562nL4'
           },
         );
         debugPrint(response.statusCode.toString());
-        print(response.body.toString());
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         debugPrint(responseBody.toString());
         if (response.statusCode >= 400) {
@@ -133,12 +133,13 @@ class OrderRemoteDataSource {
   Future<BaseResponse<List<OrderEntery>>> getItemsList() async {
     if (await internetConnectionChecker.hasConnection) {
       try {
+        String? token = await TokenManager.getToken();
+        print(token);
         final response = await apiController.get(
           Uri.parse(ApiSetting.getItemList),
           headers: {
             'Content-Type': 'application/json',
-            'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQxOTY3MSwiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.Ve1L0udmkLwjfGj59tqKnFH9aVTYUOIN0z6Sq562nL4'
+            'Authorization': 'Bearer $token'
           },
         );
         debugPrint(response.statusCode.toString());
@@ -175,7 +176,7 @@ class OrderRemoteDataSource {
           headers: {
             'Content-Type': 'application/json',
             'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQxOTY3MSwiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.Ve1L0udmkLwjfGj59tqKnFH9aVTYUOIN0z6Sq562nL4'
+                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQxOTY3MSwiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.Ve1L0udmkLwjfGj59tqKnFH9aVTYUOIN0z6Sq562nL4'
           },
         );
         debugPrint(response.statusCode.toString());
@@ -215,7 +216,7 @@ class OrderRemoteDataSource {
               'Content-Type': 'application/json',
               'accept': '*/*',
               'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQxOTY3MSwiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.Ve1L0udmkLwjfGj59tqKnFH9aVTYUOIN0z6Sq562nL4'
+                  'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQxOTY3MSwiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.Ve1L0udmkLwjfGj59tqKnFH9aVTYUOIN0z6Sq562nL4'
             },
             body: createOrderRequest.toJson());
         debugPrint(response.statusCode.toString());
@@ -244,7 +245,7 @@ class OrderRemoteDataSource {
           headers: {
             'Content-Type': 'application/json',
             'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQxOTY3MSwiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.Ve1L0udmkLwjfGj59tqKnFH9aVTYUOIN0z6Sq562nL4'
+                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQxOTY3MSwiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.Ve1L0udmkLwjfGj59tqKnFH9aVTYUOIN0z6Sq562nL4'
           },
         );
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
@@ -276,9 +277,9 @@ class OrderRemoteDataSource {
 
   Future<PaginatedResponse<OrderModel>> getOrderMaintenanceByUserNew(
       PaginationParams paginationParams) async {
-    debugPrint(  Uri.parse(
-        '${ApiSetting.getOrderMaintenanceByUserNew}?page=${paginationParams.page}&perPage=${paginationParams.perPage}').toString()
-    );
+    debugPrint(Uri.parse(
+            '${ApiSetting.getOrderMaintenanceByUserNew}?page=${paginationParams.page}&perPage=${paginationParams.perPage}')
+        .toString());
     if (await internetConnectionChecker.hasConnection) {
       try {
         final response = await apiController.get(
@@ -287,7 +288,7 @@ class OrderRemoteDataSource {
           headers: {
             'Content-Type': 'application/json',
             'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQxOTY3MSwiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.Ve1L0udmkLwjfGj59tqKnFH9aVTYUOIN0z6Sq562nL4'
+                'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQxOTY3MSwiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.Ve1L0udmkLwjfGj59tqKnFH9aVTYUOIN0z6Sq562nL4'
           },
         );
         final Map<String, dynamic> responseBody = jsonDecode(response.body);

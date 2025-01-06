@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:maintenance_app/src/core/network/global_token.dart';
 import 'data.dart';
 import 'domain.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,8 +14,7 @@ class LoginCubit extends Cubit<LoginState> {
       emit(LoginLoading());
 
       final loginResponse = await apiService.login(email, password);
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', loginResponse.data.token);
+      await TokenManager.saveToken(loginResponse.data.token);
 
       emit(LoginSuccess(loginResponse));
     } catch (e) {
