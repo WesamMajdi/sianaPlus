@@ -25,14 +25,19 @@ class _ChangePhoneNumberPageState extends State<ChangePhoneNumberPage> {
       body: ListView(
         children: [
           Container(
-            decoration: const BoxDecoration(
-                color: AppColors.secondaryColor,
-                borderRadius: BorderRadius.only(
+            decoration: BoxDecoration(
+                color: (Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.lightGrayColor
+                    : AppColors.primaryColor),
+                borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(15),
                     bottomRight: Radius.circular(15))),
-            height: 150,
+            height: 140,
             width: 120,
-            child: Image.asset("assets/images/siana_plus_logo.png"),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: Image.asset("assets/images/logoWhit.png"),
+            ),
           ),
           AppSizedBox.kVSpace20,
           Form(

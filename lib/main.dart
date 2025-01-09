@@ -128,7 +128,7 @@ class MyApp extends StatelessWidget {
                         }
                       },
                     ),
-                  ], child: isLoggedIn ? const HomePage() : const SplashPage());
+                  ], child: const SplashPage());
                   // return ;
                 },
               ),

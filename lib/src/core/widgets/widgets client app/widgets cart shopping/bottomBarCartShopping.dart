@@ -90,8 +90,11 @@ class BottomBarCartTotal extends StatelessWidget {
                   padding: WidgetStateProperty.all(
                     const EdgeInsets.symmetric(vertical: 13, horizontal: 15),
                   ),
-                  backgroundColor:
-                      WidgetStateProperty.all(AppColors.secondaryColor),
+                  backgroundColor: WidgetStateProperty.all(
+                    (Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.lightGrayColor
+                        : AppColors.primaryColor),
+                  ),
                 ),
                 onPressed: () {
                   Navigator.push(

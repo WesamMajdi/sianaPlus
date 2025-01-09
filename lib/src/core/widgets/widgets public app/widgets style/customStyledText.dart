@@ -22,8 +22,8 @@ class CustomStyledText extends StatelessWidget {
   Widget build(BuildContext context) {
     final Color effectiveTextColor = textColor ??
         (Theme.of(context).brightness == Brightness.dark
-            ? AppColors.lightGrayColor
-            : Colors.black);
+            ? Colors.white
+            : AppColors.primaryColor);
 
     return Text(
       text,
@@ -58,7 +58,7 @@ class CustomLabelText extends StatelessWidget {
           text: text,
           textColor: (Theme.of(context).brightness == Brightness.dark
               ? AppColors.lightGrayColor
-              : Colors.black),
+              : AppColors.primaryColor),
           fontSize: 18,
           fontWeight: FontWeight.w500,
           fontFamily: "Tajawal",

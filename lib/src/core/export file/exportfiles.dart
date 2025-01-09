@@ -64,5 +64,5 @@ export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20profile/onTapViewImageProfile.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20profile/userInfoProfile.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20profile/userImageProfile.dart';
-export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20cart%20shopping/cartshopping.dart';
+export 'package:maintenance_app/src/features/client%20app/presentation/screens/cart_shopping/cart_shopping_screen.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20cart%20shopping/isEmptyCartShopping.dart';

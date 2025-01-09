@@ -198,7 +198,7 @@ class CustomInputFielLocation extends StatefulWidget {
     required this.icon,
     this.validators,
     this.controller,
-    this.enabled=true,
+    this.enabled = true,
   });
 
   @override

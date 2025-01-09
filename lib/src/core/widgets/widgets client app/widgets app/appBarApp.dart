@@ -29,7 +29,6 @@ class AppBarApplication extends StatelessWidget implements PreferredSizeWidget {
             child: CustomStyledText(
               text: text,
               fontWeight: FontWeight.bold,
-              textColor: AppColors.secondaryColor,
               fontSize: 22,
             ),
           ),
@@ -83,7 +82,9 @@ class AppBarApplicationArrow extends StatelessWidget
           child: Center(
             child: CustomStyledText(
               text: text,
-              textColor: AppColors.secondaryColor,
+              textColor: (Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.lightGrayColor
+                  : AppColors.primaryColor),
               fontWeight: FontWeight.bold,
               fontSize: 22,
             ),

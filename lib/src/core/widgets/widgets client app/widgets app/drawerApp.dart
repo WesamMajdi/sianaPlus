@@ -21,21 +21,59 @@ class _MyDrawerState extends State<MyDrawer> {
     return Drawer(
       shape: const RoundedRectangleBorder(),
       shadowColor: AppColors.secondaryColor,
-      width: screenWidth * 0.71,
+      width: screenWidth * 0.72,
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: (Theme.of(context).brightness == Brightness.dark
-                  ? AppColors.lightGrayColor
-                  : AppColors.darkGrayColor),
+          const SizedBox(
+            height: 50,
+          ),
+          ListTile(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const UserProfilePage(),
+                  ));
+            },
+            leading: const CircleAvatar(
+              radius: 25,
+              child: Icon(
+                FontAwesomeIcons.user,
+                size: 20,
+              ),
             ),
-            child: const InfoCard(
-              name: 'مدير التطبيق',
-              username: 'admin@gmail.com',
+            title: Row(
+              children: [
+                CustomStyledText(
+                  text: truncateTextTitle("وسام البلعاوي"),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.5,
+                ),
+                AppSizedBox.kWSpace5,
+                const Icon(Icons.arrow_back_ios,
+                    size: 12, textDirection: TextDirection.ltr),
+              ],
+            ),
+            subtitle: CustomStyledText(
+              text: 'admin@gmail.com',
+              fontSize: 14,
+              textColor: Colors.grey.shade500,
             ),
           ),
+          const Divider(),
+          // DrawerHeader(
+          //   decoration: BoxDecoration(
+          //     color: (Theme.of(context).brightness == Brightness.dark
+          //         ? AppColors.lightGrayColor
+          //         : AppColors.primaryColor),
+          //   ),
+          //   child: const InfoCard(
+          //     name: 'مدير التطبيق',
+          //     username: '',
+          //   ),
+          // ),
+          AppSizedBox.kVSpace5,
           SideMenuTile(
             icon: FontAwesomeIcons.house,
             title: 'الرئيسية',
@@ -77,7 +115,7 @@ class _MyDrawerState extends State<MyDrawer> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MaintenanceRequestPage(),
+                    builder: (context) => const MaintenanceRequestPage(),
                   ));
             },
           ),
@@ -92,7 +130,6 @@ class _MyDrawerState extends State<MyDrawer> {
                   ));
             },
           ),
-
           SideMenuTile(
             icon: FontAwesomeIcons.toolbox,
             title: 'طلبات الصيانة',
@@ -104,23 +141,6 @@ class _MyDrawerState extends State<MyDrawer> {
                   ));
             },
           ),
-
-          // sideMenuTile(
-          //   icon: FontAwesomeIcons.solidHeart,
-          //   title: 'المفضلة',
-          //   onTap: () {},
-          // ),
-          // sideMenuTile(
-          //   icon: FontAwesomeIcons.solidBell,
-          //   title: 'الاشعارات',
-          //   onTap: () {
-          //     Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //           builder: (context) => const NotificationsPage(),
-          //         ));
-          //   },
-          // ),
           SideMenuTile(
             icon: FontAwesomeIcons.solidUser,
             title: 'صفحتي الشخصية',
@@ -132,9 +152,7 @@ class _MyDrawerState extends State<MyDrawer> {
                   ));
             },
           ),
-          Divider(
-            color: Colors.grey.withOpacity(0.4),
-          ),
+          const Divider(),
           SideMenuTile(
             icon: FontAwesomeIcons.gear,
             title: 'الاعدادات',
@@ -174,25 +192,26 @@ class InfoCard extends StatelessWidget {
     return Column(
       children: [
         SizedBox(
-          width: 75,
+          width: 150,
           height: 70,
           child: CircleAvatar(
-            backgroundColor: AppColors.secondaryColor,
-            child: Image.asset('assets/images/siana_plus_logo2.png'),
+            backgroundColor: AppColors.primaryColor,
+            child: Image.asset('assets/images/user_png.png'),
           ),
-        ),
-        AppSizedBox.kVSpace10,
-        CustomStyledText(
-          text: name!,
-          fontWeight: FontWeight.bold,
-          textColor: AppColors.secondaryColor,
-          fontSize: 20,
         ),
         AppSizedBox.kVSpace5,
         CustomStyledText(
+          text: name!,
+          fontWeight: FontWeight.bold,
+          textColor: (Theme.of(context).brightness == Brightness.dark
+              ? AppColors.primaryColor
+              : AppColors.lightGrayColor),
+          fontSize: 20,
+        ),
+        CustomStyledText(
           text: username,
           fontSize: 14,
-          textColor: Colors.grey,
+          textColor: Colors.white54,
           fontWeight: FontWeight.w600,
         )
       ],

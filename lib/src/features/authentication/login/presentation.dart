@@ -32,9 +32,12 @@ class _LoginPageState extends State<LoginPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.asset(
-              'assets/images/siana_plus_logo.png',
-              width: 280,
+            Container(
+              margin: const EdgeInsets.only(top: 40, bottom: 20),
+              child: Image.asset(
+                'assets/images/logo.png',
+                width: 140,
+              ),
             ),
             const CustomStyledText(
               text: "مرحباً بك في صيانة بلس",

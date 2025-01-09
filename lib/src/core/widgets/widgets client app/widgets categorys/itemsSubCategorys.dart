@@ -42,7 +42,10 @@ class ItemsSubCategorys extends StatelessWidget {
                               children: [
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: AppColors.secondaryColor,
+                                    color: (Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? AppColors.secondaryColor
+                                        : AppColors.primaryColor),
                                     borderRadius: BorderRadius.circular(20),
                                     boxShadow: shadowList,
                                   ),
@@ -63,10 +66,6 @@ class ItemsSubCategorys extends StatelessWidget {
                                       'assets/images/Untitled-2.png',
                                       fit: BoxFit.fill,
                                     ),
-                                    // child: Container(
-                                    //   height: 100,
-                                    //   width: 100,
-                                    // ),
                                   ),
                                 )
                               ],
@@ -105,7 +104,7 @@ class ItemsSubCategorys extends StatelessWidget {
                                         subCategory.name),
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    textColor: AppColors.secondaryColor,
+                                    textColor: AppColors.primaryColor,
                                   ),
                                   const SizedBox(height: 5),
                                   CustomStyledText(
@@ -125,7 +124,7 @@ class ItemsSubCategorys extends StatelessWidget {
                                     text: "10",
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
-                                    textColor: AppColors.secondaryColor,
+                                    textColor: AppColors.primaryColor,
                                   ),
                                 ],
                               ),
@@ -143,8 +142,6 @@ class ItemsSubCategorys extends StatelessWidget {
               );
             }
         }
-
-        return const Text('Some thing error');
       },
     );
   }

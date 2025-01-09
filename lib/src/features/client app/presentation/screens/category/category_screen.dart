@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/gestures.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20categorys/itemsMainCategorys.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20categorys/itemsSubCategorys.dart';
@@ -55,7 +56,7 @@ class _CategoryPageState extends State<CategoryPage> {
               text: "الاصناف الرئيسية",
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              textColor: AppColors.secondaryColor,
+              textColor: AppColors.primaryColor,
             ),
           ),
           BlocBuilder<CategoryCubit, CategoryState>(
@@ -72,12 +73,10 @@ class _CategoryPageState extends State<CategoryPage> {
 
                 case MainCategoryStatus.success:
                   if (state.categories.isNotEmpty) {
-                    return Container(
+                    return SizedBox(
                       height: 50,
-                      color: (Theme.of(context).brightness == Brightness.dark
-                          ? Colors.transparent
-                          : Colors.white),
                       child: ListView.builder(
+                        reverse: false,
                         scrollDirection: Axis.horizontal,
                         itemCount: state.categories.length,
                         itemBuilder: (context, index) {
@@ -116,7 +115,7 @@ class _CategoryPageState extends State<CategoryPage> {
               text: "الاصناف الفرعية",
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              textColor: AppColors.secondaryColor,
+              textColor: AppColors.primaryColor,
             ),
           ),
           const ItemsSubCategorys(),

@@ -29,7 +29,7 @@ class ItemsMainCategories extends StatelessWidget {
                   width: 0.6,
                 ),
           color: state.selectedCategoryId == category.id
-              ? AppColors.secondaryColor
+              ? AppColors.primaryColor
               : Colors.grey.withOpacity(0.2),
           borderRadius: BorderRadius.circular(20),
         ),
@@ -39,8 +39,8 @@ class ItemsMainCategories extends StatelessWidget {
             child: CustomStyledText(
               text: category.name,
               textColor: state.selectedCategoryId == category.id
-                  ? Colors.white
-                  : AppColors.secondaryColor,
+                  ? AppColors.lightGrayColor
+                  : AppColors.primaryColor,
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),

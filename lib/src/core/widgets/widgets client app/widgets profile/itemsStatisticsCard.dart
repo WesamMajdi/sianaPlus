@@ -29,7 +29,9 @@ class StatisticsCard extends StatelessWidget {
               text: title,
               fontSize: 13.2,
               fontWeight: FontWeight.bold,
-              textColor: AppColors.secondaryColor,
+              textColor: (Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.lightGrayColor
+                  : AppColors.primaryColor),
             ),
           ],
         ),

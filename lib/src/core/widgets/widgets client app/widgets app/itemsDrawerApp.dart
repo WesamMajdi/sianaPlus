@@ -27,7 +27,7 @@ class SideMenuTile extends StatelessWidget {
               size: 20,
               color: (Theme.of(context).brightness == Brightness.dark
                   ? AppColors.lightGrayColor
-                  : Colors.black),
+                  : AppColors.primaryColor),
             ),
             AppSizedBox.kWSpace20,
             CustomStyledText(

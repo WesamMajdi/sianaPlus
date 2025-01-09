@@ -8,17 +8,22 @@ class FloatingButtonInBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-      backgroundColor: AppColors.secondaryColor,
+      shape: const CircleBorder(),
+      backgroundColor: (Theme.of(context).brightness == Brightness.dark
+          ? AppColors.lightGrayColor
+          : AppColors.primaryColor),
       onPressed: () {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const SearchProductPage()),
         );
       },
-      child: const Icon(
+      child: Icon(
         FontAwesomeIcons.magnifyingGlass,
         size: 20,
-        color: Colors.white,
+        color: (Theme.of(context).brightness == Brightness.dark
+            ? AppColors.primaryColor
+            : AppColors.lightGrayColor),
       ),
     );
   }

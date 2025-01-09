@@ -38,7 +38,6 @@ class CartShoppingItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomStyledText(
-                // text: item.name!,
                 text: item.name!,
                 textColor: AppColors.secondaryColor,
                 fontWeight: FontWeight.bold,
@@ -47,7 +46,6 @@ class CartShoppingItem extends StatelessWidget {
               AppSizedBox.kVSpace10,
               CustomStyledText(
                 text: "\$${item.price?.toStringAsFixed(2)}",
-                // text: "\$${100.toStringAsFixed(2)}",
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               ),

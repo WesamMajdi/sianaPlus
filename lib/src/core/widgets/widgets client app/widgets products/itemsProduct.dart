@@ -30,7 +30,7 @@ class _ItemsProductState extends State<ItemsProduct> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CategoryCubit,CategoryState>(
+    return BlocBuilder<CategoryCubit, CategoryState>(
       builder: (context, state) => Column(
         children: [
           GridView.builder(
@@ -72,7 +72,7 @@ class _ItemsProductState extends State<ItemsProduct> {
                             child: Center(
                               child: CustomStyledText(
                                 text:
-                                "%${(widget.products[index].discount! * 100).toInt()}",
+                                    "%${(widget.products[index].discount! * 100).toInt()}",
                                 textColor: Colors.white,
                                 fontSize: 16,
                               ),
@@ -81,9 +81,10 @@ class _ItemsProductState extends State<ItemsProduct> {
                         else
                           const Spacer(),
                         IconButton(
-                          onPressed: () async{
-                            await  context.read<CategoryCubit>().createFavorite(productId: product.id!);
-
+                          onPressed: () async {
+                            await context
+                                .read<CategoryCubit>()
+                                .createFavorite(productId: product.id!);
                           },
                           icon: Icon(
                             widget.products[index].isFavorite ?? false
@@ -152,8 +153,8 @@ class _ItemsProductState extends State<ItemsProduct> {
                             textColor: AppColors.secondaryColor,
                           ),
                           Icon(FontAwesomeIcons.cartPlus,
-                              color:
-                              (Theme.of(context).brightness == Brightness.dark
+                              color: (Theme.of(context).brightness ==
+                                      Brightness.dark
                                   ? Colors.white
                                   : Colors.black),
                               size: 22),

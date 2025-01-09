@@ -15,6 +15,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const MyDrawer(),
       appBar: const AppBarApplication(
         text: 'صفحتي الشخصية',
       ),
@@ -27,11 +28,13 @@ class _UserProfilePageState extends State<UserProfilePage> {
           AppSizedBox.kVSpace10,
           Container(
             alignment: Alignment.center,
-            child: const CustomStyledText(
+            child: CustomStyledText(
               text: "مدير تطبيق",
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              textColor: AppColors.secondaryColor,
+              textColor: (Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.lightGrayColor
+                  : AppColors.primaryColor),
             ),
           ),
           AppSizedBox.kVSpace10,
@@ -66,10 +69,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
           AppSizedBox.kVSpace20,
           Container(
             margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            child: const CustomStyledText(
+            child: CustomStyledText(
               text: "المعلومات الشخصية",
               fontWeight: FontWeight.bold,
-              textColor: AppColors.secondaryColor,
+              textColor: (Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.lightGrayColor
+                  : AppColors.primaryColor),
               fontSize: 16,
             ),
           ),
@@ -103,9 +108,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
           AppSizedBox.kVSpace10,
           Container(
             margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            child: const CustomStyledText(
+            child: CustomStyledText(
               text: "الاحصائيات",
-              textColor: AppColors.secondaryColor,
+              textColor: (Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.lightGrayColor
+                  : AppColors.primaryColor),
               fontWeight: FontWeight.bold,
               fontSize: 16,
             ),

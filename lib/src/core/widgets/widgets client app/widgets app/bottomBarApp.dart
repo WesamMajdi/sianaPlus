@@ -25,7 +25,9 @@ class BottomAppBarApplication extends StatelessWidget {
                 Icon(
                   currentIndex == 0 ? Icons.home : Icons.home_outlined,
                   color: currentIndex == 0
-                      ? AppColors.secondaryColor
+                      ? (Theme.of(context).brightness == Brightness.dark
+                          ? AppColors.lightGrayColor
+                          : AppColors.primaryColor)
                       // ignore: deprecated_member_use
                       : Colors.grey.withOpacity(0.8),
                   size: 35,
@@ -46,7 +48,11 @@ class BottomAppBarApplication extends StatelessWidget {
               currentIndex == 1
                   ? FontAwesomeIcons.solidHeart
                   : FontAwesomeIcons.heart,
-              color: currentIndex == 1 ? AppColors.secondaryColor : Colors.grey,
+              color: currentIndex == 1
+                  ? (Theme.of(context).brightness == Brightness.dark
+                      ? AppColors.lightGrayColor
+                      : AppColors.primaryColor)
+                  : Colors.grey,
               size: 26,
             ),
             onPressed: () {
@@ -66,7 +72,11 @@ class BottomAppBarApplication extends StatelessWidget {
               currentIndex == 2
                   ? FontAwesomeIcons.solidBell
                   : FontAwesomeIcons.bell,
-              color: currentIndex == 2 ? AppColors.secondaryColor : Colors.grey,
+              color: currentIndex == 2
+                  ? (Theme.of(context).brightness == Brightness.dark
+                      ? AppColors.lightGrayColor
+                      : AppColors.primaryColor)
+                  : Colors.grey,
               size: 26,
             ),
             onPressed: () {
@@ -84,7 +94,11 @@ class BottomAppBarApplication extends StatelessWidget {
               currentIndex == 3
                   ? FontAwesomeIcons.solidUser
                   : FontAwesomeIcons.user,
-              color: currentIndex == 3 ? AppColors.secondaryColor : Colors.grey,
+              color: currentIndex == 3
+                  ? (Theme.of(context).brightness == Brightness.dark
+                      ? AppColors.lightGrayColor
+                      : AppColors.primaryColor)
+                  : Colors.grey,
               size: 24,
             ),
             onPressed: () {

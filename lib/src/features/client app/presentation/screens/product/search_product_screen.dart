@@ -88,20 +88,7 @@ class SearchProductPage extends StatelessWidget {
             )),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.secondaryColor,
-        onPressed: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const SearchProductPage()),
-          );
-        },
-        child: const Icon(
-          FontAwesomeIcons.magnifyingGlass,
-          size: 20,
-          color: Colors.white,
-        ),
-      ),
+      floatingActionButton: const FloatingButtonInBottomBar(),
       bottomNavigationBar: const BottomAppBarApplication(currentIndex: -1),
     );
   }

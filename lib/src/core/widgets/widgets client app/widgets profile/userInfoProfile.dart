@@ -16,7 +16,9 @@ class UserInfoProfile extends StatelessWidget {
       children: [
         Icon(
           icon,
-          color: AppColors.secondaryColor,
+          color: (Theme.of(context).brightness == Brightness.dark
+              ? AppColors.lightGrayColor
+              : AppColors.primaryColor),
           size: 20,
         ),
         const SizedBox(

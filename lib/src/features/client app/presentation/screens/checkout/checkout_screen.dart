@@ -32,7 +32,9 @@ class _CreditCardFormScreenState extends State<CreditCardFormScreen> {
                   cardHolderName.isEmpty ? 'Card Holder' : cardHolderName,
               cvvCode: cvvCode.isEmpty ? '***' : cvvCode,
               showBackView: false,
-              cardBgColor: AppColors.secondaryColor,
+              cardBgColor: (Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.lightGrayColor
+                  : AppColors.primaryColor),
               isHolderNameVisible: true,
               onCreditCardWidgetChange: (CreditCardBrand brand) {},
             ),
@@ -188,8 +190,11 @@ class _CreditCardFormScreenState extends State<CreditCardFormScreen> {
                     padding: WidgetStateProperty.all(
                       const EdgeInsets.symmetric(vertical: 13, horizontal: 15),
                     ),
-                    backgroundColor:
-                        WidgetStateProperty.all(AppColors.secondaryColor),
+                    backgroundColor: WidgetStateProperty.all(
+                      (Theme.of(context).brightness == Brightness.dark
+                          ? AppColors.lightGrayColor
+                          : AppColors.primaryColor),
+                    ),
                   ),
                   onPressed: () {},
                   icon: const Icon(

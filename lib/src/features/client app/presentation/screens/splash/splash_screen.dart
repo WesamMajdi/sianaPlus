@@ -23,7 +23,7 @@ class _SplashPageState extends State<SplashPage> {
     bool isConnected = await hasInternetConnection();
 
     if (isConnected) {
-      Timer(const Duration(seconds: 5), () {
+      Timer(const Duration(seconds: 10), () {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const LoginPage()),
         );
@@ -36,36 +36,20 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        alignment: Alignment.center,
-        children: [
-          Container(
-            color: AppColors.secondaryColor,
-          ),
-          Image.asset(
-            'assets/images/siana_plus_logo.png',
-            height: ScreenUtil().setWidth(300),
-            width: ScreenUtil().setHeight(300),
-          ),
-          Positioned.fill(
-            child: Container(
-              padding: const EdgeInsets.only(bottom: AppPadding.mediumPadding),
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: SizedBox(
-                  child: Lottie.asset(
-                    'assets/animations/loading_tool.json',
-                    fit: BoxFit.fill,
-                    width: ScreenUtil().setWidth(100),
-                    height: ScreenUtil().setHeight(100),
-                  ),
-                ),
-              ),
+        body: Container(
+      color: AppColors.secondaryColor,
+      child: SizedBox.expand(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/logoSplash.gif',
             ),
-          )
-        ],
+          ],
+        ),
       ),
-    );
+    ));
   }
 
   void _showNoInternetDialog() {

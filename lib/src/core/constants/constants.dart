@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 const kAppName = 'Siana Plus';
 
 class AppColors {
-  static const Color primaryColor = Color(0xFF28489d);
-  static const Color secondaryColor = Color(0xFFeb6624);
-  static const Color darkGrayColor = Color(0xFF35353a);
-  static const Color lightGrayColor = Color(0xFFe4eaf6);
+  static const Color primaryColor = Color(0xFF230038);
+  static const Color secondaryColor = Color(0xFF8254f6);
+  static const Color darkGrayColor = Color(0xFFff3a96);
+  static const Color lightGrayColor = Color(0xFFffc604);
 }
 
 class AppPadding {

@@ -33,14 +33,18 @@ class _InsertMaintenanceRequestPageState
           body: ListView(
             children: [
               Container(
-                decoration: const BoxDecoration(
-                    color: AppColors.secondaryColor,
+                decoration: BoxDecoration(
+                    color: (Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.lightGrayColor
+                        : AppColors.primaryColor),
                     borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(15),
                         bottomRight: Radius.circular(15))),
-                height: 150,
+                height: 140,
                 width: 120,
-                child: Image.asset("assets/images/siana_plus_logo.png"),
+                child: Container(
+                    margin: EdgeInsets.only(top: 25, bottom: 25),
+                    child: Image.asset("assets/images/logo.png")),
               ),
               AppSizedBox.kVSpace20,
               Form(
