@@ -178,11 +178,102 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
   }
 
   List<Widget> _getItemsBasedOnStatus(BuildContext context, StatusEnum status) {
-    if (status case StatusEnum.New) {
-      return [
-        ListTile(
+    bool notifyCustomerOfTheCost = true;
+    if (status != StatusEnum.Suspended) {
+      ListTile(
+        title: const CustomStyledText(
+          text: 'سبب تعليق',
+          fontSize: 20,
+        ),
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return CustomInputDialog(
+                titleDialog: 'تحديد سبب تعليق',
+                text: 'سبب تعليق:',
+                hintText: 'ادخل تعليق',
+                validators: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'عفوا.تعليق مطلوب';
+                  }
+                  return null;
+                },
+                onConfirm: () {}, // SuspenseMaintenanceForHandReceiptItem
+              );
+            },
+          );
+        },
+      );
+      if (status == StatusEnum.New) {
+        return [
+          ListTile(
             title: const CustomStyledText(
               text: 'فحص القطعة',
+              fontSize: 20,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomSureDialog(
+                    onConfirm: () {},
+                  ); //UpdateStatusForHandReceiptItem
+                },
+              );
+            },
+          ),
+        ];
+      } else if (status == StatusEnum.CheckItem) {
+        return [
+          ListTile(
+            title: const CustomStyledText(
+              text: 'تحديد العطل',
+              fontSize: 20,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomInputDialog(
+                    titleDialog: 'تحديد العطل',
+                    text: 'الوصف:',
+                    hintText: 'ادخل الوصف',
+                    validators: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'عفوا.الوصف مطلوب';
+                      }
+                      return null;
+                    },
+                    onConfirm: () {}, //DefineMalfunctionForHandReceiptItem
+                  );
+                },
+              );
+            },
+          ),
+          ListTile(
+            title: const CustomStyledText(
+              text: 'لا يمكن صيانة القطعة',
+              fontSize: 20,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomSureDialog(
+                    onConfirm: () {}, //UpdateStatusForHandReceiptItem
+                  );
+                },
+              );
+            },
+          ),
+        ];
+      } else if (status == StatusEnum.DefineMalfunction &&
+          notifyCustomerOfTheCost) {
+        return [
+          ListTile(
+            title: const CustomStyledText(
+              text: 'ابلاغ العميل بتكلفة',
               fontSize: 20,
             ),
             onTap: () {
@@ -194,234 +285,203 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                   );
                 },
               );
-            }),
-      ];
-    } else if (status case StatusEnum.CheckItem) {
-      return [
-        ListTile(
-          title: const CustomStyledText(
-            text: 'تحديد العطل',
-            fontSize: 20,
+            }, //UpdateStatusForHandReceiptItem
           ),
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CustomInputDialog(
-                  titleDialog: 'تحديد العطل',
-                  text: 'الوصف:',
-                  hintText: 'ادخل الوصف',
-                  // controller: ,
-                  validators: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'عفوا.الوصف مطلوب';
-                    }
-                    return null;
-                  },
-                  onConfirm: () {},
-                );
-              },
-            );
-          },
-        ),
-        ListTile(
-          title: const CustomStyledText(
-            text: 'لا يمكن تحديد العطل',
-            fontSize: 20,
+        ];
+      } else if (status == StatusEnum.DefineMalfunction &&
+          // ignore: dead_code
+          !notifyCustomerOfTheCost) {
+        return [
+          ListTile(
+            title: const CustomStyledText(
+              text: 'مكتمل',
+              fontSize: 20,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomSureDialog(
+                    onConfirm: () {},
+                  );
+                },
+              );
+            }, //UpdateStatusForHandReceiptItem
           ),
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CustomSureDialog(
-                  onConfirm: () {},
-                );
-              },
-            );
-          },
-        ),
-      ];
-    } else if (status case StatusEnum.DefineMalfunction) {
-      return [
-        ListTile(
-          title: const CustomStyledText(
-            text: 'مكتمل',
-            fontSize: 20,
+        ];
+      } else if (status == StatusEnum.InformCustomerOfTheCost) {
+        return [
+          ListTile(
+            title: const CustomStyledText(
+              text: 'إبلاغ العميل بالتكلفة',
+              fontSize: 20,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return const ShowDilogInformCustomerOfTheCost();
+                },
+              );
+            },
           ),
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CustomSureDialog(
-                  onConfirm: () {},
-                );
-              },
-            );
-          },
-        ),
-      ];
-    } else if (status case StatusEnum.ManagerApprovedReturn) {
-      return [
-        ListTile(
-          title: const CustomStyledText(
-            text: 'موافقة المدير على الإرجاع',
-            fontSize: 20,
+        ];
+      } else if (status == StatusEnum.NoResponseFromTheCustomer) {
+        return [
+          ListTile(
+            title: const CustomStyledText(
+              text: 'موافقة العميل',
+              fontSize: 20,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomSureDialog(
+                    onConfirm: () {},
+                  );
+                },
+              );
+            }, //UpdateStatusForHandReceiptItem
           ),
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CustomSureDialog(
-                  onConfirm: () {},
-                );
-              },
-            );
-          },
-        ),
-      ];
-    } else if (status case StatusEnum.InformCustomerOfTheCost) {
-      return [
-        ListTile(
-          title: const CustomStyledText(
-            text: 'إبلاغ العميل بالتكلفة',
-            fontSize: 20,
+          ListTile(
+            title: const CustomStyledText(
+              text: 'رفض العميل',
+              fontSize: 20,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomSureDialog(
+                    onConfirm:
+                        () {}, //CustomerRefuseMaintenanceForHandReceiptItem
+                  );
+                },
+              );
+            },
           ),
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return ShowDilogInformCustomerOfTheCost();
-              },
-            );
-          },
-        ),
-      ];
-    } else if (status case StatusEnum.ItemCannotBeServiced) {
-      return [
-        ListTile(
-          title: const CustomStyledText(
-            text: 'ابلاغ العميل بعدم امكانية صيانة',
-            fontSize: 20,
+        ];
+      } else if (status == StatusEnum.CustomerApproved &&
+          notifyCustomerOfTheCost) {
+        return [
+          ListTile(
+            title: const CustomStyledText(
+              text: 'سعر صيانة',
+              fontSize: 20,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomInputDialog(
+                    titleDialog: 'تحديد السعر',
+                    text: 'السعر:',
+                    hintText: 'ادخل السعر',
+                    validators: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'عفوا.السعر مطلوب';
+                      }
+                      return null;
+                    },
+                    onConfirm: () {},
+
+                    ///EnterMaintenanceCostForHandReceiptItem
+                  );
+                },
+              );
+            },
           ),
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CustomSureDialog(
-                  onConfirm: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return CustomSureDialog(
-                          onConfirm: () {},
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-            );
-          },
-        ),
-      ];
-    } else if (status case StatusEnum.NoResponseFromTheCustomer) {
-      return [
-        ListTile(
-          title: const CustomStyledText(
-            text: 'لا توجد استجابة من العميل',
-            fontSize: 20,
+        ];
+      } else if ((status == StatusEnum.CustomerApproved &&
+              !notifyCustomerOfTheCost) ||
+          status == StatusEnum.EnterMaintenanceCost) {
+        return [
+          ListTile(
+            title: const CustomStyledText(
+              text: 'مكتمل',
+              fontSize: 20,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomSureDialog(
+                    onConfirm: () {},
+                  );
+                },
+              );
+            },
           ),
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CustomSureDialog(
-                  onConfirm: () {},
-                );
-              },
-            );
-          },
-        ),
-      ];
-    } else if (status case StatusEnum.CustomerApproved) {
-      return [
-        ListTile(
-          title: const CustomStyledText(
-            text: 'موافقة العميل',
-            fontSize: 20,
+        ];
+
+        ///UpdateStatusForHandReceiptItem
+      } else if (status == StatusEnum.Completed) {
+        return [
+          ListTile(
+            title: const CustomStyledText(
+              text: 'ابلاغ العميل بانتهاء الصيانة',
+              fontSize: 20,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomSureDialog(
+                    onConfirm: () {},
+
+                    ///UpdateStatusForHandReceiptItem
+                  );
+                },
+              );
+            },
           ),
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CustomSureDialog(
-                  onConfirm: () {},
-                );
-              },
-            );
-          },
-        ),
-      ];
-    } else if (status case StatusEnum.EnterMaintenanceCost) {
-      return [
-        ListTile(
-          title: const CustomStyledText(
-            text: 'إدخال تكلفة الصيانة',
-            fontSize: 20,
+        ];
+      } else if (status == StatusEnum.ItemCannotBeServiced) {
+        return [
+          ListTile(
+            title: const CustomStyledText(
+              text: 'ابلاغ العميل بعدم امكانية صيانة',
+              fontSize: 20,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomSureDialog(
+                    onConfirm: () {},
+
+                    ///UpdateStatusForHandReceiptItem
+                  );
+                },
+              );
+            },
           ),
-          onTap: () {},
-        ),
-      ];
-    } else if (status case StatusEnum.Completed) {
-      return [
-        ListTile(
-          title: const CustomStyledText(
-            text: 'إبلاغ العميل بانتهاء الصيانة',
-            fontSize: 20,
+        ];
+      } else {
+        return [
+          ListTile(
+            title: const CustomStyledText(
+              text: 'التعليق',
+              fontSize: 20,
+            ),
+            onTap: () {},
           ),
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CustomSureDialog(
-                  onConfirm: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return CustomSureDialog(
-                          onConfirm: () {},
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-            );
-          },
-        ),
-      ];
+        ];
+      }
     } else {
       return [
         ListTile(
           title: const CustomStyledText(
-            text: 'التعليق',
+            text: 'فك تعليق',
             fontSize: 20,
           ),
           onTap: () {
+            // ReOpenMaintenanceForHandReceiptItem
             showDialog(
               context: context,
               builder: (BuildContext context) {
-                return CustomInputDialog(
-                  titleDialog: 'تعليق الصيانة',
-                  text: 'سبب تعليق الصيانة:',
-                  hintText: 'ادخل سبب تعليق الصيانة',
-                  // controller: ,
-                  validators: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'عفوا.سبب تعليق الصيانة مطلوب';
-                    }
-                    return null;
-                  },
+                return CustomSureDialog(
                   onConfirm: () {},
                 );
               },
@@ -513,7 +573,7 @@ class _ShowDilogInformCustomerOfTheCostState
                   fontSize: 17,
                 ),
               ],
-            ),
+            ), // UpdateStatusForHandReceiptItem '&Status=5
             Row(
               children: [
                 Radio<StatusEnum>(
@@ -538,7 +598,7 @@ class _ShowDilogInformCustomerOfTheCostState
                   fontSize: 17,
                 ),
               ],
-            ),
+            ), //CustomerRefuseMaintenanceForHandReceiptItem
             Row(
               children: [
                 Radio<StatusEnum>(
@@ -563,7 +623,7 @@ class _ShowDilogInformCustomerOfTheCostState
                   fontSize: 17,
                 ),
               ],
-            ),
+            ), // UpdateStatusForHandReceiptItem '&Status=7 // بدي احط حالتين موافقة العميل ورفض
           ],
         ),
       ),
