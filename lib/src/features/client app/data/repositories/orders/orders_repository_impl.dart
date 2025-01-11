@@ -62,7 +62,7 @@ class OrderRepositoryImpl implements OrderRepository {
 
   @override
   Future<Either<Failure, PaginatedResponse<OrderModel>>>
-  getOrderMaintenanceByUserNew(PaginationParams paginationParams) async {
+      getOrderMaintenanceByUserNew(PaginationParams paginationParams) async {
     try {
       final response =
           await remoteDataSource.getOrderMaintenanceByUserNew(paginationParams);

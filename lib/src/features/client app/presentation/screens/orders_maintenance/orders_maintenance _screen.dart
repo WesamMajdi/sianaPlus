@@ -25,9 +25,13 @@ class OrdersMaintenancePage extends StatelessWidget {
                   : Colors.black)),
           elevation: 0,
           bottom: TabBar(
-            labelColor: AppColors.secondaryColor,
+            labelColor: (Theme.of(context).brightness == Brightness.dark
+                ? AppColors.lightGrayColor
+                : AppColors.darkGrayColor),
             unselectedLabelColor: Colors.grey.withOpacity(0.5),
-            indicatorColor: AppColors.secondaryColor,
+            indicatorColor: (Theme.of(context).brightness == Brightness.dark
+                ? AppColors.lightGrayColor
+                : AppColors.darkGrayColor),
             labelStyle: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w500,
@@ -43,12 +47,14 @@ class OrdersMaintenancePage extends StatelessWidget {
           backgroundColor: Colors.transparent,
           title: Container(
             margin: const EdgeInsets.only(left: 60),
-            child: const Center(
+            child: Center(
               child: CustomStyledText(
                 text: 'طلبات الصيانة',
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
-                textColor: AppColors.secondaryColor,
+                textColor: (Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.lightGrayColor
+                    : AppColors.primaryColor),
               ),
             ),
           ),
@@ -66,8 +72,7 @@ class OrdersMaintenancePage extends StatelessWidget {
                 if (state.orderStatus == OrderStatus.success &&
                     state.ordersItems.isNotEmpty) {
                   return ListView.builder(
-                    shrinkWrap: true, // Important for nesting scrolls
-                    // physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
                     itemCount: state.ordersItems.length,
                     itemBuilder: (context, index) {
                       return CurrentMaintenanceOrdersTab(

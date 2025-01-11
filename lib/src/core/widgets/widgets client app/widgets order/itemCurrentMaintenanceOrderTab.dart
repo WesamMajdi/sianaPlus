@@ -16,93 +16,113 @@ class CurrentMaintenanceOrdersTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-      return Padding(
-          padding: const EdgeInsets.symmetric(
-              horizontal: AppPadding.mediumPadding,
-              vertical: AppPadding.smallPadding),
-          child: Container(
-              decoration: BoxDecoration(
-                color: (Theme.of(context).brightness == Brightness.dark
-                    ? Colors.black54
-                    : Colors.white),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.3),
-                  ),
-                ],
-              ),
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const OrdersDetailsPage(),
-                      ));
-                },
-                child:  Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppPadding.mediumPadding,
-                      vertical: AppPadding.mediumPadding),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          AppSizedBox.kVSpace10,
-                          CustomStyledText(
-                            text: "طلب #${orderEntity!.id}",
-                            fontSize: 16,
-                          ),
-                          AppSizedBox.kVSpace5,
-                          CustomStyledText(
-                            text: 'itemEntity.item!.name!',
-                            textColor: AppColors.secondaryColor,
-                            fontSize: 20,
-                          ),
-                          AppSizedBox.kVSpace5,
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              CustomStyledText(
-                                text: "السعر: ",
-                                textColor: AppColors.secondaryColor,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 16,
-                              ),
-                              CustomStyledText(
-                                text: "${orderEntity.totalAfterDiscount}\$",
-                                fontSize: 14,
-                              ),
-                            ],
-                          ),
-                          AppSizedBox.kVSpace5,
-                          Row(
-                            children: [
-                              const CustomStyledText(
-                                text: "الحالة: ",
-                                textColor: AppColors.secondaryColor,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 16,
-                              ),
-                              CustomStyledText(
-                                text: "${OrderMaintenanceStatusExtension.fromId(orderEntity.orderMaintenanceStatus!).name} ",
-                                fontSize: 14,
-                              ),
-                            ],
-                          ),
-                        ],
+    return Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppPadding.mediumPadding,
+            vertical: AppPadding.smallPadding),
+        child: Container(
+            decoration: BoxDecoration(
+              color: (Theme.of(context).brightness == Brightness.dark
+                  ? Colors.black54
+                  : Colors.white),
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.3),
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppPadding.mediumPadding,
+                  vertical: AppPadding.smallPadding),
+              child: Container(
+                  decoration: BoxDecoration(
+                    color: (Theme.of(context).brightness == Brightness.dark
+                        ? Colors.black54
+                        : Colors.white),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.3),
                       ),
                     ],
                   ),
-                ),
-              )));
-    // }
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppPadding.largePadding),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CustomStyledText(
+                              text: "طلب #${orderEntity.id}",
+                              fontSize: 18,
+                              textColor: AppColors.secondaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.amber,
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 2, horizontal: 10),
+                                child: CustomStyledText(
+                                  text: ' getText(part.status)',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        AppSizedBox.kVSpace10,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: [
+                                CustomStyledText(
+                                  text: 'part.clientName',
+                                  fontSize: 16,
+                                  textColor: Colors.grey,
+                                ),
+                                AppSizedBox.kVSpace5,
+                                CustomStyledText(
+                                  text: 'part.clientPhone',
+                                  fontSize: 16,
+                                  textColor: Colors.grey,
+                                ),
+                              ],
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.only(top: 20),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  CustomStyledText(
+                                    text: 'تفاصيل',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    textColor: Colors.white54,
+                                  ),
+                                  AppSizedBox.kWSpace10,
+                                  Icon(
+                                    FontAwesomeIcons.arrowLeft,
+                                    size: 14,
+                                    color: Colors.white54,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  )),
+            )));
   }
 }

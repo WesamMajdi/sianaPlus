@@ -139,9 +139,9 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                                 : CustomButton(
                                     text: 'اضافة طلب',
                                     onPressed: () async {
-
-                                      if(_pickedLocation == null){
-                                        ScaffoldMessenger.of(context).showSnackBar(
+                                      if (_pickedLocation == null) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
                                           const SnackBar(
                                             backgroundColor: Colors.red,
                                             behavior: SnackBarBehavior.floating,
@@ -149,29 +149,30 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                                           ),
                                         );
                                         return;
-                                      }else{
+                                      } else {
                                         final createOrder = CreateOrderRequest(
                                           total: 0,
                                           discount: 0,
                                           locationForDelivery:
-                                          '${_pickedLocation!.latitude},${_pickedLocation!.longitude}',
+                                              '${_pickedLocation!.latitude},${_pickedLocation!.longitude}',
                                           notifyCustomerOfTheCost:
-                                          state.notifyCustomerOfTheCost,
+                                              state.notifyCustomerOfTheCost,
                                           handReceipt: HandReceipt(
                                             items: state.items
                                                 .map((e) => Items(
-                                                itemId: e.item!.id,
-                                                colorId: e.color!.id,
-                                                companyId: e.company!.id,
-                                                description: e.description!))
+                                                    itemId: e.item!.id,
+                                                    colorId: e.color!.id,
+                                                    companyId: e.company!.id,
+                                                    description:
+                                                        e.description!))
                                                 .toList(),
                                           ),
                                         );
                                         await context
                                             .read<OrderCubit>()
-                                            .createOrderMaintenance(createOrder);
+                                            .createOrderMaintenance(
+                                                createOrder);
                                       }
-
                                     },
                                   ),
                           ]),

@@ -8,6 +8,7 @@ import '../../../data/model/orders/orders_model_request.dart';
 import '../../../domain/entities/category/category_entity.dart';
 
 enum OrderCreationStatus { initial, loading, success, failure }
+
 enum OrderStatus { initial, loading, success, failure }
 
 enum ItemOrdersStatus { initial, loading, success, failure }
@@ -60,11 +61,11 @@ class OrderState extends Equatable {
       ColorStatus? colorStatus,
       ItemOrdersStatus? itemOrdersStatus,
       ItemsStatus? itemsStatus,
-        OrderStatus? orderStatus,
+      OrderStatus? orderStatus,
       int? orderCurrentPage,
       CompaniesStatus? companiesStatus,
       List<OrderEntery>? colorsList,
-      List<OrderEntity>?ordersItems,
+      List<OrderEntity>? ordersItems,
       List<OrderEntery>? itemsList,
       List<OrderEntery>? companiesList,
       List<ItemsEntity>? items,
@@ -97,14 +98,14 @@ class OrderState extends Equatable {
   List<Object?> get props => [
         orderCreationStatus,
         colorStatus,
-    itemOrdersStatus,
+        itemOrdersStatus,
         itemsStatus,
         companiesStatus,
         colorsList,
         itemsList,
         items,
-    orderStatus,
-    ordersItems,
+        orderStatus,
+        ordersItems,
         companiesList,
         selectedCompany,
         selectedItem,

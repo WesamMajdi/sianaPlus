@@ -1,4 +1,3 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/color_entery.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model_request.dart';
@@ -10,11 +9,9 @@ import '../states/order_state.dart';
 
 class OrderCubit extends Cubit<OrderState> {
   final OrderUseCase orderUseCase;
-  List<ItemsEntity>? orderItems =[];
+  List<ItemsEntity>? orderItems = [];
 
-  OrderCubit(this.orderUseCase)
-      : super(OrderState());
-
+  OrderCubit(this.orderUseCase) : super(OrderState());
 
   void saveItem({required Items item, ItemsEntity? itemsEntity}) {
     emit(state.copyWith(
@@ -29,7 +26,7 @@ class OrderCubit extends Cubit<OrderState> {
     ));
   }
 
-  Future<void> initOrdersRequirements()async{
+  Future<void> initOrdersRequirements() async {
     await Future.wait([
       fetchColorList(),
       fetchItemsList(),
@@ -38,85 +35,81 @@ class OrderCubit extends Cubit<OrderState> {
     ]);
   }
 
-
-
   void toggleNotifyCustomerOfTheCost(bool value) {
     emit(state.copyWith(notifyCustomerOfTheCost: value));
   }
+
   Future<void> fetchColorList() async {
     emit(state.copyWith(colorStatus: ColorStatus.loading));
-    final result =
-    await orderUseCase.getColorLsit();
+    final result = await orderUseCase.getColorLsit();
     result.fold(
-          (failure) => emit(state.copyWith(colorStatus: ColorStatus.failure)),
-          (colors) => emit(state.copyWith(colorStatus: ColorStatus.success,colorsList: colors.data!)),
+      (failure) => emit(state.copyWith(colorStatus: ColorStatus.failure)),
+      (colors) => emit(state.copyWith(
+          colorStatus: ColorStatus.success, colorsList: colors.data!)),
     );
   }
+
   Future<void> fetchItemsList() async {
     emit(state.copyWith(itemsStatus: ItemsStatus.loading));
-    final result =
-    await orderUseCase.getItemsList();
+    final result = await orderUseCase.getItemsList();
     result.fold(
-          (failure) => emit(state.copyWith(itemsStatus: ItemsStatus.failure)),
-          (items) => emit(state.copyWith(itemsStatus: ItemsStatus.success,itemsList: items.data!)),
+      (failure) => emit(state.copyWith(itemsStatus: ItemsStatus.failure)),
+      (items) => emit(state.copyWith(
+          itemsStatus: ItemsStatus.success, itemsList: items.data!)),
     );
   }
+
   Future<void> fetchCompaniesList() async {
     emit(state.copyWith(companiesStatus: CompaniesStatus.loading));
-    final result =
-    await orderUseCase.getCompaniesList();
+    final result = await orderUseCase.getCompaniesList();
     result.fold(
-          (failure) => emit(state.copyWith(companiesStatus: CompaniesStatus.failure)),
-          (companies) => emit(state.copyWith(companiesStatus: CompaniesStatus.success,companiesList: companies.data!)),
+      (failure) =>
+          emit(state.copyWith(companiesStatus: CompaniesStatus.failure)),
+      (companies) => emit(state.copyWith(
+          companiesStatus: CompaniesStatus.success,
+          companiesList: companies.data!)),
     );
   }
 
-
-  selectColor(OrderEntery color){
+  selectColor(OrderEntery color) {
     emit(state.copyWith(selectedColor: color));
   }
-  selectItem(OrderEntery item){
 
+  selectItem(OrderEntery item) {
     emit(state.copyWith(selectedItem: item));
   }
-  selectCompany(OrderEntery company){
+
+  selectCompany(OrderEntery company) {
     emit(state.copyWith(selectedCompany: company));
   }
 
-
-
-  Future<void> createOrderMaintenance(CreateOrderRequest createOrderRequest)async{
+  Future<void> createOrderMaintenance(
+      CreateOrderRequest createOrderRequest) async {
     emit(state.copyWith(orderCreationStatus: OrderCreationStatus.loading));
 
     final result =
-   await orderUseCase.createOrderMaintenance(createOrderRequest);
+        await orderUseCase.createOrderMaintenance(createOrderRequest);
     result.fold(
-          (failure) => emit(state.copyWith(orderCreationStatus: OrderCreationStatus.failure)),
-          (_) {
-            emit(state.copyWith(orderCreationStatus: OrderCreationStatus.success,items:[],notifyCustomerOfTheCost: false));
-
-          } ,
+      (failure) => emit(
+          state.copyWith(orderCreationStatus: OrderCreationStatus.failure)),
+      (_) {
+        emit(state.copyWith(
+            orderCreationStatus: OrderCreationStatus.success,
+            items: [],
+            notifyCustomerOfTheCost: false));
+      },
     );
-
-
   }
 
-
-
-  Future<void> getOrderMaintenanceByUserNew(
-      {bool refresh = false}) async {
-    emit(state.copyWith(orderStatus:OrderStatus.loading));
+  Future<void> getOrderMaintenanceByUserNew({bool refresh = false}) async {
+    emit(state.copyWith(orderStatus: OrderStatus.loading));
     final page = refresh ? 1 : state.orderCurrentPage;
-    final result = await orderUseCase.getOrderMaintenanceByUserNew(
-        PaginationParams(page: page));
+    final result = await orderUseCase
+        .getOrderMaintenanceByUserNew(PaginationParams(page: page));
     result.fold(
-          (failure) => emit(state.copyWith(
-              orderStatus: OrderStatus.failure
-          )),
-          (orders) => emit(state.copyWith(
-              orderStatus: OrderStatus.success, ordersItems: orders.items
-        )),
+      (failure) => emit(state.copyWith(orderStatus: OrderStatus.failure)),
+      (orders) => emit(state.copyWith(
+          orderStatus: OrderStatus.success, ordersItems: orders.items)),
     );
   }
-
 }

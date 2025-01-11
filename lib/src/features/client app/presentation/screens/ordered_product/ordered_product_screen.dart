@@ -20,8 +20,13 @@ class OrderedProductPage extends StatelessWidget {
                   : Colors.black)),
           elevation: 0,
           bottom: TabBar(
-            labelColor: AppColors.secondaryColor,
-            unselectedLabelColor: Colors.grey.withOpacity(0.5),
+            labelColor: (Theme.of(context).brightness == Brightness.dark
+                ? AppColors.lightGrayColor
+                : AppColors.darkGrayColor),
+            unselectedLabelColor:
+                (Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.lightGrayColor
+                    : AppColors.darkGrayColor),
             indicatorColor: AppColors.secondaryColor,
             labelStyle: const TextStyle(
               fontSize: 22,

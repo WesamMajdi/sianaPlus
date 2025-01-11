@@ -29,14 +29,13 @@ class OrderUseCase {
     return repository.getCompaniesList();
   }
 
-  Future<Either<Failure, void>> createOrderMaintenance(CreateOrderRequest createOrderRequest) {
+  Future<Either<Failure, void>> createOrderMaintenance(
+      CreateOrderRequest createOrderRequest) {
     return repository.createOrderMaintenance(createOrderRequest);
   }
 
-
-  Future<Either<Failure, PaginatedResponse<OrderEntity>>> getOrderMaintenanceByUserNew(
-      PaginationParams paginationParams) {
+  Future<Either<Failure, PaginatedResponse<OrderEntity>>>
+      getOrderMaintenanceByUserNew(PaginationParams paginationParams) {
     return repository.getOrderMaintenanceByUserNew(paginationParams);
   }
-
 }

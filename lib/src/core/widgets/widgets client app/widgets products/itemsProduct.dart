@@ -41,7 +41,7 @@ class _ItemsProductState extends State<ItemsProduct> {
             shrinkWrap: true,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.68,
+              childAspectRatio: 0.7,
             ),
             itemBuilder: (context, index) {
               final product = widget.products[index];
@@ -50,7 +50,7 @@ class _ItemsProductState extends State<ItemsProduct> {
                     left: AppPadding.mediumPadding,
                     right: AppPadding.mediumPadding,
                     top: 10),
-                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
                 decoration: BoxDecoration(
                     boxShadow: shadowList,
                     color: (Theme.of(context).brightness == Brightness.dark
@@ -110,7 +110,8 @@ class _ItemsProductState extends State<ItemsProduct> {
                         margin: const EdgeInsets.all(10),
                         child: Image.asset(
                           'assets/images/refrigerator.jpeg',
-                          fit: BoxFit.fill,
+                          fit: BoxFit.scaleDown,
+                          height: 75,
                         ),
                         // child: Container(
                         //   width: 100,
@@ -128,7 +129,7 @@ class _ItemsProductState extends State<ItemsProduct> {
                       child: CustomStyledText(
                         text: truncateTextTitle(widget.products[index].name!),
                         fontSize: 17,
-                        textColor: AppColors.secondaryColor,
+                        textColor: AppColors.lightGrayColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -142,22 +143,22 @@ class _ItemsProductState extends State<ItemsProduct> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           CustomStyledText(
                             text: "\$${widget.products[index].price}",
                             fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                            textColor: AppColors.secondaryColor,
+                            fontSize: 22,
                           ),
                           Icon(FontAwesomeIcons.cartPlus,
                               color: (Theme.of(context).brightness ==
                                       Brightness.dark
                                   ? Colors.white
                                   : Colors.black),
-                              size: 22),
+                              size: 24),
                         ],
                       ),
                     ),

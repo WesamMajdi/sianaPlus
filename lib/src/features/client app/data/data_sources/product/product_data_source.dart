@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:maintenance_app/src/core/network/global_token.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/product/product_model.dart';
 
 import '../../../../../core/error/exception.dart';
@@ -23,6 +24,7 @@ class ProductRemoteDataSource {
 
   Future<PaginatedResponse<ProductModel>> getProductByCategory(
       PaginationParams paginationParams) async {
+    String? token = await TokenManager.getToken();
     debugPrint(Uri.parse(
             '${ApiSetting.getProductByCategory}?categoryId=${paginationParams.mainCategoryId}&page=${paginationParams.page}&perPage=${paginationParams.perPage}')
         .toString());
@@ -33,8 +35,7 @@ class ProductRemoteDataSource {
               '${ApiSetting.getProductByCategory}?categoryId=${paginationParams.mainCategoryId}&page=${paginationParams.page}&perPage=${paginationParams.perPage}'),
           headers: {
             'Content-Type': 'application/json',
-            'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQxOTY3MSwiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.Ve1L0udmkLwjfGj59tqKnFH9aVTYUOIN0z6Sq562nL4'
+            'Authorization': 'Bearer $token'
           },
         );
         debugPrint(response.statusCode.toString());
@@ -67,8 +68,10 @@ class ProductRemoteDataSource {
   }
 
   Future<void> createFavorite(PaginationParams paginationParams) async {
-    debugPrint(  Uri.parse(
-        '${ApiSetting.createFavorite}?productId=${paginationParams.productId}').toString());
+    String? token = await TokenManager.getToken();
+    debugPrint(Uri.parse(
+            '${ApiSetting.createFavorite}?productId=${paginationParams.productId}')
+        .toString());
 
     if (await internetConnectionChecker.hasConnection) {
       try {
@@ -78,8 +81,7 @@ class ProductRemoteDataSource {
           headers: {
             // 'Content-Type': 'application/json',
             'accept': '*/*',
-            'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQyNjI1MywiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.JfaaGg8S8V144mB2AMThD83drQ3EmGIuwqGi1SwSegU'
+            'Authorization': 'Bearer $token'
           },
         );
         debugPrint(response.statusCode.toString());
@@ -89,7 +91,6 @@ class ProductRemoteDataSource {
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
-
       } on TimeOutExeption {
         rethrow;
       }
@@ -99,9 +100,10 @@ class ProductRemoteDataSource {
   }
 
   Future<void> deleteFavorite(PaginationParams paginationParams) async {
-
-        debugPrint(  Uri.parse(
-            '${ApiSetting.deleteFavorite}?productId=${paginationParams.productId}').toString());
+    String? token = await TokenManager.getToken();
+    debugPrint(Uri.parse(
+            '${ApiSetting.deleteFavorite}?productId=${paginationParams.productId}')
+        .toString());
     if (await internetConnectionChecker.hasConnection) {
       try {
         final response = await apiController.post(
@@ -110,8 +112,7 @@ class ProductRemoteDataSource {
           headers: {
             // 'Content-Type': 'application/json',
             'accept': '*/*',
-            'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQyNjI1MywiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.JfaaGg8S8V144mB2AMThD83drQ3EmGIuwqGi1SwSegU'
+            'Authorization': 'Bearer $token'
           },
         );
         debugPrint(response.statusCode.toString());
@@ -121,7 +122,6 @@ class ProductRemoteDataSource {
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
-
       } on TimeOutExeption {
         rethrow;
       }
@@ -131,16 +131,16 @@ class ProductRemoteDataSource {
   }
 
   Future<void> deleteAllFavorite() async {
-           if (await internetConnectionChecker.hasConnection) {
+    String? token = await TokenManager.getToken();
+
+    if (await internetConnectionChecker.hasConnection) {
       try {
         final response = await apiController.post(
-          Uri.parse(
-              '${ApiSetting.deleteAllFavorite}'),
+          Uri.parse('${ApiSetting.deleteAllFavorite}'),
           headers: {
             // 'Content-Type': 'application/json',
             'accept': '*/*',
-            'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjU5MzdmMWZlLTg0OGQtNDY3ZC05YmMzLWUzZWJmMjZhZmY0YyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJodXNzZW5AZ21haWwuY29tIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiaHVzc2VuQGdtYWlsLmNvbSIsImV4cCI6MTczNjQyNjI1MywiaXNzIjoiRGV2ZWxvcGVyc0F1dGgiLCJhdWQiOiJEZXZlbG9wZXJzQXV0aCJ9.JfaaGg8S8V144mB2AMThD83drQ3EmGIuwqGi1SwSegU'
+            'Authorization': 'Bearer $token'
           },
         );
         debugPrint(response.statusCode.toString());
@@ -150,7 +150,6 @@ class ProductRemoteDataSource {
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
-
       } on TimeOutExeption {
         rethrow;
       }
