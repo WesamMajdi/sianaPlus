@@ -1,10 +1,14 @@
-
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:maintenance_app/src/features/client%20app/data/repositories/orders/orders_repository_impl.dart';
 import 'package:maintenance_app/src/features/client%20app/data/repositories/product/product_repository_impl.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/repositories/product/product_repository.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/usecases/product/fetch_product_useCase.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/data_sources/maintenance_parts/maintenance_parts_data_source.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/repositories/maintenance_parts/maintenance_parts_repository_impl.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/repositories/maintenance_parts/maintenance_parts.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/usecases/maintenance_parts/fetch_maintenance_parts.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/maintenance_parts/maintenance_parts_cubit.dart';
 
 import '../../features/client app/data/data_sources/category/category_data_source.dart';
 import '../../features/client app/data/data_sources/orders/orders_data_source.dart';
@@ -24,7 +28,6 @@ Future<void> init() async {
   // Cubits
   _initCubits();
 
-
   // Use Cases
   _initUseCases();
 
@@ -39,67 +42,77 @@ Future<void> init() async {
 }
 
 void _initCubits() {
-
-  getIt.registerFactory<CategoryCubit>(() => CategoryCubit(getIt(),getIt()));
+  getIt.registerFactory<CategoryCubit>(() => CategoryCubit(getIt(), getIt()));
   getIt.registerFactory<OrderCubit>(() => OrderCubit(getIt()));
-
+  getIt.registerFactory<HandReceiptCubit>(() => HandReceiptCubit(getIt()));
 }
-
 
 void _initUseCases() {
   getIt.registerLazySingleton<CategoriesUseCase>(
-        () => CategoriesUseCase(getIt()),
+    () => CategoriesUseCase(getIt()),
   );
   getIt.registerLazySingleton<ProductsUseCase>(
-        () => ProductsUseCase(getIt()),
+    () => ProductsUseCase(getIt()),
   );
   getIt.registerLazySingleton<OrderUseCase>(
-        () => OrderUseCase(getIt()),
+    () => OrderUseCase(getIt()),
   );
-
+  getIt.registerLazySingleton<HandReceiptUseCase>(
+    () => HandReceiptUseCase(getIt()),
+  );
 }
 
 void _initRepositories() {
   getIt.registerLazySingleton<CategoryRepository>(
-        () => CategoryRepositoryImpl(
+    () => CategoryRepositoryImpl(
       getIt(),
-      ),
+    ),
   );
   getIt.registerLazySingleton<ProductRepository>(
-        () => ProductRepositoryImpl(
+    () => ProductRepositoryImpl(
       getIt(),
-      ),
+    ),
   );
 
   getIt.registerLazySingleton<OrderRepository>(
-        () => OrderRepositoryImpl(
+    () => OrderRepositoryImpl(
       getIt(),
-      ),
+    ),
+  );
+  getIt.registerLazySingleton<HandReceiptRepository>(
+    () => HandReceiptRepositoryImpl(
+      getIt(),
+    ),
   );
 }
 
 void _initDataSources() {
   getIt.registerLazySingleton<CategoryRemoteDataSource>(
-        () => CategoryRemoteDataSource(
+    () => CategoryRemoteDataSource(
       apiController: getIt(),
       internetConnectionChecker: getIt(),
     ),
   );
 
   getIt.registerLazySingleton<ProductRemoteDataSource>(
-        () => ProductRemoteDataSource(
+    () => ProductRemoteDataSource(
       apiController: getIt(),
       internetConnectionChecker: getIt(),
     ),
   );
 
   getIt.registerLazySingleton<OrderRemoteDataSource>(
-        () => OrderRemoteDataSource(
+    () => OrderRemoteDataSource(
       apiController: getIt(),
       internetConnectionChecker: getIt(),
     ),
   );
-
+  getIt.registerLazySingleton<HandReceiptRemoteDataSource>(
+    () => HandReceiptRemoteDataSource(
+      apiController: getIt(),
+      internetConnectionChecker: getIt(),
+    ),
+  );
 }
 
 Future<void> _initExternalDependencies() async {

@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/entities/maintenance_parts/maintenance_parts_entitie.dart';
 
 class MaintenancePart {
   final String maintenancePartName;
@@ -98,45 +99,9 @@ enum StatusEnum {
   RemovedFromMaintained
 }
 
-class HandReceipt {
-  int? id;
-  Customer? customer;
-  String? item;
-  String? company;
-  String? color;
-  String? description;
-  int? specifiedCost;
-  bool? notifyCustomerOfTheCost;
-  Null? costNotifiedToTheCustomer;
-  Null? costFrom;
-  Null? costTo;
-  String? urgent;
-  String? itemBarcode;
-  int? warrantyDaysNumber;
-  Null? returnReason;
-  int? maintenanceRequestStatus;
-  String? maintenanceRequestStatusMessage;
-
-  HandReceipt(
-      {this.id,
-      this.customer,
-      this.item,
-      this.company,
-      this.color,
-      this.description,
-      this.specifiedCost,
-      this.notifyCustomerOfTheCost,
-      this.costNotifiedToTheCustomer,
-      this.costFrom,
-      this.costTo,
-      this.urgent,
-      this.itemBarcode,
-      this.warrantyDaysNumber,
-      this.returnReason,
-      this.maintenanceRequestStatus,
-      this.maintenanceRequestStatusMessage});
-
-  HandReceipt.fromJson(Map<String, dynamic> json) {
+// Model
+class HandReceiptModel extends HandReceiptEntity {
+  HandReceiptModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     customer = json['customer'] != null
         ? new Customer.fromJson(json['customer'])
@@ -185,50 +150,25 @@ class HandReceipt {
 }
 
 class Customer {
-  int? id;
-  String? name;
-  String? email;
-  String? phoneNumber;
-  Null? address;
-  int? customerRate;
-  Null? notes;
-  String? userCustomerId;
-  String? createdAt;
+  final String name;
+  final String phoneNumber;
 
-  Customer(
-      {this.id,
-      this.name,
-      this.email,
-      this.phoneNumber,
-      this.address,
-      this.customerRate,
-      this.notes,
-      this.userCustomerId,
-      this.createdAt});
+  Customer({
+    required this.name,
+    required this.phoneNumber,
+  });
 
-  Customer.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    email = json['email'];
-    phoneNumber = json['phoneNumber'];
-    address = json['address'];
-    customerRate = json['customerRate'];
-    notes = json['notes'];
-    userCustomerId = json['userCustomerId'];
-    createdAt = json['createdAt'];
+  factory Customer.fromJson(Map<String, dynamic> json) {
+    return Customer(
+      name: json['name'],
+      phoneNumber: json['phoneNumber'],
+    );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['email'] = this.email;
-    data['phoneNumber'] = this.phoneNumber;
-    data['address'] = this.address;
-    data['customerRate'] = this.customerRate;
-    data['notes'] = this.notes;
-    data['userCustomerId'] = this.userCustomerId;
-    data['createdAt'] = this.createdAt;
-    return data;
+    return {
+      'name': name,
+      'phoneNumber': phoneNumber,
+    };
   }
 }

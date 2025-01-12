@@ -29,6 +29,9 @@ class ApiSetting {
   static String get getOrderMaintenanceByUserNew =>
       '$baseUrl/OrderMaintenances/GetOrderMaintenanceByUserNew';
 
+  static String get getAllHandReceiptItems =>
+      '$baseUrl/Maintenances/GetAllHandReceiptItems';
+
   // // Auth endpoints
   // static String get login => ;
   // static String get signup => '${AppConfig.authEndpoint}/signup';

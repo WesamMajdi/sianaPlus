@@ -3,6 +3,8 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/itemsToMaintenancePart.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/maintenance_parts/maintenance_parts_cubit.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/state/handReceipt_state.dart';
 
 class MaintenancePartsPage extends StatefulWidget {
   const MaintenancePartsPage({
@@ -133,15 +135,28 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
   }
 
   Widget buildMaintenancePartsList() {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const BouncingScrollPhysics(),
-      itemCount: maintenanceParts.length,
-      itemBuilder: (context, index) {
-        final part = maintenanceParts[index];
-        return ItemsMaintenancePart(
-          part: part,
-        );
+    return BlocBuilder<HandReceiptCubit, HandReceiptState>(
+      builder: (context, state) {
+        if (state.handReceiptStatus == HandReceiptStatus.loading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state.handReceiptStatus == HandReceiptStatus.failure) {
+          return const Center(child: Text('فشلت العملية'));
+        }
+        if (state.handReceiptStatus == HandReceiptStatus.success) {
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const BouncingScrollPhysics(),
+            itemCount: state.receipts.length,
+            itemBuilder: (context, index) {
+              return ItemsMaintenancePart(
+                items: state.receipts[index],
+              );
+            },
+          );
+        }
+        return const Center(
+            child: CustomStyledText(text: 'لا توجد إيصالات استلام'));
       },
     );
   }

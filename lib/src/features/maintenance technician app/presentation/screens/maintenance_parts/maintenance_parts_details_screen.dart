@@ -3,9 +3,11 @@ import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customInputDialog.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customSureDialog.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/entities/maintenance_parts/maintenance_parts_entitie.dart';
 
 class MaintenancePartsDetailsPage extends StatelessWidget {
-  const MaintenancePartsDetailsPage({super.key});
+  final HandReceiptEntity part;
+  const MaintenancePartsDetailsPage({super.key, required this.part});
 
   @override
   Widget build(BuildContext context) {
@@ -30,15 +32,16 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                       width: 1,
                       borderRadius: BorderRadius.circular(15)),
                   children: [
-                    buildTableRow('اسم العميل', 'محمد أحمد'),
-                    buildTableRow('رقم العميل', '0501234567'),
-                    buildTableRow('اسم القطعة', 'ثلاجة'),
-                    buildTableRow('الشركة', 'سامسونج'),
-                    buildTableRow('اللون', 'أسود'),
-                    buildTableRow('الوصف', 'ssssss'),
-                    buildTableRow('يتطلب إبلاغ العميل بالتكلفة؟', 'لا'),
-                    buildTableRow('مستعجل', 'لا'),
-                    buildTableRow('عدد أيام الضمان', '22'),
+                    buildTableRow('اسم العميل', part.customer!.name),
+                    buildTableRow('رقم العميل', part.customer!.phoneNumber),
+                    buildTableRow('اسم القطعة', part.item),
+                    buildTableRow('الشركة', part.company),
+                    buildTableRow('اللون', part.color),
+                    buildTableRow('الوصف', part.description),
+                    buildTableRow('يتطلب إبلاغ العميل بالتكلفة؟',
+                        part.costNotifiedToTheCustomer),
+                    buildTableRow('مستعجل', part.urgent),
+                    buildTableRow('عدد أيام الضمان', part.warrantyDaysNumber),
                   ],
                 ),
                 AppSizedBox.kVSpace20,
