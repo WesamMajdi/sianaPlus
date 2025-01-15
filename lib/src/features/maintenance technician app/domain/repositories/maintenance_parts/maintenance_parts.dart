@@ -7,5 +7,6 @@ import 'package:maintenance_app/src/features/maintenance%20technician%20app/doma
 
 abstract class HandReceiptRepository {
   Future<Either<Failure, PaginatedResponse<HandReceiptEntity>>>
-      getHandHandReceiptItem(PaginationParams paginationParams);
+      getHandHandReceiptItem(PaginationParams paginationParams,
+          String? searchQuery, String? barcode);
 }

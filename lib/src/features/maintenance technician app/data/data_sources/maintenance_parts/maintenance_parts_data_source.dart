@@ -22,15 +22,16 @@ class HandReceiptRemoteDataSource {
     required this.apiController,
     required this.internetConnectionChecker,
   });
-
   Future<PaginatedResponse<HandReceiptModel>> getAllHandReceiptItems(
-      PaginationParams paginationParams) async {
+      PaginationParams paginationParams,
+      String? searchQuery,
+      String? barcode) async {
     String? token = await TokenManager.getToken();
     if (await internetConnectionChecker.hasConnection) {
       try {
         final response = await apiController.get(
           Uri.parse(
-              '${ApiSetting.getAllHandReceiptItems}?page=${paginationParams.page}&perPage=${paginationParams.perPage}'),
+              '${ApiSetting.getAllHandReceiptItems}?page=${paginationParams.page}&perPage=${paginationParams.perPage}&generalSearch=$searchQuery&barcode=$barcode'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token'
@@ -38,8 +39,6 @@ class HandReceiptRemoteDataSource {
         );
 
         debugPrint('Status Code: ${response.statusCode}');
-        // print('Response Body: ${response.body}');
-
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);

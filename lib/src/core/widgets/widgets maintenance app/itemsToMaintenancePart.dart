@@ -57,14 +57,14 @@ class ItemsMaintenancePart extends StatelessWidget {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: getColor(orderStatuses.first),
+                          color: getColor(items.maintenanceRequestStatus!),
                           borderRadius: BorderRadius.circular(25),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 2, horizontal: 10),
                           child: CustomStyledText(
-                            text: getText(orderStatuses.first),
+                            text: getText(items.maintenanceRequestStatus!),
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),

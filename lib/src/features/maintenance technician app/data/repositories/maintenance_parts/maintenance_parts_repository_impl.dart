@@ -14,10 +14,11 @@ class HandReceiptRepositoryImpl implements HandReceiptRepository {
 
   @override
   Future<Either<Failure, PaginatedResponse<HandReceiptEntity>>>
-      getHandHandReceiptItem(PaginationParams paginationParams) async {
+      getHandHandReceiptItem(PaginationParams paginationParams,
+          String? searchQuery, String? barcode) async {
     try {
-      final response =
-          await remoteDataSource.getAllHandReceiptItems(paginationParams);
+      final response = await remoteDataSource.getAllHandReceiptItems(
+          paginationParams, searchQuery, barcode);
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));

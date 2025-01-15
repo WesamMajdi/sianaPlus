@@ -8,12 +8,18 @@ class HandReceiptCubit extends Cubit<HandReceiptState> {
 
   HandReceiptCubit(this.handReceiptUseCase) : super(HandReceiptState());
 
-  Future<void> fetchHandReceipts({bool refresh = false}) async {
+  Future<void> fetchHandReceipts({
+    bool refresh = false,
+    String searchQuery = '',
+    String barcode = '',
+  }) async {
     emit(state.copyWith(handReceiptStatus: HandReceiptStatus.loading));
     try {
       final page = refresh ? 1 : (state.receipts.length ~/ 10) + 1;
       final result = await handReceiptUseCase.getHandHandReceiptItem(
         PaginationParams(page: page),
+        searchQuery,
+        barcode,
       );
       result.fold(
         (failure) => emit(state.copyWith(

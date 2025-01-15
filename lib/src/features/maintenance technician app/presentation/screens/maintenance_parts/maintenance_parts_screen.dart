@@ -7,9 +7,7 @@ import 'package:maintenance_app/src/features/maintenance%20technician%20app/pres
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/state/handReceipt_state.dart';
 
 class MaintenancePartsPage extends StatefulWidget {
-  const MaintenancePartsPage({
-    Key? key,
-  }) : super(key: key);
+  const MaintenancePartsPage({Key? key}) : super(key: key);
 
   @override
   State<MaintenancePartsPage> createState() => _MaintenancePartsPageState();
@@ -17,6 +15,7 @@ class MaintenancePartsPage extends StatefulWidget {
 
 class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
   String barcodeResult = "لم يتم مسح الباركود";
+  TextEditingController searchController = TextEditingController();
 
   Future<void> scanBarcode() async {
     try {
@@ -26,6 +25,7 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
             ? "لم يتم العثور على نتيجة"
             : result.rawContent;
       });
+      fetchHandReceipts();
     } catch (e) {
       setState(() {
         barcodeResult = "حدث خطأ أثناء مسح الباركود: $e";
@@ -33,7 +33,16 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
     }
   }
 
-  TextEditingController searchController = TextEditingController();
+  Future<void> fetchHandReceipts({bool refresh = false}) async {
+    final searchQuery = searchController.text;
+    final barcode = barcodeResult != "لم يتم مسح الباركود" ? barcodeResult : '';
+
+    context.read<HandReceiptCubit>().fetchHandReceipts(
+          refresh: refresh,
+          searchQuery: searchQuery,
+          barcode: barcode,
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,11 +61,12 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Expanded(
-                      child: buildSearchDropdownStatus(
-                    orderStatuses,
-                    'ابحث عن الحالة ',
-                    (OrderStatus? selectedStatus) {},
-                  )),
+                    child: buildSearchDropdownStatus(
+                      orderStatuses,
+                      'ابحث عن الحالة ',
+                      (OrderStatus? selectedStatus) {},
+                    ),
+                  ),
                   Container(child: buildBarcodeScanner()),
                 ],
               ),
@@ -76,13 +86,17 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
         children: [
           Expanded(
             child: TextFormField(
-              cursorColor: Colors.black,
               controller: searchController,
+              cursorColor: Colors.black,
+              onChanged: (value) {
+                fetchHandReceipts(refresh: true);
+              },
               decoration: InputDecoration(
                 filled: true,
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide.none),
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide.none,
+                ),
                 prefixIcon: const Icon(
                   FontAwesomeIcons.magnifyingGlass,
                   size: 20,
@@ -96,25 +110,14 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
                       ),
                 hintText: "ابحث عن القطعة او اسم الزبون ",
                 hintStyle: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: "Tajawal"),
+                  color: Colors.grey,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: "Tajawal",
+                ),
               ),
             ),
           ),
-          Container(
-              margin: const EdgeInsets.only(right: 5),
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: AppColors.secondaryColor,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.tune, color: Colors.white),
-                onPressed: () {},
-              ))
         ],
       ),
     );
@@ -164,11 +167,9 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
   Widget buildSearchDropdownStatus(List<OrderStatus> items, String hintText,
       void Function(OrderStatus?)? onChanged) {
     return DropdownSearch<OrderStatus>(
-      itemAsString: (item) => getText(item),
+      itemAsString: (item) => getText(1),
       items: items,
-      compareFn: (item1, item2) {
-        return item1 == item2;
-      },
+      compareFn: (item1, item2) => item1 == item2,
       popupProps: PopupProps.menu(
         menuProps: MenuProps(
             elevation: 0,
@@ -189,28 +190,6 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
               borderSide: BorderSide.none,
               borderRadius: BorderRadius.circular(10),
             ),
-            errorBorder: OutlineInputBorder(
-              borderSide:
-                  const BorderSide(color: AppColors.secondaryColor, width: 2.0),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderSide:
-                  const BorderSide(color: AppColors.secondaryColor, width: 2.0),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: AppPadding.mediumPadding,
-              horizontal: AppPadding.mediumPadding,
-            ),
-          ),
-          style: const TextStyle(
-            fontFamily: 'Tajawal',
-            fontSize: 16,
           ),
         ),
         itemBuilder: (context, item, isSelected) {
@@ -218,7 +197,7 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
             children: [
               ListTile(
                 title: CustomStyledText(
-                  text: getText(item),
+                  text: getText(1),
                   textColor: (Theme.of(context).brightness == Brightness.dark
                       ? Colors.white
                       : Colors.black),
@@ -240,24 +219,6 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide.none,
             borderRadius: BorderRadius.circular(15),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderSide:
-                const BorderSide(color: AppColors.secondaryColor, width: 2.0),
-            borderRadius: BorderRadius.circular(15),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderSide:
-                const BorderSide(color: AppColors.secondaryColor, width: 2.0),
-            borderRadius: BorderRadius.circular(15),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: AppPadding.mediumPadding,
-            horizontal: AppPadding.mediumPadding,
           ),
         ),
       ),

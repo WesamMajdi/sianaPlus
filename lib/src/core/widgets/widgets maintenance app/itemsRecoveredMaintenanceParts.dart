@@ -56,14 +56,14 @@ class ItemsRecoveredMaintenancePart extends StatelessWidget {
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: getColor(part.status),
+                          color: getColor(1),
                           borderRadius: BorderRadius.circular(25),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 2, horizontal: 10),
                           child: CustomStyledText(
-                            text: getText(part.status),
+                            text: getText(1),
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),

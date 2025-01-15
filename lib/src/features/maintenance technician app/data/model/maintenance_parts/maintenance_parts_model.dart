@@ -19,30 +19,67 @@ class MaintenancePart {
 
 enum OrderStatus { New, TakeFromStorage, DeliveryToCustomer, Completed }
 
-Color getColor(OrderStatus status) {
-  if (status == OrderStatus.New) {
-    return Colors.blue.shade500;
-  } else if (status == OrderStatus.TakeFromStorage) {
-    return Colors.orange.shade500;
-  } else if (status == OrderStatus.DeliveryToCustomer) {
-    return Colors.grey.shade500;
-  } else if (status == OrderStatus.Completed) {
-    return Colors.green.shade500;
-  }
-  return Colors.black;
+enum StatusEnum {
+  WaitingManagerResponse, // 1
+  ManagerApprovedReturn, // 2
+  ManagerRefusedReturn, // 3
+  New, // 4
+  CheckItem, // 5
+  DefineMalfunction, // 6
+  InformCustomerOfTheCost, // 7
+  CustomerApproved, // 8
+  CustomerRefused, // 9
+  NoResponseFromTheCustomer, // 10
+  ItemCannotBeServiced, // 11
+  NotifyCustomerOfTheInabilityToMaintain, // 12
+  EnterMaintenanceCost, // 13
+  Completed, // 14
+  NotifyCustomerOfMaintenanceEnd, // 15
+  Delivered, // 16
+  Suspended, // 17
+  RemovedFromMaintained, // 18
 }
 
-String getText(OrderStatus status) {
-  if (status == OrderStatus.New) {
-    return 'جديد';
-  } else if (status == OrderStatus.TakeFromStorage) {
-    return ' من المخزن';
-  } else if (status == OrderStatus.DeliveryToCustomer) {
-    return 'تم توصيلها ';
-  } else if (status == OrderStatus.Completed) {
-    return 'مكتمل';
+String getText(int status) {
+  if (status == StatusEnum.WaitingManagerResponse.index) {
+    return "طلب جديد";
+  } else if (status == StatusEnum.ManagerApprovedReturn.index + 1) {
+    return "يتم فحص";
+  } else if (status == StatusEnum.ManagerRefusedReturn.index) {
+    return "يتم تحديد العطل";
+  } else if (status == StatusEnum.New.index) {
+    return "تمت الصيانة بنجاح";
+  } else if (status == StatusEnum.CheckItem.index) {
+    return "تم تسليم المنتج إلى العميل";
+  } else if (status == StatusEnum.Suspended.index + 1) {
+    return "تم تعليق الطلب";
+  } else if (status == StatusEnum.ManagerApprovedReturn.index) {
+    return "تمت الموافقة على إرجاع";
+  } else if (status == StatusEnum.ManagerRefusedReturn.index) {
+    return "تم رفض إرجاع المنتج من قبل المدير";
   }
-  return 'غير معروف';
+  return "حالة غير معروفة";
+}
+
+Color getColor(int status) {
+  if (status == StatusEnum.New.index + 1) {
+    return Colors.blue.shade500;
+  } else if (status == StatusEnum.CheckItem.index + 1) {
+    return Colors.orange.shade500;
+  } else if (status == StatusEnum.DefineMalfunction.index + 1) {
+    return Colors.yellow.shade500;
+  } else if (status == StatusEnum.Completed.index + 1) {
+    return Colors.green.shade500;
+  } else if (status == StatusEnum.Delivered.index + 1) {
+    return Colors.grey.shade500;
+  } else if (status == StatusEnum.Suspended.index + 1) {
+    return Colors.red.shade500;
+  } else if (status == StatusEnum.ManagerApprovedReturn.index + 1) {
+    return Colors.green.shade700;
+  } else if (status == StatusEnum.ManagerRefusedReturn.index + 1) {
+    return Colors.red.shade700;
+  }
+  return Colors.black;
 }
 
 final List<MaintenancePart> maintenanceParts = [
@@ -77,27 +114,6 @@ List<OrderStatus> orderStatuses = [
   OrderStatus.DeliveryToCustomer,
   OrderStatus.Completed,
 ];
-
-enum StatusEnum {
-  WaitingManagerResponse,
-  ManagerApprovedReturn,
-  ManagerRefusedReturn,
-  New,
-  CheckItem,
-  DefineMalfunction,
-  InformCustomerOfTheCost,
-  CustomerApproved,
-  CustomerRefused,
-  NoResponseFromTheCustomer,
-  ItemCannotBeServiced,
-  NotifyCustomerOfTheInabilityToMaintain,
-  EnterMaintenanceCost,
-  Completed,
-  NotifyCustomerOfMaintenanceEnd,
-  Delivered,
-  Suspended,
-  RemovedFromMaintained
-}
 
 // Model
 class HandReceiptModel extends HandReceiptEntity {

@@ -12,7 +12,9 @@ class HandReceiptUseCase {
   HandReceiptUseCase(this.repository);
 
   Future<Either<Failure, PaginatedResponse<HandReceiptEntity>>>
-      getHandHandReceiptItem(PaginationParams paginationParams) {
-    return repository.getHandHandReceiptItem(paginationParams);
+      getHandHandReceiptItem(PaginationParams paginationParams,
+          String searchQuery, String barcode) {
+    return repository.getHandHandReceiptItem(
+        paginationParams, searchQuery, barcode);
   }
 }

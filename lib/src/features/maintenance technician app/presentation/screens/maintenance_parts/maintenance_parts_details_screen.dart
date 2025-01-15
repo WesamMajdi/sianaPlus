@@ -85,7 +85,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
   Widget getStatusWidget(OrderStatus status) {
     return Container(
       decoration: BoxDecoration(
-        color: getColor(status),
+        color: getColor(part.maintenanceRequestStatus!),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Padding(
@@ -94,7 +94,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
         ),
         child: Center(
           child: CustomStyledText(
-            text: getText(status),
+            text: getText(part.maintenanceRequestStatus!),
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),

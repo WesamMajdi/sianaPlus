@@ -152,7 +152,7 @@ class _TransferredMaintenancePartsPageState
   Widget buildSearchDropdownStatus(List<OrderStatus> items, String hintText,
       void Function(OrderStatus?)? onChanged) {
     return DropdownSearch<OrderStatus>(
-      itemAsString: (item) => getText(item),
+      itemAsString: (item) => getText(1),
       items: items,
       compareFn: (item1, item2) {
         return item1 == item2;
@@ -206,7 +206,7 @@ class _TransferredMaintenancePartsPageState
             children: [
               ListTile(
                 title: CustomStyledText(
-                  text: getText(item),
+                  text: getText(1),
                   textColor: (Theme.of(context).brightness == Brightness.dark
                       ? Colors.white
                       : Colors.black),
