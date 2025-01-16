@@ -201,7 +201,7 @@ class ServiceCard extends StatelessWidget {
     return Card(
       elevation: 0,
       child: InkWell(
-        onTap: () {},
+        onTap: onTap,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
