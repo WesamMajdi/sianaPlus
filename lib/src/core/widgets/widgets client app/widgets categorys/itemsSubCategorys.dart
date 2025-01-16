@@ -44,8 +44,8 @@ class ItemsSubCategorys extends StatelessWidget {
                                   decoration: BoxDecoration(
                                     color: (Theme.of(context).brightness ==
                                             Brightness.dark
-                                        ? AppColors.secondaryColor
-                                        : AppColors.primaryColor),
+                                        ? AppColors.lightGrayColor
+                                        : AppColors.secondaryColor),
                                     borderRadius: BorderRadius.circular(20),
                                     boxShadow: shadowList,
                                   ),
@@ -100,31 +100,41 @@ class ItemsSubCategorys extends StatelessWidget {
                                 children: [
                                   AppSizedBox.kVSpace20,
                                   CustomStyledText(
-                                    text: truncateTextDescription(
-                                        subCategory.name),
+                                    text: truncateTextTitle(subCategory.name),
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    textColor: AppColors.primaryColor,
+                                    textColor: (Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? AppColors.lightGrayColor
+                                        : AppColors.primaryColor),
                                   ),
                                   const SizedBox(height: 5),
-                                  CustomStyledText(
-                                    text: truncateTextDescription(
-                                        subCategory.description ?? ''),
-                                    fontSize: 14,
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15),
+                                    child: Center(
+                                      child: CustomStyledText(
+                                        text: truncateTextDescription(
+                                            subCategory.description ?? ''),
+                                        fontSize: 14,
+                                      ),
+                                    ),
                                   ),
-                                  AppSizedBox.kVSpace20,
                                   AppSizedBox.kVSpace10,
-                                  const CustomStyledText(
+                                  CustomStyledText(
                                     text: "عدد الاصناف",
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
+                                    textColor: (Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? AppColors.lightGrayColor
+                                        : AppColors.primaryColor),
                                   ),
                                   AppSizedBox.kVSpace5,
                                   const CustomStyledText(
                                     text: "10",
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
-                                    textColor: AppColors.primaryColor,
                                   ),
                                 ],
                               ),

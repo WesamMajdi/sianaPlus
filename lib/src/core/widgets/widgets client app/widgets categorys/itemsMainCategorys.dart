@@ -25,12 +25,16 @@ class ItemsMainCategories extends StatelessWidget {
           border: state.selectedCategoryId == category.id
               ? null
               : Border.all(
-                  color: AppColors.secondaryColor,
+                  color: (Theme.of(context).brightness == Brightness.dark
+                      ? AppColors.primaryColor
+                      : AppColors.lightGrayColor),
                   width: 0.6,
                 ),
           color: state.selectedCategoryId == category.id
-              ? AppColors.primaryColor
-              : Colors.grey.withOpacity(0.2),
+              ? (Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.primaryColor
+                  : AppColors.lightGrayColor)
+              : AppColors.secondaryColor,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Container(
@@ -38,10 +42,8 @@ class ItemsMainCategories extends StatelessWidget {
           child: Center(
             child: CustomStyledText(
               text: category.name,
-              textColor: state.selectedCategoryId == category.id
-                  ? AppColors.lightGrayColor
-                  : AppColors.primaryColor,
               fontWeight: FontWeight.bold,
+              textColor: Colors.white,
               fontSize: 16,
             ),
           ),

@@ -38,10 +38,6 @@ class _CategoryPageState extends State<CategoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    // List<SubCategory> filteredSubCategories = subcategories
-    //     .where((sub) => sub.parentId == selectedMainCategoryId)
-    //     .toList();
-
     return Scaffold(
       drawer: const MyDrawer(),
       appBar: const AppBarApplication(
@@ -52,11 +48,13 @@ class _CategoryPageState extends State<CategoryPage> {
           Container(
             margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 16),
             alignment: Alignment.centerRight,
-            child: const CustomStyledText(
+            child: CustomStyledText(
               text: "الاصناف الرئيسية",
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              textColor: AppColors.primaryColor,
+              textColor: (Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.lightGrayColor
+                  : AppColors.primaryColor),
             ),
           ),
           BlocBuilder<CategoryCubit, CategoryState>(
@@ -111,11 +109,13 @@ class _CategoryPageState extends State<CategoryPage> {
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16),
             alignment: Alignment.centerRight,
-            child: const CustomStyledText(
+            child: CustomStyledText(
               text: "الاصناف الفرعية",
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              textColor: AppColors.primaryColor,
+              textColor: (Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.lightGrayColor
+                  : AppColors.primaryColor),
             ),
           ),
           const ItemsSubCategorys(),

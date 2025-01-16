@@ -32,6 +32,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                       width: 1,
                       borderRadius: BorderRadius.circular(15)),
                   children: [
+                    buildTableRow('رقم القطعة', part.id),
                     buildTableRow('اسم العميل', part.customer!.name),
                     buildTableRow('رقم العميل', part.customer!.phoneNumber),
                     buildTableRow('اسم القطعة', part.item),

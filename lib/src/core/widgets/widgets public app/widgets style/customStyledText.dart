@@ -27,7 +27,7 @@ class CustomStyledText extends StatelessWidget {
 
     return Text(
       text,
-      textAlign: TextAlign.justify,
+      // textAlign: TextAlign.justify,
       style: TextStyle(
         height: height,
         color: effectiveTextColor,

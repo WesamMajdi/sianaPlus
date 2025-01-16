@@ -41,7 +41,7 @@ class _ItemsProductState extends State<ItemsProduct> {
             shrinkWrap: true,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.7,
+              childAspectRatio: 0.68,
             ),
             itemBuilder: (context, index) {
               final product = widget.products[index];
@@ -129,7 +129,7 @@ class _ItemsProductState extends State<ItemsProduct> {
                       child: CustomStyledText(
                         text: truncateTextTitle(widget.products[index].name!),
                         fontSize: 17,
-                        textColor: AppColors.lightGrayColor,
+                        textColor: AppColors.secondaryColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -144,7 +144,7 @@ class _ItemsProductState extends State<ItemsProduct> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 5),
+                          vertical: 5, horizontal: 5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
