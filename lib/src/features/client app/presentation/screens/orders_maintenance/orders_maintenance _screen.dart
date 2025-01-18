@@ -5,9 +5,30 @@ import 'package:maintenance_app/src/features/client%20app/data/data_sources/orde
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
 
-class OrdersMaintenancePage extends StatelessWidget {
-  const OrdersMaintenancePage({Key? key}) : super(key: key);
+// class OrdersMaintenancePage extends StatelessWidget {
+//   const OrdersMaintenancePage({Key? key}) : super(key: key);
+//
+//
+// }
 
+
+class OrdersMaintenancePage extends StatefulWidget {
+  const OrdersMaintenancePage({super.key});
+
+  @override
+  State<OrdersMaintenancePage> createState() => _OrdersMaintenancePageState();
+}
+
+class _OrdersMaintenancePageState extends State<OrdersMaintenancePage> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    context.read<OrderCubit>().getOrderMaintenanceByUserNew();
+    context.read<OrderCubit>().getOrderMaintenanceByUserOld();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -70,14 +91,14 @@ class OrdersMaintenancePage extends StatelessWidget {
                   return const Center(child: Text('فشلت العملية'));
                 }
                 if (state.orderStatus == OrderStatus.success &&
-                    state.ordersItems.isNotEmpty) {
+                    state.ordersItemsNew.isNotEmpty) {
                   return ListView.builder(
                     shrinkWrap: true,
-                    itemCount: state.ordersItems.length,
+                    itemCount: state.ordersItemsNew.length,
                     itemBuilder: (context, index) {
                       return CurrentMaintenanceOrdersTab(
                         state: state,
-                        orderEntity: state.ordersItems[index],
+                        orderEntity: state.ordersItemsNew[index],
                       );
                     },
                   );
@@ -86,7 +107,32 @@ class OrdersMaintenancePage extends StatelessWidget {
                     child: CustomStyledText(text: 'لا توجد طلبات صيانة'));
               },
             ),
-            PreviousMaintenanceOrdersTab()
+
+            BlocBuilder<OrderCubit, OrderState>(
+              builder: (context, state) {
+                if (state.orderStatus == OrderStatus.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state.orderStatus == OrderStatus.failure) {
+                  return const Center(child: Text('فشلت العملية'));
+                }
+                if (state.orderStatus == OrderStatus.success &&
+                    state.ordersItemsOld.isNotEmpty) {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: state.ordersItemsOld.length,
+                    itemBuilder: (context, index) {
+                      return CurrentMaintenanceOrdersTab(
+                        state: state,
+                        orderEntity: state.ordersItemsOld[index],
+                      );
+                    },
+                  );
+                }
+                return const Center(
+                    child: CustomStyledText(text: 'لا توجد طلبات صيانة'));
+              },
+            ),
           ],
         ),
       ),

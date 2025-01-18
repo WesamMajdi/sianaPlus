@@ -31,7 +31,8 @@ class OrderState extends Equatable {
   List<OrderEntery> itemsList;
   List<OrderEntery> companiesList;
   List<ItemsEntity> items;
-  List<OrderEntity> ordersItems;
+  List<OrderEntity> ordersItemsNew;
+  List<OrderEntity> ordersItemsOld;
   final OrderEntery? selectedColor;
   final OrderEntery? selectedItem;
   final OrderEntery? selectedCompany;
@@ -46,7 +47,8 @@ class OrderState extends Equatable {
     this.companiesStatus = CompaniesStatus.initial,
     this.colorsList = const <OrderEntery>[],
     this.itemsList = const <OrderEntery>[],
-    this.ordersItems = const <OrderEntity>[],
+    this.ordersItemsNew = const <OrderEntity>[],
+    this.ordersItemsOld = const <OrderEntity>[],
     this.companiesList = const <OrderEntery>[],
     this.items = const <ItemsEntity>[],
     this.selectedColor,
@@ -65,7 +67,8 @@ class OrderState extends Equatable {
       int? orderCurrentPage,
       CompaniesStatus? companiesStatus,
       List<OrderEntery>? colorsList,
-      List<OrderEntity>? ordersItems,
+      List<OrderEntity>? ordersItemsNew,
+      List<OrderEntity>? ordersItemsOld,
       List<OrderEntery>? itemsList,
       List<OrderEntery>? companiesList,
       List<ItemsEntity>? items,
@@ -85,7 +88,8 @@ class OrderState extends Equatable {
       notifyCustomerOfTheCost:
           notifyCustomerOfTheCost ?? this.notifyCustomerOfTheCost,
       itemsList: itemsList ?? this.itemsList,
-      ordersItems: ordersItems ?? this.ordersItems,
+      ordersItemsNew: ordersItemsNew ?? this.ordersItemsNew,
+      ordersItemsOld: ordersItemsOld ?? this.ordersItemsOld,
       companiesList: companiesList ?? this.companiesList,
       items: items ?? this.items,
       selectedColor: selectedColor ?? this.selectedColor,
@@ -105,7 +109,8 @@ class OrderState extends Equatable {
         itemsList,
         items,
         orderStatus,
-        ordersItems,
+    ordersItemsOld,
+    ordersItemsNew,
         companiesList,
         selectedCompany,
         selectedItem,

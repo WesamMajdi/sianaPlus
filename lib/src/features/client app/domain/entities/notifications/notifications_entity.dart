@@ -1,11 +1,9 @@
-class Notifications {
-  final String title;
-  final String description;
-  final String imagePath;
-  final DateTime dateTime;
-  Notifications(
-      {required this.title,
-      required this.description,
-      required this.imagePath,
-      required this.dateTime});
+class NotificationEntity {
+  int? id;
+  String? title;
+  String? message;
+  int? pageId;
+
+  NotificationEntity({this.id, this.title, this.message, this.pageId});
+
 }

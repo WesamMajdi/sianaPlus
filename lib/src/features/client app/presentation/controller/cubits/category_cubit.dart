@@ -29,6 +29,10 @@ class CategoryCubit extends Cubit<CategoryState> {
     );
   }
 
+  void selectProductColor({required int index}) {
+    emit(state.copyWith(selectedIndex: index));
+  }
+
   Future<void> fetchSubCategories(
       {bool refresh = false, int mainCategoryId = 0}) async {
     emit(state.copyWith(

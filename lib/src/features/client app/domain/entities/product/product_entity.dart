@@ -1,3 +1,5 @@
+import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_color.dart';
+
 class Product {
   int? id;
   String? name;
@@ -10,7 +12,7 @@ class Product {
   int? cost;
   int? countOrder;
   bool? isFavorite;
-  Null? products;
+  List<ProductColorEntity>? productColors;
 
   Product(
       {this.id,
@@ -24,5 +26,5 @@ class Product {
       this.cost,
       this.countOrder,
       this.isFavorite=false,
-      this.products});
+      this.productColors});
 }

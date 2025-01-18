@@ -81,10 +81,6 @@ class _CategoryPageState extends State<CategoryPage> {
                           final category = state.categories[index];
                           return GestureDetector(
                             onTap: () async {
-                              // setState(() {
-                              //   selectedMainCategoryId = category.id;
-                              // });
-
                               context
                                   .read<CategoryCubit>()
                                   .selectCategory(categoryId: category.id);
