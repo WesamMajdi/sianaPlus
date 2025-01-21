@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maintenance_app/src/core/network/global_token.dart';
 import 'data.dart';
 import 'domain.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   final ApiLoginService apiService;

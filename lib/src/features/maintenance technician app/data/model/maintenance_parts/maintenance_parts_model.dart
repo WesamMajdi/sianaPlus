@@ -41,45 +41,73 @@ enum StatusEnum {
 }
 
 String getText(int status) {
-  if (status == StatusEnum.WaitingManagerResponse.index) {
+  if (status == 1) {
     return "طلب جديد";
-  } else if (status == StatusEnum.ManagerApprovedReturn.index + 1) {
+  } else if (status == 2) {
     return "يتم فحص";
-  } else if (status == StatusEnum.ManagerRefusedReturn.index) {
+  } else if (status == 3) {
     return "يتم تحديد العطل";
-  } else if (status == StatusEnum.New.index) {
-    return "تمت الصيانة بنجاح";
-  } else if (status == StatusEnum.CheckItem.index) {
-    return "تم تسليم المنتج إلى العميل";
-  } else if (status == StatusEnum.Suspended.index + 1) {
-    return "تم تعليق الطلب";
-  } else if (status == StatusEnum.ManagerApprovedReturn.index) {
-    return "تمت الموافقة على إرجاع";
-  } else if (status == StatusEnum.ManagerRefusedReturn.index) {
-    return "تم رفض إرجاع المنتج من قبل المدير";
+  } else if (status == 4) {
+    return "إبلاغ العميل بالتكاليف";
+  } else if (status == 5) {
+    return "تمت الموافقة عليه";
+  } else if (status == 6) {
+    return "رفض العميل";
+  } else if (status == 7) {
+    return "لا يوجد رد من العميل";
+  } else if (status == 8) {
+    return "لا يمكن صيانة العنصر";
+  } else if (status == 9) {
+    return "إخبار العميل بعدم القدرة على الصيانة";
+  } else if (status == 10) {
+    return "أدخل تكلفة الصيانة";
+  } else if (status == 11) {
+    return "مكتمل";
+  } else if (status == 12) {
+    return "إخبار العميل بنهاية الصيانة";
+  } else if (status == 13) {
+    return "تم التوصيل";
+  } else if (status == 14) {
+    return "معلق";
+  } else if (status == 15) {
+    return "تمت إزالته من الصيانة";
   }
   return "حالة غير معروفة";
 }
 
 Color getColor(int status) {
-  if (status == StatusEnum.New.index + 1) {
-    return Colors.blue.shade500;
-  } else if (status == StatusEnum.CheckItem.index + 1) {
-    return Colors.orange.shade500;
-  } else if (status == StatusEnum.DefineMalfunction.index + 1) {
-    return Colors.yellow.shade500;
-  } else if (status == StatusEnum.Completed.index + 1) {
-    return Colors.green.shade500;
-  } else if (status == StatusEnum.Delivered.index + 1) {
-    return Colors.grey.shade500;
-  } else if (status == StatusEnum.Suspended.index + 1) {
-    return Colors.red.shade500;
-  } else if (status == StatusEnum.ManagerApprovedReturn.index + 1) {
-    return Colors.green.shade700;
-  } else if (status == StatusEnum.ManagerRefusedReturn.index + 1) {
-    return Colors.red.shade700;
+  if (status == 1) {
+    return Colors.blue;
+  } else if (status == 2) {
+    return Colors.orange;
+  } else if (status == 3) {
+    return Colors.yellow;
+  } else if (status == 4) {
+    return Colors.purple;
+  } else if (status == 5) {
+    return Colors.green;
+  } else if (status == 6) {
+    return Colors.red;
+  } else if (status == 7) {
+    return Colors.grey;
+  } else if (status == 8) {
+    return Colors.brown;
+  } else if (status == 9) {
+    return Colors.pink;
+  } else if (status == 10) {
+    return Colors.teal;
+  } else if (status == 11) {
+    return Colors.greenAccent;
+  } else if (status == 12) {
+    return Colors.cyan;
+  } else if (status == 13) {
+    return Colors.indigo;
+  } else if (status == 14) {
+    return Colors.amber;
+  } else if (status == 15) {
+    return Colors.black;
   }
-  return Colors.black;
+  return Colors.white;
 }
 
 final List<MaintenancePart> maintenanceParts = [

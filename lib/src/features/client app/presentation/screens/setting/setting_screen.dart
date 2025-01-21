@@ -1,4 +1,5 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/features/authentication/login/data.dart';
 
 class UserSettingProfile extends StatefulWidget {
   const UserSettingProfile({super.key});
@@ -186,7 +187,9 @@ class _UserSettingProfileState extends State<UserSettingProfile> {
                 isVisibl: false,
                 text: "تسجيل الخروج",
                 icon: FontAwesomeIcons.rightFromBracket,
-                onTap: () {},
+                onTap: () {
+                  logout(context);
+                },
               ),
             ]),
           ),

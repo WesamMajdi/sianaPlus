@@ -14,6 +14,8 @@ import 'package:maintenance_app/src/features/client%20app/presentation/controlle
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/concat%20info%20page/application.dart';
 import 'package:maintenance_app/src/features/client%20app/concat%20info%20page/data.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/maintenance_parts/maintenance_parts_cubit.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/home_maintenance/home_maintenance_screen.dart';
 
 import 'firebase_options.dart';
 
@@ -69,6 +71,9 @@ void main() async {
         ),
         BlocProvider<OrderCubit>(
           create: (context) => getIt<OrderCubit>()..initOrdersRequirements(),
+        ),
+        BlocProvider<HandReceiptCubit>(
+          create: (context) => getIt<HandReceiptCubit>()..fetchHandReceipts(),
         ),
       ],
       child:
@@ -128,7 +133,7 @@ class MyApp extends StatelessWidget {
                         }
                       },
                     ),
-                  ], child: const SplashPage());
+                  ], child: const HomeMaintenanceScreen());
                   // return ;
                 },
               ),

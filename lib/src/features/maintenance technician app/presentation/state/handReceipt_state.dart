@@ -8,33 +8,28 @@ class HandReceiptState {
   final HandReceiptStatus handReceiptStatus;
   final List<HandReceiptEntity> receipts;
   final String errorMessage;
-  final List<HandReceiptEntity>? filteredReceipts;
 
   HandReceiptState({
     this.handReceiptStatus = HandReceiptStatus.initial,
     this.receipts = const <HandReceiptEntity>[],
     this.errorMessage = '',
-    this.filteredReceipts,
   });
 
   factory HandReceiptState.initial() {
     return HandReceiptState(
       handReceiptStatus: HandReceiptStatus.initial,
       receipts: [],
-      filteredReceipts: [],
       errorMessage: '',
     );
   }
   HandReceiptState copyWith({
     HandReceiptStatus? handReceiptStatus,
     List<HandReceiptEntity>? receipts,
-    List<HandReceiptEntity>? filteredReceipts,
     String? errorMessage,
   }) {
     return HandReceiptState(
       handReceiptStatus: handReceiptStatus ?? this.handReceiptStatus,
       receipts: receipts ?? this.receipts,
-      filteredReceipts: filteredReceipts ?? this.filteredReceipts,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
@@ -43,7 +38,6 @@ class HandReceiptState {
   // ignore: override_on_non_overriding_member
   List<Object?> get props => [
         handReceiptStatus,
-        filteredReceipts,
         receipts,
         errorMessage,
       ];

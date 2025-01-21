@@ -140,7 +140,7 @@ class _HomeMaintenanceScreenState extends State<HomeMaintenanceScreen> {
 final List<Map<String, Object>> shortcuts = [
   {
     'icon': FontAwesomeIcons.screwdriverWrench,
-    'label': 'صيانة أون لاين',
+    'label': 'قطع الصيانة المستلمة',
     'page': const MaintenancePartsPage(),
   },
   {

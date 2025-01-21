@@ -1,8 +1,6 @@
 import 'package:barcode_scan2/barcode_scan2.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/itemsToMaintenancePart.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/maintenance_parts/maintenance_parts_cubit.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/state/handReceipt_state.dart';
 
@@ -48,26 +46,21 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: const AppBarApplicationArrow(text: 'الصيانة أونلاين'),
+      appBar: const AppBarApplicationArrow(text: 'قطع المستلمة'),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            AppSizedBox.kVSpace15,
-            buildSearchBar(),
-            AppSizedBox.kVSpace10,
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 3),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Expanded(
-                    child: buildSearchDropdownStatus(
-                      orderStatuses,
-                      'ابحث عن الحالة ',
-                      (OrderStatus? selectedStatus) {},
-                    ),
+                    child: buildSearchBar(),
                   ),
-                  Container(child: buildBarcodeScanner()),
+                  Container(
+                      margin: const EdgeInsets.only(left: 20),
+                      child: buildBarcodeScanner()),
                 ],
               ),
             ),
@@ -161,68 +154,6 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
         return const Center(
             child: CustomStyledText(text: 'لا توجد إيصالات استلام'));
       },
-    );
-  }
-
-  Widget buildSearchDropdownStatus(List<OrderStatus> items, String hintText,
-      void Function(OrderStatus?)? onChanged) {
-    return DropdownSearch<OrderStatus>(
-      itemAsString: (item) => getText(1),
-      items: items,
-      compareFn: (item1, item2) => item1 == item2,
-      popupProps: PopupProps.menu(
-        menuProps: MenuProps(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10))),
-        isFilterOnline: true,
-        showSearchBox: true,
-        showSelectedItems: true,
-        searchFieldProps: TextFieldProps(
-          decoration: InputDecoration(
-            hintText: 'ابحث هنا',
-            filled: true,
-            fillColor: Colors.grey.withOpacity(0.2),
-            errorStyle: const TextStyle(fontFamily: "Tajawal", fontSize: 14),
-            hintStyle: const TextStyle(
-                fontSize: 14, color: Colors.grey, fontFamily: "Tajawal"),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-        ),
-        itemBuilder: (context, item, isSelected) {
-          return Column(
-            children: [
-              ListTile(
-                title: CustomStyledText(
-                  text: getText(1),
-                  textColor: (Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.black),
-                ),
-                selected: isSelected,
-              ),
-            ],
-          );
-        },
-      ),
-      dropdownDecoratorProps: DropDownDecoratorProps(
-        dropdownSearchDecoration: InputDecoration(
-          hintText: hintText,
-          filled: true,
-          fillColor: Colors.grey.withOpacity(0.2),
-          errorStyle: const TextStyle(fontFamily: "Tajawal", fontSize: 14),
-          hintStyle: const TextStyle(
-              fontSize: 16, color: Colors.grey, fontFamily: "Tajawal"),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(15),
-          ),
-        ),
-      ),
-      onChanged: onChanged,
     );
   }
 }

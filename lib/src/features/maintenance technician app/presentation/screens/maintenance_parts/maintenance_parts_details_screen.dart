@@ -4,6 +4,7 @@ import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/cus
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customSureDialog.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/entities/maintenance_parts/maintenance_parts_entitie.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/maintenance_parts/maintenance_parts_cubit.dart';
 
 class MaintenancePartsDetailsPage extends StatelessWidget {
   final HandReceiptEntity part;
@@ -33,16 +34,20 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(15)),
                   children: [
                     buildTableRow('رقم القطعة', part.id),
-                    buildTableRow('اسم العميل', part.customer!.name),
-                    buildTableRow('رقم العميل', part.customer!.phoneNumber),
-                    buildTableRow('اسم القطعة', part.item),
-                    buildTableRow('الشركة', part.company),
-                    buildTableRow('اللون', part.color),
-                    buildTableRow('الوصف', part.description),
+                    buildTableRow('اسم العميل', part.customer!.name ?? ""),
+                    buildTableRow(
+                        'الحالة', part.maintenanceRequestStatusMessage ?? ""),
+                    buildTableRow(
+                        'رقم العميل', part.customer!.phoneNumber ?? ""),
+                    buildTableRow('اسم القطعة', part.item ?? ""),
+                    buildTableRow('الشركة', part.company ?? ""),
+                    buildTableRow('اللون', part.color ?? ""),
+                    buildTableRow('الوصف', part.description ?? ""),
                     buildTableRow('يتطلب إبلاغ العميل بالتكلفة؟',
-                        part.costNotifiedToTheCustomer),
-                    buildTableRow('مستعجل', part.urgent),
-                    buildTableRow('عدد أيام الضمان', part.warrantyDaysNumber),
+                        part.costNotifiedToTheCustomer ?? ""),
+                    buildTableRow('مستعجل', part.urgent ?? ""),
+                    buildTableRow(
+                        'عدد أيام الضمان', part.warrantyDaysNumber ?? ""),
                   ],
                 ),
                 AppSizedBox.kVSpace20,
@@ -105,8 +110,6 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
   }
 
   Widget buildButtonWidget(BuildContext context) {
-    StatusEnum status = StatusEnum.InformCustomerOfTheCost;
-
     return GestureDetector(
       onTap: () {
         showModalBottomSheet(
@@ -142,7 +145,8 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  ..._getItemsBasedOnStatus(context, status),
+                  ..._getItemsBasedOnStatus(
+                      context, part.maintenanceRequestStatus!),
                 ],
               ),
             );
@@ -181,9 +185,8 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
     );
   }
 
-  List<Widget> _getItemsBasedOnStatus(BuildContext context, StatusEnum status) {
-    bool notifyCustomerOfTheCost = true;
-    if (status != StatusEnum.Suspended) {
+  List<Widget> _getItemsBasedOnStatus(BuildContext context, int status) {
+    if (status != 14) {
       ListTile(
         title: const CustomStyledText(
           text: 'سبب تعليق',
@@ -209,11 +212,12 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
           );
         },
       );
-      if (status == StatusEnum.New) {
+      if (status == 1) // new
+      {
         return [
           ListTile(
             title: const CustomStyledText(
-              text: 'فحص القطعة',
+              text: "فحص القطعة",
               fontSize: 20,
             ),
             onTap: () {
@@ -221,18 +225,35 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return CustomSureDialog(
-                    onConfirm: () {},
-                  ); //UpdateStatusForHandReceiptItem
+                    onConfirm: () async {
+                      final cubit = context.read<HandReceiptCubit>();
+                      try {
+                        await cubit.updateStatusForHandReceiptItem(
+                          receiptItemId: part.id!,
+                        );
+
+                        Navigator.of(context).pop();
+                        _getItemsBasedOnStatus(
+                            context, part.maintenanceRequestStatus!);
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Failed to update status: $e')),
+                        );
+                      }
+                    },
+                  );
                 },
               );
             },
           ),
         ];
-      } else if (status == StatusEnum.CheckItem) {
+      } else if (status == 2) // CheckItem
+      {
         return [
           ListTile(
             title: const CustomStyledText(
-              text: 'تحديد العطل',
+              text: "تحديد العطل",
               fontSize: 20,
             ),
             onTap: () {
@@ -265,19 +286,32 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return CustomSureDialog(
-                    onConfirm: () {}, //UpdateStatusForHandReceiptItem
+                    onConfirm: () async {
+                      final cubit = context.read<HandReceiptCubit>();
+                      try {
+                        await cubit.updateStatusForHandReceiptItem(
+                          receiptItemId: part.id!,
+                        );
+                        Navigator.of(context).pop();
+                      } catch (e) {
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Failed to update status: $e')),
+                        );
+                      }
+                    }, //UpdateStatusForHandReceiptItem
                   );
                 },
               );
             },
           ),
         ];
-      } else if (status == StatusEnum.DefineMalfunction &&
-          notifyCustomerOfTheCost) {
+      } else if (status == 3 && part.notifyCustomerOfTheCost!) {
         return [
           ListTile(
-            title: const CustomStyledText(
-              text: 'ابلاغ العميل بتكلفة',
+            title: CustomStyledText(
+              text: part.maintenanceRequestStatusMessage!,
               fontSize: 20,
             ),
             onTap: () {
@@ -292,13 +326,13 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
             }, //UpdateStatusForHandReceiptItem
           ),
         ];
-      } else if (status == StatusEnum.DefineMalfunction &&
+      } else if (status == 3 &&
           // ignore: dead_code
-          !notifyCustomerOfTheCost) {
+          !part.notifyCustomerOfTheCost!) {
         return [
           ListTile(
-            title: const CustomStyledText(
-              text: 'مكتمل',
+            title: CustomStyledText(
+              text: part.maintenanceRequestStatusMessage!,
               fontSize: 20,
             ),
             onTap: () {
@@ -313,11 +347,11 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
             }, //UpdateStatusForHandReceiptItem
           ),
         ];
-      } else if (status == StatusEnum.InformCustomerOfTheCost) {
+      } else if (status == 4) {
         return [
           ListTile(
-            title: const CustomStyledText(
-              text: 'إبلاغ العميل بالتكلفة',
+            title: CustomStyledText(
+              text: part.maintenanceRequestStatusMessage!,
               fontSize: 20,
             ),
             onTap: () {
@@ -330,11 +364,11 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
             },
           ),
         ];
-      } else if (status == StatusEnum.NoResponseFromTheCustomer) {
+      } else if (status == 7) {
         return [
           ListTile(
-            title: const CustomStyledText(
-              text: 'موافقة العميل',
+            title: CustomStyledText(
+              text: part.maintenanceRequestStatusMessage!,
               fontSize: 20,
             ),
             onTap: () {
@@ -349,8 +383,8 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
             }, //UpdateStatusForHandReceiptItem
           ),
           ListTile(
-            title: const CustomStyledText(
-              text: 'رفض العميل',
+            title: CustomStyledText(
+              text: part.maintenanceRequestStatusMessage!,
               fontSize: 20,
             ),
             onTap: () {
@@ -366,8 +400,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
             },
           ),
         ];
-      } else if (status == StatusEnum.CustomerApproved &&
-          notifyCustomerOfTheCost) {
+      } else if (status == 5 && part.notifyCustomerOfTheCost!) {
         return [
           ListTile(
             title: const CustomStyledText(
@@ -397,9 +430,8 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
             },
           ),
         ];
-      } else if ((status == StatusEnum.CustomerApproved &&
-              !notifyCustomerOfTheCost) ||
-          status == StatusEnum.EnterMaintenanceCost) {
+      } else if ((status == 5 && !part.notifyCustomerOfTheCost!) ||
+          status == 10) {
         return [
           ListTile(
             title: const CustomStyledText(
@@ -420,7 +452,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
         ];
 
         ///UpdateStatusForHandReceiptItem
-      } else if (status == StatusEnum.Completed) {
+      } else if (status == 11) {
         return [
           ListTile(
             title: const CustomStyledText(
@@ -441,7 +473,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
             },
           ),
         ];
-      } else if (status == StatusEnum.ItemCannotBeServiced) {
+      } else if (status == 8) {
         return [
           ListTile(
             title: const CustomStyledText(

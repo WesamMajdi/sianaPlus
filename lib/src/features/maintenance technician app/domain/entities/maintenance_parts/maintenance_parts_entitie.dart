@@ -10,9 +10,9 @@ class HandReceiptEntity {
   String? description;
   int? specifiedCost;
   bool? notifyCustomerOfTheCost;
-  Null? costNotifiedToTheCustomer;
-  Null? costFrom;
-  Null? costTo;
+  int? costNotifiedToTheCustomer;
+  int? costFrom;
+  int? costTo;
   String? urgent;
   String? itemBarcode;
   int? warrantyDaysNumber;

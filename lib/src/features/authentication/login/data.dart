@@ -2,11 +2,11 @@
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import '../../../core/constants/url.dart';
+import 'package:maintenance_app/src/core/network/api_setting.dart';
 import 'domain.dart';
 
 class ApiLoginService {
-  final String baseUrl = "${Url.baseUrl}/api/account/login";
+  final String baseUrl = "${ApiSetting.baseUrl}/account/login";
 
   Future<LoginResponse> login(String email, String password) async {
     final url = Uri.parse(baseUrl);

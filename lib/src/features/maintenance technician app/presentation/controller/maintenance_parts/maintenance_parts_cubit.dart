@@ -35,4 +35,29 @@ class HandReceiptCubit extends Cubit<HandReceiptState> {
           errorMessage: 'Unexpected error occurred: $e'));
     }
   }
+
+  Future<void> updateStatusForHandReceiptItem({
+    required int receiptItemId,
+    int? status,
+  }) async {
+    emit(state.copyWith(handReceiptStatus: HandReceiptStatus.loading));
+    try {
+      final result = await handReceiptUseCase.updateStatusForHandReceiptItem(
+        receiptItemId,
+        status!,
+      );
+      result.fold(
+        (failure) => emit(state.copyWith(
+            handReceiptStatus: HandReceiptStatus.failure,
+            errorMessage: failure.message)),
+        (response) => emit(state.copyWith(
+          handReceiptStatus: HandReceiptStatus.success,
+        )),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+          handReceiptStatus: HandReceiptStatus.failure,
+          errorMessage: 'Unexpected error occurred: $e'));
+    }
+  }
 }

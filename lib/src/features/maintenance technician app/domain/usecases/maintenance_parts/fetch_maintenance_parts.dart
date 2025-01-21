@@ -17,4 +17,9 @@ class HandReceiptUseCase {
     return repository.getHandHandReceiptItem(
         paginationParams, searchQuery, barcode);
   }
+
+  Future<Either<Failure, Map<String, dynamic>>> updateStatusForHandReceiptItem(
+      int receiptItemId, int? status) {
+    return repository.updateStatusForHandReceiptItem(receiptItemId, status);
+  }
 }

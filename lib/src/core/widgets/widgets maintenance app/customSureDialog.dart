@@ -71,10 +71,7 @@ class CustomSureDialog extends StatelessWidget {
           ),
         ),
         TextButton(
-          onPressed: () {
-            onConfirm();
-            Navigator.of(context).pop();
-          },
+          onPressed: onConfirm,
           style: TextButton.styleFrom(
             backgroundColor: AppColors.secondaryColor,
             shape: RoundedRectangleBorder(

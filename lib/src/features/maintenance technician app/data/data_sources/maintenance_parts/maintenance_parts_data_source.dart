@@ -43,7 +43,6 @@ class HandReceiptRemoteDataSource {
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
-        print(responseBody);
         final handReceiptResponse =
             BaseResponse<PaginatedResponse<HandReceiptModel>>.fromJson(
           responseBody,
@@ -62,6 +61,37 @@ class HandReceiptRemoteDataSource {
       } catch (e) {
         debugPrint('Unexpected Error: $e');
         rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<Map<String, dynamic>> updateStatusForHandReceiptItem(
+      int receiptItemId, int status) async {
+    String? token = await TokenManager.getToken();
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.post(
+          Uri.parse(
+              '${ApiSetting.updateStatusForHandReceiptItem}?receiptItemId=$receiptItemId&status=$status'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+
+        return responseBody;
+      } on TimeoutException catch (_) {
+        throw TimeoutException('Request timed out');
+      } catch (e) {
+        throw Exception('Unexpected error occurred');
       }
     } else {
       throw OfflineException(errorMessage: 'No Internet Connection');
