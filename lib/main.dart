@@ -109,6 +109,7 @@ class MyApp extends StatelessWidget {
         child: BlocBuilder<ThemeChangerBloc, ThemeChangerState>(
           builder: (context, themeState) {
             return MaterialApp(
+              navigatorKey: NavigationService.navigatorKey,
               initialRoute: "/",
               title: kAppName,
               theme: themeState.themeType == ThemeType.light
@@ -165,4 +166,13 @@ class MyApp extends StatelessWidget {
         break;
     }
   }
+
+  // context
+
+
+}
+
+class NavigationService {
+  static GlobalKey<NavigatorState> navigatorKey =
+  GlobalKey<NavigatorState>();
 }

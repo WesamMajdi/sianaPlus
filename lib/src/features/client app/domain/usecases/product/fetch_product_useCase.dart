@@ -32,4 +32,11 @@ class ProductsUseCase {
   Future<Either<Failure, void>> deleteAllFavorite() {
     return repository.deleteAllFavorite();
   }
+
+
+  Future<Either<Failure, void>> createOrder(Map<String, Product> cartItems) {
+    return repository.createOrder(cartItems);
+  }
+
+
 }

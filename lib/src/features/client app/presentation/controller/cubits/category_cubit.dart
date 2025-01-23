@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_color.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/usecases/product/fetch_product_useCase.dart';
 
@@ -29,8 +30,17 @@ class CategoryCubit extends Cubit<CategoryState> {
     );
   }
 
-  void selectProductColor({required int index}) {
-    emit(state.copyWith(selectedIndex: index));
+  void selectProductColor({required int index, required ProductColorEntity productColor, required int productId}) async {
+    final updatedItems = List<Product>.from(state.products);
+
+    int productIndex =
+    updatedItems.indexWhere((element) => element.id == productId);
+
+    if (productIndex != -1) {
+      updatedItems[productIndex].selectedColor = productColor;
+
+    }
+    emit(state.copyWith(selectedIndex: index,productColor: productColor));
   }
 
   Future<void> fetchSubCategories(
@@ -49,6 +59,18 @@ class CategoryCubit extends Cubit<CategoryState> {
           subCategoryStatus: SubCategoryStatus.success,
           subCategories: categories.items)),
     );
+  }
+
+  Future<void> createOrder(Map<String, Product> cartItems) async {
+    emit(state.copyWith(orderStatus: OrderStatus.loading));
+    final result = await productsUseCase.createOrder(cartItems);
+    result.fold(
+      (failure) => emit(state.copyWith(
+          orderStatus: OrderStatus.failure, errorMessage: failure.message)),
+      (order) => emit(state.copyWith(
+          orderStatus: OrderStatus.success,cartItems: {})),
+    );
+
   }
 
   Future<void> getProductByCategory(

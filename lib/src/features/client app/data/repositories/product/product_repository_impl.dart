@@ -55,4 +55,15 @@ class ProductRepositoryImpl implements ProductRepository {
       return Left(ServerFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> createOrder(Map<String, Product> cartItems) async {
+    try {
+      final response =
+      await remoteDataSource.createOrder(cartItems);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
 }

@@ -209,7 +209,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             ],
                           ),
                           onTap: () {
-                            context.read<CategoryCubit>().selectProductColor(index:index);
+                            context.read<CategoryCubit>().selectProductColor(index:index,productColor: widget.product.productColors![index],productId: widget.product.id!);
                           },
                         );
                       },),

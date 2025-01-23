@@ -13,6 +13,7 @@ class Product {
   int? countOrder;
   bool? isFavorite;
   List<ProductColorEntity>? productColors;
+  ProductColorEntity? selectedColor;
 
   Product(
       {this.id,
@@ -26,5 +27,6 @@ class Product {
       this.cost,
       this.countOrder,
       this.isFavorite=false,
+      this.selectedColor,
       this.productColors});
 }

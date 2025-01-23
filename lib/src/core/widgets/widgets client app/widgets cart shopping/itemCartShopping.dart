@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
@@ -27,9 +28,17 @@ class CartShoppingItem extends StatelessWidget {
             margin: const EdgeInsets.only(left: 15),
             // child: Image.asset(item.image!),
             child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: CachedNetworkImageProvider(
+                    IMAGE_URL + item.image!,
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
               width: 100,
               height: 100,
-              color: Colors.amber,
+
             ),
           ),
           AppSizedBox.kWSpace15,
