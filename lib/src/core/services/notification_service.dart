@@ -4,12 +4,14 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../../firebase_options.dart';
 import '../models/push_notification.dart';
+import '../network/global_token.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -22,7 +24,6 @@ class NotificationService {
     importance: Importance.max,
   );
 
-  final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
 
   bool _initialized = false;
 
@@ -34,15 +35,9 @@ class NotificationService {
 
   Future<void> initialize() async {
     if (_initialized) return;
+    // String? fcmToken = await TokenManager.();
 
     try {
-      // Check if Firebase is initialized
-      // if (Firebase.apps.isEmpty) {
-      //   await Firebase.initializeApp(
-      //     options: DefaultFirebaseOptions.currentPlatform,
-      //   );
-      // }
-
       // Request permission
       await _requestPermission();
 
@@ -53,14 +48,17 @@ class NotificationService {
       await _setupNotificationChannels();
 
       // Get initial token
-      String? token = await _firebaseMessaging.getToken();
-      if (token != null) {
-        print('FCM Token: $token');
-        await _registerDevice(token);
+      String? fcmToken = await _firebaseMessaging.getToken();
+      if (kDebugMode) {
+        print(fcmToken);
+      }
+      if (fcmToken != null) {
+
+        await TokenManager.saveFcmToken(fcmToken);
       }
 
       // Listen for token refresh
-      _firebaseMessaging.onTokenRefresh.listen(_registerDevice);
+      // _firebaseMessaging.onTokenRefresh.listen(_registerDevice);
 
       // Set up message handlers
       _setupMessageHandlers();
@@ -117,66 +115,7 @@ class NotificationService {
         ?.createNotificationChannel(_channel);
   }
 
-  Future<void> _registerDevice(String token) async {
-    try {
-      // Get Package Info
-      final PackageInfo packageInfo = await PackageInfo.fromPlatform();
-      final String appVersion = '${packageInfo.version}+${packageInfo.buildNumber}';
 
-      // Get Device Info
-      late final String deviceId;
-      late final String deviceType;
-      late final String osVersion;
-
-      if (Platform.isAndroid) {
-        final AndroidDeviceInfo androidInfo = await _deviceInfo.androidInfo;
-        deviceId = androidInfo.id;
-        deviceType = '${androidInfo.brand} ${androidInfo.model}';
-        osVersion = 'Android ${androidInfo.version.release}';
-      } else if (Platform.isIOS) {
-        final IosDeviceInfo iosInfo = await _deviceInfo.iosInfo;
-        deviceId = iosInfo.identifierForVendor ?? 'Unknown';
-        deviceType = iosInfo.model ?? 'iOS Device';
-        osVersion = '${iosInfo.systemName} ${iosInfo.systemVersion}';
-      } else {
-        throw PlatformException(
-          code: 'UNSUPPORTED_PLATFORM',
-          message: 'This platform is not supported',
-        );
-      }
-
-      debugPrint(json.encode({
-        'tokenText': token,
-        'deviceId': deviceId,
-        'deviceType': deviceType,
-        'osVersion': osVersion,
-        'appVersion': appVersion,
-      }));
-      final response = await http.post(
-        Uri.parse('http://ebrahim995-001-site3.ktempurl.com/api/account/CreateToken'),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: {
-          'tokenText': token,
-          'deviceId': deviceId,
-          'deviceType': deviceType,
-          'osVersion': osVersion,
-          'appVersion': appVersion,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        print('Device token registered successfully');
-      } else {
-        print('Failed to register device token: ${response.statusCode}');
-        print('Response body: ${response.body}');
-        throw Exception('Failed to register device: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error registering device token: $e');
-    }
-  }
 
   void _setupMessageHandlers() {
     // Handle background messages

@@ -38,4 +38,8 @@ class OrderUseCase {
       getOrderMaintenanceByUserNew(PaginationParams paginationParams) {
     return repository.getOrderMaintenanceByUserNew(paginationParams);
   }
+  Future<Either<Failure, PaginatedResponse<OrderEntity>>>
+  getOrderMaintenanceByUserOld(PaginationParams paginationParams) {
+    return repository.getOrderMaintenanceByUserOld(paginationParams);
+  }
 }

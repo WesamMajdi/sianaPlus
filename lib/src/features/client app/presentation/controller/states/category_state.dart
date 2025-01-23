@@ -21,9 +21,11 @@ class CategoryState extends Equatable {
   int categoryCurrentPage;
   int selectedCategoryId;
   int productCurrentPage;
+  int selectedIndex;
   final String? errorMessage;
   Map<String, Product> cartItems;
   double? totalAmount = 0;
+  // bool isColorSelected;
 
   CategoryState({
     this.mainCategoryStatus = MainCategoryStatus.initial,
@@ -34,6 +36,7 @@ class CategoryState extends Equatable {
     this.favouriteProducts = const <Product>[],
     this.subCategories = const <Category>[],
     this.hasCategoryReachedMax = false,
+    this.selectedIndex =0,
     this.categoryCurrentPage = 1,
     this.productCurrentPage = 1,
     this.selectedCategoryId = 0,
@@ -51,12 +54,13 @@ class CategoryState extends Equatable {
     List<Product>? products,
     List<Product>? favouriteProducts,
     bool? hasCategoryReachedMax,
+    int? selectedIndex,
     int? categoryCurrentPage,
     int? productCurrentPage,
     int? selectedCategoryId,
     String? errorMessage,
     Map<String, Product>? cartItems,
-    double? totalAmount = 0,
+    double? totalAmount,
   }) {
     return CategoryState(
       mainCategoryStatus: mainCategoryStatus ?? this.mainCategoryStatus,
@@ -67,6 +71,7 @@ class CategoryState extends Equatable {
       favouriteProducts: favouriteProducts ?? this.favouriteProducts,
       subCategories: subCategories ?? this.subCategories,
       selectedCategoryId: selectedCategoryId ?? this.selectedCategoryId,
+      selectedIndex: selectedIndex ?? this.selectedIndex,
       hasCategoryReachedMax:
           hasCategoryReachedMax ?? this.hasCategoryReachedMax,
       categoryCurrentPage: categoryCurrentPage ?? this.categoryCurrentPage,
@@ -88,6 +93,7 @@ class CategoryState extends Equatable {
         subCategories,
         hasCategoryReachedMax,
         categoryCurrentPage,
+    selectedIndex,
         productCurrentPage,
         errorMessage,
         cartItems,

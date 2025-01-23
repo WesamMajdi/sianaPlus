@@ -1,9 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:convert' as convert;
+import 'dart:convert';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/network/api_setting.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import '../../../core/network/global_token.dart';
 import 'domain.dart';
 
 class ApiLoginService {
@@ -36,9 +40,82 @@ class ApiLoginService {
       throw Exception('Failed to login');
     }
   }
+
+  Future<void> registerDevice() async {
+    try {
+      // Get Package Info
+      final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      final String appVersion =
+          '${packageInfo.version}+${packageInfo.buildNumber}';
+      String? token = await TokenManager.getToken();
+      String? fcmToken = await TokenManager.getFcmToken();
+      final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
+
+      // Get Device Info
+      late final String deviceId;
+      late final String deviceType;
+      late final String osVersion;
+
+      if (Platform.isAndroid) {
+        final AndroidDeviceInfo androidInfo = await _deviceInfo.androidInfo;
+        deviceId = androidInfo.id;
+        deviceType = '${androidInfo.brand} ${androidInfo.model}';
+        osVersion = 'Android ${androidInfo.version.release}';
+      } else if (Platform.isIOS) {
+        final IosDeviceInfo iosInfo = await _deviceInfo.iosInfo;
+        deviceId = iosInfo.identifierForVendor ?? 'Unknown';
+        deviceType = iosInfo.model ?? 'iOS Device';
+        osVersion = '${iosInfo.systemName} ${iosInfo.systemVersion}';
+      } else {
+        throw PlatformException(
+          code: 'UNSUPPORTED_PLATFORM',
+          message: 'This platform is not supported',
+        );
+      }
+
+      print(json.encode({
+        'tokenText': fcmToken,
+        'deviceId': deviceId,
+        'deviceType': deviceType,
+        'osVersion': osVersion,
+        'appVersion': appVersion,
+      }));
+
+      final response = await http.post(
+        Uri.parse(
+            'http://ebrahim995-001-site3.ktempurl.com/api/account/CreateToken'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'tokenText': fcmToken,
+          'deviceId': deviceId,
+          'deviceType': deviceType,
+          'osVersion': osVersion,
+          'appVersion': appVersion,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print('Device token registered successfully');
+      } else {
+        print('Failed to register device token: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        throw Exception('Failed to register device: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error registering device token: $e');
+    }
+  }
 }
 
-Future<void> logout(BuildContext context) async {
+Future<void> resetFirstTimeStatus() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setBool(FIRST_TIME_KEY, true);
+}
+
+Future<void> logout(BuildContext context, {bool resetFirstTime = false}) async {
   final bool? confirmLogout = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
@@ -97,6 +174,12 @@ Future<void> logout(BuildContext context) async {
   );
 
   if (confirmLogout == true) {
+    try {
+      await TokenManager.removeToken();
+      if (resetFirstTime) {
+        await resetFirstTimeStatus();
+      }
+    } catch (e) {}
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('token');
     await prefs.clear();

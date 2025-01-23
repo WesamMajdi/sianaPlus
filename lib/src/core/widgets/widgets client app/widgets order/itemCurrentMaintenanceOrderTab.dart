@@ -71,7 +71,8 @@ class CurrentMaintenanceOrdersTab extends StatelessWidget {
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 2, horizontal: 10),
                                 child: CustomStyledText(
-                                  text: ' getText(part.status)',
+                                  text: getStatusOrder(orderEntity.orderMaintenanceStatus!)
+                                      ,
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -86,13 +87,13 @@ class CurrentMaintenanceOrdersTab extends StatelessWidget {
                             Column(
                               children: [
                                 CustomStyledText(
-                                  text: 'part.clientName',
+                                  text: orderEntity.customerName!,
                                   fontSize: 16,
                                   textColor: Colors.grey,
                                 ),
                                 AppSizedBox.kVSpace5,
                                 CustomStyledText(
-                                  text: 'part.clientPhone',
+                                  text: orderEntity.customerPhoneNumber!,
                                   fontSize: 16,
                                   textColor: Colors.grey,
                                 ),
@@ -124,5 +125,11 @@ class CurrentMaintenanceOrdersTab extends StatelessWidget {
                     ),
                   )),
             )));
+  }
+
+ String getStatusOrder(int orderStatus){
+
+   return  OrderMaintenanceStatus.values[orderStatus-1].name.toString();
+
   }
 }

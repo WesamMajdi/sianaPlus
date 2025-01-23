@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
@@ -108,14 +109,16 @@ class _ItemsProductState extends State<ItemsProduct> {
                       },
                       child: Container(
                         margin: const EdgeInsets.all(10),
-                        child: Image.asset(
-                          'assets/images/refrigerator.jpeg',
-                          fit: BoxFit.scaleDown,
-                          height: 75,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: CachedNetworkImageProvider(
+                              IMAGE_URL + product.image!,
+                            ),
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                        // child: Container(
-                        //   width: 100,
-                        //   height: 100,
+                          width: 100,
+                          height: 100,
                         //   color: Colors.blue,
                         // ),
                       ),

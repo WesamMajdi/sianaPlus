@@ -10,6 +10,7 @@ import 'package:maintenance_app/src/features/authentication/login/data.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/application.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/data.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/notification_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/concat%20info%20page/application.dart';
@@ -74,6 +75,9 @@ void main() async {
         ),
         BlocProvider<HandReceiptCubit>(
           create: (context) => getIt<HandReceiptCubit>()..fetchHandReceipts(),
+        ),
+        BlocProvider<NotificationCubit>(
+          create: (context) => getIt<NotificationCubit>()..getNotifications(),
         ),
       ],
       child:

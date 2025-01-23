@@ -1,3 +1,4 @@
+import 'package:maintenance_app/src/features/client%20app/data/model/product/product_color_model.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
 
 class ProductModel extends Product {
@@ -13,7 +14,11 @@ class ProductModel extends Product {
     cost = json['cost'];
     countOrder = json['countOrder'];
     isFavorite = json['isFavorite'] ?? false;
-    products = json['products'];
+    productColors =  (json['productColors'] as List)
+        .map((item) => ProductColorModel.fromJson(item as Map<String, dynamic>))
+        .toList();
+
+
   }
 
   Map<String, dynamic> toJson() {
@@ -29,7 +34,7 @@ class ProductModel extends Product {
     data['cost'] = this.cost;
     data['countOrder'] = this.countOrder;
     data['isFavorite'] = this.isFavorite;
-    data['products'] = this.products;
+    data['productColors'] = this.productColors;
     return data;
   }
 }

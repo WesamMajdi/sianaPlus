@@ -29,7 +29,8 @@ class OrderCubit extends Cubit<OrderState> {
       fetchColorList(),
       fetchItemsList(),
       fetchCompaniesList(),
-      getOrderMaintenanceByUserNew()
+      getOrderMaintenanceByUserNew(),
+      getOrderMaintenanceByUserOld()
     ]);
   }
 
@@ -107,7 +108,18 @@ class OrderCubit extends Cubit<OrderState> {
     result.fold(
       (failure) => emit(state.copyWith(orderStatus: OrderStatus.failure)),
       (orders) => emit(state.copyWith(
-          orderStatus: OrderStatus.success, ordersItems: orders.items)),
+          orderStatus: OrderStatus.success, ordersItemsNew: orders.items)),
+    );
+  }
+  Future<void> getOrderMaintenanceByUserOld({bool refresh = false}) async {
+    emit(state.copyWith(orderStatus: OrderStatus.loading));
+    final page = refresh ? 1 : state.orderCurrentPage;
+    final result = await orderUseCase
+        .getOrderMaintenanceByUserOld(PaginationParams(page: page));
+    result.fold(
+      (failure) => emit(state.copyWith(orderStatus: OrderStatus.failure)),
+      (orders) => emit(state.copyWith(
+          orderStatus: OrderStatus.success, ordersItemsOld: orders.items)),
     );
   }
 }

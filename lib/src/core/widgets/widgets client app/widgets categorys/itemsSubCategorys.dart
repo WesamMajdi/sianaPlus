@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/category_state.dart';
 
@@ -62,10 +63,24 @@ class ItemsSubCategorys extends StatelessWidget {
                                     );
                                   },
                                   child: Align(
-                                    child: Image.asset(
-                                      'assets/images/Untitled-2.png',
-                                      fit: BoxFit.fill,
-                                    ),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: (Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? Colors.black54
+                                            : Colors.white),
+                                        image: DecorationImage(
+                                          image: CachedNetworkImageProvider(
+                                              IMAGE_URL + subCategory.image,
+                                          ),
+                                          fit: BoxFit.cover,
+                                        ),
+                                        borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(20),
+                                            bottomLeft: Radius.circular(20)),
+                                      ),
+                                    )
+
                                   ),
                                 )
                               ],
@@ -120,22 +135,23 @@ class ItemsSubCategorys extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  AppSizedBox.kVSpace10,
-                                  CustomStyledText(
-                                    text: "عدد الاصناف",
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    textColor: (Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? AppColors.lightGrayColor
-                                        : AppColors.primaryColor),
-                                  ),
-                                  AppSizedBox.kVSpace5,
-                                  const CustomStyledText(
-                                    text: "10",
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  // AppSizedBox.kVSpace10,
+                                  // CustomStyledText(
+                                  //   text: "عدد الاصناف",
+                                  //   fontSize: 18,
+                                  //   fontWeight: FontWeight.bold,
+                                  //   textColor: (Theme.of(context).brightness ==
+                                  //           Brightness.dark
+                                  //       ? AppColors.lightGrayColor
+                                  //       : AppColors.primaryColor),
+                                  // ),
+                                  // AppSizedBox.kVSpace5,
+                                  // const CustomStyledText(
+                                  //   text: "10",
+                                  //   fontSize: 20,
+                                  //   fontWeight: FontWeight.bold,
+                                  //   textColor: AppColors.secondaryColor,
+                                  // ),
                                 ],
                               ),
                             ),
@@ -152,6 +168,8 @@ class ItemsSubCategorys extends StatelessWidget {
               );
             }
         }
+
+        return const Text('Some thing error');
       },
     );
   }

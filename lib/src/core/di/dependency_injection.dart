@@ -1,9 +1,14 @@
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:maintenance_app/src/features/client%20app/data/data_sources/notifications/notifications_data_source.dart';
+import 'package:maintenance_app/src/features/client%20app/data/repositories/notifications/notifications_repository_impl..dart';
 import 'package:maintenance_app/src/features/client%20app/data/repositories/orders/orders_repository_impl.dart';
 import 'package:maintenance_app/src/features/client%20app/data/repositories/product/product_repository_impl.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/repositories/notifications/notifications_repository.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/repositories/product/product_repository.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/usecases/notifications/fetch_notifications_useCase.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/usecases/product/fetch_product_useCase.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/notification_cubit.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/data_sources/maintenance_parts/maintenance_parts_data_source.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/repositories/maintenance_parts/maintenance_parts_repository_impl.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/repositories/maintenance_parts/maintenance_parts.dart';
@@ -45,6 +50,7 @@ void _initCubits() {
   getIt.registerFactory<CategoryCubit>(() => CategoryCubit(getIt(), getIt()));
   getIt.registerFactory<OrderCubit>(() => OrderCubit(getIt()));
   getIt.registerFactory<HandReceiptCubit>(() => HandReceiptCubit(getIt()));
+  getIt.registerFactory<NotificationCubit>(() => NotificationCubit(getIt()));
 }
 
 void _initUseCases() {
@@ -59,6 +65,9 @@ void _initUseCases() {
   );
   getIt.registerLazySingleton<HandReceiptUseCase>(
     () => HandReceiptUseCase(getIt()),
+  );
+  getIt.registerLazySingleton<NotificationUseCase>(
+    () => NotificationUseCase(getIt()),
   );
 }
 
@@ -81,6 +90,12 @@ void _initRepositories() {
   );
   getIt.registerLazySingleton<HandReceiptRepository>(
     () => HandReceiptRepositoryImpl(
+      getIt(),
+    ),
+  );
+
+  getIt.registerLazySingleton<NotificationsRepository>(
+    () => NotificationsRepositoryImpl(
       getIt(),
     ),
   );
@@ -109,6 +124,13 @@ void _initDataSources() {
   );
   getIt.registerLazySingleton<HandReceiptRemoteDataSource>(
     () => HandReceiptRemoteDataSource(
+      apiController: getIt(),
+      internetConnectionChecker: getIt(),
+    ),
+  );
+
+  getIt.registerLazySingleton<NotificationsDataSource>(
+    () => NotificationsDataSource(
       apiController: getIt(),
       internetConnectionChecker: getIt(),
     ),

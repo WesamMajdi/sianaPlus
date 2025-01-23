@@ -6,6 +6,9 @@ class ApiSetting {
       '$baseUrl/Categories/GetCategoriesByMainCategory';
   static String get getProductByCategory =>
       '$baseUrl/Products/GetProductsByCategory';
+
+  static String get getNotifications =>
+      '$baseUrl/Announcement/GetNotificationByUser';
   static String get createFavorite => '$baseUrl/Products/CreateFavorite';
 
   static String get deleteFavorite => '$baseUrl/Products/DeleteFavorite';
@@ -28,6 +31,8 @@ class ApiSetting {
 
   static String get getOrderMaintenanceByUserNew =>
       '$baseUrl/OrderMaintenances/GetOrderMaintenanceByUserNew';
+  static String get getOrderMaintenanceByUserOld =>
+      '$baseUrl/OrderMaintenances/getOrderMaintenanceByUserOld';
 
   static String get getAllHandReceiptItems =>
       '$baseUrl/Maintenances/GetAllHandReceiptItems';

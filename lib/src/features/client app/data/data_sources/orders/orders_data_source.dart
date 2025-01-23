@@ -310,4 +310,47 @@ class OrderRemoteDataSource {
       throw OfflineException(errorMessage: 'No Internet Connection');
     }
   }
+
+  Future<PaginatedResponse<OrderModel>> getOrderMaintenanceByUserOld(
+      PaginationParams paginationParams) async {
+    String? token = await TokenManager.getToken();
+    debugPrint(Uri.parse(
+            '${ApiSetting.getOrderMaintenanceByUserOld}?page=${paginationParams.page}&perPage=${paginationParams.perPage}')
+        .toString());
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.get(
+          Uri.parse(
+              '${ApiSetting.getOrderMaintenanceByUserOld}?page=${paginationParams.page}&perPage=${paginationParams.perPage}'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+        );
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        debugPrint(responseBody.toString());
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+
+        final ordersResponse =
+            BaseResponse<PaginatedResponse<OrderModel>>.fromJson(
+          responseBody,
+          (json) {
+            return PaginatedResponse<OrderModel>.fromJson(
+              json,
+              (p0) {
+                return OrderModel.fromJson(p0);
+              },
+            );
+          },
+        );
+        return ordersResponse.data!;
+      } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
 }
