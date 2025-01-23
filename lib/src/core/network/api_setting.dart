@@ -34,6 +34,8 @@ class ApiSetting {
 
   static String get updateStatusForHandReceiptItem =>
       '$baseUrl/Maintenances/UpdateStatusForHandReceiptItem';
+  static String get defineMalfunctionForHandReceiptItem =>
+      '$baseUrl/Maintenances/DefineMalfunctionForHandReceiptItem';
 
   static String get createContactUs => "$baseUrl/Communication/CreateContactUs";
   // // Auth endpoints

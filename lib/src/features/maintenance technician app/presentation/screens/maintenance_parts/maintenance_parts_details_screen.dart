@@ -224,25 +224,19 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return CustomSureDialog(
-                    onConfirm: () async {
-                      final cubit = context.read<HandReceiptCubit>();
-                      try {
-                        await cubit.updateStatusForHandReceiptItem(
-                          receiptItemId: part.id!,
-                        );
+                  return CustomSureDialog(onConfirm: () async {
+                    final cubit = context.read<HandReceiptCubit>();
+                    try {
+                      await cubit.updateStatusForHandReceiptItem(
+                          receiptItemId: part.id!, status: 2);
 
-                        Navigator.of(context).pop();
-                        _getItemsBasedOnStatus(
-                            context, part.maintenanceRequestStatus!);
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text('Failed to update status: $e')),
-                        );
-                      }
-                    },
-                  );
+                      Navigator.of(context).pop();
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Failed to update status: $e')),
+                      );
+                    }
+                  });
                 },
               );
             },
@@ -260,6 +254,8 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
+                  final TextEditingController descriptionController =
+                      TextEditingController();
                   return CustomInputDialog(
                     titleDialog: 'تحديد العطل',
                     text: 'الوصف:',
@@ -270,7 +266,29 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                       }
                       return null;
                     },
-                    onConfirm: () {}, //DefineMalfunctionForHandReceiptItem
+                    controller: descriptionController,
+                    onConfirm: () async {
+                      if (descriptionController.text.isNotEmpty) {
+                        try {
+                          await context
+                              .read<HandReceiptCubit>()
+                              .defineMalfunctionForHandReceiptItem(
+                                receiptItemId: part.id!,
+                                description: descriptionController.text,
+                              );
+
+                          Navigator.of(context).pop();
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('فشل في تحديد العطل: $e')),
+                          );
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('الرجاء إدخال الوصف')),
+                        );
+                      }
+                    },
                   );
                 },
               );
@@ -292,9 +310,9 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                         await cubit.updateStatusForHandReceiptItem(
                           receiptItemId: part.id!,
                         );
+
                         Navigator.of(context).pop();
                       } catch (e) {
-                        // ignore: use_build_context_synchronously
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                               content: Text('Failed to update status: $e')),

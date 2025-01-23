@@ -35,4 +35,17 @@ class HandReceiptRepositoryImpl implements HandReceiptRepository {
       return Left(ServerFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>>
+      defineMalfunctionForHandReceiptItem(
+          int receiptItemId, String description) async {
+    try {
+      final response = await remoteDataSource
+          .defineMalfunctionForHandReceiptItem(receiptItemId, description);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
 }

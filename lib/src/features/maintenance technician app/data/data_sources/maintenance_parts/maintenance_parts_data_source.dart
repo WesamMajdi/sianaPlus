@@ -6,9 +6,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/pagination/paginated_response.dart';
 import 'package:maintenance_app/src/core/pagination/pagination_params.dart';
-import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model_request.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/entities/maintenance_parts/maintenance_parts_entitie.dart';
 import '../../../../../core/error/exception.dart';
 import '../../../../../core/error/handle_http_error.dart';
 import '../../../../../core/network/base_response.dart';
@@ -68,8 +66,9 @@ class HandReceiptRemoteDataSource {
   }
 
   Future<Map<String, dynamic>> updateStatusForHandReceiptItem(
-      int receiptItemId, int status) async {
+      int receiptItemId, int? status) async {
     String? token = await TokenManager.getToken();
+
     if (await internetConnectionChecker.hasConnection) {
       try {
         final response = await apiController.post(
@@ -82,7 +81,6 @@ class HandReceiptRemoteDataSource {
         );
 
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
-
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
@@ -92,6 +90,46 @@ class HandReceiptRemoteDataSource {
         throw TimeoutException('Request timed out');
       } catch (e) {
         throw Exception('Unexpected error occurred');
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<Map<String, dynamic>> defineMalfunctionForHandReceiptItem(
+      int receiptItemId, String? description) async {
+    print(receiptItemId);
+    print(description);
+
+    String? token = await TokenManager.getToken();
+    if (token == null) {
+      throw Exception('Authorization token is missing or expired');
+    }
+
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.post(
+          Uri.parse(ApiSetting.defineMalfunctionForHandReceiptItem),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({
+            "receiptItemId": receiptItemId,
+            "description": description!,
+          }),
+        );
+
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+
+        return responseBody;
+      } on TimeoutException catch (_) {
+        throw TimeoutException('Request timed out');
+      } catch (e) {
+        throw Exception('Unexpected error occurred: $e');
       }
     } else {
       throw OfflineException(errorMessage: 'No Internet Connection');

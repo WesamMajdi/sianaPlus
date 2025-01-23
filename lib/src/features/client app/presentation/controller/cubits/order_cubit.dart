@@ -2,9 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/color_entery.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model_request.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/usecases/orders/fetch_orders_useCase.dart';
-
 import '../../../../../core/pagination/pagination_params.dart';
-import '../../../domain/entities/orders/orders_entity.dart';
 import '../states/order_state.dart';
 
 class OrderCubit extends Cubit<OrderState> {

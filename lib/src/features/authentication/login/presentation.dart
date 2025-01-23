@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/authentication/forgot%20password/presentation.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/presentation.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/home_maintenance/home_maintenance_screen.dart';
 
 import '../../client app/presentation/screens/home/home_screen.dart';
 import 'application.dart';
@@ -104,12 +105,22 @@ class _LoginPageState extends State<LoginPage> {
             BlocConsumer<LoginCubit, LoginState>(
               listener: (context, state) {
                 if (state is LoginSuccess) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HomePage(),
-                    ),
-                  );
+                  if (state.loginResponse.data.role ==
+                      'MaintenanceTechnician') {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomeMaintenanceScreen(),
+                      ),
+                    );
+                  } else if (state.loginResponse.data.role == 'Customer') {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomePage(),
+                      ),
+                    );
+                  }
                 } else if (state is LoginFailure) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text("فشل تسجيل الدخول: ${state.error}"),

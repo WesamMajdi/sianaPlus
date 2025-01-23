@@ -8,8 +8,15 @@ abstract class HandReceiptRepository {
   Future<Either<Failure, PaginatedResponse<HandReceiptEntity>>>
       getHandHandReceiptItem(PaginationParams paginationParams,
           String? searchQuery, String? barcode);
+
   Future<Either<Failure, Map<String, dynamic>>> updateStatusForHandReceiptItem(
     int receiptItemId,
     int? status,
+  );
+
+  Future<Either<Failure, Map<String, dynamic>>>
+      defineMalfunctionForHandReceiptItem(
+    int receiptItemId,
+    String description,
   );
 }

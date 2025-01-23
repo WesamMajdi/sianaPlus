@@ -1,12 +1,14 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 
-class CustomInputDialog extends StatelessWidget {
+class CustomInputDialog extends StatefulWidget {
   final VoidCallback onConfirm;
   final String titleDialog;
   final String text;
   final String hintText;
   final FormFieldValidator<String>? validators;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
+
   const CustomInputDialog({
     Key? key,
     required this.onConfirm,
@@ -15,10 +17,19 @@ class CustomInputDialog extends StatelessWidget {
     required this.hintText,
     this.validators,
     this.controller,
+    this.focusNode,
   }) : super(key: key);
 
   @override
+  State<CustomInputDialog> createState() => _CustomInputDialogState();
+}
+
+class _CustomInputDialogState extends State<CustomInputDialog> {
+  @override
   Widget build(BuildContext context) {
+    // Define the form key
+    final _formKey = GlobalKey<FormState>();
+
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(25),
@@ -38,7 +49,7 @@ class CustomInputDialog extends StatelessWidget {
             ),
           ),
           CustomStyledText(
-            text: titleDialog,
+            text: widget.titleDialog,
             fontSize: 18,
             textColor: AppColors.secondaryColor,
           ),
@@ -51,20 +62,23 @@ class CustomInputDialog extends StatelessWidget {
         ],
       ),
       content: SizedBox(
-        height: 170,
+        height: 190,
         width: 400,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomStyledText(text: text, fontSize: 17),
-            AppSizedBox.kVSpace10,
-            Texteara(
-              hintText: hintText,
-              validators: validators,
-              controller: controller,
-            ),
-            AppSizedBox.kVSpace10
-          ],
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CustomStyledText(text: widget.text, fontSize: 17),
+              AppSizedBox.kVSpace10,
+              Texteara(
+                hintText: widget.hintText,
+                validators: widget.validators,
+                controller: widget.controller,
+              ),
+              AppSizedBox.kVSpace10,
+            ],
+          ),
         ),
       ),
       actions: [
@@ -81,7 +95,12 @@ class CustomInputDialog extends StatelessWidget {
           ),
         ),
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            // Validate the form before calling onConfirm
+            if (_formKey.currentState?.validate() ?? false) {
+              widget.onConfirm();
+            }
+          },
           style: TextButton.styleFrom(
             backgroundColor: AppColors.secondaryColor,
             shape: RoundedRectangleBorder(
@@ -89,10 +108,11 @@ class CustomInputDialog extends StatelessWidget {
             ),
           ),
           child: const CustomStyledText(
-              text: "تأكيد",
-              textColor: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.bold),
+            text: "تأكيد",
+            textColor: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ],
     );

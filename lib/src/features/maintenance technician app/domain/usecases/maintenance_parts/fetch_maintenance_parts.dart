@@ -20,6 +20,13 @@ class HandReceiptUseCase {
 
   Future<Either<Failure, Map<String, dynamic>>> updateStatusForHandReceiptItem(
       int receiptItemId, int? status) {
-    return repository.updateStatusForHandReceiptItem(receiptItemId, status);
+    return repository.updateStatusForHandReceiptItem(receiptItemId, status!);
+  }
+
+  Future<Either<Failure, Map<String, dynamic>>>
+      defineMalfunctionForHandReceiptItem(
+          int receiptItemId, String description) {
+    return repository.defineMalfunctionForHandReceiptItem(
+        receiptItemId, description);
   }
 }

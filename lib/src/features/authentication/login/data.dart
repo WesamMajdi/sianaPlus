@@ -3,6 +3,7 @@ import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/network/api_setting.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
 import 'domain.dart';
 
 class ApiLoginService {
@@ -21,6 +22,10 @@ class ApiLoginService {
 
     if (response.statusCode == 200) {
       final data = convert.jsonDecode(response.body);
+
+      final role = data['data']['role'];
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('role', role);
 
       if (data['data'] != null) {
         return LoginResponse.fromJson(data);
