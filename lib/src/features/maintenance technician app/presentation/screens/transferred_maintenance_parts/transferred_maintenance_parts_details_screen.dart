@@ -290,12 +290,12 @@ class TransferredMaintenancePartsDetailsPage extends StatelessWidget {
             fontSize: 20,
           ),
           onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return ShowDilogInformCustomerOfTheCost();
-              },
-            );
+            // showDialog(
+            //   context: context,
+            //   builder: (BuildContext context) {
+            //     return ShowDilogInformCustomerOfTheCost();
+            //   },
+            // );
           },
         ),
       ];

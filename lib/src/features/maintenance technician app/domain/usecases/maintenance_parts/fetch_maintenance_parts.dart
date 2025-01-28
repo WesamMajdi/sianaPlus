@@ -29,4 +29,17 @@ class HandReceiptUseCase {
     return repository.defineMalfunctionForHandReceiptItem(
         receiptItemId, description);
   }
+
+  Future<Either<Failure, Map<String, dynamic>>>
+      enterMaintenanceCostForHandReceiptItem({
+    required int receiptItemId,
+    required double costNotifiedToTheCustomer,
+    required int warrantyDaysNumber,
+  }) {
+    return repository.enterMaintenanceCostForHandReceiptItem(
+      receiptItemId: receiptItemId,
+      costNotifiedToTheCustomer: costNotifiedToTheCustomer,
+      warrantyDaysNumber: warrantyDaysNumber,
+    );
+  }
 }

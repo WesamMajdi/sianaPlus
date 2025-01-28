@@ -17,6 +17,13 @@ abstract class HandReceiptRepository {
   Future<Either<Failure, Map<String, dynamic>>>
       defineMalfunctionForHandReceiptItem(
     int receiptItemId,
-    String description,
+    String? description,
   );
+
+  Future<Either<Failure, Map<String, dynamic>>>
+      enterMaintenanceCostForHandReceiptItem({
+    required int receiptItemId,
+    required double costNotifiedToTheCustomer,
+    required int warrantyDaysNumber,
+  });
 }

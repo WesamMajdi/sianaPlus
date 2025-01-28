@@ -145,7 +145,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  ..._getItemsBasedOnStatus(
+                  ...getItemsBasedOnStatus(
                       context, part.maintenanceRequestStatus!),
                 ],
               ),
@@ -185,7 +185,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
     );
   }
 
-  List<Widget> _getItemsBasedOnStatus(BuildContext context, int status) {
+  List<Widget> getItemsBasedOnStatus(BuildContext context, int status) {
     if (status != 14) {
       ListTile(
         title: const CustomStyledText(
@@ -251,13 +251,15 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
               fontSize: 20,
             ),
             onTap: () {
+              final TextEditingController descriptionController =
+                  TextEditingController();
+              final FocusNode _descriptionFocusNode = FocusNode();
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  final TextEditingController descriptionController =
-                      TextEditingController();
                   return CustomInputDialog(
                     titleDialog: 'تحديد العطل',
+                    focusNode: _descriptionFocusNode,
                     text: 'الوصف:',
                     hintText: 'ادخل الوصف',
                     validators: (value) {
@@ -276,7 +278,6 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                                 receiptItemId: part.id!,
                                 description: descriptionController.text,
                               );
-
                           Navigator.of(context).pop();
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -308,8 +309,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                       final cubit = context.read<HandReceiptCubit>();
                       try {
                         await cubit.updateStatusForHandReceiptItem(
-                          receiptItemId: part.id!,
-                        );
+                            receiptItemId: part.id!, status: 8);
 
                         Navigator.of(context).pop();
                       } catch (e) {
@@ -325,11 +325,13 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
             },
           ),
         ];
-      } else if (status == 3 && part.notifyCustomerOfTheCost!) {
+      } else if (status == 3 &&
+          part.notifyCustomerOfTheCost!) //DefineMalfunction
+      {
         return [
           ListTile(
-            title: CustomStyledText(
-              text: part.maintenanceRequestStatusMessage!,
+            title: const CustomStyledText(
+              text: "إبلاغ العميل بالتكلفة",
               fontSize: 20,
             ),
             onTap: () {
@@ -337,20 +339,35 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return CustomSureDialog(
-                    onConfirm: () {},
+                    onConfirm: () async {
+                      final cubit = context.read<HandReceiptCubit>();
+                      try {
+                        await cubit.updateStatusForHandReceiptItem(
+                            receiptItemId: part.id!);
+
+                        Navigator.of(context).pop();
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Failed to update status: $e')),
+                        );
+                      }
+                    }, //UpdateStatusForHandReceiptItem
                   );
                 },
               );
-            }, //UpdateStatusForHandReceiptItem
+            },
           ),
         ];
       } else if (status == 3 &&
           // ignore: dead_code
-          !part.notifyCustomerOfTheCost!) {
+          !part.notifyCustomerOfTheCost!)
+      //DefineMalfunction
+      {
         return [
           ListTile(
-            title: CustomStyledText(
-              text: part.maintenanceRequestStatusMessage!,
+            title: const CustomStyledText(
+              text: "مكتمل",
               fontSize: 20,
             ),
             onTap: () {
@@ -358,25 +375,41 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return CustomSureDialog(
-                    onConfirm: () {},
+                    onConfirm: () async {
+                      final cubit = context.read<HandReceiptCubit>();
+                      try {
+                        await cubit.updateStatusForHandReceiptItem(
+                            receiptItemId: part.id!, status: 11);
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).pop();
+                      } catch (e) {
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Failed to update status: $e')),
+                        );
+                      }
+                    }, //UpdateStatusForHandReceiptItem
                   );
                 },
               );
-            }, //UpdateStatusForHandReceiptItem
+            },
           ),
         ];
       } else if (status == 4) {
         return [
           ListTile(
-            title: CustomStyledText(
-              text: part.maintenanceRequestStatusMessage!,
+            title: const CustomStyledText(
+              text: "إبلاغ العميل بالتكلفة",
               fontSize: 20,
             ),
             onTap: () {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return const ShowDilogInformCustomerOfTheCost();
+                  return ShowDilogInformCustomerOfTheCost(
+                      status: part.maintenanceRequestStatus!,
+                      receiptItemId: part.id!);
                 },
               );
             },
@@ -385,8 +418,8 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
       } else if (status == 7) {
         return [
           ListTile(
-            title: CustomStyledText(
-              text: part.maintenanceRequestStatusMessage!,
+            title: const CustomStyledText(
+              text: "لا يوجد استجابة من العميل",
               fontSize: 20,
             ),
             onTap: () {
@@ -394,15 +427,29 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return CustomSureDialog(
-                    onConfirm: () {},
+                    onConfirm: () async {
+                      final cubit = context.read<HandReceiptCubit>();
+                      try {
+                        await cubit.updateStatusForHandReceiptItem(
+                            receiptItemId: part.id!, status: 7);
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).pop();
+                      } catch (e) {
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Failed to update status: $e')),
+                        );
+                      }
+                    }, //UpdateStatusForHandReceiptItem
                   );
                 },
               );
-            }, //UpdateStatusForHandReceiptItem
+            },
           ),
           ListTile(
-            title: CustomStyledText(
-              text: part.maintenanceRequestStatusMessage!,
+            title: const CustomStyledText(
+              text: "رفض العميل",
               fontSize: 20,
             ),
             onTap: () {
@@ -418,7 +465,9 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
             },
           ),
         ];
-      } else if (status == 5 && part.notifyCustomerOfTheCost!) {
+      } else if (status == 5 &&
+          part.notifyCustomerOfTheCost!) //CustomerApproved
+      {
         return [
           ListTile(
             title: const CustomStyledText(
@@ -426,6 +475,8 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
               fontSize: 20,
             ),
             onTap: () {
+              final TextEditingController priceController =
+                  TextEditingController();
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -433,15 +484,34 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                     titleDialog: 'تحديد السعر',
                     text: 'السعر:',
                     hintText: 'ادخل السعر',
+                    controller: priceController,
                     validators: (value) {
                       if (value == null || value.isEmpty) {
                         return 'عفوا.السعر مطلوب';
                       }
                       return null;
                     },
-                    onConfirm: () {},
+                    onConfirm: () async {
+                      if (priceController.text.isNotEmpty) {
+                        final double price =
+                            double.tryParse(priceController.text) ?? 0.0;
 
-                    ///EnterMaintenanceCostForHandReceiptItem
+                        await context
+                            .read<HandReceiptCubit>()
+                            .enterMaintenanceCostForHandReceiptItem(
+                              receiptItemId: part.id!,
+                              costNotifiedToTheCustomer: price,
+                              warrantyDaysNumber: part.warrantyDaysNumber!,
+                            );
+
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).pop();
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('الرجاء إدخال السعر')),
+                        );
+                      }
+                    },
                   );
                 },
               );
@@ -461,7 +531,20 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return CustomSureDialog(
-                    onConfirm: () {},
+                    onConfirm: () async {
+                      final cubit = context.read<HandReceiptCubit>();
+                      try {
+                        await cubit.updateStatusForHandReceiptItem(
+                            receiptItemId: part.id!);
+
+                        Navigator.of(context).pop();
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Failed to update status: $e')),
+                        );
+                      }
+                    },
                   );
                 },
               );
@@ -482,9 +565,21 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return CustomSureDialog(
-                    onConfirm: () {},
-
-                    ///UpdateStatusForHandReceiptItem
+                    onConfirm: () async {
+                      final cubit = context.read<HandReceiptCubit>();
+                      try {
+                        await cubit.updateStatusForHandReceiptItem(
+                            receiptItemId: part.id!, status: 12);
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).pop();
+                      } catch (e) {
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Failed to update status: $e')),
+                        );
+                      }
+                    }, //UpdateStatusForHandReceiptItem
                   );
                 },
               );
@@ -503,9 +598,21 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return CustomSureDialog(
-                    onConfirm: () {},
-
-                    ///UpdateStatusForHandReceiptItem
+                    onConfirm: () async {
+                      final cubit = context.read<HandReceiptCubit>();
+                      try {
+                        await cubit.updateStatusForHandReceiptItem(
+                            receiptItemId: part.id!, status: 9);
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).pop();
+                      } catch (e) {
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Failed to update status: $e')),
+                        );
+                      }
+                    }, //UpdateStatusForHandReceiptItem
                   );
                 },
               );
@@ -548,8 +655,12 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
 }
 
 class ShowDilogInformCustomerOfTheCost extends StatefulWidget {
+  final int status;
+  final int receiptItemId;
   const ShowDilogInformCustomerOfTheCost({
     super.key,
+    required this.status,
+    required this.receiptItemId,
   });
 
   @override
@@ -696,16 +807,29 @@ class _ShowDilogInformCustomerOfTheCostState
         ),
         TextButton(
           onPressed: () {
-            if (statusEnum == StatusEnum.CustomerApproved) {
+            if (widget.status == 5) {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return CustomSureDialog(
-                    onConfirm: () {},
+                    onConfirm: () async {
+                      final cubit = context.read<HandReceiptCubit>();
+                      try {
+                        await cubit.updateStatusForHandReceiptItem(
+                            receiptItemId: widget.receiptItemId, status: 5);
+
+                        Navigator.of(context).pop();
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Failed to update status: $e')),
+                        );
+                      }
+                    }, //UpdateStatusForHandReceiptItem
                   );
                 },
               );
-            } else if (statusEnum == StatusEnum.CustomerRefused) {
+            } else if (widget.status == 6) {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
@@ -724,12 +848,28 @@ class _ShowDilogInformCustomerOfTheCostState
                   );
                 },
               );
-            } else if (statusEnum == StatusEnum.NoResponseFromTheCustomer) {
+            } else if (widget.status == 7) //NoResponseFromTheCustomer
+            {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return CustomSureDialog(
-                    onConfirm: () {},
+                    onConfirm: () async {
+                      final cubit = context.read<HandReceiptCubit>();
+                      try {
+                        await cubit.updateStatusForHandReceiptItem(
+                          receiptItemId: widget.receiptItemId,
+                          status: 7,
+                        );
+
+                        Navigator.of(context).pop();
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Failed to update status: $e')),
+                        );
+                      }
+                    }, //UpdateStatusForHandReceiptItem
                   );
                 },
               );

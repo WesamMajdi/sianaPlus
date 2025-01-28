@@ -12,7 +12,6 @@ import 'package:maintenance_app/src/features/authentication/sign%20up/data.dart'
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/notification_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/concat%20info%20page/application.dart';
 import 'package:maintenance_app/src/features/client%20app/concat%20info%20page/data.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/maintenance_parts/maintenance_parts_cubit.dart';

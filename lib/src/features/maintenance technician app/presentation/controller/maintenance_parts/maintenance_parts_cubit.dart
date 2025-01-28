@@ -87,4 +87,33 @@ class HandReceiptCubit extends Cubit<HandReceiptState> {
           errorMessage: 'Unexpected error occurred: $e'));
     }
   }
+
+  Future<void> enterMaintenanceCostForHandReceiptItem({
+    required int receiptItemId,
+    required double costNotifiedToTheCustomer,
+    required int warrantyDaysNumber,
+  }) async {
+    emit(state.copyWith(handReceiptStatus: HandReceiptStatus.loading));
+    try {
+      final result =
+          await handReceiptUseCase.enterMaintenanceCostForHandReceiptItem(
+        receiptItemId: receiptItemId,
+        costNotifiedToTheCustomer: costNotifiedToTheCustomer,
+        warrantyDaysNumber: warrantyDaysNumber,
+      );
+      result.fold(
+        (failure) => emit(state.copyWith(
+            handReceiptStatus: HandReceiptStatus.failure,
+            errorMessage: failure.message)),
+        (response) => emit(state.copyWith(
+          handReceiptStatus: HandReceiptStatus.success,
+          successMessage: 'Maintenance cost entered successfully',
+        )),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+          handReceiptStatus: HandReceiptStatus.failure,
+          errorMessage: 'Unexpected error occurred: $e'));
+    }
+  }
 }

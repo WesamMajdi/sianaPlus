@@ -98,9 +98,53 @@ class HandReceiptRemoteDataSource {
 
   Future<Map<String, dynamic>> defineMalfunctionForHandReceiptItem(
       int receiptItemId, String? description) async {
-    print(receiptItemId);
-    print(description);
+    String? token = await TokenManager.getToken();
+    if (token == null) {
+      throw Exception('Authorization token is missing or expired');
+    }
 
+    if (description == null || description.isEmpty) {
+      throw Exception('Description is required');
+    }
+
+    if (!await internetConnectionChecker.hasConnection) {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+
+    try {
+      final requestBody = {
+        "receiptItemId": receiptItemId,
+        "description": description,
+      };
+
+      final response = await apiController.post(
+        Uri.parse(ApiSetting.defineMalfunctionForHandReceiptItem),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: requestBody,
+      );
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode >= 400) {
+        HandleHttpError.handleHttpError(responseBody);
+      }
+
+      return responseBody;
+    } on TimeoutException catch (_) {
+      throw TimeoutException('Request timed out');
+    } catch (e) {
+      throw Exception('Unexpected error occurred: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>> enterMaintenanceCostForHandReceiptItem({
+    required int receiptItemId,
+    required double costNotifiedToTheCustomer,
+    required int warrantyDaysNumber,
+  }) async {
     String? token = await TokenManager.getToken();
     if (token == null) {
       throw Exception('Authorization token is missing or expired');
@@ -108,23 +152,26 @@ class HandReceiptRemoteDataSource {
 
     if (await internetConnectionChecker.hasConnection) {
       try {
+        final requestBody = {
+          "receiptItemId": receiptItemId,
+          "costNotifiedToTheCustomer": costNotifiedToTheCustomer,
+          "warrantyDaysNumber": warrantyDaysNumber,
+        };
+
         final response = await apiController.post(
-          Uri.parse(ApiSetting.defineMalfunctionForHandReceiptItem),
+          Uri.parse(ApiSetting.enterMaintenanceCostForHandReceiptItem),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
           },
-          body: jsonEncode({
-            "receiptItemId": receiptItemId,
-            "description": description!,
-          }),
+          body: requestBody,
         );
 
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
-
         return responseBody;
       } on TimeoutException catch (_) {
         throw TimeoutException('Request timed out');
