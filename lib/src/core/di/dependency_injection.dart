@@ -1,19 +1,24 @@
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:maintenance_app/src/features/client%20app/data/data_sources/notifications/notifications_data_source.dart';
+import 'package:maintenance_app/src/features/client%20app/data/data_sources/profile/user_profile_data_source.dart';
 import 'package:maintenance_app/src/features/client%20app/data/repositories/notifications/notifications_repository_impl..dart';
 import 'package:maintenance_app/src/features/client%20app/data/repositories/orders/orders_repository_impl.dart';
 import 'package:maintenance_app/src/features/client%20app/data/repositories/product/product_repository_impl.dart';
+import 'package:maintenance_app/src/features/client%20app/data/repositories/profile/user_profile_repository_impl.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/repositories/notifications/notifications_repository.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/repositories/product/product_repository.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/usecases/notifications/fetch_notifications_useCase.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/usecases/product/fetch_product_useCase.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/notification_cubit.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/profile_cubit.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/data_sources/maintenance_parts/maintenance_parts_data_source.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/repositories/maintenance_parts/maintenance_parts_repository_impl.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/repositories/maintenance_parts/maintenance_parts.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/usecases/maintenance_parts/fetch_maintenance_parts.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/maintenance_parts/maintenance_parts_cubit.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/repositories/profile/profile_repository.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/usecases/profile/fetch_profile_useCase.dart';
 
 import '../../features/client app/data/data_sources/category/category_data_source.dart';
 import '../../features/client app/data/data_sources/orders/orders_data_source.dart';
@@ -51,6 +56,7 @@ void _initCubits() {
   getIt.registerFactory<OrderCubit>(() => OrderCubit(getIt()));
   getIt.registerFactory<HandReceiptCubit>(() => HandReceiptCubit(getIt()));
   getIt.registerFactory<NotificationCubit>(() => NotificationCubit(getIt()));
+  getIt.registerFactory<ProfileCubit>(() => ProfileCubit(getIt()));
 }
 
 void _initUseCases() {
@@ -68,6 +74,9 @@ void _initUseCases() {
   );
   getIt.registerLazySingleton<NotificationUseCase>(
     () => NotificationUseCase(getIt()),
+  );
+  getIt.registerLazySingleton<FetchProfileUseCase>(
+    () => FetchProfileUseCase(getIt()),
   );
 }
 
@@ -97,6 +106,12 @@ void _initRepositories() {
   getIt.registerLazySingleton<NotificationsRepository>(
     () => NotificationsRepositoryImpl(
       getIt(),
+    ),
+  );
+  
+  getIt.registerLazySingleton<ProfileRepository>(
+    () => UserProfileRepositoryImpl(
+      remoteDataSource:getIt(), 
     ),
   );
 }
@@ -131,6 +146,13 @@ void _initDataSources() {
 
   getIt.registerLazySingleton<NotificationsDataSource>(
     () => NotificationsDataSource(
+      apiController: getIt(),
+      internetConnectionChecker: getIt(),
+    ),
+  );
+
+  getIt.registerLazySingleton<ProfileRemoteDataSource>(
+    () => ProfileRemoteDataSource(
       apiController: getIt(),
       internetConnectionChecker: getIt(),
     ),
