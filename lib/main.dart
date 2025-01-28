@@ -12,11 +12,11 @@ import 'package:maintenance_app/src/features/authentication/sign%20up/data.dart'
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/notification_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/profile_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/concat%20info%20page/application.dart';
 import 'package:maintenance_app/src/features/client%20app/concat%20info%20page/data.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/maintenance_parts/maintenance_parts_cubit.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/home_maintenance/home_maintenance_screen.dart';
-
 import 'firebase_options.dart';
 
 void main() async {
@@ -78,6 +78,9 @@ void main() async {
         BlocProvider<NotificationCubit>(
           create: (context) => getIt<NotificationCubit>()..getNotifications(),
         ),
+        BlocProvider<ProfileCubit>(
+          create: (context) => getIt<ProfileCubit>()..getUserProfile(),
+        ),
       ],
       child:
           MyApp(themeChangerBloc: themeChangerBloc, isLoggedIn: token != null),
@@ -108,6 +111,7 @@ class MyApp extends StatelessWidget {
         child: BlocBuilder<ThemeChangerBloc, ThemeChangerState>(
           builder: (context, themeState) {
             return MaterialApp(
+              navigatorKey: NavigationService.navigatorKey,
               initialRoute: "/",
               title: kAppName,
               theme: themeState.themeType == ThemeType.light
@@ -164,4 +168,10 @@ class MyApp extends StatelessWidget {
         break;
     }
   }
+
+  // context
+}
+
+class NavigationService {
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 }

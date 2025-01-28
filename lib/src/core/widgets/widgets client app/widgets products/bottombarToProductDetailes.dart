@@ -38,14 +38,25 @@ class BottombarToProductDetailes extends StatelessWidget {
                       backgroundColor:
                           WidgetStateProperty.all(AppColors.secondaryColor)),
                   onPressed: () {
-                    context.read<CategoryCubit>().addProductToCart(product);
-                    // print( context.read<CategoryCubit>().state.cartItems.toString());
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CartShoppingPage(),
-                      ),
-                    );
+                   if(product.selectedColor!=null){
+                     context.read<CategoryCubit>().addProductToCart(product);
+                     Navigator.push(
+                       context,
+                       MaterialPageRoute(
+                         builder: (context) => const CartShoppingPage(),
+                       ),
+                     );
+                   }else{
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: CustomStyledText(
+                            text: "يجب اختيار اللون",
+                            textColor: Colors.white,
+                          ),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                   }
                   },
                   icon: const Icon(
                     FontAwesomeIcons.cartPlus,

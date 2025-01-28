@@ -13,6 +13,7 @@ class ApiSetting {
 
   static String get deleteFavorite => '$baseUrl/Products/DeleteFavorite';
   static String get deleteAllFavorite => '$baseUrl/Products/DeleteAllFavorite';
+  static String get createOrder => '$baseUrl/Orders/CreateOrder';
 
   static String get getColorList => '$baseUrl/List/GetColorList';
 
@@ -45,6 +46,7 @@ class ApiSetting {
       '$baseUrl/Maintenances/EnterMaintenanceCostForHandReceiptItem';
 
   static String get createContactUs => "$baseUrl/Communication/CreateContactUs";
+  static String get getUserProfile => "$baseUrl/Pages/GetProfilePage";
   // // Auth endpoints
   // static String get login => ;
   // static String get signup => '${AppConfig.authEndpoint}/signup';

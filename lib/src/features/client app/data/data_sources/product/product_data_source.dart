@@ -2,9 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:maintenance_app/main.dart';
 import 'package:maintenance_app/src/core/network/global_token.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/product/product_model.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
 
 import '../../../../../core/error/exception.dart';
 import '../../../../../core/error/handle_http_error.dart';
@@ -13,6 +17,7 @@ import '../../../../../core/network/base_response.dart';
 import '../../../../../core/network/api_setting.dart';
 import '../../../../../core/pagination/paginated_response.dart';
 import '../../../../../core/pagination/pagination_params.dart';
+import '../../../domain/entities/product/product_entity.dart';
 import '../../model/category/category_model.dart';
 
 class ProductRemoteDataSource {
@@ -145,6 +150,69 @@ class ProductRemoteDataSource {
         );
         debugPrint(response.statusCode.toString());
         print(response.body.toString());
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        debugPrint(responseBody.toString());
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+      } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<void> createOrder(Map<String, Product> cartItems) async {
+    String? token = await TokenManager.getToken();
+
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+/*
+
+{
+  "total": 0,
+  "discount": 0,
+  "orders": [
+    {
+      "count": 0,
+      "discount": 0,
+      "price": 0,
+      "productColorId": 0
+    }
+  ]
+}
+ */
+        // if (kDebugMode) {
+        //
+        //   print(
+
+        //   );
+        //
+        //
+        // }
+        final response = await apiController.post(
+          Uri.parse(ApiSetting.createOrder),
+          headers: {
+            'accept': '*/*',
+            'Authorization': 'Bearer $token'
+          },
+          body:{
+            'total': NavigationService.navigatorKey.currentContext!.read<CategoryCubit>().state.totalAmount,
+            'discount': 0,
+            'orders': cartItems.values
+                .map(
+                  (e) => {
+                'count': e.count,
+                'discount': e.discount,
+                'price': e.price,
+                'productColorId': e.selectedColor?.id
+              },
+            )
+                .toList()
+          }
+        );
+        // print( jsonEncode());
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         debugPrint(responseBody.toString());
         if (response.statusCode >= 400) {
