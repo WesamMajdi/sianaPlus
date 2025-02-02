@@ -36,8 +36,10 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               margin: const EdgeInsets.only(top: 40, bottom: 20),
               child: Image.asset(
-                'assets/images/logo.png',
-                width: 140,
+                Theme.of(context).brightness == Brightness.dark
+                    ? 'assets/images/logoWhit.png' // صورة الوضع الداكن
+                    : 'assets/images/logo.png', // صورة الوضع الفاتح
+                width: 150,
               ),
             ),
             const CustomStyledText(
