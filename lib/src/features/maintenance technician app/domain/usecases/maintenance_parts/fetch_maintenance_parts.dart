@@ -42,4 +42,8 @@ class HandReceiptUseCase {
       warrantyDaysNumber: warrantyDaysNumber,
     );
   }
+
+  Future<Either<Failure, HandReceiptEntity>> getHandReceiptItem(int id) {
+    return repository.getHandReceiptItem(id);
+  }
 }

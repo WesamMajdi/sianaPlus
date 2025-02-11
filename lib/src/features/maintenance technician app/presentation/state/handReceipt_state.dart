@@ -10,7 +10,9 @@ class HandReceiptState {
   final bool isUpdating;
   final String successMessage;
   final String malfunctionDescription;
-  final double? maintenanceCost; // إضافة خاصية جديدة
+  final double? maintenanceCost;
+  final HandReceiptEntity?
+      handReceiptItem; // إضافة خاصية جديدة لتخزين بيانات HandReceiptItem
 
   HandReceiptState({
     this.handReceiptStatus = HandReceiptStatus.initial,
@@ -19,7 +21,8 @@ class HandReceiptState {
     this.isUpdating = false,
     this.successMessage = '',
     this.malfunctionDescription = '',
-    this.maintenanceCost, // إضافة خاصية جديدة
+    this.maintenanceCost,
+    this.handReceiptItem, // إضافة خاصية جديدة لتخزين بيانات HandReceiptItem
   });
 
   factory HandReceiptState.initial() {
@@ -30,7 +33,8 @@ class HandReceiptState {
       isUpdating: false,
       successMessage: '',
       malfunctionDescription: '',
-      maintenanceCost: null, // إضافة خاصية جديدة
+      maintenanceCost: null,
+      handReceiptItem: null, // إضافة خاصية جديدة
     );
   }
 
@@ -41,7 +45,9 @@ class HandReceiptState {
     bool? isUpdating,
     String? successMessage,
     String? malfunctionDescription,
-    double? maintenanceCost, // إضافة خاصية جديدة
+    double? maintenanceCost,
+    HandReceiptEntity?
+        handReceiptItem, // إضافة خاصية جديدة لتخزين بيانات HandReceiptItem
   }) {
     return HandReceiptState(
       handReceiptStatus: handReceiptStatus ?? this.handReceiptStatus,
@@ -51,8 +57,9 @@ class HandReceiptState {
       successMessage: successMessage ?? this.successMessage,
       malfunctionDescription:
           malfunctionDescription ?? this.malfunctionDescription,
-      maintenanceCost:
-          maintenanceCost ?? this.maintenanceCost, // إضافة خاصية جديدة
+      maintenanceCost: maintenanceCost ?? this.maintenanceCost,
+      handReceiptItem:
+          handReceiptItem ?? this.handReceiptItem, // إضافة خاصية جديدة
     );
   }
 
@@ -64,6 +71,7 @@ class HandReceiptState {
         isUpdating,
         successMessage,
         malfunctionDescription,
-        maintenanceCost, // إضافة خاصية جديدة
+        maintenanceCost,
+        handReceiptItem, // إضافة خاصية جديدة
       ];
 }

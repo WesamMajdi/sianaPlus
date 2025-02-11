@@ -65,6 +65,36 @@ class HandReceiptRemoteDataSource {
     }
   }
 
+  Future<HandReceiptModel> getHandReceiptItem(int id) async {
+    String? token = await TokenManager.getToken();
+
+    if (!await internetConnectionChecker.hasConnection) {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+
+    try {
+      final response = await apiController.get(
+        Uri.parse('${ApiSetting.getHandReceiptItem}?Id=$id'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode >= 400) {
+        HandleHttpError.handleHttpError(responseBody);
+      }
+
+      return HandReceiptModel.fromJson(responseBody['data']);
+    } on TimeoutException catch (_) {
+      throw TimeoutException('Request timed out');
+    } catch (e) {
+      throw Exception('Unexpected error occurred: $e');
+    }
+  }
+
   Future<Map<String, dynamic>> updateStatusForHandReceiptItem(
       int receiptItemId, int? status) async {
     String? token = await TokenManager.getToken();

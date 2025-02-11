@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 const kAppName = 'Siana Plus';
 const IMAGE_URL = 'https://ebrahim995-001-site2.ktempurl.com';
 
- const String FIRST_TIME_KEY = 'is_first_time';
-
+const String FIRST_TIME_KEY = 'is_first_time';
 
 class AppColors {
   static const Color primaryColor = Color(0xFF230038);

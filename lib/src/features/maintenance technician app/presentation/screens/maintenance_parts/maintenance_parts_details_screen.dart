@@ -5,59 +5,97 @@ import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/cus
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/entities/maintenance_parts/maintenance_parts_entitie.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/maintenance_parts/maintenance_parts_cubit.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/state/handReceipt_state.dart';
 
-class MaintenancePartsDetailsPage extends StatelessWidget {
-  final HandReceiptEntity part;
-  const MaintenancePartsDetailsPage({super.key, required this.part});
+class MaintenancePartsDetailsPage extends StatefulWidget {
+  final int partId;
+  final HandReceiptEntity item;
+
+  const MaintenancePartsDetailsPage(
+      {super.key, required this.partId, required this.item});
+
+  @override
+  State<MaintenancePartsDetailsPage> createState() =>
+      _MaintenancePartsDetailsPageState();
+}
+
+class _MaintenancePartsDetailsPageState
+    extends State<MaintenancePartsDetailsPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<HandReceiptCubit>().getHandReceiptItem(widget.partId);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarApplicationArrow(
-        text: "تفاصيل القطعة ",
-      ),
-      body: ListView(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Table(
-                  columnWidths: const {
-                    0: FlexColumnWidth(2),
-                    1: FlexColumnWidth(2),
-                  },
-                  border: TableBorder.all(
-                      color: Colors.grey,
-                      width: 1,
-                      borderRadius: BorderRadius.circular(15)),
-                  children: [
-                    buildTableRow('رقم القطعة', part.id),
-                    buildTableRow('اسم العميل', part.customer!.name ?? ""),
-                    buildTableRow(
-                        'الحالة', part.maintenanceRequestStatusMessage ?? ""),
-                    buildTableRow(
-                        'رقم العميل', part.customer!.phoneNumber ?? ""),
-                    buildTableRow('اسم القطعة', part.item ?? ""),
-                    buildTableRow('الشركة', part.company ?? ""),
-                    buildTableRow('اللون', part.color ?? ""),
-                    buildTableRow('الوصف', part.description ?? ""),
-                    buildTableRow('يتطلب إبلاغ العميل بالتكلفة؟',
-                        part.costNotifiedToTheCustomer ?? ""),
-                    buildTableRow('مستعجل', part.urgent ?? ""),
-                    buildTableRow(
-                        'عدد أيام الضمان', part.warrantyDaysNumber ?? ""),
-                  ],
-                ),
-                AppSizedBox.kVSpace20,
-                buildButtonWidget(context)
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+        appBar: const AppBarApplicationArrow(
+          text: "تفاصيل القطعة ",
+        ),
+        body: BlocBuilder<HandReceiptCubit, HandReceiptState>(
+          builder: (context, state) {
+            final handReceiptItem = state.handReceiptItem;
+            if (state.handReceiptStatus == HandReceiptStatus.loading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (state.handReceiptStatus == HandReceiptStatus.failure) {
+              return const Center(child: Text('فشلت العملية'));
+            }
+            if (state.handReceiptStatus == HandReceiptStatus.success) {
+              return ListView(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Table(
+                          columnWidths: const {
+                            0: FlexColumnWidth(2),
+                            1: FlexColumnWidth(2),
+                          },
+                          border: TableBorder.all(
+                              color: Colors.grey,
+                              width: 1,
+                              borderRadius: BorderRadius.circular(15)),
+                          children: [
+                            buildTableRow('رقم القطعة', widget.partId),
+                            buildTableRow(
+                                'اسم العميل', handReceiptItem!.customer!.name),
+                            buildTableRow(
+                                'الحالة',
+                                handReceiptItem
+                                        .maintenanceRequestStatusMessage ??
+                                    ""),
+                            buildTableRow('رقم العميل',
+                                handReceiptItem.customer!.phoneNumber),
+                            buildTableRow('اسم القطعة', handReceiptItem.item!),
+                            buildTableRow(
+                                'الشركة', handReceiptItem.company ?? ""),
+                            buildTableRow('اللون', handReceiptItem.color ?? ""),
+                            buildTableRow(
+                                'الوصف', handReceiptItem.description!),
+                            buildTableRow('يتطلب إبلاغ العميل بالتكلفة؟',
+                                handReceiptItem.costNotifiedToTheCustomer!),
+                            buildTableRow('مستعجل', handReceiptItem.urgent!),
+                            buildTableRow('عدد أيام الضمان',
+                                handReceiptItem.warrantyDaysNumber!),
+                          ],
+                        ),
+                        AppSizedBox.kVSpace20,
+                        buildButtonWidget(context)
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            }
+            return const Center(
+                child: CustomStyledText(text: 'لا توجد إيصالات استلام'));
+          },
+        ));
   }
 
   TableRow buildTableRow(String label, dynamic value) {
@@ -89,23 +127,38 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
   }
 
   Widget getStatusWidget(OrderStatus status) {
-    return Container(
-      decoration: BoxDecoration(
-        color: getColor(part.maintenanceRequestStatus!),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 2,
-        ),
-        child: Center(
-          child: CustomStyledText(
-            text: getText(part.maintenanceRequestStatus!),
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
+    return BlocBuilder<HandReceiptCubit, HandReceiptState>(
+      builder: (context, state) {
+        if (state.handReceiptStatus == HandReceiptStatus.loading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state.handReceiptStatus == HandReceiptStatus.failure) {
+          return const Center(child: Text('فشلت العملية'));
+        }
+        if (state.handReceiptStatus == HandReceiptStatus.success) {
+          final handReceiptItem = state.handReceiptItem;
+          return Container(
+            decoration: BoxDecoration(
+              color: getColor(handReceiptItem!.maintenanceRequestStatus!),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 2,
+              ),
+              child: Center(
+                child: CustomStyledText(
+                  text: getText(handReceiptItem.maintenanceRequestStatus!),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          );
+        }
+        return const Center(
+            child: CustomStyledText(text: 'لا توجد إيصالات استلام'));
+      },
     );
   }
 
@@ -118,37 +171,54 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
             borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
           ),
           builder: (BuildContext context) {
-            return Container(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 50,
-                    height: 5,
-                    margin: const EdgeInsets.only(bottom: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(10),
+            return BlocBuilder<HandReceiptCubit, HandReceiptState>(
+              builder: (context, state) {
+                if (state.handReceiptStatus == HandReceiptStatus.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state.handReceiptStatus == HandReceiptStatus.failure) {
+                  return const Center(child: Text('فشلت العملية'));
+                }
+                if (state.handReceiptStatus == HandReceiptStatus.success) {
+                  final handReceiptItem = state.handReceiptItem;
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 16),
+                    decoration: const BoxDecoration(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(25)),
                     ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 12, left: 10),
-                    alignment: Alignment.topRight,
-                    child: const CustomStyledText(
-                      text: 'اختر العملية:',
-                      textColor: AppColors.secondaryColor,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 5,
+                          margin: const EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 12, left: 10),
+                          alignment: Alignment.topRight,
+                          child: const CustomStyledText(
+                            text: 'اختر العملية:',
+                            textColor: AppColors.secondaryColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        ...getItemsBasedOnStatus(context,
+                            handReceiptItem!.maintenanceRequestStatus!),
+                      ],
                     ),
-                  ),
-                  ...getItemsBasedOnStatus(
-                      context, part.maintenanceRequestStatus!),
-                ],
-              ),
+                  );
+                }
+                return const Center(
+                    child: CustomStyledText(text: 'لا توجد إيصالات استلام'));
+              },
             );
           },
         );
@@ -228,7 +298,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                     final cubit = context.read<HandReceiptCubit>();
                     try {
                       await cubit.updateStatusForHandReceiptItem(
-                          receiptItemId: part.id!, status: 2);
+                          receiptItemId: widget.partId, status: 2);
 
                       Navigator.of(context).pop();
                     } catch (e) {
@@ -275,7 +345,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                           await context
                               .read<HandReceiptCubit>()
                               .defineMalfunctionForHandReceiptItem(
-                                receiptItemId: part.id!,
+                                receiptItemId: widget.partId,
                                 description: descriptionController.text,
                               );
                           Navigator.of(context).pop();
@@ -309,7 +379,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                       final cubit = context.read<HandReceiptCubit>();
                       try {
                         await cubit.updateStatusForHandReceiptItem(
-                            receiptItemId: part.id!, status: 8);
+                            receiptItemId: widget.partId, status: 8);
 
                         Navigator.of(context).pop();
                       } catch (e) {
@@ -326,7 +396,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
           ),
         ];
       } else if (status == 3 &&
-          part.notifyCustomerOfTheCost!) //DefineMalfunction
+          widget.item.notifyCustomerOfTheCost!) //DefineMalfunction
       {
         return [
           ListTile(
@@ -343,7 +413,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                       final cubit = context.read<HandReceiptCubit>();
                       try {
                         await cubit.updateStatusForHandReceiptItem(
-                            receiptItemId: part.id!);
+                            receiptItemId: widget.partId);
 
                         Navigator.of(context).pop();
                       } catch (e) {
@@ -361,7 +431,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
         ];
       } else if (status == 3 &&
           // ignore: dead_code
-          !part.notifyCustomerOfTheCost!)
+          !widget.item.notifyCustomerOfTheCost!)
       //DefineMalfunction
       {
         return [
@@ -379,7 +449,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                       final cubit = context.read<HandReceiptCubit>();
                       try {
                         await cubit.updateStatusForHandReceiptItem(
-                            receiptItemId: part.id!, status: 11);
+                            receiptItemId: widget.partId, status: 11);
                         // ignore: use_build_context_synchronously
                         Navigator.of(context).pop();
                       } catch (e) {
@@ -408,8 +478,8 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                 context: context,
                 builder: (BuildContext context) {
                   return ShowDilogInformCustomerOfTheCost(
-                      status: part.maintenanceRequestStatus!,
-                      receiptItemId: part.id!);
+                      status: widget.item.maintenanceRequestStatus!,
+                      receiptItemId: widget.partId);
                 },
               );
             },
@@ -431,7 +501,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                       final cubit = context.read<HandReceiptCubit>();
                       try {
                         await cubit.updateStatusForHandReceiptItem(
-                            receiptItemId: part.id!, status: 7);
+                            receiptItemId: widget.partId, status: 7);
                         // ignore: use_build_context_synchronously
                         Navigator.of(context).pop();
                       } catch (e) {
@@ -466,7 +536,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
           ),
         ];
       } else if (status == 5 &&
-          part.notifyCustomerOfTheCost!) //CustomerApproved
+          widget.item.notifyCustomerOfTheCost!) //CustomerApproved
       {
         return [
           ListTile(
@@ -499,9 +569,10 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                         await context
                             .read<HandReceiptCubit>()
                             .enterMaintenanceCostForHandReceiptItem(
-                              receiptItemId: part.id!,
+                              receiptItemId: widget.partId,
                               costNotifiedToTheCustomer: price,
-                              warrantyDaysNumber: part.warrantyDaysNumber!,
+                              warrantyDaysNumber:
+                                  widget.item.warrantyDaysNumber!,
                             );
 
                         // ignore: use_build_context_synchronously
@@ -518,7 +589,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
             },
           ),
         ];
-      } else if ((status == 5 && !part.notifyCustomerOfTheCost!) ||
+      } else if ((status == 5 && !widget.item.notifyCustomerOfTheCost!) ||
           status == 10) {
         return [
           ListTile(
@@ -535,7 +606,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                       final cubit = context.read<HandReceiptCubit>();
                       try {
                         await cubit.updateStatusForHandReceiptItem(
-                            receiptItemId: part.id!);
+                            receiptItemId: widget.partId);
 
                         Navigator.of(context).pop();
                       } catch (e) {
@@ -569,7 +640,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                       final cubit = context.read<HandReceiptCubit>();
                       try {
                         await cubit.updateStatusForHandReceiptItem(
-                            receiptItemId: part.id!, status: 12);
+                            receiptItemId: widget.partId, status: 12);
                         // ignore: use_build_context_synchronously
                         Navigator.of(context).pop();
                       } catch (e) {
@@ -602,7 +673,7 @@ class MaintenancePartsDetailsPage extends StatelessWidget {
                       final cubit = context.read<HandReceiptCubit>();
                       try {
                         await cubit.updateStatusForHandReceiptItem(
-                            receiptItemId: part.id!, status: 9);
+                            receiptItemId: widget.partId, status: 9);
                         // ignore: use_build_context_synchronously
                         Navigator.of(context).pop();
                       } catch (e) {

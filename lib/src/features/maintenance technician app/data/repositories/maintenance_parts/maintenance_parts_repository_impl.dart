@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/data_sources/maintenance_parts/maintenance_parts_data_source.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/entities/maintenance_parts/maintenance_parts_entitie.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/repositories/maintenance_parts/maintenance_parts.dart';
 import '../../../../../core/error/failure.dart';
@@ -18,6 +19,16 @@ class HandReceiptRepositoryImpl implements HandReceiptRepository {
     try {
       final response = await remoteDataSource.getAllHandReceiptItems(
           paginationParams, searchQuery, barcode);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, HandReceiptModel>> getHandReceiptItem(int id) async {
+    try {
+      final response = await remoteDataSource.getHandReceiptItem(id);
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
@@ -49,7 +60,6 @@ class HandReceiptRepositoryImpl implements HandReceiptRepository {
     }
   }
 
-  @override
   @override
   Future<Either<Failure, Map<String, dynamic>>>
       enterMaintenanceCostForHandReceiptItem({

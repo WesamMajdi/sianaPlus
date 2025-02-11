@@ -26,4 +26,6 @@ abstract class HandReceiptRepository {
     required double costNotifiedToTheCustomer,
     required int warrantyDaysNumber,
   });
+
+  Future<Either<Failure, HandReceiptEntity>> getHandReceiptItem(int id);
 }
