@@ -23,7 +23,6 @@ class ItemsMaintenancePart extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => MaintenancePartsDetailsPage(
               partId: items.id!,
-              item: items,
             ),
           ),
         );

@@ -212,4 +212,79 @@ class HandReceiptRemoteDataSource {
       throw OfflineException(errorMessage: 'No Internet Connection');
     }
   }
+
+  Future<Map<String, dynamic>> suspendMaintenanceForHandReceiptItem({
+    required int receiptItemId,
+    required String? maintenanceSuspensionReason,
+  }) async {
+    String? token = await TokenManager.getToken();
+    if (token == null) {
+      throw Exception('Authorization token is missing or expired');
+    }
+
+    if (!await internetConnectionChecker.hasConnection) {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+
+    try {
+      final requestBody = {
+        "receiptItemId": receiptItemId,
+        "maintenanceSuspensionReason": maintenanceSuspensionReason,
+      };
+
+      final response = await apiController.post(
+        Uri.parse(ApiSetting.suspendMaintenanceForHandReceiptItem),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: requestBody,
+      );
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode >= 400) {
+        HandleHttpError.handleHttpError(responseBody);
+      }
+
+      return responseBody;
+    } on TimeoutException catch (_) {
+      throw TimeoutException('Request timed out');
+    } catch (e) {
+      throw Exception('Unexpected error occurred: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>> reopenMaintenanceForReturnHandReceiptItem({
+    required int receiptItemId,
+  }) async {
+    String? token = await TokenManager.getToken();
+
+    if (!await internetConnectionChecker.hasConnection) {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+
+    try {
+      final response = await apiController.post(
+        Uri.parse(
+            '${ApiSetting.reOpenMaintenanceForHandReceiptItem}?receiptItemId=$receiptItemId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode >= 400) {
+        HandleHttpError.handleHttpError(responseBody);
+      }
+
+      return responseBody;
+    } on TimeoutException catch (_) {
+      throw TimeoutException('Request timed out');
+    } catch (e) {
+      throw Exception('Unexpected error occurred: $e');
+    }
+  }
 }

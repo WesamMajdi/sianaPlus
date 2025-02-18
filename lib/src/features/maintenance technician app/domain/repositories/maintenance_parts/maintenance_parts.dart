@@ -28,4 +28,10 @@ abstract class HandReceiptRepository {
   });
 
   Future<Either<Failure, HandReceiptEntity>> getHandReceiptItem(int id);
+  Future<Either<Failure, Map<String, dynamic>>>
+      suspendMaintenanceForHandReceiptItem(
+          int receiptItemId, String? maintenanceSuspensionReason);
+
+  Future<Either<Failure, Map<String, dynamic>>>
+      reopenMaintenanceForReturnHandReceiptItem(int receiptItemId);
 }

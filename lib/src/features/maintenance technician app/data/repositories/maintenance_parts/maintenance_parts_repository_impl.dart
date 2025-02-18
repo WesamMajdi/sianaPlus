@@ -79,4 +79,32 @@ class HandReceiptRepositoryImpl implements HandReceiptRepository {
       return Left(ServerFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>>
+      suspendMaintenanceForHandReceiptItem(
+          int receiptItemId, String? maintenanceSuspensionReason) async {
+    try {
+      final response =
+          await remoteDataSource.suspendMaintenanceForHandReceiptItem(
+              receiptItemId: receiptItemId,
+              maintenanceSuspensionReason: maintenanceSuspensionReason!);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>>
+      reopenMaintenanceForReturnHandReceiptItem(int receiptItemId) async {
+    try {
+      final response =
+          await remoteDataSource.reopenMaintenanceForReturnHandReceiptItem(
+              receiptItemId: receiptItemId);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
 }

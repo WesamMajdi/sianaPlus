@@ -137,4 +137,56 @@ class HandReceiptCubit extends Cubit<HandReceiptState> {
           errorMessage: 'Unexpected error occurred: $e'));
     }
   }
+
+  Future<void> suspendMaintenanceForHandReceiptItem({
+    required int receiptItemId,
+    String? maintenanceSuspensionReason,
+  }) async {
+    emit(state.copyWith(handReceiptStatus: HandReceiptStatus.loading));
+    try {
+      final result =
+          await handReceiptUseCase.suspendMaintenanceForHandReceiptItem(
+        receiptItemId,
+        maintenanceSuspensionReason,
+      );
+      result.fold(
+        (failure) => emit(state.copyWith(
+            handReceiptStatus: HandReceiptStatus.failure,
+            errorMessage: failure.message)),
+        (response) => emit(state.copyWith(
+          handReceiptStatus: HandReceiptStatus.success,
+          successMessage: 'Maintenance suspended successfully',
+        )),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+          handReceiptStatus: HandReceiptStatus.failure,
+          errorMessage: 'Unexpected error occurred: $e'));
+    }
+  }
+
+  Future<void> reopenMaintenanceForReturnHandReceiptItem({
+    required int receiptItemId,
+  }) async {
+    emit(state.copyWith(handReceiptStatus: HandReceiptStatus.loading));
+    try {
+      final result =
+          await handReceiptUseCase.reopenMaintenanceForReturnHandReceiptItem(
+        receiptItemId,
+      );
+      result.fold(
+        (failure) => emit(state.copyWith(
+            handReceiptStatus: HandReceiptStatus.failure,
+            errorMessage: failure.message)),
+        (response) => emit(state.copyWith(
+          handReceiptStatus: HandReceiptStatus.success,
+          successMessage: 'Maintenance suspended successfully',
+        )),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+          handReceiptStatus: HandReceiptStatus.failure,
+          errorMessage: 'Unexpected error occurred: $e'));
+    }
+  }
 }

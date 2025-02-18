@@ -3,16 +3,13 @@ import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customInputDialog.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customSureDialog.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/entities/maintenance_parts/maintenance_parts_entitie.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/maintenance_parts/maintenance_parts_cubit.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/state/handReceipt_state.dart';
 
 class MaintenancePartsDetailsPage extends StatefulWidget {
   final int partId;
-  final HandReceiptEntity item;
 
-  const MaintenancePartsDetailsPage(
-      {super.key, required this.partId, required this.item});
+  const MaintenancePartsDetailsPage({super.key, required this.partId});
 
   @override
   State<MaintenancePartsDetailsPage> createState() =>
@@ -61,31 +58,49 @@ class _MaintenancePartsDetailsPageState
                               width: 1,
                               borderRadius: BorderRadius.circular(15)),
                           children: [
-                            buildTableRow('رقم القطعة', widget.partId),
                             buildTableRow(
-                                'اسم العميل', handReceiptItem!.customer!.name),
+                                'رقم القطعة', widget.partId.toString()),
+                            buildTableRow('اسم العميل',
+                                handReceiptItem?.customer?.name ?? "غير متوفر"),
                             buildTableRow(
-                                'الحالة',
-                                handReceiptItem
-                                        .maintenanceRequestStatusMessage ??
-                                    ""),
-                            buildTableRow('رقم العميل',
-                                handReceiptItem.customer!.phoneNumber),
-                            buildTableRow('اسم القطعة', handReceiptItem.item!),
+                                'رقم العميل',
+                                handReceiptItem?.customer?.phoneNumber ??
+                                    "غير متوفر"),
+                            buildTableRow('اسم القطعة',
+                                handReceiptItem?.item ?? "غير متوفر"),
+                            buildTableRow('الشركة',
+                                handReceiptItem?.company ?? "غير متوفر"),
                             buildTableRow(
-                                'الشركة', handReceiptItem.company ?? ""),
-                            buildTableRow('اللون', handReceiptItem.color ?? ""),
+                                'اللون', handReceiptItem?.color ?? "غير متوفر"),
+                            buildTableRow('الوصف',
+                                handReceiptItem?.description ?? "غير متوفر"),
                             buildTableRow(
-                                'الوصف', handReceiptItem.description!),
-                            buildTableRow('يتطلب إبلاغ العميل بالتكلفة؟',
-                                handReceiptItem.costNotifiedToTheCustomer!),
-                            buildTableRow('مستعجل', handReceiptItem.urgent!),
-                            buildTableRow('عدد أيام الضمان',
-                                handReceiptItem.warrantyDaysNumber!),
+                                'عدد أيام الضمان',
+                                handReceiptItem?.warrantyDaysNumber
+                                        ?.toString() ??
+                                    "غير متوفر"),
+                            buildTableRow(
+                                'مستعجل',
+                                handReceiptItem?.urgent?.toString() ??
+                                    "غير متوفر"),
                           ],
                         ),
                         AppSizedBox.kVSpace20,
-                        buildButtonWidget(context)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (handReceiptItem!.maintenanceRequestStatus !=
+                                14) ...[
+                              buildOperationsButtonWidget(context),
+                              AppSizedBox.kWSpace10,
+                              buildSuspensButtonWidget(context),
+                            ] else if (handReceiptItem
+                                    .maintenanceRequestStatus ==
+                                14) ...[
+                              buildReopenButtonWidget(context)
+                            ]
+                          ],
+                        )
                       ],
                     ),
                   ),
@@ -126,43 +141,7 @@ class _MaintenancePartsDetailsPageState
     );
   }
 
-  Widget getStatusWidget(OrderStatus status) {
-    return BlocBuilder<HandReceiptCubit, HandReceiptState>(
-      builder: (context, state) {
-        if (state.handReceiptStatus == HandReceiptStatus.loading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (state.handReceiptStatus == HandReceiptStatus.failure) {
-          return const Center(child: Text('فشلت العملية'));
-        }
-        if (state.handReceiptStatus == HandReceiptStatus.success) {
-          final handReceiptItem = state.handReceiptItem;
-          return Container(
-            decoration: BoxDecoration(
-              color: getColor(handReceiptItem!.maintenanceRequestStatus!),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 2,
-              ),
-              child: Center(
-                child: CustomStyledText(
-                  text: getText(handReceiptItem.maintenanceRequestStatus!),
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          );
-        }
-        return const Center(
-            child: CustomStyledText(text: 'لا توجد إيصالات استلام'));
-      },
-    );
-  }
-
-  Widget buildButtonWidget(BuildContext context) {
+  Widget buildOperationsButtonWidget(BuildContext context) {
     return GestureDetector(
       onTap: () {
         showModalBottomSheet(
@@ -210,8 +189,111 @@ class _MaintenancePartsDetailsPageState
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        ...getItemsBasedOnStatus(context,
-                            handReceiptItem!.maintenanceRequestStatus!),
+                        ...getItemsBasedOnStatus(
+                            context,
+                            handReceiptItem!.maintenanceRequestStatus!,
+                            handReceiptItem.notifyCustomerOfTheCost!,
+                            handReceiptItem.warrantyDaysNumber!,
+                            handReceiptItem.maintenanceRequestStatus!),
+                      ],
+                    ),
+                  );
+                }
+                return const Center(
+                    child: CustomStyledText(text: 'لا توجد إيصالات استلام'));
+              },
+            );
+          },
+        );
+      },
+      child: SizedBox(
+        height: 80,
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Container(
+                width: 200,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                  color: AppColors.secondaryColor,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        FontAwesomeIcons.gear,
+                        size: 20,
+                      ),
+                      AppSizedBox.kWSpace10,
+                      Container(
+                        margin: const EdgeInsets.only(top: 5),
+                        child: const CustomStyledText(
+                          text: 'العمليات',
+                          fontSize: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildSuspensButtonWidget(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+          ),
+          builder: (BuildContext context) {
+            return BlocBuilder<HandReceiptCubit, HandReceiptState>(
+              builder: (context, state) {
+                if (state.handReceiptStatus == HandReceiptStatus.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state.handReceiptStatus == HandReceiptStatus.failure) {
+                  return const Center(child: Text('فشلت العملية'));
+                }
+                if (state.handReceiptStatus == HandReceiptStatus.success) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 16),
+                    decoration: const BoxDecoration(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(25)),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 5,
+                          margin: const EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 12, left: 10),
+                          alignment: Alignment.topRight,
+                          child: const CustomStyledText(
+                            text: 'اختر العملية:',
+                            textColor: AppColors.secondaryColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        getSuspendMaintenanceTile(context)
                       ],
                     ),
                   );
@@ -224,64 +306,215 @@ class _MaintenancePartsDetailsPageState
         );
       },
       child: Center(
-        child: Container(
-          width: 200,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25),
-            color: AppColors.secondaryColor,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  FontAwesomeIcons.gear,
-                  size: 20,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Container(
+              width: 150,
+              height: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25),
+                color: AppColors.secondaryColor,
+              ),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      FontAwesomeIcons.lock,
+                      size: 20,
+                    ),
+                    AppSizedBox.kWSpace10,
+                    CustomStyledText(text: "تعليق")
+                  ],
                 ),
-                AppSizedBox.kWSpace10,
-                Container(
-                  margin: const EdgeInsets.only(top: 5),
-                  child: const CustomStyledText(
-                    text: 'العمليات',
-                    fontSize: 20,
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
 
-  List<Widget> getItemsBasedOnStatus(BuildContext context, int status) {
-    if (status != 14) {
-      ListTile(
-        title: const CustomStyledText(
-          text: 'سبب تعليق',
-          fontSize: 20,
+  Widget buildReopenButtonWidget(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+          ),
+          builder: (BuildContext context) {
+            return BlocBuilder<HandReceiptCubit, HandReceiptState>(
+              builder: (context, state) {
+                if (state.handReceiptStatus == HandReceiptStatus.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state.handReceiptStatus == HandReceiptStatus.failure) {
+                  return const Center(child: Text('فشلت العملية'));
+                }
+                if (state.handReceiptStatus == HandReceiptStatus.success) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 16),
+                    decoration: const BoxDecoration(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(25)),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 5,
+                          margin: const EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 12, left: 10),
+                          alignment: Alignment.topRight,
+                          child: const CustomStyledText(
+                            text: 'اختر العملية:',
+                            textColor: AppColors.secondaryColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        getReopenMaintenanceTile(context)
+                      ],
+                    ),
+                  );
+                }
+                return const Center(
+                    child: CustomStyledText(text: 'لا توجد إيصالات استلام'));
+              },
+            );
+          },
+        );
+      },
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Container(
+              width: 150,
+              height: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25),
+                color: AppColors.secondaryColor,
+              ),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      FontAwesomeIcons.unlock,
+                      size: 20,
+                    ),
+                    AppSizedBox.kWSpace10,
+                    CustomStyledText(text: "فك تعليق")
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-        onTap: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return CustomInputDialog(
-                titleDialog: 'تحديد سبب تعليق',
-                text: 'سبب تعليق:',
-                hintText: 'ادخل تعليق',
-                validators: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'عفوا.تعليق مطلوب';
-                  }
-                  return null;
-                },
-                onConfirm: () {}, // SuspenseMaintenanceForHandReceiptItem
-              );
-            },
-          );
-        },
-      );
+      ),
+    );
+  }
+
+  Widget getReopenMaintenanceTile(BuildContext context) {
+    return ListTile(
+      title: const CustomStyledText(
+        text: 'فك تعليق',
+        fontSize: 20,
+      ),
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CustomSureDialog(
+              onConfirm: () async {
+                await context
+                    .read<HandReceiptCubit>()
+                    .reopenMaintenanceForReturnHandReceiptItem(
+                      receiptItemId: widget.partId,
+                    );
+                Navigator.pushReplacement(
+                  // ignore: use_build_context_synchronously
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        MaintenancePartsDetailsPage(partId: widget.partId),
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget getSuspendMaintenanceTile(BuildContext context) {
+    return ListTile(
+      title: const CustomStyledText(
+        text: 'تعليق',
+        fontSize: 20,
+      ),
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CustomInputDialog(
+              titleDialog: 'تحديد سبب تعليق',
+              text: 'سبب تعليق:',
+              hintText: 'ادخل تعليق',
+              validators: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'عفواً. التعليق مطلوب';
+                }
+                return null;
+              },
+              onConfirm: () async {
+                String suspensionReason = 'wesam';
+                if (suspensionReason.isNotEmpty) {
+                  print(widget.partId);
+                  await context
+                      .read<HandReceiptCubit>()
+                      .suspendMaintenanceForHandReceiptItem(
+                          receiptItemId: widget.partId,
+                          maintenanceSuspensionReason: suspensionReason);
+
+                  Navigator.pushReplacement(
+                    // ignore: use_build_context_synchronously
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          MaintenancePartsDetailsPage(partId: widget.partId),
+                    ),
+                  );
+                }
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  List<Widget> getItemsBasedOnStatus(
+      BuildContext context,
+      int status,
+      bool? notifyCustomerOfTheCost,
+      int? warrantyDaysNumber,
+      int? maintenanceRequestStatus) {
+    if (status != 14) {
       if (status == 1) // new
       {
         return [
@@ -299,8 +532,14 @@ class _MaintenancePartsDetailsPageState
                     try {
                       await cubit.updateStatusForHandReceiptItem(
                           receiptItemId: widget.partId, status: 2);
-
-                      Navigator.of(context).pop();
+                      Navigator.pushReplacement(
+                        // ignore: use_build_context_synchronously
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MaintenancePartsDetailsPage(
+                              partId: widget.partId),
+                        ),
+                      );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Failed to update status: $e')),
@@ -348,7 +587,14 @@ class _MaintenancePartsDetailsPageState
                                 receiptItemId: widget.partId,
                                 description: descriptionController.text,
                               );
-                          Navigator.of(context).pop();
+                          Navigator.pushReplacement(
+                            // ignore: use_build_context_synchronously
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MaintenancePartsDetailsPage(
+                                  partId: widget.partId),
+                            ),
+                          );
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('فشل في تحديد العطل: $e')),
@@ -380,7 +626,14 @@ class _MaintenancePartsDetailsPageState
                       try {
                         await cubit.updateStatusForHandReceiptItem(
                             receiptItemId: widget.partId, status: 8);
-
+                        Navigator.pushReplacement(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MaintenancePartsDetailsPage(
+                                partId: widget.partId),
+                          ),
+                        );
                         Navigator.of(context).pop();
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -395,8 +648,7 @@ class _MaintenancePartsDetailsPageState
             },
           ),
         ];
-      } else if (status == 3 &&
-          widget.item.notifyCustomerOfTheCost!) //DefineMalfunction
+      } else if (status == 3 && notifyCustomerOfTheCost!) //DefineMalfunction
       {
         return [
           ListTile(
@@ -414,8 +666,14 @@ class _MaintenancePartsDetailsPageState
                       try {
                         await cubit.updateStatusForHandReceiptItem(
                             receiptItemId: widget.partId);
-
-                        Navigator.of(context).pop();
+                        Navigator.pushReplacement(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MaintenancePartsDetailsPage(
+                                partId: widget.partId),
+                          ),
+                        );
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -431,7 +689,7 @@ class _MaintenancePartsDetailsPageState
         ];
       } else if (status == 3 &&
           // ignore: dead_code
-          !widget.item.notifyCustomerOfTheCost!)
+          !notifyCustomerOfTheCost!)
       //DefineMalfunction
       {
         return [
@@ -450,8 +708,14 @@ class _MaintenancePartsDetailsPageState
                       try {
                         await cubit.updateStatusForHandReceiptItem(
                             receiptItemId: widget.partId, status: 11);
-                        // ignore: use_build_context_synchronously
-                        Navigator.of(context).pop();
+                        Navigator.pushReplacement(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MaintenancePartsDetailsPage(
+                                partId: widget.partId),
+                          ),
+                        );
                       } catch (e) {
                         // ignore: use_build_context_synchronously
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -478,7 +742,7 @@ class _MaintenancePartsDetailsPageState
                 context: context,
                 builder: (BuildContext context) {
                   return ShowDilogInformCustomerOfTheCost(
-                      status: widget.item.maintenanceRequestStatus!,
+                      status: maintenanceRequestStatus!,
                       receiptItemId: widget.partId);
                 },
               );
@@ -502,8 +766,14 @@ class _MaintenancePartsDetailsPageState
                       try {
                         await cubit.updateStatusForHandReceiptItem(
                             receiptItemId: widget.partId, status: 7);
-                        // ignore: use_build_context_synchronously
-                        Navigator.of(context).pop();
+                        Navigator.pushReplacement(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MaintenancePartsDetailsPage(
+                                partId: widget.partId),
+                          ),
+                        );
                       } catch (e) {
                         // ignore: use_build_context_synchronously
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -535,8 +805,7 @@ class _MaintenancePartsDetailsPageState
             },
           ),
         ];
-      } else if (status == 5 &&
-          widget.item.notifyCustomerOfTheCost!) //CustomerApproved
+      } else if (status == 5 && notifyCustomerOfTheCost!) //CustomerApproved
       {
         return [
           ListTile(
@@ -571,12 +840,17 @@ class _MaintenancePartsDetailsPageState
                             .enterMaintenanceCostForHandReceiptItem(
                               receiptItemId: widget.partId,
                               costNotifiedToTheCustomer: price,
-                              warrantyDaysNumber:
-                                  widget.item.warrantyDaysNumber!,
+                              warrantyDaysNumber: warrantyDaysNumber!,
                             );
 
-                        // ignore: use_build_context_synchronously
-                        Navigator.of(context).pop();
+                        Navigator.pushReplacement(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MaintenancePartsDetailsPage(
+                                partId: widget.partId),
+                          ),
+                        );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('الرجاء إدخال السعر')),
@@ -589,8 +863,7 @@ class _MaintenancePartsDetailsPageState
             },
           ),
         ];
-      } else if ((status == 5 && !widget.item.notifyCustomerOfTheCost!) ||
-          status == 10) {
+      } else if ((status == 5 && !notifyCustomerOfTheCost!) || status == 10) {
         return [
           ListTile(
             title: const CustomStyledText(
@@ -607,8 +880,14 @@ class _MaintenancePartsDetailsPageState
                       try {
                         await cubit.updateStatusForHandReceiptItem(
                             receiptItemId: widget.partId);
-
-                        Navigator.of(context).pop();
+                        Navigator.pushReplacement(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MaintenancePartsDetailsPage(
+                                partId: widget.partId),
+                          ),
+                        );
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -641,8 +920,14 @@ class _MaintenancePartsDetailsPageState
                       try {
                         await cubit.updateStatusForHandReceiptItem(
                             receiptItemId: widget.partId, status: 12);
-                        // ignore: use_build_context_synchronously
-                        Navigator.of(context).pop();
+                        Navigator.pushReplacement(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MaintenancePartsDetailsPage(
+                                partId: widget.partId),
+                          ),
+                        );
                       } catch (e) {
                         // ignore: use_build_context_synchronously
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -674,8 +959,14 @@ class _MaintenancePartsDetailsPageState
                       try {
                         await cubit.updateStatusForHandReceiptItem(
                             receiptItemId: widget.partId, status: 9);
-                        // ignore: use_build_context_synchronously
-                        Navigator.of(context).pop();
+                        Navigator.pushReplacement(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MaintenancePartsDetailsPage(
+                                partId: widget.partId),
+                          ),
+                        );
                       } catch (e) {
                         // ignore: use_build_context_synchronously
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -690,39 +981,47 @@ class _MaintenancePartsDetailsPageState
             },
           ),
         ];
-      } else {
-        return [
-          ListTile(
-            title: const CustomStyledText(
-              text: 'التعليق',
-              fontSize: 20,
-            ),
-            onTap: () {},
-          ),
-        ];
       }
-    } else {
-      return [
-        ListTile(
-          title: const CustomStyledText(
-            text: 'فك تعليق',
-            fontSize: 20,
-          ),
-          onTap: () {
-            // ReOpenMaintenanceForHandReceiptItem
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CustomSureDialog(
-                  onConfirm: () {},
-                );
-              },
-            );
-          },
-        ),
-      ];
+      return [];
     }
+    return [];
   }
+}
+
+Widget getStatusWidget(OrderStatus status) {
+  return BlocBuilder<HandReceiptCubit, HandReceiptState>(
+    builder: (context, state) {
+      if (state.handReceiptStatus == HandReceiptStatus.loading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      if (state.handReceiptStatus == HandReceiptStatus.failure) {
+        return const Center(child: Text('فشلت العملية'));
+      }
+      if (state.handReceiptStatus == HandReceiptStatus.success) {
+        final handReceiptItem = state.handReceiptItem;
+        return Container(
+          decoration: BoxDecoration(
+            color: getColor(handReceiptItem!.maintenanceRequestStatus!),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 2,
+            ),
+            child: Center(
+              child: CustomStyledText(
+                text: getText(handReceiptItem.maintenanceRequestStatus!),
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        );
+      }
+      return const Center(
+          child: CustomStyledText(text: 'لا توجد إيصالات استلام'));
+    },
+  );
 }
 
 class ShowDilogInformCustomerOfTheCost extends StatefulWidget {
@@ -889,7 +1188,14 @@ class _ShowDilogInformCustomerOfTheCostState
                         await cubit.updateStatusForHandReceiptItem(
                             receiptItemId: widget.receiptItemId, status: 5);
 
-                        Navigator.of(context).pop();
+                        Navigator.pushReplacement(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MaintenancePartsDetailsPage(
+                                partId: widget.receiptItemId),
+                          ),
+                        );
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -932,8 +1238,14 @@ class _ShowDilogInformCustomerOfTheCostState
                           receiptItemId: widget.receiptItemId,
                           status: 7,
                         );
-
-                        Navigator.of(context).pop();
+                        Navigator.pushReplacement(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MaintenancePartsDetailsPage(
+                                partId: widget.receiptItemId),
+                          ),
+                        );
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

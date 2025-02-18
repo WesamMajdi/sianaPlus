@@ -11,8 +11,7 @@ class HandReceiptState {
   final String successMessage;
   final String malfunctionDescription;
   final double? maintenanceCost;
-  final HandReceiptEntity?
-      handReceiptItem; // إضافة خاصية جديدة لتخزين بيانات HandReceiptItem
+  final HandReceiptEntity? handReceiptItem;
 
   HandReceiptState({
     this.handReceiptStatus = HandReceiptStatus.initial,
@@ -22,7 +21,7 @@ class HandReceiptState {
     this.successMessage = '',
     this.malfunctionDescription = '',
     this.maintenanceCost,
-    this.handReceiptItem, // إضافة خاصية جديدة لتخزين بيانات HandReceiptItem
+    this.handReceiptItem,
   });
 
   factory HandReceiptState.initial() {
@@ -34,7 +33,7 @@ class HandReceiptState {
       successMessage: '',
       malfunctionDescription: '',
       maintenanceCost: null,
-      handReceiptItem: null, // إضافة خاصية جديدة
+      handReceiptItem: null,
     );
   }
 
@@ -46,8 +45,7 @@ class HandReceiptState {
     String? successMessage,
     String? malfunctionDescription,
     double? maintenanceCost,
-    HandReceiptEntity?
-        handReceiptItem, // إضافة خاصية جديدة لتخزين بيانات HandReceiptItem
+    HandReceiptEntity? handReceiptItem,
   }) {
     return HandReceiptState(
       handReceiptStatus: handReceiptStatus ?? this.handReceiptStatus,
@@ -72,6 +70,6 @@ class HandReceiptState {
         successMessage,
         malfunctionDescription,
         maintenanceCost,
-        handReceiptItem, // إضافة خاصية جديدة
+        handReceiptItem,
       ];
 }

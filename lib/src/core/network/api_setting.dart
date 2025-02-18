@@ -47,10 +47,13 @@ class ApiSetting {
       '$baseUrl/Maintenances/DefineMalfunctionForHandReceiptItem';
   static String get enterMaintenanceCostForHandReceiptItem =>
       '$baseUrl/Maintenances/EnterMaintenanceCostForHandReceiptItem';
+  static String get suspendMaintenanceForHandReceiptItem =>
+      "$baseUrl/Maintenances/SuspenseMaintenanceForHandReceiptItem";
+  static String get reOpenMaintenanceForHandReceiptItem =>
+      "$baseUrl/Maintenances/ReOpenMaintenanceForHandReceiptItem";
 
   static String get createContactUs => "$baseUrl/Communication/CreateContactUs";
   static String get getUserProfile => "$baseUrl/Pages/GetProfilePage";
-
   // // Auth endpoints
   // static String get login => ;
   // static String get signup => '${AppConfig.authEndpoint}/signup';
