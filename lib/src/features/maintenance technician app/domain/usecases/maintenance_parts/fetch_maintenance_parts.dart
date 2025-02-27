@@ -11,9 +11,9 @@ class HandReceiptUseCase {
   HandReceiptUseCase(this.repository);
 
   Future<Either<Failure, PaginatedResponse<HandReceiptEntity>>>
-      getHandHandReceiptItem(PaginationParams paginationParams,
+      getAllHandHandReceiptItem(PaginationParams paginationParams,
           String searchQuery, String barcode) {
-    return repository.getHandHandReceiptItem(
+    return repository.getAllHandHandReceiptItem(
         paginationParams, searchQuery, barcode);
   }
 
@@ -33,7 +33,7 @@ class HandReceiptUseCase {
       enterMaintenanceCostForHandReceiptItem({
     required int receiptItemId,
     required double costNotifiedToTheCustomer,
-    required int warrantyDaysNumber,
+    int warrantyDaysNumber = 0,
   }) {
     return repository.enterMaintenanceCostForHandReceiptItem(
       receiptItemId: receiptItemId,
@@ -54,9 +54,9 @@ class HandReceiptUseCase {
   }
 
   Future<Either<Failure, Map<String, dynamic>>>
-      reopenMaintenanceForReturnHandReceiptItem(
+      reopenMaintenanceHandReceiptItem(
     int receiptItemId,
   ) {
-    return repository.reopenMaintenanceForReturnHandReceiptItem(receiptItemId);
+    return repository.reopenMaintenanceHandReceiptItem(receiptItemId);
   }
 }

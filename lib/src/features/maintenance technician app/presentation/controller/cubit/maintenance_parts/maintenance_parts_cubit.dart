@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maintenance_app/src/core/pagination/pagination_params.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/usecases/maintenance_parts/fetch_maintenance_parts.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/state/handReceipt_state.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/state/handReceipt_state.dart';
 
 class HandReceiptCubit extends Cubit<HandReceiptState> {
   final HandReceiptUseCase handReceiptUseCase;
@@ -16,7 +16,7 @@ class HandReceiptCubit extends Cubit<HandReceiptState> {
     emit(state.copyWith(handReceiptStatus: HandReceiptStatus.loading));
     try {
       final page = refresh ? 1 : (state.receipts.length ~/ 10) + 1;
-      final result = await handReceiptUseCase.getHandHandReceiptItem(
+      final result = await handReceiptUseCase.getAllHandHandReceiptItem(
         PaginationParams(page: page),
         searchQuery,
         barcode,
@@ -91,7 +91,7 @@ class HandReceiptCubit extends Cubit<HandReceiptState> {
   Future<void> enterMaintenanceCostForHandReceiptItem({
     required int receiptItemId,
     required double costNotifiedToTheCustomer,
-    required int warrantyDaysNumber,
+    int warrantyDaysNumber = 0,
   }) async {
     emit(state.copyWith(handReceiptStatus: HandReceiptStatus.loading));
     try {
@@ -127,11 +127,10 @@ class HandReceiptCubit extends Cubit<HandReceiptState> {
             errorMessage: failure.message)),
         (handReceipt) => emit(state.copyWith(
           handReceiptStatus: HandReceiptStatus.success,
-          handReceiptItem: handReceipt, // إضافة البيانات إلى الـ state
+          handReceiptItem: handReceipt,
         )),
       );
     } catch (e) {
-      print(e);
       emit(state.copyWith(
           handReceiptStatus: HandReceiptStatus.failure,
           errorMessage: 'Unexpected error occurred: $e'));
@@ -165,13 +164,12 @@ class HandReceiptCubit extends Cubit<HandReceiptState> {
     }
   }
 
-  Future<void> reopenMaintenanceForReturnHandReceiptItem({
+  Future<void> reopenMaintenanceHandReceiptItem({
     required int receiptItemId,
   }) async {
     emit(state.copyWith(handReceiptStatus: HandReceiptStatus.loading));
     try {
-      final result =
-          await handReceiptUseCase.reopenMaintenanceForReturnHandReceiptItem(
+      final result = await handReceiptUseCase.reopenMaintenanceHandReceiptItem(
         receiptItemId,
       );
       result.fold(

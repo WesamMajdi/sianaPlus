@@ -173,7 +173,7 @@ class HandReceiptRemoteDataSource {
   Future<Map<String, dynamic>> enterMaintenanceCostForHandReceiptItem({
     required int receiptItemId,
     required double costNotifiedToTheCustomer,
-    required int warrantyDaysNumber,
+    int warrantyDaysNumber = 0,
   }) async {
     String? token = await TokenManager.getToken();
     if (token == null) {

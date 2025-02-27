@@ -152,20 +152,31 @@ class _SignupPageState extends State<SignupPage> {
             },
             builder: (context, state) {
               if (state is SginUpLoading) {
-                return const CircularProgressIndicator();
+                return CustomButton(
+                  text: "",
+                  onPressed: () {},
+                  child: const SizedBox(
+                    width: 30.0,
+                    height: 30.0,
+                    child: CircularProgressIndicator(),
+                  ),
+                );
               }
               return CustomButton(
-                  text: "تسجيل حساب",
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      context.read<SignUpCubit>().signUp(
+                text: "تسجيل حساب",
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    context.read<SignUpCubit>().signUp(
                           fullnameController.text,
                           usernameController.text,
                           passwordController.text,
                           confirmpasswordController.text,
-                          mobileNumberController.text);
-                    }
-                  });
+                          mobileNumberController.text,
+                          "+972",
+                        );
+                  }
+                },
+              );
             },
           ),
           AppSizedBox.kVSpace5,

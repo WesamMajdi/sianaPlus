@@ -1,8 +1,8 @@
 import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/itemsToMaintenancePart.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/maintenance_parts/maintenance_parts_cubit.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/state/handReceipt_state.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/maintenance_parts/maintenance_parts_cubit.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/state/handReceipt_state.dart';
 
 class MaintenancePartsPage extends StatefulWidget {
   const MaintenancePartsPage({Key? key}) : super(key: key);

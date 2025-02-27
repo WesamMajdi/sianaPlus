@@ -1,9 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:equatable/equatable.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/entities/maintenance_parts/maintenance_parts_entitie.dart';
 
 enum HandReceiptStatus { initial, loading, success, failure }
 
-class HandReceiptState {
+class HandReceiptState extends Equatable {
   final HandReceiptStatus handReceiptStatus;
   final List<HandReceiptEntity> receipts;
   final String errorMessage;
@@ -56,8 +57,7 @@ class HandReceiptState {
       malfunctionDescription:
           malfunctionDescription ?? this.malfunctionDescription,
       maintenanceCost: maintenanceCost ?? this.maintenanceCost,
-      handReceiptItem:
-          handReceiptItem ?? this.handReceiptItem, // إضافة خاصية جديدة
+      handReceiptItem: handReceiptItem ?? this.handReceiptItem,
     );
   }
 

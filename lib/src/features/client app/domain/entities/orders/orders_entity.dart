@@ -7,6 +7,7 @@ enum OrderMaintenanceStatus {
   returnToCustomer, // ID 6
   completed // ID 7
 }
+
 class OrderEntity {
   int? id;
   String? customerName;
@@ -20,13 +21,12 @@ class OrderEntity {
 
   OrderEntity(
       {this.id,
-        this.customerName,
-        this.customerPhoneNumber,
-        this.total,
-        this.discount,
-        this.totalAfterDiscount,
-        this.handReceiptId,
-        this.deliveryDate,
-        this.orderMaintenanceStatus});
+      this.customerName,
+      this.customerPhoneNumber,
+      this.total,
+      this.discount,
+      this.totalAfterDiscount,
+      this.handReceiptId,
+      this.deliveryDate,
+      this.orderMaintenanceStatus});
 }
-

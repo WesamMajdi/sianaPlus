@@ -14,21 +14,11 @@ class HandReceiptRepositoryImpl implements HandReceiptRepository {
 
   @override
   Future<Either<Failure, PaginatedResponse<HandReceiptEntity>>>
-      getHandHandReceiptItem(PaginationParams paginationParams,
+      getAllHandHandReceiptItem(PaginationParams paginationParams,
           String? searchQuery, String? barcode) async {
     try {
       final response = await remoteDataSource.getAllHandReceiptItems(
           paginationParams, searchQuery, barcode);
-      return Right(response);
-    } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
-    }
-  }
-
-  @override
-  Future<Either<Failure, HandReceiptModel>> getHandReceiptItem(int id) async {
-    try {
-      final response = await remoteDataSource.getHandReceiptItem(id);
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
@@ -65,7 +55,7 @@ class HandReceiptRepositoryImpl implements HandReceiptRepository {
       enterMaintenanceCostForHandReceiptItem({
     required int receiptItemId,
     required double costNotifiedToTheCustomer,
-    required int warrantyDaysNumber,
+    int warrantyDaysNumber = 0,
   }) async {
     try {
       final response =
@@ -97,11 +87,21 @@ class HandReceiptRepositoryImpl implements HandReceiptRepository {
 
   @override
   Future<Either<Failure, Map<String, dynamic>>>
-      reopenMaintenanceForReturnHandReceiptItem(int receiptItemId) async {
+      reopenMaintenanceHandReceiptItem(int receiptItemId) async {
     try {
       final response =
           await remoteDataSource.reopenMaintenanceForReturnHandReceiptItem(
               receiptItemId: receiptItemId);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, HandReceiptEntity>> getHandReceiptItem(int id) async {
+    try {
+      final response = await remoteDataSource.getHandReceiptItem(id);
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));

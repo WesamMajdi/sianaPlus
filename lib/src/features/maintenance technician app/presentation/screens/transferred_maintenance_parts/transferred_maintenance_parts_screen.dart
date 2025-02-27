@@ -52,18 +52,18 @@ class _TransferredMaintenancePartsPageState
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Expanded(
-                      child: buildSearchDropdownStatus(
-                    orderStatuses,
-                    'ابحث عن الحالة ',
-                    (OrderStatus? selectedStatus) {},
-                  )),
+                  // Expanded(
+                  //     child: buildSearchDropdownStatus(
+                  //   orderStatuses,
+                  //   'ابحث عن الحالة ',
+                  //   (OrderStatus? selectedStatus) {},
+                  // )),
                   Container(child: buildBarcodeScanner()),
                 ],
               ),
             ),
             AppSizedBox.kVSpace10,
-            buildPortableMaintenancePartsList(),
+            // buildPortableMaintenancePartsList(),
           ],
         ),
       ),
@@ -135,121 +135,17 @@ class _TransferredMaintenancePartsPageState
     );
   }
 
-  Widget buildPortableMaintenancePartsList() {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const BouncingScrollPhysics(),
-      itemCount: maintenanceParts.length,
-      itemBuilder: (context, index) {
-        final part = maintenanceParts[index];
-        return ItemsTransferredMaintenancePart(
-          part: part,
-        );
-      },
-    );
-  }
-
-  Widget buildSearchDropdownStatus(List<OrderStatus> items, String hintText,
-      void Function(OrderStatus?)? onChanged) {
-    return DropdownSearch<OrderStatus>(
-      itemAsString: (item) => getText(1),
-      items: items,
-      compareFn: (item1, item2) {
-        return item1 == item2;
-      },
-      popupProps: PopupProps.menu(
-        menuProps: MenuProps(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10))),
-        isFilterOnline: true,
-        showSearchBox: true,
-        showSelectedItems: true,
-        searchFieldProps: TextFieldProps(
-          decoration: InputDecoration(
-            hintText: 'ابحث هنا',
-            filled: true,
-            fillColor: Colors.grey.withOpacity(0.2),
-            errorStyle: const TextStyle(fontFamily: "Tajawal", fontSize: 14),
-            hintStyle: const TextStyle(
-                fontSize: 14, color: Colors.grey, fontFamily: "Tajawal"),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderSide:
-                  const BorderSide(color: AppColors.secondaryColor, width: 2.0),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderSide:
-                  const BorderSide(color: AppColors.secondaryColor, width: 2.0),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: AppPadding.mediumPadding,
-              horizontal: AppPadding.mediumPadding,
-            ),
-          ),
-          style: const TextStyle(
-            fontFamily: 'Tajawal',
-            fontSize: 16,
-          ),
-        ),
-        itemBuilder: (context, item, isSelected) {
-          return Column(
-            children: [
-              ListTile(
-                title: CustomStyledText(
-                  text: getText(1),
-                  textColor: (Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.black),
-                ),
-                selected: isSelected,
-              ),
-            ],
-          );
-        },
-      ),
-      dropdownDecoratorProps: DropDownDecoratorProps(
-        dropdownSearchDecoration: InputDecoration(
-          hintText: hintText,
-          filled: true,
-          fillColor: Colors.grey.withOpacity(0.2),
-          errorStyle: const TextStyle(fontFamily: "Tajawal", fontSize: 14),
-          hintStyle: const TextStyle(
-              fontSize: 16, color: Colors.grey, fontFamily: "Tajawal"),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderSide:
-                const BorderSide(color: AppColors.secondaryColor, width: 2.0),
-            borderRadius: BorderRadius.circular(15),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderSide:
-                const BorderSide(color: AppColors.secondaryColor, width: 2.0),
-            borderRadius: BorderRadius.circular(15),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: AppPadding.mediumPadding,
-            horizontal: AppPadding.mediumPadding,
-          ),
-        ),
-      ),
-      onChanged: onChanged,
-    );
-  }
+  // Widget buildPortableMaintenancePartsList() {
+  //   return ListView.builder(
+  //     shrinkWrap: true,
+  //     physics: const BouncingScrollPhysics(),
+  //     itemCount: maintenanceParts.length,
+  //     itemBuilder: (context, index) {
+  //       final part = maintenanceParts[index];
+  //       return ItemsTransferredMaintenancePart(
+  //         part: part,
+  //       );
+  //     },
+  //   );
+  // }
 }

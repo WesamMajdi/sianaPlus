@@ -14,10 +14,10 @@ class PaginationParams {
   });
 
   Map<String, dynamic> toJson() => {
-    'page': page,
-    'perPage': perPage,
-    'mainCategoryId': mainCategoryId,
-    'handReceiptId': handReceiptId,
-    'productId': productId,
-  };
+        'page': page,
+        'perPage': perPage,
+        'mainCategoryId': mainCategoryId,
+        'handReceiptId': handReceiptId,
+        'productId': productId,
+      };
 }

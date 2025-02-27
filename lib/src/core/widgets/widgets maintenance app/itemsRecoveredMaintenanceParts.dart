@@ -3,10 +3,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:maintenance_app/src/core/constants/constants.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/customStyledText.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/transferred_maintenance_parts/transferred_maintenance_parts_details_screen.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/entities/recovered_maintenance_parts/recovered_maintenance_parts_entity.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/recovered_maintenance_parts/recovered_maintenance_parts_details_page.dart';
 
 class ItemsRecoveredMaintenancePart extends StatelessWidget {
-  final MaintenancePart part;
+  final ReturnHandReceiptEntity part;
   const ItemsRecoveredMaintenancePart({
     super.key,
     required this.part,
@@ -20,7 +21,7 @@ class ItemsRecoveredMaintenancePart extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                const TransferredMaintenancePartsDetailsPage(),
+                RecoveredMaintenancePartsDetailsPage(partId: part.id!),
           ),
         );
       },
@@ -49,21 +50,21 @@ class ItemsRecoveredMaintenancePart extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomStyledText(
-                        text: part.maintenancePartName,
+                        text: part.item!,
                         fontSize: 18,
                         textColor: AppColors.secondaryColor,
                         fontWeight: FontWeight.bold,
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: getColor(1),
+                          color: getColor(part.maintenanceRequestStatus!),
                           borderRadius: BorderRadius.circular(25),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 2, horizontal: 10),
                           child: CustomStyledText(
-                            text: getText(1),
+                            text: getText(part.maintenanceRequestStatus!),
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -78,13 +79,13 @@ class ItemsRecoveredMaintenancePart extends StatelessWidget {
                       Column(
                         children: [
                           CustomStyledText(
-                            text: part.clientName,
+                            text: part.customer!.name,
                             fontSize: 16,
                             textColor: Colors.grey,
                           ),
                           AppSizedBox.kVSpace5,
                           CustomStyledText(
-                            text: part.clientPhone,
+                            text: part.customer!.phoneNumber,
                             fontSize: 16,
                             textColor: Colors.grey,
                           ),

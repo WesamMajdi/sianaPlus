@@ -3,8 +3,9 @@ import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customInputDialog.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customSureDialog.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/maintenance_parts/maintenance_parts_cubit.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/state/handReceipt_state.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/maintenance_parts/maintenance_parts_cubit.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/maintenance_parts/maintenance_parts_screen.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/state/handReceipt_state.dart';
 
 class MaintenancePartsDetailsPage extends StatefulWidget {
   final int partId;
@@ -442,7 +443,7 @@ class _MaintenancePartsDetailsPageState
               onConfirm: () async {
                 await context
                     .read<HandReceiptCubit>()
-                    .reopenMaintenanceForReturnHandReceiptItem(
+                    .reopenMaintenanceHandReceiptItem(
                       receiptItemId: widget.partId,
                     );
                 Navigator.pushReplacement(
@@ -840,7 +841,7 @@ class _MaintenancePartsDetailsPageState
                             .enterMaintenanceCostForHandReceiptItem(
                               receiptItemId: widget.partId,
                               costNotifiedToTheCustomer: price,
-                              warrantyDaysNumber: warrantyDaysNumber!,
+                              warrantyDaysNumber: warrantyDaysNumber ?? 0,
                             );
 
                         Navigator.pushReplacement(
@@ -928,6 +929,13 @@ class _MaintenancePartsDetailsPageState
                                 partId: widget.partId),
                           ),
                         );
+                        Navigator.push(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MaintenancePartsPage(),
+                          ),
+                        );
                       } catch (e) {
                         // ignore: use_build_context_synchronously
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -967,6 +975,13 @@ class _MaintenancePartsDetailsPageState
                                 partId: widget.partId),
                           ),
                         );
+                        Navigator.push(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MaintenancePartsPage(),
+                          ),
+                        );
                       } catch (e) {
                         // ignore: use_build_context_synchronously
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -986,42 +1001,6 @@ class _MaintenancePartsDetailsPageState
     }
     return [];
   }
-}
-
-Widget getStatusWidget(OrderStatus status) {
-  return BlocBuilder<HandReceiptCubit, HandReceiptState>(
-    builder: (context, state) {
-      if (state.handReceiptStatus == HandReceiptStatus.loading) {
-        return const Center(child: CircularProgressIndicator());
-      }
-      if (state.handReceiptStatus == HandReceiptStatus.failure) {
-        return const Center(child: Text('فشلت العملية'));
-      }
-      if (state.handReceiptStatus == HandReceiptStatus.success) {
-        final handReceiptItem = state.handReceiptItem;
-        return Container(
-          decoration: BoxDecoration(
-            color: getColor(handReceiptItem!.maintenanceRequestStatus!),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 2,
-            ),
-            child: Center(
-              child: CustomStyledText(
-                text: getText(handReceiptItem.maintenanceRequestStatus!),
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        );
-      }
-      return const Center(
-          child: CustomStyledText(text: 'لا توجد إيصالات استلام'));
-    },
-  );
 }
 
 class ShowDilogInformCustomerOfTheCost extends StatefulWidget {

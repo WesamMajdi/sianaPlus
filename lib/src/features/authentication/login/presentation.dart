@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/authentication/forgot%20password/presentation.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/presentation.dart';
+import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/home_delivery/home_delivery_shop_screen.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/home_maintenance/home_maintenance_screen.dart';
 
 import '../../client app/presentation/screens/home/home_screen.dart';
@@ -122,6 +123,13 @@ class _LoginPageState extends State<LoginPage> {
                         builder: (context) => const HomePage(),
                       ),
                     );
+                  } else if (state.loginResponse.data.role == 'DeliveryShop') {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomeDeliveryScreen(),
+                      ),
+                    );
                   }
                 } else if (state is LoginFailure) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -131,7 +139,15 @@ class _LoginPageState extends State<LoginPage> {
               },
               builder: (context, state) {
                 if (state is LoginLoading) {
-                  return const CircularProgressIndicator();
+                  return CustomButton(
+                    text: "",
+                    onPressed: () {},
+                    child: const SizedBox(
+                      width: 30.0,
+                      height: 30.0,
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
                 }
                 return CustomButton(
                   text: "تسجيل دخول",

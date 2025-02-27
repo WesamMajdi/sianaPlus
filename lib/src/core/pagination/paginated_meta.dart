@@ -19,4 +19,9 @@ class PaginatedMeta {
       total: json['total'] as int,
     );
   }
+
+  @override
+  String toString() {
+    return 'PaginatedMeta(pages: $pages, page: $page, perpage: $perpage, total: $total)';
+  }
 }

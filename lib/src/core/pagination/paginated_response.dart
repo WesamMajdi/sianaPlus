@@ -23,4 +23,9 @@ class PaginatedResponse<T> {
   }
 
   bool get hasNextPage => paginatedMeta.page < paginatedMeta.pages;
+
+  @override
+  String toString() {
+    return 'PaginatedResponse(items: $items, paginatedMeta: $paginatedMeta)';
+  }
 }

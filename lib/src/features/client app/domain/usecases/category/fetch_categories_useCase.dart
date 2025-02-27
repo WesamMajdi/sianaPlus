@@ -13,10 +13,13 @@ class CategoriesUseCase {
 
   CategoriesUseCase(this.repository);
 
-  Future<Either<Failure,  PaginatedResponse<CategoryModel>>> getMainCategory(PaginationParams paginationParams) {
+  Future<Either<Failure, PaginatedResponse<CategoryModel>>> getMainCategory(
+      PaginationParams paginationParams) {
     return repository.fetchCategories(paginationParams);
   }
-  Future<Either<Failure,  PaginatedResponse<CategoryModel>>> getSubCategories(PaginationParams paginationParams) {
+
+  Future<Either<Failure, PaginatedResponse<CategoryModel>>> getSubCategories(
+      PaginationParams paginationParams) {
     return repository.getSubCategories(paginationParams);
   }
 }

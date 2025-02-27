@@ -1,14 +1,14 @@
-import 'package:maintenance_app/src/core/network/api_setting.dart';
 import 'domain.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
 
 class ApiSignUpService {
-  final String signUpUrl = "${ApiSetting.baseUrl}/api/account/registerCustomer";
+  final String signUpUrl =
+      "http://ebrahim995-001-site3.ktempurl.com/api/account/registerCustomer";
 
   Future<SignUpResponse> signUp(String fullName, String email, String password,
-      String confirmPassword, String phoneNumber) async {
+      String confirmPassword, String phoneNumber, String countryCode) async {
     final url = Uri.parse(signUpUrl);
     final response = await http.post(
       url,
@@ -21,6 +21,7 @@ class ApiSignUpService {
         'password': password,
         'confirmPassword': confirmPassword,
         'phoneNumber': phoneNumber,
+        'countryCode': countryCode,
       }),
     );
 
