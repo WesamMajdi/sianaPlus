@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:maintenance_app/src/core/constants/constants.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/customStyledText.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/domain/entities/receive_order_entity.dart';
+import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/pervious_order/detiels_previous_order_screen.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/receive_order/receive_order_detiels_screen.dart';
 
 class ItemsPerviousOrderPart extends StatelessWidget {
@@ -20,7 +21,7 @@ class ItemsPerviousOrderPart extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ReceiveOrdersDetailsScreen(
+            builder: (context) => PerviousOrdersDetailsScreen(
               basketId: item!.id,
             ),
           ),

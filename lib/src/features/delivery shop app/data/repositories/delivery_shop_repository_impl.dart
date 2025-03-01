@@ -90,4 +90,16 @@ class DeliveryShopRepositoryImpl implements DeliveryShopRepository {
       return Left(ServerFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> updateStatusForOrder(
+      int orderId, int? status) async {
+    try {
+      final response =
+          await remoteDataSource.updateStatusForOrder(orderId, status!);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
 }

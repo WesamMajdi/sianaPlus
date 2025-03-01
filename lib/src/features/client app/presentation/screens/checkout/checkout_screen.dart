@@ -20,7 +20,7 @@ class _CreditCardFormScreenState extends State<CreditCardFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: const AppBarApplicationArrow(text: "وسيلة دفع"),
+      appBar: AppBarApplicationArrow(text: "وسيلة دفع"),
       body: SingleChildScrollView(
         child: Column(
           children: [

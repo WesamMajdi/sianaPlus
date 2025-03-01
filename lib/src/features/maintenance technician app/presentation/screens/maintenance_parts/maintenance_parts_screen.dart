@@ -46,7 +46,7 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: const AppBarApplicationArrow(text: 'قطع المستلمة'),
+      appBar: AppBarApplicationArrow(text: 'قطع المستلمة'),
       body: SingleChildScrollView(
         child: Column(
           children: [

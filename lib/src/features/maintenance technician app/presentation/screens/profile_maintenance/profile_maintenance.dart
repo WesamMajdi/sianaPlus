@@ -17,7 +17,7 @@ class _UserProfileMaintenancePageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarApplicationArrow(
+      appBar: AppBarApplicationArrow(
         text: 'صفحتي الشخصية',
       ),
       body: ListView(

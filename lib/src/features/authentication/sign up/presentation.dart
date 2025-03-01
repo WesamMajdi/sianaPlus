@@ -29,7 +29,7 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: const AppBarApplicationArrow(
+      appBar: AppBarApplicationArrow(
         text: "تسجيل حساب جديد",
       ),
       body: ListView(

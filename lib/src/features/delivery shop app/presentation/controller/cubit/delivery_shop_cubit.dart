@@ -142,7 +142,32 @@ class DeliveryShopCubit extends Cubit<DeliveryShopState> {
             errorMessage: failure.message)),
         (orders) => emit(state.copyWith(
             deliveryShopStatus: DeliveryShopStatus.success,
-            orders: orders.items)),
+            ordersOld: orders.items)),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+          deliveryShopStatus: DeliveryShopStatus.failure,
+          errorMessage: 'Unexpected error occurred: $e'));
+    }
+  }
+
+  Future<void> updateStatusForOrder({
+    required int orderId,
+    int? status,
+  }) async {
+    emit(state.copyWith(deliveryShopStatus: DeliveryShopStatus.loading));
+    try {
+      final result = await deliveryShopUseCase.updateStatusForOrder(
+        orderId,
+        status!,
+      );
+      result.fold(
+        (failure) => emit(state.copyWith(
+            deliveryShopStatus: DeliveryShopStatus.failure,
+            errorMessage: failure.message)),
+        (response) => emit(state.copyWith(
+          deliveryShopStatus: DeliveryShopStatus.success,
+        )),
       );
     } catch (e) {
       emit(state.copyWith(

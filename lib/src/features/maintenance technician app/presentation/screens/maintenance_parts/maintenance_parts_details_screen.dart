@@ -28,7 +28,7 @@ class _MaintenancePartsDetailsPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const AppBarApplicationArrow(
+        appBar: AppBarApplicationArrow(
           text: "تفاصيل القطعة ",
         ),
         body: BlocBuilder<HandReceiptCubit, HandReceiptState>(

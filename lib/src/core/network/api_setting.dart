@@ -92,6 +92,9 @@ class ApiSetting {
 
   static String get getAllTakePerviousOrder =>
       "$baseUrl/Orders/GetAllForDelivery";
+
+  static String get updateStatusForOrder =>
+      "$baseUrl/Orders/UpdateStatusForOrder";
   // // Auth endpoints
   // static String get login => ;
   // static String get signup => '${AppConfig.authEndpoint}/signup';

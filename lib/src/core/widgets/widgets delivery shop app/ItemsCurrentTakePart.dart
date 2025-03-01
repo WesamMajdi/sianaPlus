@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:maintenance_app/src/core/constants/constants.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/customStyledText.dart';
+import 'package:maintenance_app/src/features/delivery%20shop%20app/domain/entities/current_order_detiles_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/domain/entities/receive_order_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/current_order/detiels_current_order_screen.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/maintenance_parts/maintenance_parts_details_screen.dart';
 
 class ItemsCurrentTakePart extends StatelessWidget {
   final ReceiveOrderEntity items;
@@ -16,7 +16,6 @@ class ItemsCurrentTakePart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(items.id);
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -53,21 +52,23 @@ class ItemsCurrentTakePart extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomStyledText(
-                        text: items.locationForDelivery.toString(),
+                        text: items.customerName.toString(),
                         fontSize: 18,
                         textColor: AppColors.secondaryColor,
                         fontWeight: FontWeight.bold,
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: getColor(items.orderStatus),
+                          color: getColorOrderStatusDeliveryShop(
+                              items.orderStatus),
                           borderRadius: BorderRadius.circular(25),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 2, horizontal: 10),
                           child: CustomStyledText(
-                            text: getText(items.orderStatus),
+                            text: getTextOrderStatusDeliveryShop(
+                                items.orderStatus),
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -82,13 +83,13 @@ class ItemsCurrentTakePart extends StatelessWidget {
                       Column(
                         children: [
                           CustomStyledText(
-                            text: items.customerName,
+                            text: items.locationForDelivery.toString(),
                             fontSize: 16,
                             textColor: Colors.grey,
                           ),
                           AppSizedBox.kVSpace5,
                           CustomStyledText(
-                            text: items.customerPhoneNumber!,
+                            text: items.customerPhoneNumber.toString(),
                             fontSize: 16,
                             textColor: Colors.grey,
                           ),

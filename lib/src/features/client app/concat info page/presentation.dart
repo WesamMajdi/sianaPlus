@@ -19,7 +19,7 @@ class _ConcatInfoPageState extends State<ConcatInfoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const AppBarApplicationArrow(
+        appBar: AppBarApplicationArrow(
           text: 'تواصل معنا',
         ),
         body: ListView(

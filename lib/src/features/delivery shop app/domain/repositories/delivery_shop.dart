@@ -29,4 +29,9 @@ abstract class DeliveryShopRepository {
 
   Future<Either<Failure, OrderCurrentDetailsEntity>> getAllItemByOrderDetiles(
       int basketId);
+
+  Future<Either<Failure, Map<String, dynamic>>> updateStatusForOrder(
+    int orderId,
+    int? status,
+  );
 }

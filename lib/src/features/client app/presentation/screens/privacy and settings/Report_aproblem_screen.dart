@@ -14,7 +14,7 @@ class _ReportProblemPageState extends State<ReportProblemPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarApplicationArrow(
+      appBar: AppBarApplicationArrow(
         text: 'الإبلاغ عن المشكلة',
       ),
       body: Form(

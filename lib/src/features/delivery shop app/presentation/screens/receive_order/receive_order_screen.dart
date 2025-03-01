@@ -15,7 +15,7 @@ class _ReceiveOrderScreenState extends State<ReceiveOrderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: const AppBarApplicationArrow(text: 'الطلبات'),
+      appBar: AppBarApplicationArrow(text: 'الطلبات'),
       body: SingleChildScrollView(
         child: Column(
           children: [

@@ -40,7 +40,7 @@ class _TransferredMaintenancePartsPageState
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: const AppBarApplicationArrow(text: 'القطع المحولة الي الفرع'),
+      appBar: AppBarApplicationArrow(text: 'القطع المحولة الي الفرع'),
       body: SingleChildScrollView(
         child: Column(
           children: [

@@ -15,7 +15,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: const AppBarApplicationArrow(
+      appBar: AppBarApplicationArrow(
         text: "نسيت كلمة المرور",
       ),
       body: ListView(

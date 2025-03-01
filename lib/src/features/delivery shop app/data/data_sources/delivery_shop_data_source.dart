@@ -189,7 +189,7 @@ class DeliveryShopRemoteDataSource {
       try {
         final response = await apiController.get(
           Uri.parse(
-              '${ApiSetting.getAllTakePerviousOrder}?page=${paginationParams.page}&perPage=${paginationParams.perPage}'),
+              '${ApiSetting.getAllTakePerviousOrder}?page=${1}&perPage=${10000}'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token'
@@ -225,8 +225,6 @@ class DeliveryShopRemoteDataSource {
   }
 
   Future<OrderDetailsModel> getAllItemByOrderDetiles(int basketId) async {
-    print("📌 Basket ID: $basketId");
-
     String? token = await TokenManager.getToken();
 
     if (await internetConnectionChecker.hasConnection) {
@@ -246,13 +244,13 @@ class DeliveryShopRemoteDataSource {
         try {
           responseBody = jsonDecode(response.body);
         } catch (e) {
-          throw Exception("خطأ أثناء فك التشفير JSON: $e");
+          throw Exception("JSON: $e");
         }
 
         debugPrint("API Response: $responseBody");
 
         if (response.statusCode >= 400) {
-          throw Exception("خطأ في الاتصال بالـ API: ${response.statusCode}");
+          throw Exception("API: ${response.statusCode}");
         }
 
         if (responseBody.containsKey('data')) {
@@ -261,7 +259,7 @@ class DeliveryShopRemoteDataSource {
           debugPrint("Returned Data: $orderResponse");
           return orderResponse;
         } else {
-          throw Exception('بيانات غير صالحة أو مفقودة في الاستجابة');
+          throw Exception('');
         }
       } on TimeoutException catch (e) {
         debugPrint('Timeout Exception: $e');
@@ -272,6 +270,35 @@ class DeliveryShopRemoteDataSource {
       }
     } else {
       throw OfflineException(errorMessage: 'لا يوجد اتصال بالإنترنت');
+    }
+  }
+
+  Future<Map<String, dynamic>> updateStatusForOrder(
+      int orderId, int? status) async {
+    String? token = await TokenManager.getToken();
+
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.post(
+          Uri.parse(
+              '${ApiSetting.updateStatusForOrder}?orderId=$orderId&status=$status'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+        return responseBody;
+      } on TimeoutException catch (_) {
+        throw TimeoutException('Request timed out');
+      } catch (e) {
+        throw Exception('Unexpected error occurred');
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
     }
   }
 }

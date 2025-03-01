@@ -15,7 +15,7 @@ class _CurrentTakeOrderScreenState extends State<CurrentTakeOrderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: const AppBarApplicationArrow(text: 'الطلبات الحالية'),
+      appBar: AppBarApplicationArrow(text: 'الطلبات الحالية'),
       body: SingleChildScrollView(
         child: Column(
           children: [

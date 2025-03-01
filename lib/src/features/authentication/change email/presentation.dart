@@ -17,7 +17,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: const AppBarApplicationArrow(
+      appBar: AppBarApplicationArrow(
         text: "تغيير البريد الالكتروني",
       ),
       body: ListView(

@@ -47,4 +47,9 @@ class DeliveryShopUseCase {
       int basketId) {
     return repository.getAllItemByOrderDetiles(basketId);
   }
+
+  Future<Either<Failure, Map<String, dynamic>>> updateStatusForOrder(
+      int orderId, int? status) {
+    return repository.updateStatusForOrder(orderId, status!);
+  }
 }

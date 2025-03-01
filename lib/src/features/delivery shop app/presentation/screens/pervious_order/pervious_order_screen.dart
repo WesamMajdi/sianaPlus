@@ -16,7 +16,7 @@ class _PerviousOrderScreenState extends State<PerviousOrderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: const AppBarApplicationArrow(text: 'الطلبات السابقة'),
+      appBar: AppBarApplicationArrow(text: 'الطلبات السابقة'),
       body: SingleChildScrollView(
         child: Column(
           children: [

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/pagination/pagination_params.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customSureDialog.dart';
+import 'package:maintenance_app/src/features/delivery%20shop%20app/domain/entities/current_order_detiles_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/domain/entities/receive_order_detiels_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/controller/Cubit/delivery_shop_cubit.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/controller/state/deliveryShop_state.dart';
@@ -29,13 +30,13 @@ class _ReceiveOrdersDetailsScreenState
     super.initState();
     context
         .read<DeliveryShopCubit>()
-        .fetchOrderItemsByBasketId(widget.basketId);
+        .fetchAllItemByOrderDetiles(widget.basketId);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarApplicationArrow(
+      appBar: AppBarApplicationArrow(
         text: 'تفاصيل طلب',
       ),
       body: BlocBuilder<DeliveryShopCubit, DeliveryShopState>(
@@ -49,19 +50,12 @@ class _ReceiveOrdersDetailsScreenState
           }
 
           if (state.deliveryShopStatus == DeliveryShopStatus.success) {
-            if (state.selectedOrderItems.isEmpty) {
-              return const Center(
-                child: CustomStyledText(text: 'لا توجد إيصالات استلام'),
-              );
-            }
-
             return ListView.builder(
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
-              itemCount: state.selectedOrderItems.length,
+              itemCount: state.selectedOrderDetilesCurrentItems.length,
               itemBuilder: (context, index) {
-                final order = state.selectedOrderItems[index];
-
+                final order = state.selectedOrderDetilesCurrentItems[index];
                 return _buildOrderItem(context, order);
               },
             );
@@ -76,7 +70,7 @@ class _ReceiveOrdersDetailsScreenState
   }
 
   Widget _buildOrderItem(
-      BuildContext context, ReceiveOrderDetielsEntity order) {
+      BuildContext context, OrderCurrentDetailsEntity order) {
     return Column(
       children: [
         Padding(
@@ -93,132 +87,61 @@ class _ReceiveOrdersDetailsScreenState
             ),
             child: Padding(
               padding: const EdgeInsets.all(AppPadding.largePadding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  InkWell(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: CustomStyledText(
-                              text: order.productName.toString(),
-                              fontSize: 25,
-                            ),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  margin: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: CachedNetworkImageProvider(
-                                        IMAGE_URL + order.productImage!,
-                                      ),
-                                      fit: BoxFit.cover,
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: order.orders!.length,
+                itemBuilder: (context, index) {
+                  final orderItem = order.orders![index];
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: orderItem.productImage != null
+                            ? Container(
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: CachedNetworkImageProvider(
+                                      IMAGE_URL +
+                                          (orderItem.productImage.toString() ??
+                                              ""),
                                     ),
+                                    fit: BoxFit.cover,
                                   ),
-                                  width: 100,
-                                  height: 100,
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                AppSizedBox.kVSpace20,
-                                const Divider(),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const CustomStyledText(
-                                        text: 'لون',
-                                        fontSize: 18,
-                                        textColor: AppColors.secondaryColor,
-                                      ),
-                                      CustomStyledText(
-                                        text: order.productColor.toString(),
-                                        fontSize: 16,
-                                      ),
-                                    ],
-                                  ),
+                              )
+                            : const SizedBox.shrink(),
+                        title: CustomStyledText(
+                          text: orderItem.productName.toString() ?? "غير محدد",
+                          fontSize: 16,
+                          textColor: AppColors.lightGrayColor,
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomStyledText(
+                                  text: orderItem.productColor.toString() ??
+                                      "غير محدد",
                                 ),
-                                const Divider(),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const CustomStyledText(
-                                        text: 'السعر',
-                                        fontSize: 18,
-                                        textColor: AppColors.secondaryColor,
-                                      ),
-                                      CustomStyledText(
-                                        text: order.price.toString(),
-                                        fontSize: 16,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const Divider(),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const CustomStyledText(
-                                        text: 'الكمية',
-                                        fontSize: 18,
-                                        textColor: AppColors.secondaryColor,
-                                      ),
-                                      CustomStyledText(
-                                        text: order.count.toString(),
-                                        fontSize: 16,
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                CustomStyledText(
+                                    text:
+                                        "الكمية:  ${orderItem.count.toString() ?? "غير محدد"}")
                               ],
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () =>
-                                    Navigator.of(context).pop(false),
-                                style: TextButton.styleFrom(
-                                  backgroundColor: Colors.grey[200],
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                ),
-                                child: const CustomStyledText(
-                                    text: "إلغاء",
-                                    fontSize: 12,
-                                    textColor: AppColors.darkGrayColor,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomStyledText(
-                          text: order.productName.toString(),
-                          fontSize: 20,
-                          textColor: AppColors.secondaryColor,
+                            )
+                          ],
                         ),
-                        CustomStyledText(
-                          text: '${order.price ?? 0} ريال',
-                          fontSize: 20,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           ),

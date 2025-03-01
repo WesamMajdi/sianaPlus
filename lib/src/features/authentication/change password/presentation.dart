@@ -18,7 +18,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: const AppBarApplicationArrow(
+      appBar: AppBarApplicationArrow(
         text: "تغيير كلمة المرور",
       ),
       body: ListView(

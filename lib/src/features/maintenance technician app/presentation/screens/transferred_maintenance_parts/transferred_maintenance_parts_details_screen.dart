@@ -10,7 +10,7 @@ class TransferredMaintenancePartsDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarApplicationArrow(
+      appBar: AppBarApplicationArrow(
         text: "تفاصيل القطعة ",
       ),
       body: ListView(

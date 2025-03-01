@@ -49,7 +49,7 @@ class _RecoveredMaintenancePartsPageState
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: const AppBarApplicationArrow(text: 'قطع المرجعة'),
+      appBar: AppBarApplicationArrow(text: 'قطع المرجعة'),
       body: SingleChildScrollView(
         child: Column(
           children: [
