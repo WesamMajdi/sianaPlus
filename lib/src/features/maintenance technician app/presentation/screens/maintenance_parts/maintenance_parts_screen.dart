@@ -1,4 +1,4 @@
-import 'package:barcode_scan2/barcode_scan2.dart';
+// import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/itemsToMaintenancePart.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/maintenance_parts/maintenance_parts_cubit.dart';
@@ -15,21 +15,21 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
   String barcodeResult = "لم يتم مسح الباركود";
   TextEditingController searchController = TextEditingController();
 
-  Future<void> scanBarcode() async {
-    try {
-      var result = await BarcodeScanner.scan();
-      setState(() {
-        barcodeResult = result.rawContent.isEmpty
-            ? "لم يتم العثور على نتيجة"
-            : result.rawContent;
-      });
-      fetchHandReceipts();
-    } catch (e) {
-      setState(() {
-        barcodeResult = "حدث خطأ أثناء مسح الباركود: $e";
-      });
-    }
-  }
+  // Future<void> scanBarcode() async {
+  //   try {
+  //     var result = await BarcodeScanner.scan();
+  //     setState(() {
+  //       barcodeResult = result.rawContent.isEmpty
+  //           ? "لم يتم العثور على نتيجة"
+  //           : result.rawContent;
+  //     });
+  //     fetchHandReceipts();
+  //   } catch (e) {
+  //     setState(() {
+  //       barcodeResult = "حدث خطأ أثناء مسح الباركود: $e";
+  //     });
+  //   }
+  // }
 
   Future<void> fetchHandReceipts({bool refresh = false}) async {
     final searchQuery = searchController.text;
@@ -125,7 +125,7 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
           size: 32,
           color: AppColors.secondaryColor,
         ),
-        onPressed: scanBarcode,
+        onPressed: () {},
       ),
     );
   }

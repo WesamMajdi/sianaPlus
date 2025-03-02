@@ -9,14 +9,12 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<void> getUserProfile() async {
     emit(state.copyWith(profileStatus: ProfileStatus.loading));
-    
+
     final result = await profileUseCase.call();
-    
+
     result.fold(
       (failure) => emit(state.copyWith(
-        profileStatus: ProfileStatus.failure,
-        errorMessage: failure.message
-      )),
+          profileStatus: ProfileStatus.failure, errorMessage: failure.message)),
       (profile) => emit(state.copyWith(
         profileStatus: ProfileStatus.success,
         name: profile.fullName,
@@ -27,7 +25,6 @@ class ProfileCubit extends Cubit<ProfileState> {
         orderShopCount: profile.orderShopCount,
         orderShopNewCount: profile.orderShopNewCount,
         orderMaintenancesNewCount: profile.orderMaintenancesNewCount,
-        
       )),
     );
   }

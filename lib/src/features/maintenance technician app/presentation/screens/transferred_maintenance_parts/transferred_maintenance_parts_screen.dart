@@ -1,9 +1,6 @@
-import 'package:barcode_scan2/barcode_scan2.dart';
+// import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/itemsToMaintenancePart.dart';
-import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/itemstoTransferredMaintenanceParts.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
 
 class TransferredMaintenancePartsPage extends StatefulWidget {
   const TransferredMaintenancePartsPage({
@@ -19,20 +16,20 @@ class _TransferredMaintenancePartsPageState
     extends State<TransferredMaintenancePartsPage> {
   String barcodeResult = "لم يتم مسح الباركود";
 
-  Future<void> scanBarcode() async {
-    try {
-      var result = await BarcodeScanner.scan();
-      setState(() {
-        barcodeResult = result.rawContent.isEmpty
-            ? "لم يتم العثور على نتيجة"
-            : result.rawContent;
-      });
-    } catch (e) {
-      setState(() {
-        barcodeResult = "حدث خطأ أثناء مسح الباركود: $e";
-      });
-    }
-  }
+  // Future<void> scanBarcode() async {
+  //   try {
+  //     var result = await BarcodeScanner.scan();
+  //     setState(() {
+  //       barcodeResult = result.rawContent.isEmpty
+  //           ? "لم يتم العثور على نتيجة"
+  //           : result.rawContent;
+  //     });
+  //   } catch (e) {
+  //     setState(() {
+  //       barcodeResult = "حدث خطأ أثناء مسح الباركود: $e";
+  //     });
+  //   }
+  // }
 
   TextEditingController searchController = TextEditingController();
 
@@ -130,7 +127,7 @@ class _TransferredMaintenancePartsPageState
           size: 32,
           color: AppColors.secondaryColor,
         ),
-        onPressed: scanBarcode,
+        onPressed: () {},
       ),
     );
   }

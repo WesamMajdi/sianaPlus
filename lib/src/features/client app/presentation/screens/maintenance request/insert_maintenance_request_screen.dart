@@ -64,9 +64,6 @@ class _InsertMaintenanceRequestPageState
                         },
                         items: state.itemsList,
                         onChanged: (p0) {
-                          // if (kDebugMode) {
-                          //   print(p0!.id);
-                          // }
                           context.read<OrderCubit>().selectItem(p0!);
                         },
                       ),

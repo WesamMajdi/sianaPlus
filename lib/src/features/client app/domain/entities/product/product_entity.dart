@@ -6,10 +6,12 @@ class Product {
   String? details;
   String? image;
   String? company;
-  int? discount;
-  int? price;
+  double? discount;
+  double? price;
+  double? originalPrice;
+  double? basePrice;
   int? count;
-  int? cost;
+  double? cost;
   int? countOrder;
   bool? isFavorite;
   List<ProductColorEntity>? productColors;
@@ -23,10 +25,12 @@ class Product {
       this.company,
       this.discount,
       this.price,
+      this.originalPrice,
+      this.basePrice,
       this.count,
       this.cost,
       this.countOrder,
-      this.isFavorite=false,
+      this.isFavorite = false,
       this.selectedColor,
       this.productColors});
 }

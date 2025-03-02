@@ -27,7 +27,7 @@ class ProductRemoteDataSource {
   ProductRemoteDataSource(
       {required this.apiController, required this.internetConnectionChecker});
 
-  Future<PaginatedResponse<ProductModel>> getProductByCategory(
+  Future<List<ProductModel>> getProductByCategory(
       PaginationParams paginationParams) async {
     String? token = await TokenManager.getToken();
     debugPrint(Uri.parse(
@@ -44,25 +44,18 @@ class ProductRemoteDataSource {
           },
         );
         debugPrint(response.statusCode.toString());
-        print(response.body.toString());
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         debugPrint(responseBody.toString());
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
 
-        final productResponse =
-            BaseResponse<PaginatedResponse<ProductModel>>.fromJson(
+        final productResponse = BaseResponse<List<ProductModel>>.fromJson(
           responseBody,
-          (json) {
-            return PaginatedResponse<ProductModel>.fromJson(
-              json,
-              (p0) {
-                return ProductModel.fromJson(p0);
-              },
-            );
-          },
+          (json) =>
+              (json as List).map((e) => ProductModel.fromJson(e)).toList(),
         );
+        print(productResponse.data!);
         return productResponse.data!;
       } on TimeOutExeption {
         rethrow;
@@ -191,27 +184,27 @@ class ProductRemoteDataSource {
         //
         //
         // }
-        final response = await apiController.post(
-          Uri.parse(ApiSetting.createOrder),
-          headers: {
-            'accept': '*/*',
-            'Authorization': 'Bearer $token'
-          },
-          body:{
-            'total': NavigationService.navigatorKey.currentContext!.read<CategoryCubit>().state.totalAmount,
-            'discount': 0,
-            'orders': cartItems.values
-                .map(
-                  (e) => {
-                'count': e.count,
-                'discount': e.discount,
-                'price': e.price,
-                'productColorId': e.selectedColor?.id
-              },
-            )
-                .toList()
-          }
-        );
+        final response = await apiController
+            .post(Uri.parse(ApiSetting.createOrder), headers: {
+          'accept': '*/*',
+          'Authorization': 'Bearer $token'
+        }, body: {
+          'total': NavigationService.navigatorKey.currentContext!
+              .read<CategoryCubit>()
+              .state
+              .totalAmount,
+          'discount': 0,
+          'orders': cartItems.values
+              .map(
+                (e) => {
+                  'count': e.count,
+                  'discount': e.discount,
+                  'price': e.price,
+                  'productColorId': e.selectedColor?.id
+                },
+              )
+              .toList()
+        });
         // print( jsonEncode());
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         debugPrint(responseBody.toString());

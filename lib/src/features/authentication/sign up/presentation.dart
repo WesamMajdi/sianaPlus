@@ -29,7 +29,7 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: AppBarApplicationArrow(
+      appBar: const AppBarApplicationArrow(
         text: "تسجيل حساب جديد",
       ),
       body: ListView(
@@ -92,12 +92,10 @@ class _SignupPageState extends State<SignupPage> {
                     if (value == null || value.isEmpty) {
                       return 'عفوا.كلمة المرور مطلوبة';
                     }
-                    if (value.length < 8) {
-                      return 'عفوا.يجب أن تكون كلمة المرور 8 أحرف وأكثر';
+                    if (value.length < 6) {
+                      return 'عفوا.يجب أن تكون كلمة المرور 6 أحرف وأكثر';
                     }
-                    if (!value.contains(RegExp(r'[a-zA-Z]'))) {
-                      return 'عفوا.يجب أن تحتوي كلمة المرور على حروف';
-                    }
+
                     return null;
                   },
                   hintText: 'ادخل كلمة المرور',
@@ -113,12 +111,10 @@ class _SignupPageState extends State<SignupPage> {
                     if (value == null || value.isEmpty) {
                       return 'عفوا.كلمة المرور مطلوبة';
                     }
-                    if (value.length < 8) {
+                    if (value.length < 6) {
                       return 'عفوا.يجب أن تكون كلمة المرور 8 أحرف وأكثر';
                     }
-                    if (!value.contains(RegExp(r'[a-zA-Z]'))) {
-                      return 'عفوا.يجب أن تحتوي كلمة المرور على حروف';
-                    }
+
                     return null;
                   },
                   hintText: 'تاكيد كلمة المرور',

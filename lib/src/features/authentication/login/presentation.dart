@@ -35,11 +35,11 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           children: [
             Container(
-              margin: const EdgeInsets.only(top: 40, bottom: 20),
+              margin: const EdgeInsets.only(top: 80, bottom: 20),
               child: Image.asset(
                 Theme.of(context).brightness == Brightness.dark
-                    ? 'assets/images/logoWhit.png' // صورة الوضع الداكن
-                    : 'assets/images/logo.png', // صورة الوضع الفاتح
+                    ? 'assets/images/logoWhit.png'
+                    : 'assets/images/logo.png',
                 width: 150,
               ),
             ),
@@ -132,9 +132,9 @@ class _LoginPageState extends State<LoginPage> {
                     );
                   }
                 } else if (state is LoginFailure) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text("فشل تسجيل الدخول: ${state.error}"),
-                  ));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("فشل تسجيل الدخول"),
+                      backgroundColor: Colors.red));
                 }
               },
               builder: (context, state) {
