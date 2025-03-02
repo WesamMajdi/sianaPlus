@@ -84,7 +84,7 @@ class CategoryCubit extends Cubit<CategoryState> {
       (failure) => emit(state.copyWith(
           productStatus: ProductStatus.failure, errorMessage: failure.message)),
       (products) => emit(state.copyWith(
-          productStatus: ProductStatus.success, products: products.items)),
+          productStatus: ProductStatus.success, products: products)),
     );
   }
 
