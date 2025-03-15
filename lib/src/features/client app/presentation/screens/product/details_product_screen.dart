@@ -115,7 +115,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                               margin:
                                   const EdgeInsets.symmetric(horizontal: 10),
                               child: CustomStyledText(
-                                text: "${widget.product.count}",
+                                text: "${widget.product.userCount}",
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
                                 textColor: AppColors.secondaryColor,

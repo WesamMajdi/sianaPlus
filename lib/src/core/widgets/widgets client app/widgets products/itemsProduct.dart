@@ -46,6 +46,7 @@ class _ItemsProductState extends State<ItemsProduct> {
             ),
             itemBuilder: (context, index) {
               final product = widget.products[index];
+              print(product.name);
               return Container(
                 padding: const EdgeInsets.only(
                     left: AppPadding.mediumPadding,

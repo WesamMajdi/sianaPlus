@@ -6,11 +6,14 @@ class Product {
   String? details;
   String? image;
   String? company;
-  int? discount;
-  int? price;
-  int? count;
-  int? cost;
-  int? countOrder;
+  dynamic discount;
+  dynamic basePrice;
+  dynamic originalPrice;
+  dynamic price;
+  dynamic userCount;
+  dynamic count;
+  dynamic cost;
+  dynamic countOrder;
   bool? isFavorite;
   List<ProductColorEntity>? productColors;
   ProductColorEntity? selectedColor;
@@ -22,8 +25,11 @@ class Product {
       this.image,
       this.company,
       this.discount,
+        this.basePrice,
+        this.originalPrice,
       this.price,
       this.count,
+      this.userCount=0,
       this.cost,
       this.countOrder,
       this.isFavorite=false,

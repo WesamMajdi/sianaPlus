@@ -16,7 +16,7 @@ class ProductsUseCase {
 
   ProductsUseCase(this.repository);
 
-  Future<Either<Failure, PaginatedResponse<Product>>> getProductsByCategory(
+  Future<Either<Failure, List<Product>>> getProductsByCategory(
       PaginationParams paginationParams) {
     return repository.getProductsByCategory(paginationParams);
   }

@@ -10,7 +10,7 @@ import '../../../data/model/category/category_model.dart';
 import '../../entities/category/category_entity.dart';
 
 abstract class ProductRepository {
-  Future<Either<Failure, PaginatedResponse<Product>>> getProductsByCategory(
+  Future<Either<Failure, List<Product>>> getProductsByCategory(
       PaginationParams paginationParams);
 
   Future<Either<Failure, void>> createFavorite(PaginationParams paginationParams);

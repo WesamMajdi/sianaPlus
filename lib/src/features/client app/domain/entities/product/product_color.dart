@@ -3,7 +3,7 @@ class ProductColorEntity {
   String? name;
   int? countOrder;
   int? count;
-  String? hex;
+  dynamic hex;
 
   ProductColorEntity(
       {this.id, this.name, this.countOrder, this.count, this.hex});

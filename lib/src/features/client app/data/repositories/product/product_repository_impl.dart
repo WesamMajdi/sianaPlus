@@ -5,6 +5,7 @@ import '../../../../../core/error/failure.dart';
 import '../../../../../core/pagination/paginated_response.dart';
 import '../../../../../core/pagination/pagination_params.dart';
 import '../../data_sources/product/product_data_source.dart';
+import '../../model/product/product_model.dart';
 
 class ProductRepositoryImpl implements ProductRepository {
   final ProductRemoteDataSource remoteDataSource;
@@ -12,7 +13,7 @@ class ProductRepositoryImpl implements ProductRepository {
   ProductRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<Either<Failure, PaginatedResponse<Product>>> getProductsByCategory(
+  Future<Either<Failure, List<ProductModel>>> getProductsByCategory(
       PaginationParams paginationParams) async {
     try {
       final response =

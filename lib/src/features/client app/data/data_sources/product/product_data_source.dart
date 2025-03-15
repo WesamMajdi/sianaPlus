@@ -27,7 +27,7 @@ class ProductRemoteDataSource {
   ProductRemoteDataSource(
       {required this.apiController, required this.internetConnectionChecker});
 
-  Future<PaginatedResponse<ProductModel>> getProductByCategory(
+  Future<List<ProductModel>> getProductByCategory(
       PaginationParams paginationParams) async {
     String? token = await TokenManager.getToken();
     debugPrint(Uri.parse(
@@ -43,24 +43,22 @@ class ProductRemoteDataSource {
             'Authorization': 'Bearer $token'
           },
         );
-        debugPrint(response.statusCode.toString());
-        print(response.body.toString());
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
-        debugPrint(responseBody.toString());
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
 
         final productResponse =
-            BaseResponse<PaginatedResponse<ProductModel>>.fromJson(
+            BaseResponse<List<ProductModel>>.fromJson(
           responseBody,
           (json) {
-            return PaginatedResponse<ProductModel>.fromJson(
-              json,
-              (p0) {
-                return ProductModel.fromJson(p0);
-              },
-            );
+            if (kDebugMode) {
+              print('hussen $json');
+            }
+            return (json as List)
+                .map((item) => ProductModel.fromJson(item))
+                .toList();
+            //  ProductModel.fromJson(json);
           },
         );
         return productResponse.data!;
