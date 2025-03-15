@@ -19,7 +19,7 @@ class _ChangePhoneNumberPageState extends State<ChangePhoneNumberPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      appBar: const AppBarApplicationArrow(
+      appBar: AppBarApplicationArrow(
         text: "تغيير رقم الهاتف",
       ),
       body: ListView(

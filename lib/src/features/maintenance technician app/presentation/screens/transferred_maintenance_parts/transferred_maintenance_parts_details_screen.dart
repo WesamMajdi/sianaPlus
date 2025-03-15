@@ -3,7 +3,6 @@ import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customInputDialog.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customSureDialog.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/maintenance_parts/maintenance_parts_details_screen.dart';
 
 class TransferredMaintenancePartsDetailsPage extends StatelessWidget {
   const TransferredMaintenancePartsDetailsPage({super.key});
@@ -11,7 +10,7 @@ class TransferredMaintenancePartsDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarApplicationArrow(
+      appBar: AppBarApplicationArrow(
         text: "تفاصيل القطعة ",
       ),
       body: ListView(
@@ -79,27 +78,6 @@ class TransferredMaintenancePartsDetailsPage extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget getStatusWidget(OrderStatus status) {
-    return Container(
-      decoration: BoxDecoration(
-        color: getColor(1),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 2,
-        ),
-        child: Center(
-          child: CustomStyledText(
-            text: getText(1),
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
     );
   }
 
@@ -290,12 +268,12 @@ class TransferredMaintenancePartsDetailsPage extends StatelessWidget {
             fontSize: 20,
           ),
           onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return ShowDilogInformCustomerOfTheCost();
-              },
-            );
+            // showDialog(
+            //   context: context,
+            //   builder: (BuildContext context) {
+            //     return ShowDilogInformCustomerOfTheCost();
+            //   },
+            // );
           },
         ),
       ];

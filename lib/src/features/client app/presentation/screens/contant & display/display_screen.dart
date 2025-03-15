@@ -16,7 +16,7 @@ class _DisplayPageState extends State<DisplayPage> {
     final isDarkMode = brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: const AppBarApplicationArrow(text: "العرض"),
+      appBar: AppBarApplicationArrow(text: "العرض"),
       body: BlocBuilder<ThemeChangerBloc, ThemeChangerState>(
           builder: (context, themeState) {
         return Column(

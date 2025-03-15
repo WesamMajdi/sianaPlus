@@ -13,12 +13,14 @@ import 'package:maintenance_app/src/features/client%20app/presentation/controlle
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/notification_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/profile_cubit.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/concat%20info%20page/application.dart';
 import 'package:maintenance_app/src/features/client%20app/concat%20info%20page/data.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/maintenance_parts/maintenance_parts_cubit.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
+import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/controller/Cubit/delivery_shop_cubit.dart';
+import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/home_delivery/home_delivery_shop_screen.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/maintenance_parts/maintenance_parts_cubit.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/recovered_maintenance_parts/recovered_maintenance_parts_cubit.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/home_maintenance/home_maintenance_screen.dart';
-
 import 'firebase_options.dart';
 
 void main() async {
@@ -77,11 +79,20 @@ void main() async {
         BlocProvider<HandReceiptCubit>(
           create: (context) => getIt<HandReceiptCubit>()..fetchHandReceipts(),
         ),
+        BlocProvider<ReturnHandReceiptCubit>(
+          create: (context) =>
+              getIt<ReturnHandReceiptCubit>()..fetchReturnHandReceipts(),
+        ),
         BlocProvider<NotificationCubit>(
           create: (context) => getIt<NotificationCubit>()..getNotifications(),
         ),
         BlocProvider<ProfileCubit>(
           create: (context) => getIt<ProfileCubit>()..getUserProfile(),
+        ),
+        BlocProvider<DeliveryShopCubit>(
+          create: (context) => getIt<DeliveryShopCubit>()
+            ..fetchReceiveOrder()
+            ..deliveryShopUseCase,
         ),
       ],
       child:
@@ -142,7 +153,7 @@ class MyApp extends StatelessWidget {
                         }
                       },
                     ),
-                  ], child: const HomeMaintenanceScreen());
+                  ], child: const LoginPage());
                   // return ;
                 },
               ),
@@ -172,11 +183,8 @@ class MyApp extends StatelessWidget {
   }
 
   // context
-
-
 }
 
 class NavigationService {
-  static GlobalKey<NavigatorState> navigatorKey =
-  GlobalKey<NavigatorState>();
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 }

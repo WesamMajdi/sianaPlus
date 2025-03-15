@@ -6,7 +6,7 @@ class PrivacyPolicyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarApplicationArrow(
+      appBar: AppBarApplicationArrow(
         text: 'سياسة الخصوصية',
       ),
       body: SingleChildScrollView(

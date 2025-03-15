@@ -12,13 +12,23 @@ import 'package:maintenance_app/src/features/client%20app/domain/usecases/notifi
 import 'package:maintenance_app/src/features/client%20app/domain/usecases/product/fetch_product_useCase.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/notification_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/profile_cubit.dart';
+import 'package:maintenance_app/src/features/delivery%20shop%20app/data/data_sources/delivery_shop_data_source.dart';
+import 'package:maintenance_app/src/features/delivery%20shop%20app/data/repositories/delivery_shop_repository_impl.dart';
+import 'package:maintenance_app/src/features/delivery%20shop%20app/domain/repositories/delivery_shop.dart';
+import 'package:maintenance_app/src/features/delivery%20shop%20app/domain/usecases/fetch_delivery_shop.dart';
+import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/controller/Cubit/delivery_shop_cubit.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/data_sources/maintenance_parts/maintenance_parts_data_source.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/data_sources/recovered_maintenance_parts/recovered_maintenance_parts_data_source.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/repositories/maintenance_parts/maintenance_parts_repository_impl.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/repositories/recovered_maintenance_parts/recovered_maintenance_parts_repository_impl.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/repositories/maintenance_parts/maintenance_parts.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/repositories/recovered_maintenance_parts/recovered_maintenance_parts.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/usecases/maintenance_parts/fetch_maintenance_parts.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/maintenance_parts/maintenance_parts_cubit.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/usecases/recovered_maintenance_parts/fetch_recovered_maintenance_parts.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/maintenance_parts/maintenance_parts_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/repositories/profile/profile_repository.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/usecases/profile/fetch_profile_useCase.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/recovered_maintenance_parts/recovered_maintenance_parts_cubit.dart';
 
 import '../../features/client app/data/data_sources/category/category_data_source.dart';
 import '../../features/client app/data/data_sources/orders/orders_data_source.dart';
@@ -55,8 +65,11 @@ void _initCubits() {
   getIt.registerFactory<CategoryCubit>(() => CategoryCubit(getIt(), getIt()));
   getIt.registerFactory<OrderCubit>(() => OrderCubit(getIt()));
   getIt.registerFactory<HandReceiptCubit>(() => HandReceiptCubit(getIt()));
+  getIt.registerFactory<ReturnHandReceiptCubit>(
+      () => ReturnHandReceiptCubit(getIt()));
   getIt.registerFactory<NotificationCubit>(() => NotificationCubit(getIt()));
   getIt.registerFactory<ProfileCubit>(() => ProfileCubit(getIt()));
+  getIt.registerFactory<DeliveryShopCubit>(() => DeliveryShopCubit(getIt()));
 }
 
 void _initUseCases() {
@@ -72,47 +85,17 @@ void _initUseCases() {
   getIt.registerLazySingleton<HandReceiptUseCase>(
     () => HandReceiptUseCase(getIt()),
   );
+  getIt.registerLazySingleton<ReturnHandReceiptUseCases>(
+    () => ReturnHandReceiptUseCases(getIt()),
+  );
   getIt.registerLazySingleton<NotificationUseCase>(
     () => NotificationUseCase(getIt()),
   );
   getIt.registerLazySingleton<FetchProfileUseCase>(
     () => FetchProfileUseCase(getIt()),
   );
-}
-
-void _initRepositories() {
-  getIt.registerLazySingleton<CategoryRepository>(
-    () => CategoryRepositoryImpl(
-      getIt(),
-    ),
-  );
-  getIt.registerLazySingleton<ProductRepository>(
-    () => ProductRepositoryImpl(
-      getIt(),
-    ),
-  );
-
-  getIt.registerLazySingleton<OrderRepository>(
-    () => OrderRepositoryImpl(
-      getIt(),
-    ),
-  );
-  getIt.registerLazySingleton<HandReceiptRepository>(
-    () => HandReceiptRepositoryImpl(
-      getIt(),
-    ),
-  );
-
-  getIt.registerLazySingleton<NotificationsRepository>(
-    () => NotificationsRepositoryImpl(
-      getIt(),
-    ),
-  );
-  
-  getIt.registerLazySingleton<ProfileRepository>(
-    () => UserProfileRepositoryImpl(
-      remoteDataSource:getIt(), 
-    ),
+  getIt.registerLazySingleton<DeliveryShopUseCase>(
+    () => DeliveryShopUseCase(getIt()),
   );
 }
 
@@ -155,6 +138,63 @@ void _initDataSources() {
     () => ProfileRemoteDataSource(
       apiController: getIt(),
       internetConnectionChecker: getIt(),
+    ),
+  );
+  getIt.registerLazySingleton<ReturnHandReceiptRemoteDataSource>(
+    () => ReturnHandReceiptRemoteDataSource(
+      apiController: getIt(),
+      internetConnectionChecker: getIt(),
+    ),
+  );
+  getIt.registerLazySingleton<DeliveryShopRemoteDataSource>(
+    () => DeliveryShopRemoteDataSource(
+      apiController: getIt(),
+      internetConnectionChecker: getIt(),
+    ),
+  );
+}
+
+void _initRepositories() {
+  getIt.registerLazySingleton<CategoryRepository>(
+    () => CategoryRepositoryImpl(
+      getIt(),
+    ),
+  );
+  getIt.registerLazySingleton<ProductRepository>(
+    () => ProductRepositoryImpl(
+      getIt(),
+    ),
+  );
+
+  getIt.registerLazySingleton<OrderRepository>(
+    () => OrderRepositoryImpl(
+      getIt(),
+    ),
+  );
+  getIt.registerLazySingleton<HandReceiptRepository>(
+    () => HandReceiptRepositoryImpl(
+      getIt(),
+    ),
+  );
+
+  getIt.registerFactory<ReturnHandReceiptRepository>(
+      () => ReturnHandReceiptRepositoryImpl(remoteDataSource: getIt()));
+
+  getIt.registerLazySingleton<NotificationsRepository>(
+    () => NotificationsRepositoryImpl(
+      getIt(),
+    ),
+  );
+
+  getIt.registerLazySingleton<ProfileRepository>(
+    () => UserProfileRepositoryImpl(
+      remoteDataSource: getIt(),
+    ),
+  );
+
+  getIt.registerLazySingleton<DeliveryShopRepository>(
+    () => DeliveryShopRepositoryImpl(
+      getIt(),
     ),
   );
 }

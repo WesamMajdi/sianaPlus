@@ -42,7 +42,7 @@ class _ItemsProductState extends State<ItemsProduct> {
             shrinkWrap: true,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.68,
+              childAspectRatio: 0.62,
             ),
             itemBuilder: (context, index) {
               final product = widget.products[index];
@@ -118,8 +118,8 @@ class _ItemsProductState extends State<ItemsProduct> {
                             fit: BoxFit.cover,
                           ),
                         ),
-                          width: 100,
-                          height: 100,
+                        width: 100,
+                        height: 100,
                         //   color: Colors.blue,
                         // ),
                       ),

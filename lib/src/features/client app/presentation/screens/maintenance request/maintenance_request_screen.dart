@@ -16,6 +16,12 @@ class MaintenanceRequestPage extends StatefulWidget {
 class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
   LatLng? _pickedLocation;
 
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   context.read<OrderCubit>().clearItems();
+  // }
+
   // Opens the map picker screen
   Future<void> _openMapPicker() async {
     final result = await Navigator.push(

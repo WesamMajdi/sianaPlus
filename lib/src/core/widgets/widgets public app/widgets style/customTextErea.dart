@@ -4,18 +4,21 @@ class Texteara extends StatelessWidget {
   final String hintText;
   final FormFieldValidator<String>? validators;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
 
   const Texteara({
     Key? key,
     required this.hintText,
     this.validators,
     this.controller,
+    this.focusNode,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppPadding.mediumPadding),
       child: TextFormField(
+        focusNode: focusNode,
         controller: controller,
         validator: validators,
         cursorColor: AppColors.darkGrayColor,

@@ -12,7 +12,7 @@ class _UserSettingProfileState extends State<UserSettingProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarApplicationArrow(
+      appBar: AppBarApplicationArrow(
         text: 'الإعدادات والخصوصية',
       ),
       body: SingleChildScrollView(

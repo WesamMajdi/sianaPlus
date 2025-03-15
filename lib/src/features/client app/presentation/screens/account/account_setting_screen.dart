@@ -6,7 +6,7 @@ class AccountSetting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarApplicationArrow(text: "الحساب"),
+      appBar: AppBarApplicationArrow(text: "الحساب"),
       body: Container(
         margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         child: Column(

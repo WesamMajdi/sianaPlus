@@ -24,12 +24,11 @@ class CustomInputDialog extends StatefulWidget {
   State<CustomInputDialog> createState() => _CustomInputDialogState();
 }
 
+final _formKey = GlobalKey<FormState>();
+
 class _CustomInputDialogState extends State<CustomInputDialog> {
   @override
   Widget build(BuildContext context) {
-    // Define the form key
-    final _formKey = GlobalKey<FormState>();
-
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(25),

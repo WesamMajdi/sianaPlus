@@ -1,13 +1,12 @@
-import 'package:barcode_scan2/barcode_scan2.dart';
-import 'package:dropdown_search/dropdown_search.dart';
+// import 'package:barcode_scan2/barcode_scan2.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/itemsRecoveredMaintenanceParts.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
+
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/recovered_maintenance_parts/recovered_maintenance_parts_cubit.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/state/returnHandReceipt_state.dart';
 
 class RecoveredMaintenancePartsPage extends StatefulWidget {
-  const RecoveredMaintenancePartsPage({
-    Key? key,
-  }) : super(key: key);
+  const RecoveredMaintenancePartsPage({super.key});
 
   @override
   State<RecoveredMaintenancePartsPage> createState() =>
@@ -17,47 +16,54 @@ class RecoveredMaintenancePartsPage extends StatefulWidget {
 class _RecoveredMaintenancePartsPageState
     extends State<RecoveredMaintenancePartsPage> {
   String barcodeResult = "لم يتم مسح الباركود";
-
-  Future<void> scanBarcode() async {
-    try {
-      var result = await BarcodeScanner.scan();
-      setState(() {
-        barcodeResult = result.rawContent.isEmpty
-            ? "لم يتم العثور على نتيجة"
-            : result.rawContent;
-      });
-    } catch (e) {
-      setState(() {
-        barcodeResult = "حدث خطأ أثناء مسح الباركود: $e";
-      });
-    }
-  }
-
   TextEditingController searchController = TextEditingController();
+
+  // Future<void> scanBarcode() async {
+  //   try {
+  //     var result = await BarcodeScanner.scan();
+  //     setState(() {
+  //       barcodeResult = result.rawContent.isEmpty
+  //           ? "لم يتم العثور على نتيجة"
+  //           : result.rawContent;
+  //     });
+  //     fetcReturnhHandReceipts();
+  //   } catch (e) {
+  //     setState(() {
+  //       barcodeResult = "حدث خطأ أثناء مسح الباركود: $e";
+  //     });
+  //   }
+  // }
+
+  Future<void> fetcReturnhHandReceipts({bool refresh = false}) async {
+    final searchQuery = searchController.text;
+    final barcode = barcodeResult != "لم يتم مسح الباركود" ? barcodeResult : '';
+
+    context.read<ReturnHandReceiptCubit>().fetchReturnHandReceipts(
+          refresh: refresh,
+          searchQuery: searchQuery,
+          barcode: barcode,
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: const AppBarApplicationArrow(text: 'العناصر المعادة'),
+      appBar: AppBarApplicationArrow(text: 'قطع المرجعة'),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            AppSizedBox.kVSpace15,
-            buildSearchBar(),
-            AppSizedBox.kVSpace10,
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 3),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Expanded(
-                      child: buildSearchDropdownStatus(
-                    orderStatuses,
-                    'ابحث عن الحالة ',
-                    (OrderStatus? selectedStatus) {},
-                  )),
-                  Container(child: buildBarcodeScanner()),
+                    child: buildSearchBar(),
+                  ),
+                  Container(
+                      margin: const EdgeInsets.only(left: 20),
+                      child: buildBarcodeScanner()),
                 ],
               ),
             ),
@@ -76,13 +82,17 @@ class _RecoveredMaintenancePartsPageState
         children: [
           Expanded(
             child: TextFormField(
-              cursorColor: Colors.black,
               controller: searchController,
+              cursorColor: Colors.black,
+              onChanged: (value) {
+                fetcReturnhHandReceipts(refresh: true);
+              },
               decoration: InputDecoration(
                 filled: true,
                 border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide.none),
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide.none,
+                ),
                 prefixIcon: const Icon(
                   FontAwesomeIcons.magnifyingGlass,
                   size: 20,
@@ -96,25 +106,14 @@ class _RecoveredMaintenancePartsPageState
                       ),
                 hintText: "ابحث عن القطعة او اسم الزبون ",
                 hintStyle: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: "Tajawal"),
+                  color: Colors.grey,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: "Tajawal",
+                ),
               ),
             ),
           ),
-          Container(
-              margin: const EdgeInsets.only(right: 5),
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: AppColors.secondaryColor,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.tune, color: Colors.white),
-                onPressed: () {},
-              ))
         ],
       ),
     );
@@ -129,126 +128,35 @@ class _RecoveredMaintenancePartsPageState
           size: 32,
           color: AppColors.secondaryColor,
         ),
-        onPressed: scanBarcode,
+        onPressed: () {},
       ),
     );
   }
 
   Widget buildRecoveredMaintenancePartsList() {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const BouncingScrollPhysics(),
-      itemCount: maintenanceParts.length,
-      itemBuilder: (context, index) {
-        final part = maintenanceParts[index];
-        return ItemsRecoveredMaintenancePart(
-          part: part,
-        );
-      },
-    );
-  }
-
-  Widget buildSearchDropdownStatus(List<OrderStatus> items, String hintText,
-      void Function(OrderStatus?)? onChanged) {
-    return DropdownSearch<OrderStatus>(
-      itemAsString: (item) => getText(1),
-      items: items,
-      compareFn: (item1, item2) {
-        return item1 == item2;
-      },
-      popupProps: PopupProps.menu(
-        menuProps: MenuProps(
-            elevation: 0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10))),
-        isFilterOnline: true,
-        showSearchBox: true,
-        showSelectedItems: true,
-        searchFieldProps: TextFieldProps(
-          decoration: InputDecoration(
-            hintText: 'ابحث هنا',
-            filled: true,
-            fillColor: Colors.grey.withOpacity(0.2),
-            errorStyle: const TextStyle(fontFamily: "Tajawal", fontSize: 14),
-            hintStyle: const TextStyle(
-                fontSize: 14, color: Colors.grey, fontFamily: "Tajawal"),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            errorBorder: OutlineInputBorder(
-              borderSide:
-                  const BorderSide(color: AppColors.secondaryColor, width: 2.0),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderSide:
-                  const BorderSide(color: AppColors.secondaryColor, width: 2.0),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: AppPadding.mediumPadding,
-              horizontal: AppPadding.mediumPadding,
-            ),
-          ),
-          style: const TextStyle(
-            fontFamily: 'Tajawal',
-            fontSize: 16,
-          ),
-        ),
-        itemBuilder: (context, item, isSelected) {
-          return Column(
-            children: [
-              ListTile(
-                title: CustomStyledText(
-                  text: getText(1),
-                  textColor: (Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.black),
-                ),
-                selected: isSelected,
-              ),
-            ],
+    return BlocBuilder<ReturnHandReceiptCubit, ReturnHandReceiptState>(
+      builder: (context, state) {
+        if (state.returnHandReceiptStatus == ReturnHandReceiptStatus.loading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state.returnHandReceiptStatus == ReturnHandReceiptStatus.failure) {
+          return const Center(child: Text('فشلت العملية'));
+        }
+        if (state.returnHandReceiptStatus == ReturnHandReceiptStatus.success) {
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const BouncingScrollPhysics(),
+            itemCount: state.returnHandReceipts.length,
+            itemBuilder: (context, index) {
+              return ItemsRecoveredMaintenancePart(
+                part: state.returnHandReceipts[index],
+              );
+            },
           );
-        },
-      ),
-      dropdownDecoratorProps: DropDownDecoratorProps(
-        dropdownSearchDecoration: InputDecoration(
-          hintText: hintText,
-          filled: true,
-          fillColor: Colors.grey.withOpacity(0.2),
-          errorStyle: const TextStyle(fontFamily: "Tajawal", fontSize: 14),
-          hintStyle: const TextStyle(
-              fontSize: 16, color: Colors.grey, fontFamily: "Tajawal"),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderSide:
-                const BorderSide(color: AppColors.secondaryColor, width: 2.0),
-            borderRadius: BorderRadius.circular(15),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderSide:
-                const BorderSide(color: AppColors.secondaryColor, width: 2.0),
-            borderRadius: BorderRadius.circular(15),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(15),
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            vertical: AppPadding.mediumPadding,
-            horizontal: AppPadding.mediumPadding,
-          ),
-        ),
-      ),
-      onChanged: onChanged,
+        }
+        return const Center(
+            child: CustomStyledText(text: 'لا توجد إيصالات استلام'));
+      },
     );
   }
 }

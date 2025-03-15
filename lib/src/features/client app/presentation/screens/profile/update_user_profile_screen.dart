@@ -16,7 +16,7 @@ class _ChangeUserProfileState extends State<ChangeUserProfile> {
     TextEditingController loctionController = TextEditingController();
     TextEditingController phonenumberController = TextEditingController();
     return Scaffold(
-        appBar: const AppBarApplicationArrow(
+        appBar: AppBarApplicationArrow(
           text: 'تعديل صفحتي ',
         ),
         body: Form(
@@ -31,7 +31,7 @@ class _ChangeUserProfileState extends State<ChangeUserProfile> {
                           bottomRight: Radius.circular(15))),
                   height: 150,
                   width: 120,
-                  child: Image.asset("assets/images/siana_plus_logo.png"),
+                  child: Image.asset("assets/images/logo.png"),
                 ),
                 AppSizedBox.kVSpace10,
                 const CustomLabelText(

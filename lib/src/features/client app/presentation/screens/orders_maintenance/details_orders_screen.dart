@@ -8,7 +8,7 @@ class OrdersDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarApplicationArrow(text: 'تفاصيل الطلب'),
+      appBar: AppBarApplicationArrow(text: 'تفاصيل الطلب'),
       body: ListView.builder(
         shrinkWrap: false,
         itemCount: allOrders.length,

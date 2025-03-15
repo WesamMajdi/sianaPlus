@@ -15,8 +15,8 @@ class HandReceiptEntity {
   int? costTo;
   String? urgent;
   String? itemBarcode;
-  int? warrantyDaysNumber;
-  Null? returnReason;
+  int? warrantyDaysNumber = 0;
+  String? returnReason;
   int? maintenanceRequestStatus;
   String? maintenanceRequestStatusMessage;
 

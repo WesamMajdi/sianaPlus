@@ -19,7 +19,7 @@ class _ConcatInfoPageState extends State<ConcatInfoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const AppBarApplicationArrow(
+        appBar: AppBarApplicationArrow(
           text: 'تواصل معنا',
         ),
         body: ListView(
@@ -143,7 +143,15 @@ class _ConcatInfoPageState extends State<ConcatInfoPage> {
                       },
                       builder: (context, state) {
                         if (state is ContactUsLoading) {
-                          return const CircularProgressIndicator();
+                          return CustomButton(
+                            text: "",
+                            onPressed: () {},
+                            child: const SizedBox(
+                              width: 30.0,
+                              height: 30.0,
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
                         }
                         return CustomButton(
                           text: 'ارسال رأي',

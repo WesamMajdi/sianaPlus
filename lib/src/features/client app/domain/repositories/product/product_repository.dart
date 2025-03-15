@@ -13,8 +13,10 @@ abstract class ProductRepository {
   Future<Either<Failure, List<Product>>> getProductsByCategory(
       PaginationParams paginationParams);
 
-  Future<Either<Failure, void>> createFavorite(PaginationParams paginationParams);
-  Future<Either<Failure, void>> deleteFavorite(PaginationParams paginationParams);
+  Future<Either<Failure, void>> createFavorite(
+      PaginationParams paginationParams);
+  Future<Either<Failure, void>> deleteFavorite(
+      PaginationParams paginationParams);
   Future<Either<Failure, void>> deleteAllFavorite();
   Future<Either<Failure, void>> createOrder(Map<String, Product> cartItems);
 }

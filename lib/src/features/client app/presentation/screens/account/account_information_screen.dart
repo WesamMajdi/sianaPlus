@@ -7,7 +7,7 @@ class AccountInfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarApplicationArrow(text: "معلومات الحساب"),
+      appBar: AppBarApplicationArrow(text: "معلومات الحساب"),
       body: Container(
         margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         child: Column(

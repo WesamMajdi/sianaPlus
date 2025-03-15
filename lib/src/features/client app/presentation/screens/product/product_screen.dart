@@ -36,10 +36,11 @@ class _ProductPageState extends State<ProductPage> {
               margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 16),
               alignment: Alignment.centerRight,
               child: const CustomStyledText(
-                  text: "المنتجات",
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  textColor: AppColors.primaryColor),
+                text: "المنتجات",
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                textColor: AppColors.secondaryColor,
+              ),
             ),
             BlocBuilder<CategoryCubit, CategoryState>(
               builder: (context, state) {

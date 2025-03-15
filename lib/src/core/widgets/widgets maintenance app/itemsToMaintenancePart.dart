@@ -21,7 +21,9 @@ class ItemsMaintenancePart extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => MaintenancePartsDetailsPage(part: items),
+            builder: (context) => MaintenancePartsDetailsPage(
+              partId: items.id!,
+            ),
           ),
         );
       },

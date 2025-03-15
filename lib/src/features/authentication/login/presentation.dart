@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/authentication/forgot%20password/presentation.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/presentation.dart';
+import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/home_delivery/home_delivery_shop_screen.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/home_maintenance/home_maintenance_screen.dart';
 
 import '../../client app/presentation/screens/home/home_screen.dart';
@@ -34,10 +35,12 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           children: [
             Container(
-              margin: const EdgeInsets.only(top: 40, bottom: 20),
+              margin: const EdgeInsets.only(top: 80, bottom: 20),
               child: Image.asset(
-                'assets/images/logo.png',
-                width: 140,
+                Theme.of(context).brightness == Brightness.dark
+                    ? 'assets/images/logoWhit.png'
+                    : 'assets/images/logo.png',
+                width: 150,
               ),
             ),
             const CustomStyledText(
@@ -120,16 +123,31 @@ class _LoginPageState extends State<LoginPage> {
                         builder: (context) => const HomePage(),
                       ),
                     );
+                  } else if (state.loginResponse.data.role == 'DeliveryShop') {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomeDeliveryScreen(),
+                      ),
+                    );
                   }
                 } else if (state is LoginFailure) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text("فشل تسجيل الدخول: ${state.error}"),
-                  ));
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("فشل تسجيل الدخول"),
+                      backgroundColor: Colors.red));
                 }
               },
               builder: (context, state) {
                 if (state is LoginLoading) {
-                  return const CircularProgressIndicator();
+                  return CustomButton(
+                    text: "",
+                    onPressed: () {},
+                    child: const SizedBox(
+                      width: 30.0,
+                      height: 30.0,
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
                 }
                 return CustomButton(
                   text: "تسجيل دخول",

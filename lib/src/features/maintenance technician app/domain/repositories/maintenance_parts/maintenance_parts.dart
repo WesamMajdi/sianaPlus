@@ -6,7 +6,7 @@ import 'package:maintenance_app/src/features/maintenance%20technician%20app/doma
 
 abstract class HandReceiptRepository {
   Future<Either<Failure, PaginatedResponse<HandReceiptEntity>>>
-      getHandHandReceiptItem(PaginationParams paginationParams,
+      getAllHandHandReceiptItem(PaginationParams paginationParams,
           String? searchQuery, String? barcode);
 
   Future<Either<Failure, Map<String, dynamic>>> updateStatusForHandReceiptItem(
@@ -17,6 +17,21 @@ abstract class HandReceiptRepository {
   Future<Either<Failure, Map<String, dynamic>>>
       defineMalfunctionForHandReceiptItem(
     int receiptItemId,
-    String description,
+    String? description,
   );
+
+  Future<Either<Failure, Map<String, dynamic>>>
+      enterMaintenanceCostForHandReceiptItem({
+    required int receiptItemId,
+    required double costNotifiedToTheCustomer,
+    int warrantyDaysNumber = 0,
+  });
+
+  Future<Either<Failure, HandReceiptEntity>> getHandReceiptItem(int id);
+  Future<Either<Failure, Map<String, dynamic>>>
+      suspendMaintenanceForHandReceiptItem(
+          int receiptItemId, String? maintenanceSuspensionReason);
+
+  Future<Either<Failure, Map<String, dynamic>>>
+      reopenMaintenanceHandReceiptItem(int receiptItemId);
 }

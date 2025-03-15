@@ -3,22 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/entities/maintenance_parts/maintenance_parts_entitie.dart';
 
-class MaintenancePart {
-  final String maintenancePartName;
-  final String clientName;
-  final String clientPhone;
-  final OrderStatus status;
-
-  MaintenancePart({
-    required this.maintenancePartName,
-    required this.clientName,
-    required this.clientPhone,
-    required this.status,
-  });
-}
-
-enum OrderStatus { New, TakeFromStorage, DeliveryToCustomer, Completed }
-
 enum StatusEnum {
   WaitingManagerResponse, // 1
   ManagerApprovedReturn, // 2
@@ -109,39 +93,6 @@ Color getColor(int status) {
   }
   return Colors.white;
 }
-
-final List<MaintenancePart> maintenanceParts = [
-  MaintenancePart(
-    maintenancePartName: 'مكيف هواء',
-    clientName: 'محمد أحمد',
-    clientPhone: '0501234567',
-    status: OrderStatus.New,
-  ),
-  MaintenancePart(
-    maintenancePartName: 'ثلاجة',
-    clientName: 'سارة خالد',
-    clientPhone: '0557654321',
-    status: OrderStatus.DeliveryToCustomer,
-  ),
-  MaintenancePart(
-    maintenancePartName: 'غسالة',
-    clientName: 'عبدالله علي',
-    clientPhone: '0569876543',
-    status: OrderStatus.Completed,
-  ),
-  MaintenancePart(
-    maintenancePartName: 'غسالة',
-    clientName: 'عمر حمد',
-    clientPhone: '0599924216',
-    status: OrderStatus.TakeFromStorage,
-  ),
-];
-List<OrderStatus> orderStatuses = [
-  OrderStatus.New,
-  OrderStatus.TakeFromStorage,
-  OrderStatus.DeliveryToCustomer,
-  OrderStatus.Completed,
-];
 
 // Model
 class HandReceiptModel extends HandReceiptEntity {

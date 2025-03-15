@@ -27,7 +27,7 @@ class _InsertMaintenanceRequestPageState
     return BlocBuilder<OrderCubit, OrderState>(
       builder: (context, state) => Scaffold(
           resizeToAvoidBottomInset: true,
-          appBar: const AppBarApplicationArrow(
+          appBar: AppBarApplicationArrow(
             text: 'اضافة طلب صيانة',
           ),
           body: ListView(
@@ -64,9 +64,6 @@ class _InsertMaintenanceRequestPageState
                         },
                         items: state.itemsList,
                         onChanged: (p0) {
-                          // if (kDebugMode) {
-                          //   print(p0!.id);
-                          // }
                           context.read<OrderCubit>().selectItem(p0!);
                         },
                       ),

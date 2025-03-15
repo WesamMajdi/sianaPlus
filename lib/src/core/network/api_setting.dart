@@ -38,13 +38,63 @@ class ApiSetting {
   static String get getAllHandReceiptItems =>
       '$baseUrl/Maintenances/GetAllHandReceiptItems';
 
+  static String get getHandReceiptItem =>
+      '$baseUrl/Maintenances/GetHandReceiptItem';
+
   static String get updateStatusForHandReceiptItem =>
       '$baseUrl/Maintenances/UpdateStatusForHandReceiptItem';
+
   static String get defineMalfunctionForHandReceiptItem =>
       '$baseUrl/Maintenances/DefineMalfunctionForHandReceiptItem';
 
+  static String get enterMaintenanceCostForHandReceiptItem =>
+      '$baseUrl/Maintenances/EnterMaintenanceCostForHandReceiptItem';
+
+  static String get suspendMaintenanceForHandReceiptItem =>
+      "$baseUrl/Maintenances/SuspenseMaintenanceForHandReceiptItem";
+
+  static String get reOpenMaintenanceForHandReceiptItem =>
+      "$baseUrl/Maintenances/ReOpenMaintenanceForHandReceiptItem";
+  ///////////////////////////////////////////////////
+  static String get getAllReturnHandReceiptItems =>
+      '$baseUrl/Maintenances/GetAllReturnHandReceiptItems';
+
+  static String get getReturnHandReceiptItem =>
+      '$baseUrl/Maintenances/GetReturnHandReceiptItem';
+
+  static String get updateStatusForReturnHandReceiptItem =>
+      '$baseUrl/Maintenances/UpdateStatusForReturnHandReceiptItem';
+
+  static String get customerRefuseMaintenanceForReturnHandReceiptItem =>
+      '$baseUrl/Maintenances/CustomerRefuseMaintenanceForReturnHandReceiptItem';
+
+  static String get suspenseMaintenanceForReturnHandReceiptItem =>
+      '$baseUrl/Maintenances/SuspenseMaintenanceForReturnHandReceiptItem';
+
+  static String get reOpenMaintenanceForReturnHandReceiptItem =>
+      '$baseUrl/Maintenances/ReOpenMaintenanceForReturnHandReceiptItem';
+
+  static String get enterMaintenanceCostForReturnHandReceiptItem =>
+      '$baseUrl/Maintenances/EnterMaintenanceCostForReturnHandReceiptItem';
+
+  static String get defineMalfunctionForReturnHandReceiptItem =>
+      '$baseUrl/Maintenances/DefineMalfunctionForReturnHandReceiptItem';
+
   static String get createContactUs => "$baseUrl/Communication/CreateContactUs";
+
   static String get getUserProfile => "$baseUrl/Pages/GetProfilePage";
+
+  static String get getAllForAllDelivery =>
+      "$baseUrl/Orders/GetAllForAllDelivery";
+  static String get getAllItemByOrder => "$baseUrl/Orders/GetAllItemByOrder";
+  static String get takeOrder => "$baseUrl/Orders/TakeOrder";
+  static String get getAllTakeDelivery => "$baseUrl/Orders/GetAllTakeDelivery";
+
+  static String get getAllTakePerviousOrder =>
+      "$baseUrl/Orders/GetAllForDelivery";
+
+  static String get updateStatusForOrder =>
+      "$baseUrl/Orders/UpdateStatusForOrder";
   // // Auth endpoints
   // static String get login => ;
   // static String get signup => '${AppConfig.authEndpoint}/signup';

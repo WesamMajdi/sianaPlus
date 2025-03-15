@@ -20,10 +20,12 @@ class ProductsUseCase {
       PaginationParams paginationParams) {
     return repository.getProductsByCategory(paginationParams);
   }
+
   Future<Either<Failure, void>> createFavorite(
       PaginationParams paginationParams) {
     return repository.createFavorite(paginationParams);
   }
+
   Future<Either<Failure, void>> deleteFavorite(
       PaginationParams paginationParams) {
     return repository.deleteFavorite(paginationParams);
@@ -33,10 +35,7 @@ class ProductsUseCase {
     return repository.deleteAllFavorite();
   }
 
-
   Future<Either<Failure, void>> createOrder(Map<String, Product> cartItems) {
     return repository.createOrder(cartItems);
   }
-
-
 }

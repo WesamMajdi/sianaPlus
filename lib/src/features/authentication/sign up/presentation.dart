@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/application.dart';
-
 import '../../client app/presentation/screens/home/home_screen.dart';
 
 class SignupPage extends StatefulWidget {
@@ -93,12 +92,10 @@ class _SignupPageState extends State<SignupPage> {
                     if (value == null || value.isEmpty) {
                       return 'عفوا.كلمة المرور مطلوبة';
                     }
-                    if (value.length < 8) {
-                      return 'عفوا.يجب أن تكون كلمة المرور 8 أحرف وأكثر';
+                    if (value.length < 6) {
+                      return 'عفوا.يجب أن تكون كلمة المرور 6 أحرف وأكثر';
                     }
-                    if (!value.contains(RegExp(r'[a-zA-Z]'))) {
-                      return 'عفوا.يجب أن تحتوي كلمة المرور على حروف';
-                    }
+
                     return null;
                   },
                   hintText: 'ادخل كلمة المرور',
@@ -114,12 +111,10 @@ class _SignupPageState extends State<SignupPage> {
                     if (value == null || value.isEmpty) {
                       return 'عفوا.كلمة المرور مطلوبة';
                     }
-                    if (value.length < 8) {
+                    if (value.length < 6) {
                       return 'عفوا.يجب أن تكون كلمة المرور 8 أحرف وأكثر';
                     }
-                    if (!value.contains(RegExp(r'[a-zA-Z]'))) {
-                      return 'عفوا.يجب أن تحتوي كلمة المرور على حروف';
-                    }
+
                     return null;
                   },
                   hintText: 'تاكيد كلمة المرور',
@@ -153,20 +148,31 @@ class _SignupPageState extends State<SignupPage> {
             },
             builder: (context, state) {
               if (state is SginUpLoading) {
-                return const CircularProgressIndicator();
+                return CustomButton(
+                  text: "",
+                  onPressed: () {},
+                  child: const SizedBox(
+                    width: 30.0,
+                    height: 30.0,
+                    child: CircularProgressIndicator(),
+                  ),
+                );
               }
               return CustomButton(
-                  text: "تسجيل حساب",
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      context.read<SignUpCubit>().signUp(
+                text: "تسجيل حساب",
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    context.read<SignUpCubit>().signUp(
                           fullnameController.text,
                           usernameController.text,
                           passwordController.text,
                           confirmpasswordController.text,
-                          mobileNumberController.text);
-                    }
-                  });
+                          mobileNumberController.text,
+                          "+972",
+                        );
+                  }
+                },
+              );
             },
           ),
           AppSizedBox.kVSpace5,

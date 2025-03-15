@@ -9,12 +9,12 @@ class SignUpCubit extends Cubit<SignUpState> {
   SignUpCubit(this.apiService) : super(SignUpInitial());
 
   Future<void> signUp(String fullName, String email, String password,
-      String confirmPassword, String phoneNumber) async {
+      String confirmPassword, String phoneNumber, String countryCode) async {
     try {
       emit(SginUpLoading());
 
       final sginUpResponse = await apiService.signUp(
-          fullName, email, password, confirmPassword, phoneNumber);
+          fullName, email, password, confirmPassword, phoneNumber, countryCode);
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', sginUpResponse.data.token);

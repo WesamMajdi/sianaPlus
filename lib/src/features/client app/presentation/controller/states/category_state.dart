@@ -5,6 +5,7 @@ import 'package:maintenance_app/src/features/client%20app/domain/entities/produc
 import '../../../domain/entities/category/category_entity.dart';
 
 enum MainCategoryStatus { initial, loading, success, failure }
+
 enum OrderStatus { initial, loading, success, failure }
 
 enum SubCategoryStatus { initial, loading, success, failure }
@@ -29,6 +30,7 @@ class CategoryState extends Equatable {
   final String? errorMessage;
   Map<String, Product> cartItems;
   double? totalAmount = 0;
+  int quantity = 0;
   // bool isColorSelected;
 
   CategoryState({
@@ -42,6 +44,7 @@ class CategoryState extends Equatable {
     this.subCategories = const <Category>[],
     this.hasCategoryReachedMax = false,
     this.productColor,
+    this.quantity = 0,
     this.selectedIndex,
     this.categoryCurrentPage = 1,
     this.productCurrentPage = 1,
@@ -54,10 +57,9 @@ class CategoryState extends Equatable {
   CategoryState copyWith({
     MainCategoryStatus? mainCategoryStatus,
     SubCategoryStatus? subCategoryStatus,
-    OrderStatus?orderStatus,
+    OrderStatus? orderStatus,
     ProductStatus? productStatus,
     ProductColorEntity? productColor,
-
     List<Category>? categories,
     List<Category>? subCategories,
     List<Product>? products,
@@ -66,6 +68,7 @@ class CategoryState extends Equatable {
     int? selectedIndex,
     int? categoryCurrentPage,
     int? productCurrentPage,
+    int? quantity,
     int? selectedCategoryId,
     String? errorMessage,
     Map<String, Product>? cartItems,
@@ -81,6 +84,7 @@ class CategoryState extends Equatable {
       productColor: productColor ?? this.productColor,
       favouriteProducts: favouriteProducts ?? this.favouriteProducts,
       subCategories: subCategories ?? this.subCategories,
+      quantity: quantity ?? this.quantity,
       selectedCategoryId: selectedCategoryId ?? this.selectedCategoryId,
       selectedIndex: selectedIndex ?? this.selectedIndex,
       hasCategoryReachedMax:
@@ -98,15 +102,15 @@ class CategoryState extends Equatable {
         mainCategoryStatus,
         subCategoryStatus,
         productStatus,
-    orderStatus,
+        orderStatus,
         categories,
-    productColor,
+        productColor,
         products,
-    favouriteProducts,
+        favouriteProducts,
         subCategories,
         hasCategoryReachedMax,
         categoryCurrentPage,
-    selectedIndex,
+        selectedIndex,
         productCurrentPage,
         errorMessage,
         cartItems,
