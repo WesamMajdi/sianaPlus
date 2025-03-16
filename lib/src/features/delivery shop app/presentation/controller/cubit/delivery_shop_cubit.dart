@@ -15,7 +15,7 @@ class DeliveryShopCubit extends Cubit<DeliveryShopState> {
     try {
       final page = refresh ? 1 : (state.orders.length ~/ 10) + 1;
       final result = await deliveryShopUseCase
-          .getAllHandHandReceiptItem(PaginationParams(page: page));
+          .getAllForAllDelivery(PaginationParams(page: page));
       result.fold(
         (failure) => emit(state.copyWith(
             deliveryShopStatus: DeliveryShopStatus.failure,
@@ -80,21 +80,21 @@ class DeliveryShopCubit extends Cubit<DeliveryShopState> {
     }
   }
 
-  Future<void> fetchCurrentOrder({
+  Future<void> getAllTakeDelivery({
     bool refresh = false,
   }) async {
     emit(state.copyWith(deliveryShopStatus: DeliveryShopStatus.loading));
     try {
-      final page = refresh ? 1 : (state.orders.length ~/ 10) + 1;
+      final page = refresh ? 1 : (state.ordersCurrent.length ~/ 10) + 1;
       final result = await deliveryShopUseCase
           .getAllTakeDelivery(PaginationParams(page: page));
       result.fold(
         (failure) => emit(state.copyWith(
             deliveryShopStatus: DeliveryShopStatus.failure,
             errorMessage: failure.message)),
-        (orders) => emit(state.copyWith(
+        (ordersCurrent) => emit(state.copyWith(
             deliveryShopStatus: DeliveryShopStatus.success,
-            orders: orders.items)),
+            ordersCurrent: ordersCurrent.items)),
       );
     } catch (e) {
       emit(state.copyWith(

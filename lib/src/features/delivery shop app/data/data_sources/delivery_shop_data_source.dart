@@ -168,6 +168,8 @@ class DeliveryShopRemoteDataSource {
             );
           },
         );
+        print(",,,,,,,,,,,,,,,,..................");
+        print(handReceiptResponse.data!);
         return handReceiptResponse.data!;
       } on TimeOutExeption catch (e) {
         debugPrint('Timeout Exception: $e');
@@ -211,6 +213,9 @@ class DeliveryShopRemoteDataSource {
             );
           },
         );
+
+        print(",,,,,,,,,,,,,,,,..................");
+        print(handReceiptResponse.data!);
         return handReceiptResponse.data!;
       } on TimeOutExeption catch (e) {
         debugPrint('Timeout Exception: $e');

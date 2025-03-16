@@ -32,7 +32,17 @@ class _CurrentOrdersDetailsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarApplicationArrow(text: 'تفاصيل طلب'),
+      appBar: AppBarApplicationArrow(
+        text: 'تفاصيل طلب',
+        onBackTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CurrentTakeOrderScreen(),
+            ),
+          );
+        },
+      ),
       body: BlocBuilder<DeliveryShopCubit, DeliveryShopState>(
         builder: (context, state) {
           if (state.deliveryShopStatus == DeliveryShopStatus.loading) {
@@ -141,7 +151,7 @@ class _CurrentOrdersDetailsScreenState
             ),
           ),
         ),
-        buildProccesOrderButtonWidget(context)
+        buildProccesOrderButtonWidget(context),
       ],
     );
   }
@@ -194,7 +204,7 @@ class _CurrentOrdersDetailsScreenState
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        ...getItemsBasedOnStatus(context, order[0].orderStatus)
+                        ...getItemsBasedOnStatus(context, order[0].orderStatus),
                       ],
                     ),
                   );
@@ -205,6 +215,7 @@ class _CurrentOrdersDetailsScreenState
             );
           },
         );
+        Navigator.maybePop(context);
       },
       child: SizedBox(
         height: 80,
@@ -254,7 +265,7 @@ class _CurrentOrdersDetailsScreenState
       return [
         ListTile(
           title: const CustomStyledText(
-            text: "جديد",
+            text: "اخذ من المخزن",
             fontSize: 20,
           ),
           onTap: () {
@@ -273,6 +284,13 @@ class _CurrentOrdersDetailsScreenState
                             basketId: widget.basketId),
                       ),
                     );
+                    Navigator.maybePop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CurrentTakeOrderScreen(),
+                      ),
+                    );
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Failed to update status: $e')),
@@ -288,7 +306,7 @@ class _CurrentOrdersDetailsScreenState
       return [
         ListTile(
           title: const CustomStyledText(
-            text: "اخذ من المخزن",
+            text: "توصيل لعميل",
             fontSize: 20,
           ),
           onTap: () {
@@ -307,6 +325,14 @@ class _CurrentOrdersDetailsScreenState
                             basketId: widget.basketId),
                       ),
                     );
+                    Navigator.maybePop(context);
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CurrentTakeOrderScreen(),
+                      ),
+                    );
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Failed to update status: $e')),
@@ -322,7 +348,7 @@ class _CurrentOrdersDetailsScreenState
       return [
         ListTile(
           title: const CustomStyledText(
-            text: "توصيل لعميل",
+            text: "مكتمل",
             fontSize: 20,
           ),
           onTap: () {
@@ -342,44 +368,7 @@ class _CurrentOrdersDetailsScreenState
                               basketId: widget.basketId),
                         ),
                       );
-                    } catch (e) {
-                      // ignore: use_build_context_synchronously
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Failed to update status: $e')),
-                      );
-                    }
-                  },
-                );
-              },
-            );
-          },
-        ),
-      ];
-    } else if (status == 4) {
-      return [
-        ListTile(
-          title: const CustomStyledText(
-            text: "مكتمل",
-            fontSize: 20,
-          ),
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CustomSureDialog(
-                  onConfirm: () async {
-                    final cubit = context.read<DeliveryShopCubit>();
-                    try {
-                      await cubit.updateStatusForOrder(
-                          orderId: widget.basketId);
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CurrentOrdersDetailsScreen(
-                              basketId: widget.basketId),
-                        ),
-                      );
-
+                      Navigator.maybePop(context);
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
@@ -399,6 +388,8 @@ class _CurrentOrdersDetailsScreenState
           },
         ),
       ];
+    } else if (status == 4) {
+      return [];
     }
 
     return [];

@@ -2,7 +2,7 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customInputDialog.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customSureDialog.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/maintenance_parts/maintenance_parts_model.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/hand_receip_maintenance_parts/hand_receipt_model.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/recovered_maintenance_parts/recovered_maintenance_parts_cubit.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/recovered_maintenance_parts/recovered_maintenance_parts_page.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/state/returnHandReceipt_state.dart';
@@ -31,6 +31,14 @@ class _RecoveredMaintenancePartsDetailsPageState
     return Scaffold(
         appBar: AppBarApplicationArrow(
           text: "تفاصيل القطعة ",
+          onBackTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const RecoveredMaintenancePartsPage(),
+              ),
+            );
+          },
         ),
         body: BlocBuilder<ReturnHandReceiptCubit, ReturnHandReceiptState>(
           builder: (context, state) {
@@ -80,15 +88,6 @@ class _RecoveredMaintenancePartsDetailsPageState
                                 'اللون', handReceiptItem?.color ?? "غير متوفر"),
                             buildTableRow('الوصف',
                                 handReceiptItem?.description ?? "غير متوفر"),
-                            buildTableRow(
-                                'عدد أيام الضمان',
-                                handReceiptItem?.warrantyDaysNumber
-                                        ?.toString() ??
-                                    "غير متوفر"),
-                            buildTableRow(
-                                'عدد أيام الضمان',
-                                handReceiptItem?.collectedAmount?.toString() ??
-                                    "غير متوفر"),
                             buildTableRow(
                                 'عدد أيام الضمان',
                                 handReceiptItem?.collectionDate?.toString() ??

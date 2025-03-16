@@ -14,7 +14,7 @@ class DeliveryShopUseCase {
   DeliveryShopUseCase(this.repository);
 
   Future<Either<Failure, PaginatedResponse<ReceiveOrderEntity>>>
-      getAllHandHandReceiptItem(
+      getAllForAllDelivery(
     PaginationParams paginationParams,
   ) {
     return repository.getAllForAllDelivery(paginationParams);
@@ -33,7 +33,7 @@ class DeliveryShopUseCase {
       getAllTakeDelivery(
     PaginationParams paginationParams,
   ) {
-    return repository.getAllForAllDelivery(paginationParams);
+    return repository.getAllTakeDelivery(paginationParams);
   }
 
   Future<Either<Failure, PaginatedResponse<ReceiveOrderEntity>>>

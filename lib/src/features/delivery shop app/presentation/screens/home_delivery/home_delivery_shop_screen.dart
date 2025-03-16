@@ -16,7 +16,10 @@ class _HomeDeliveryScreenState extends State<HomeDeliveryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const AppBarApplication(text: "الرئيسية"),
+        appBar: AppBarApplicationArrow(
+          text: "الرئيسية",
+          isHome: true,
+        ),
         body: SingleChildScrollView(
           child: Column(
             children: [

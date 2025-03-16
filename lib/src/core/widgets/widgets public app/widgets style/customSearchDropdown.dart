@@ -8,9 +8,9 @@ class CustomSearchDropdown extends StatefulWidget {
   final List<OrderEntery> items;
   final String hintText;
   final FormFieldValidator<OrderEntery>? validators;
-   void Function(OrderEntery?)? onChanged;
+  void Function(OrderEntery?)? onChanged;
 
-   CustomSearchDropdown({
+  CustomSearchDropdown({
     Key? key,
     required this.items,
     required this.hintText,
@@ -30,7 +30,7 @@ class _CustomSearchDropdownState extends State<CustomSearchDropdown> {
       child: Column(
         children: [
           DropdownSearch<OrderEntery>(
-            itemAsString: (item) => item.name!,
+              itemAsString: (item) => item.name!,
               items: widget.items,
               compareFn: (item1, item2) {
                 return item1 == item2;
@@ -133,8 +133,7 @@ class _CustomSearchDropdownState extends State<CustomSearchDropdown> {
                 ),
               ),
               onChanged: widget.onChanged,
-              validator: widget.validators
-          ),
+              validator: widget.validators),
         ],
       ),
     );

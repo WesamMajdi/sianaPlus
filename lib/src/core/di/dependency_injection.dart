@@ -12,22 +12,32 @@ import 'package:maintenance_app/src/features/client%20app/domain/usecases/notifi
 import 'package:maintenance_app/src/features/client%20app/domain/usecases/product/fetch_product_useCase.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/notification_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/profile_cubit.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/data_sources/delivery_maintenance_data_source.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/repositories/delivery_maintenance_repository_impl.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/repositories/delivery_maintenance.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/usecases/fetch_delivery_maintenance.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/cubit/delivery_maintenance_cubit.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/data/data_sources/delivery_shop_data_source.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/data/repositories/delivery_shop_repository_impl.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/domain/repositories/delivery_shop.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/domain/usecases/fetch_delivery_shop.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/controller/Cubit/delivery_shop_cubit.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/data_sources/maintenance_parts/maintenance_parts_data_source.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/data_sources/maintenance_parts_hand_receipt/maintenance_parts_data_source.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/data_sources/maintenance_parts_online/maintenance_parts_online_data_source.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/data_sources/recovered_maintenance_parts/recovered_maintenance_parts_data_source.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/repositories/maintenance_parts/maintenance_parts_repository_impl.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/repositories/maintenance_parts_hand_receipt/maintenance_parts_repository_impl.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/repositories/maintenance_parts_online/maintenance_parts_repository_impl.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/repositories/recovered_maintenance_parts/recovered_maintenance_parts_repository_impl.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/repositories/maintenance_parts/maintenance_parts.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/repositories/hand_receipt_maintenance_parts/maintenance_parts.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/repositories/online_maintenance_parts/online_maintenance_parts.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/repositories/recovered_maintenance_parts/recovered_maintenance_parts.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/usecases/maintenance_parts/fetch_maintenance_parts.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/usecases/hand_receipt_maintenance_parts/fetch_maintenance_parts.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/usecases/online_maintenance_parts/fetch_online_maintenance_parts.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/usecases/recovered_maintenance_parts/fetch_recovered_maintenance_parts.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/maintenance_parts/maintenance_parts_cubit.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/hand_receipt_maintenance_parts/maintenance_parts_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/repositories/profile/profile_repository.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/usecases/profile/fetch_profile_useCase.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/online_maintenance_parts/online_maintenance_parts_cubit.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/recovered_maintenance_parts/recovered_maintenance_parts_cubit.dart';
 
 import '../../features/client app/data/data_sources/category/category_data_source.dart';
@@ -70,6 +80,9 @@ void _initCubits() {
   getIt.registerFactory<NotificationCubit>(() => NotificationCubit(getIt()));
   getIt.registerFactory<ProfileCubit>(() => ProfileCubit(getIt()));
   getIt.registerFactory<DeliveryShopCubit>(() => DeliveryShopCubit(getIt()));
+  getIt.registerFactory<DeliveryMaintenanceCubit>(
+      () => DeliveryMaintenanceCubit(getIt()));
+  getIt.registerFactory<OnlineCubit>(() => OnlineCubit(getIt()));
 }
 
 void _initUseCases() {
@@ -96,6 +109,12 @@ void _initUseCases() {
   );
   getIt.registerLazySingleton<DeliveryShopUseCase>(
     () => DeliveryShopUseCase(getIt()),
+  );
+  getIt.registerLazySingleton<OnlineUseCase>(
+    () => OnlineUseCase(getIt()),
+  );
+  getIt.registerLazySingleton<DeliveryMaintenanceUseCase>(
+    () => DeliveryMaintenanceUseCase(getIt()),
   );
 }
 
@@ -152,6 +171,19 @@ void _initDataSources() {
       internetConnectionChecker: getIt(),
     ),
   );
+
+  getIt.registerLazySingleton<DeliveryMaintenanceRemoteDataSource>(
+    () => DeliveryMaintenanceRemoteDataSource(
+      apiController: getIt(),
+      internetConnectionChecker: getIt(),
+    ),
+  );
+  getIt.registerLazySingleton<OnlineRemoteDataSource>(
+    () => OnlineRemoteDataSource(
+      apiController: getIt(),
+      internetConnectionChecker: getIt(),
+    ),
+  );
 }
 
 void _initRepositories() {
@@ -194,6 +226,18 @@ void _initRepositories() {
 
   getIt.registerLazySingleton<DeliveryShopRepository>(
     () => DeliveryShopRepositoryImpl(
+      getIt(),
+    ),
+  );
+
+  getIt.registerLazySingleton<DeliveryMaintenanceRepository>(
+    () => DeliveryMaintenanceRepositoryImpl(
+      getIt(),
+    ),
+  );
+
+  getIt.registerLazySingleton<OnlineRepository>(
+    () => OnlineRepositoryImpl(
       getIt(),
     ),
   );

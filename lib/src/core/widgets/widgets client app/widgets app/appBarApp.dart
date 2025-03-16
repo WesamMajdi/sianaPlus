@@ -14,26 +14,26 @@ class AppBarApplication extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-        centerTitle: true,
-        iconTheme: IconThemeData(
-            weight: 100,
-            size: 32,
-            color: (Theme.of(context).brightness == Brightness.dark
-                ? AppColors.lightGrayColor
-                : Colors.black)),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        title: Container(
-          margin: const EdgeInsets.only(left: 20),
-          child: Center(
-            child: CustomStyledText(
-              text: text,
-              fontWeight: FontWeight.bold,
-              fontSize: 22,
-            ),
+      centerTitle: true,
+      iconTheme: IconThemeData(
+          weight: 100,
+          size: 32,
+          color: (Theme.of(context).brightness == Brightness.dark
+              ? AppColors.lightGrayColor
+              : Colors.black)),
+      elevation: 0,
+      backgroundColor: Colors.transparent,
+      title: Container(
+        margin: const EdgeInsets.only(left: 20),
+        child: Center(
+          child: CustomStyledText(
+            text: text,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
           ),
         ),
-        actions: actions);
+      ),
+    );
   }
 
   @override
@@ -44,19 +44,21 @@ class AppBarApplicationArrow extends StatelessWidget
     implements PreferredSizeWidget {
   final String text;
   final List<Widget>? actions;
-  const AppBarApplicationArrow({
+  final VoidCallback? onBackTap;
+  final bool isHome;
+  AppBarApplicationArrow({
     super.key,
     required this.text,
     this.actions,
+    this.onBackTap,
+    this.isHome = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-        leading: InkWell(
-          onTap: () {
-            Navigator.pop(context);
-          },
+        leading: GestureDetector(
+          onTap: onBackTap,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(

@@ -4,6 +4,7 @@ import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/ite
 
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/recovered_maintenance_parts/recovered_maintenance_parts_cubit.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/state/returnHandReceipt_state.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/home_maintenance/home_maintenance_screen.dart';
 
 class RecoveredMaintenancePartsPage extends StatefulWidget {
   const RecoveredMaintenancePartsPage({super.key});
@@ -15,6 +16,12 @@ class RecoveredMaintenancePartsPage extends StatefulWidget {
 
 class _RecoveredMaintenancePartsPageState
     extends State<RecoveredMaintenancePartsPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<ReturnHandReceiptCubit>().fetchReturnHandReceipts();
+  }
+
   String barcodeResult = "لم يتم مسح الباركود";
   TextEditingController searchController = TextEditingController();
 
@@ -49,7 +56,17 @@ class _RecoveredMaintenancePartsPageState
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBarApplicationArrow(text: 'قطع المرجعة'),
+      appBar: AppBarApplicationArrow(
+        text: 'قطع المرجعة',
+        onBackTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HomeMaintenanceScreen(),
+            ),
+          );
+        },
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [

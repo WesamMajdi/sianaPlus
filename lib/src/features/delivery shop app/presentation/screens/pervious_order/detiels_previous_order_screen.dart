@@ -3,6 +3,7 @@ import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/domain/entities/current_order_detiles_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/controller/Cubit/delivery_shop_cubit.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/controller/state/deliveryShop_state.dart';
+import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/pervious_order/pervious_order_screen.dart';
 
 class PerviousOrdersDetailsScreen extends StatefulWidget {
   final int basketId;
@@ -30,7 +31,17 @@ class _PerviousOrdersDetailsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarApplicationArrow(text: 'تفاصيل طلب'),
+      appBar: AppBarApplicationArrow(
+        text: 'تفاصيل طلب',
+        onBackTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const PerviousOrderScreen(),
+            ),
+          );
+        },
+      ),
       body: BlocBuilder<DeliveryShopCubit, DeliveryShopState>(
         builder: (context, state) {
           if (state.deliveryShopStatus == DeliveryShopStatus.loading) {
@@ -87,7 +98,6 @@ class _PerviousOrdersDetailsScreenState
                 itemCount: order.orders!.length,
                 itemBuilder: (context, index) {
                   final orderItem = order.orders![index];
-
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

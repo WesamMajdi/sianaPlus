@@ -3,6 +3,7 @@ import 'package:maintenance_app/src/core/widgets/widgets%20delivery%20shop%20app
 import 'package:maintenance_app/src/core/widgets/widgets%20delivery%20shop%20app/ItemsReceiveOrderPart.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/controller/Cubit/delivery_shop_cubit.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/controller/state/deliveryShop_state.dart';
+import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/home_delivery/home_delivery_shop_screen.dart';
 
 class PerviousOrderScreen extends StatefulWidget {
   const PerviousOrderScreen({Key? key}) : super(key: key);
@@ -13,10 +14,27 @@ class PerviousOrderScreen extends StatefulWidget {
 
 class _PerviousOrderScreenState extends State<PerviousOrderScreen> {
   @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      BlocProvider.of<DeliveryShopCubit>(context).fetchPerviousOrder();
+    });
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBarApplicationArrow(text: 'الطلبات السابقة'),
+      appBar: AppBarApplicationArrow(
+        text: 'الطلبات السابقة',
+        onBackTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomeDeliveryScreen(),
+            ),
+          );
+        },
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [

@@ -27,9 +27,6 @@ class ApiSetting {
   static String get getOrderMaintenanceByUser =>
       '$baseUrl/OrderMaintenances/GetOrderMaintenanceByUser';
 
-  static String get getOrderMaintenanceItem =>
-      '$baseUrl/OrderMaintenances/GetOrderMaintenanceItem';
-
   static String get getOrderMaintenanceByUserNew =>
       '$baseUrl/OrderMaintenances/GetOrderMaintenanceByUserNew';
   static String get getOrderMaintenanceByUserOld =>
@@ -95,6 +92,37 @@ class ApiSetting {
 
   static String get updateStatusForOrder =>
       "$baseUrl/Orders/UpdateStatusForOrder";
+
+  static String get getAllForAllDeliveryMaintenance =>
+      "$baseUrl/OrderMaintenances/GetAllForAllDelivery";
+  static String get getAllTakeDeliveryMaintenance =>
+      "$baseUrl/OrderMaintenances/GetAllTakeDelivery";
+
+  static String get getAllTakePerviousMaintenanceOrder =>
+      "$baseUrl/OrderMaintenances/GetAllForDelivery";
+  static String get takeOrderMaintenance =>
+      "$baseUrl/OrderMaintenances/TakeOrderMaintenance";
+
+  static String get updateOrderMaintenance =>
+      "$baseUrl/OrderMaintenances/UpdateOrderMaintenance";
+
+  static String get getOrderMaintenanceItem =>
+      '$baseUrl/OrderMaintenances/GetOrderMaintenanceItem';
+
+  static String get getBranchList => '$baseUrl/List/GetBranchList';
+  static String get updateBranch => '$baseUrl/OrderMaintenances/SelectBranch';
+
+  static String get getAllOnlineItems =>
+      '$baseUrl/Maintenances/GetAllHandReceiptItemsOnline';
+  static String get getOnlineItem => '$baseUrl/Maintenances/GetHandReceiptItem';
+  static String get updateStatusForOnlineItem =>
+      '$baseUrl/Maintenances/UpdateStatusForOnlineItem';
+  static String get defineMalfunctionForOnlineItem =>
+      '$baseUrl/Maintenances/DefineMalfunctionForOnlineItem';
+
+  static String get enterMaintenanceCostForOnlineItem =>
+      '$baseUrl/Maintenances/EnterMaintenanceCostForOnlineItem';
+
   // // Auth endpoints
   // static String get login => ;
   // static String get signup => '${AppConfig.authEndpoint}/signup';

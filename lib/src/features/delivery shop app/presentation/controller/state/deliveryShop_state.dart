@@ -11,6 +11,7 @@ class DeliveryShopState extends Equatable {
   final List<ReceiveOrderEntity> orders;
   final List<OrderCurrentDetailsEntity> selectedOrderDetilesCurrentItems;
   final List<ReceiveOrderEntity> ordersOld;
+  final List<ReceiveOrderEntity> ordersCurrent;
   final String errorMessage;
   final String successMessage;
   final String deliveryLocation;
@@ -18,10 +19,11 @@ class DeliveryShopState extends Equatable {
   final List<ReceiveOrderDetielsEntity> selectedOrderItems;
   final int basketId;
 
-  DeliveryShopState({
+  const DeliveryShopState({
     this.deliveryShopStatus = DeliveryShopStatus.initial,
     this.orders = const <ReceiveOrderEntity>[],
     this.ordersOld = const <ReceiveOrderEntity>[],
+    this.ordersCurrent = const <ReceiveOrderEntity>[],
     this.errorMessage = '',
     this.successMessage = '',
     this.deliveryLocation = '',
@@ -32,10 +34,11 @@ class DeliveryShopState extends Equatable {
   });
 
   factory DeliveryShopState.initial() {
-    return DeliveryShopState(
+    return const DeliveryShopState(
       deliveryShopStatus: DeliveryShopStatus.initial,
       orders: [],
       ordersOld: [],
+      ordersCurrent: [],
       errorMessage: '',
       successMessage: '',
       deliveryLocation: '',
@@ -50,6 +53,7 @@ class DeliveryShopState extends Equatable {
     DeliveryShopStatus? deliveryShopStatus,
     List<ReceiveOrderEntity>? orders,
     List<ReceiveOrderEntity>? ordersOld,
+    List<ReceiveOrderEntity>? ordersCurrent,
     String? errorMessage,
     String? successMessage,
     String? deliveryLocation,
@@ -61,6 +65,7 @@ class DeliveryShopState extends Equatable {
     return DeliveryShopState(
       deliveryShopStatus: deliveryShopStatus ?? this.deliveryShopStatus,
       orders: orders ?? this.orders,
+      ordersCurrent: ordersCurrent ?? this.ordersCurrent,
       errorMessage: errorMessage ?? this.errorMessage,
       successMessage: successMessage ?? this.successMessage,
       deliveryLocation: deliveryLocation ?? this.deliveryLocation,
@@ -82,14 +87,15 @@ class DeliveryShopState extends Equatable {
         deliveryLocation,
         totalCost,
         ordersOld,
+        ordersCurrent,
         selectedOrderItems,
         selectedOrderDetilesCurrentItems,
         basketId,
       ];
-  List<ReceiveOrderDetielsEntity> getFilteredOrderItems() {
-    List<ReceiveOrderDetielsEntity> filteredItems =
-        selectedOrderItems.where((item) => item.id == basketId).toList();
+  // List<ReceiveOrderDetielsEntity> getFilteredOrderItems() {
+  //   List<ReceiveOrderDetielsEntity> filteredItems =
+  //       selectedOrderItems.where((item) => item.id == basketId).toList();
 
-    return filteredItems;
-  }
+  //   return filteredItems;
+  // }
 }

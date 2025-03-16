@@ -38,6 +38,14 @@ class _ReceiveOrdersDetailsScreenState
     return Scaffold(
       appBar: AppBarApplicationArrow(
         text: 'تفاصيل طلب',
+        onBackTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const ReceiveOrderScreen(),
+            ),
+          );
+        },
       ),
       body: BlocBuilder<DeliveryShopCubit, DeliveryShopState>(
         builder: (context, state) {
@@ -266,15 +274,9 @@ class _ReceiveOrdersDetailsScreenState
                 await context.read<DeliveryShopCubit>().takeOrder(
                       basketId: basketId,
                     );
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        ReceiveOrdersDetailsScreen(basketId: basketId),
-                  ),
-                );
 
                 Navigator.pushReplacement(
+                  // ignore: use_build_context_synchronously
                   context,
                   MaterialPageRoute(
                     builder: (context) => const ReceiveOrderScreen(),

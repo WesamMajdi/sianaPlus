@@ -19,6 +19,9 @@ class _UserProfileMaintenancePageState
     return Scaffold(
       appBar: AppBarApplicationArrow(
         text: 'صفحتي الشخصية',
+        onBackTap: () {
+          Navigator.pop(context);
+        },
       ),
       body: ListView(
         physics: const BouncingScrollPhysics(),

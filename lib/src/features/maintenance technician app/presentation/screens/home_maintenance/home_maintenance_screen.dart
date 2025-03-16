@@ -1,6 +1,7 @@
 // ignore: use_key_in_widget_constructors
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/maintenance_parts/maintenance_parts_screen.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/maintenance_parts_hand_receipt/maintenance_parts_screen.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/maintenance_parts_online/maintenance_parts_online_screen.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/recovered_maintenance_parts/recovered_maintenance_parts_page.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/transferred_maintenance_parts/transferred_maintenance_parts_screen.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/profile_maintenance/profile_maintenance.dart';
@@ -144,6 +145,11 @@ final List<Map<String, Object>> shortcuts = [
     'page': const MaintenancePartsPage(),
   },
   {
+    'icon': FontAwesomeIcons.screwdriverWrench,
+    'label': 'قطع الصيانة اونلاين',
+    'page': const MaintenancePartsOnlinePage(),
+  },
+  {
     'icon': FontAwesomeIcons.arrowRotateLeft,
     'label': 'العناصر المعادة',
     'page': const RecoveredMaintenancePartsPage(),
@@ -152,16 +158,6 @@ final List<Map<String, Object>> shortcuts = [
     'icon': FontAwesomeIcons.car,
     'label': 'القطع المحولة إلى الفرع',
     'page': const TransferredMaintenancePartsPage(),
-  },
-  {
-    'icon': FontAwesomeIcons.fileLines,
-    'label': 'الطلبات الحالية',
-    // 'page': CurrentOrdersPage(),
-  },
-  {
-    'icon': FontAwesomeIcons.clockRotateLeft,
-    'label': 'الطلبات السابقة',
-    //'page': PreviousOrdersPage(),
   },
   {
     'icon': FontAwesomeIcons.gear,

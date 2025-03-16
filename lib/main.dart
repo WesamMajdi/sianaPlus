@@ -16,9 +16,11 @@ import 'package:maintenance_app/src/features/client%20app/presentation/controlle
 import 'package:maintenance_app/src/features/client%20app/concat%20info%20page/application.dart';
 import 'package:maintenance_app/src/features/client%20app/concat%20info%20page/data.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/cubit/delivery_maintenance_cubit.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/controller/Cubit/delivery_shop_cubit.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/home_delivery/home_delivery_shop_screen.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/maintenance_parts/maintenance_parts_cubit.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/hand_receipt_maintenance_parts/maintenance_parts_cubit.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/online_maintenance_parts/online_maintenance_parts_cubit.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/recovered_maintenance_parts/recovered_maintenance_parts_cubit.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/home_maintenance/home_maintenance_screen.dart';
 import 'firebase_options.dart';
@@ -93,6 +95,16 @@ void main() async {
           create: (context) => getIt<DeliveryShopCubit>()
             ..fetchReceiveOrder()
             ..deliveryShopUseCase,
+        ),
+        BlocProvider<DeliveryMaintenanceCubit>(
+          create: (context) => getIt<DeliveryMaintenanceCubit>()
+            ..fetchReceiveMaintenanceOrder()
+            ..deliveryMaintenanceUseCase,
+        ),
+        BlocProvider<OnlineCubit>(
+          create: (context) => getIt<OnlineCubit>()
+            ..fetchOnline()
+            ..onlineUseCase,
         ),
       ],
       child:
