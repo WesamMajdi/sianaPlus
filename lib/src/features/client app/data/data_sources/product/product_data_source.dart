@@ -43,19 +43,24 @@ class ProductRemoteDataSource {
             'Authorization': 'Bearer $token'
           },
         );
-        debugPrint(response.statusCode.toString());
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
-        debugPrint(responseBody.toString());
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
 
-        final productResponse = BaseResponse<List<ProductModel>>.fromJson(
+        final productResponse =
+            BaseResponse<List<ProductModel>>.fromJson(
           responseBody,
-          (json) =>
-              (json as List).map((e) => ProductModel.fromJson(e)).toList(),
+          (json) {
+            if (kDebugMode) {
+              print('hussen $json');
+            }
+            return (json as List)
+                .map((item) => ProductModel.fromJson(item))
+                .toList();
+            //  ProductModel.fromJson(json);
+          },
         );
-        print(productResponse.data!);
         return productResponse.data!;
       } on TimeOutExeption {
         rethrow;
@@ -184,27 +189,27 @@ class ProductRemoteDataSource {
         //
         //
         // }
-        final response = await apiController
-            .post(Uri.parse(ApiSetting.createOrder), headers: {
-          'accept': '*/*',
-          'Authorization': 'Bearer $token'
-        }, body: {
-          'total': NavigationService.navigatorKey.currentContext!
-              .read<CategoryCubit>()
-              .state
-              .totalAmount,
-          'discount': 0,
-          'orders': cartItems.values
-              .map(
-                (e) => {
-                  'count': e.count,
-                  'discount': e.discount,
-                  'price': e.price,
-                  'productColorId': e.selectedColor?.id
-                },
-              )
-              .toList()
-        });
+        final response = await apiController.post(
+          Uri.parse(ApiSetting.createOrder),
+          headers: {
+            'accept': '*/*',
+            'Authorization': 'Bearer $token'
+          },
+          body:{
+            'total': NavigationService.navigatorKey.currentContext!.read<CategoryCubit>().state.totalAmount,
+            'discount': 0,
+            'orders': cartItems.values
+                .map(
+                  (e) => {
+                'count': e.count,
+                'discount': e.discount,
+                'price': e.price,
+                'productColorId': e.selectedColor?.id
+              },
+            )
+                .toList()
+          }
+        );
         // print( jsonEncode());
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         debugPrint(responseBody.toString());

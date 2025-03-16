@@ -15,13 +15,19 @@ class OrderCubit extends Cubit<OrderState> {
     emit(state.copyWith(
       itemOrdersStatus: ItemOrdersStatus.loading,
     ));
-    orderItems?.add(itemsEntity!); // Save the order locally in the orders map
+
+    final newItems = List<ItemsEntity>.from(state.items);
+
+    // state.items
+    newItems.add(itemsEntity!); // Save the order locally in the orders map
+
 
     // Emit the updated state to notify the UI
     emit(state.copyWith(
       itemOrdersStatus: ItemOrdersStatus.success,
-      items: orderItems,
+      items: newItems,
     ));
+    // orderItems=[];
   }
 
   Future<void> initOrdersRequirements() async {
@@ -71,15 +77,16 @@ class OrderCubit extends Cubit<OrderState> {
   }
 
   selectColor(OrderEntery color) {
-    emit(state.copyWith(selectedColor: color));
+    emit(state.copyWith(selectedColor: color,orderCreationStatus: OrderCreationStatus.initial,));
   }
 
   selectItem(OrderEntery item) {
-    emit(state.copyWith(selectedItem: item));
+    emit(state.copyWith(selectedItem: item,orderCreationStatus: OrderCreationStatus.initial,
+    ));
   }
 
   selectCompany(OrderEntery company) {
-    emit(state.copyWith(selectedCompany: company));
+    emit(state.copyWith(selectedCompany: company,orderCreationStatus: OrderCreationStatus.initial,));
   }
 
   Future<void> createOrderMaintenance(

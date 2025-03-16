@@ -1,6 +1,8 @@
 
+import 'package:flutter/foundation.dart';
+
 class BaseResponse<T> {
-  final int status;
+  final dynamic status;
   final dynamic message;  // Can be String or List<String>
   final T? data;
 
@@ -24,14 +26,7 @@ class BaseResponse<T> {
       Map<String, dynamic> json,
       T Function(dynamic json) fromJson,
       ) {
-    // Handle error response format with statusCode
-    // if (json.containsKey('statusCode')) {
-    //   return BaseResponse<T>(
-    //     status: 'error',
-    //     message: json['message'] ?? json['error'] ?? 'Unknown error',
-    //     data: null,
-    //   );
-    // }
+
     return BaseResponse<T>(
       status: json['status'] ?? 0,
       message: json['message']?.toString() ?? '',

@@ -39,6 +39,11 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
   final TextEditingController locationController = TextEditingController();
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // context.read<OrderCubit>().clearItems();
+  }
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<OrderCubit, OrderState>(
       builder: (context, state) => Scaffold(
@@ -131,10 +136,11 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                       ? BlocListener<OrderCubit, OrderState>(
                           listener: (context, state) {
                             if (state.orderCreationStatus ==
-                                OrderCreationStatus.success) {
+                                OrderCreationStatus.success ) {
                               Navigator.pop(context);
                             }
                           },
+                    listenWhen: (previous, current) => previous != current,
                           child: Column(children: [
                             AppSizedBox.kVSpace20,
                             state.orderCreationStatus ==

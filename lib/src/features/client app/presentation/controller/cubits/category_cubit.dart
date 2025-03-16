@@ -172,11 +172,11 @@ class CategoryCubit extends Cubit<CategoryState> {
         .indexWhere((element) => element.id.toString() == productId);
 
     if (productIndex != -1) {
-      updatedItems[productIndex].count = updatedItems[productIndex].count! + 1;
+      updatedItems[productIndex].userCount = updatedItems[productIndex].userCount! + 1;
     }
 
     final totalAmount = updatedItems.fold(0.0, (sum, item) {
-      return sum + (item.price! * item.count!);
+      return sum + (item.price! * item.userCount!);
     });
     print(totalAmount);
     emit(state.copyWith(products: updatedItems, totalAmount: totalAmount));
@@ -189,14 +189,14 @@ class CategoryCubit extends Cubit<CategoryState> {
         .indexWhere((element) => element.id.toString() == productId);
 
     if (productIndex != -1) {
-      if (updatedItems[productIndex].count! != 0) {
-        updatedItems[productIndex].count =
-            updatedItems[productIndex].count! - 1;
+      if (updatedItems[productIndex].userCount! != 0) {
+        updatedItems[productIndex].userCount =
+            updatedItems[productIndex].userCount! - 1;
       }
     }
 
     final totalAmount = updatedItems.fold(0.0, (sum, item) {
-      return sum + (item.price! * item.count!);
+      return sum + (item.price! * item.userCount!);
     });
     emit(state.copyWith(products: updatedItems, totalAmount: totalAmount));
   }
