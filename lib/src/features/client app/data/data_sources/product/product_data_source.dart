@@ -19,6 +19,7 @@ import '../../../../../core/pagination/paginated_response.dart';
 import '../../../../../core/pagination/pagination_params.dart';
 import '../../../domain/entities/product/product_entity.dart';
 import '../../model/category/category_model.dart';
+import '../../model/product/discount_model.dart';
 
 class ProductRemoteDataSource {
   final ApiController apiController;
@@ -153,6 +154,50 @@ class ProductRemoteDataSource {
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
+      } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<List<DiscountModel>> getDiscounts(PaginationParams paginationParams) async {
+    String? token = await TokenManager.getToken();
+
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.get(
+          Uri.parse('${ApiSetting.getDiscount}?page=${paginationParams.page}&perPage=${paginationParams.perPage}'),
+          headers: {
+            // 'Content-Type': 'application/json',
+            'accept': '*/*',
+            'Authorization': 'Bearer $token'
+          },
+        );
+        print( Uri.parse('${ApiSetting.getDiscount}?page=${paginationParams.page}&perPage=${paginationParams.perPage}').toString());
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+        final productResponse =
+        BaseResponse<List<DiscountModel>>.fromJson(
+          responseBody,
+              (json) {
+
+
+            return (json['data'] as List)
+                .map((item) => DiscountModel.fromJson(item))
+                .toList();
+            //  ProductModel.fromJson(json);
+          },
+        );
+        if (kDebugMode) {
+          print(productResponse.data!);
+        }
+        return productResponse.data!;
+
+
       } on TimeOutExeption {
         rethrow;
       }

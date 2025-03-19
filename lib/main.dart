@@ -15,6 +15,7 @@ import 'package:maintenance_app/src/features/client%20app/presentation/controlle
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/profile_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/concat%20info%20page/application.dart';
 import 'package:maintenance_app/src/features/client%20app/concat%20info%20page/data.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/category_state.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/cubit/delivery_maintenance_cubit.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/controller/Cubit/delivery_shop_cubit.dart';
@@ -74,6 +75,7 @@ void main() async {
           create: (context) => getIt<CategoryCubit>()
             ..fetchCategories()
             ..getProductFavorite(),
+
         ),
         BlocProvider<OrderCubit>(
           create: (context) => getIt<OrderCubit>()..initOrdersRequirements(),

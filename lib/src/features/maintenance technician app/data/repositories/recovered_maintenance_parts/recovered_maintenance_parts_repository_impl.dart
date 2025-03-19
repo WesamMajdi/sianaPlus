@@ -6,7 +6,9 @@ import 'package:maintenance_app/src/core/pagination/paginated_response.dart';
 import 'package:maintenance_app/src/core/pagination/pagination_params.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/data_sources/recovered_maintenance_parts/recovered_maintenance_parts_data_source.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/recovered_maintenance_parts/recovered_maintenance_parts_model.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/repositories/recovered_maintenance_parts/recovered_maintenance_parts.dart';
+
+import '../../../domain/repositories/recovered_maintenance_parts/recovered_maintenance_parts.dart';
+// import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/repositories/recovered_maintenance_parts/recovered_maintenance_parts.dart';
 
 class ReturnHandReceiptRepositoryImpl implements ReturnHandReceiptRepository {
   final ReturnHandReceiptRemoteDataSource remoteDataSource;

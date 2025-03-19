@@ -45,6 +45,7 @@ class CartShoppingPage extends StatelessWidget {
             }
           },
             builder: (context, state) {
+            // context.read<CategoryCubit>().getDiscount();
           if (state.cartItems.isEmpty) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,

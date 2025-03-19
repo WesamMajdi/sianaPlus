@@ -26,6 +26,7 @@ class BaseResponse<T> {
       Map<String, dynamic> json,
       T Function(dynamic json) fromJson,
       ) {
+    debugPrint(json.toString());
 
     return BaseResponse<T>(
       status: json['status'] ?? 0,

@@ -54,7 +54,7 @@ class CartShoppingItem extends StatelessWidget {
               ),
               AppSizedBox.kVSpace10,
               CustomStyledText(
-                text: "\$${item.price?.toStringAsFixed(2)}",
+                text: "\$${item.basePrice?.toStringAsFixed(2)}",
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               ),
@@ -108,7 +108,7 @@ class CartShoppingItem extends StatelessWidget {
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 10),
                         child: CustomStyledText(
-                          text: "${item.count}",
+                          text: "${item.userCount}",
                           fontWeight: FontWeight.w900,
                           fontSize: 18,
                           textColor: AppColors.secondaryColor,
