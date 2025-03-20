@@ -1,26 +1,32 @@
 import 'package:flutter/cupertino.dart';
-import '../../../core/export file/exportfiles.dart';
+import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 
-class ChangeEmailPage extends StatefulWidget {
-  const ChangeEmailPage({super.key});
+class ChangePhoneNumberScreen extends StatefulWidget {
+  const ChangePhoneNumberScreen({super.key});
 
   @override
-  State<ChangeEmailPage> createState() => _ChangeEmailPageState();
+  State<ChangePhoneNumberScreen> createState() =>
+      _ChangePhoneNumberScreenState();
 }
 
 TextEditingController passwordController = TextEditingController();
-TextEditingController newEmailController = TextEditingController();
+TextEditingController oldPhoneNumberController = TextEditingController();
+TextEditingController newPhoneNumberController = TextEditingController();
+
 final _formKey = GlobalKey<FormState>();
 
-class _ChangeEmailPageState extends State<ChangeEmailPage> {
+class _ChangePhoneNumberScreenState extends State<ChangePhoneNumberScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBarApplicationArrow(
-        text: "تغيير البريد الالكتروني",
+        text: "تغيير رقم الهاتف",
+        onBackTap: () {
+          Navigator.pop(context);
+        },
       ),
-      body: ListView(
+      body: Column(
         children: [
           Container(
             decoration: BoxDecoration(
@@ -46,7 +52,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                   Container(
                     margin: const EdgeInsets.only(right: 20),
                     child: const CustomStyledText(
-                      text: 'هل تريد تغيير الايميل الخاص بك؟',
+                      text: 'هل تريد تغيير رقم الهاتف الخاص بك؟',
                       fontSize: 17,
                       fontWeight: FontWeight.w900,
                       textColor: AppColors.secondaryColor,
@@ -54,41 +60,39 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
                   ),
                   AppSizedBox.kVSpace20,
                   const CustomLabelText(
-                    text: 'ادخل الايميل الحالي',
+                    text: 'ادخل الهاتف الحالي',
                   ),
                   CustomInputField(
                     validators: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'عفوا.البريد الإلكتروني مطلوب';
+                        return 'عفوا.الهاتف الحالي مطلوب';
                       }
-                      if (!RegExp(
-                              r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
-                          .hasMatch(value)) {
-                        return 'عفوا.البريد الإلكتروني غير صحيح';
+
+                      if (!RegExp(r'^\+?[0-9]{10,15}$').hasMatch(value)) {
+                        return 'رقم الهاتف غير صحيح';
                       }
                       return null;
                     },
-                    controller: newEmailController,
-                    hintText: "أدخل البريد الالكتروني",
+                    controller: newPhoneNumberController,
+                    hintText: " أدخل رقم الهاتف الحالي",
                     icon: Icons.email,
                   ),
                   const CustomLabelText(
-                    text: 'ادخل الايميل الجديد',
+                    text: 'ادخل رقم الهاتف الجديد',
                   ),
                   CustomInputField(
                     validators: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'عفوا.البريد الإلكتروني مطلوب';
+                        return 'عفوا.رقم الهاتف الجديد';
                       }
-                      if (!RegExp(
-                              r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
-                          .hasMatch(value)) {
-                        return 'عفوا.البريد الإلكتروني غير صحيح';
+
+                      if (!RegExp(r'^\+?[0-9]{10,15}$').hasMatch(value)) {
+                        return 'رقم الهاتف غير صحيح';
                       }
                       return null;
                     },
-                    controller: newEmailController,
-                    hintText: "أدخل البريد الالكتروني",
+                    controller: oldPhoneNumberController,
+                    hintText: "أدخل رقم الهاتف الجديد",
                     icon: Icons.email,
                   ),
                   const CustomLabelText(

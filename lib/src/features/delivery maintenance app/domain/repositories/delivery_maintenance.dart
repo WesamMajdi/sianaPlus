@@ -5,6 +5,7 @@ import 'package:maintenance_app/src/core/pagination/pagination_params.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/branch_model.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/order_maintenances_details_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/receive_order_Maintenance_entity.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/entities/hand_receipt_maintenance_parts/hand_receipt_maintenance_parts_entitie.dart';
 
 abstract class DeliveryMaintenanceRepository {
   Future<Either<Failure, PaginatedResponse<ReceiveMaintenanceOrderEntity>>>
@@ -33,4 +34,9 @@ abstract class DeliveryMaintenanceRepository {
 
   Future<Either<Failure, Map<String, dynamic>>> selectBranch(
       int orderMaintenancId, int? branchId);
+
+  Future<Either<Failure, PaginatedResponse<HandReceiptEntity>>>
+      getAllForAllDeliveryTransfer(
+    PaginationParams paginationParams,
+  );
 }

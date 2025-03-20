@@ -45,7 +45,6 @@ export 'package:maintenance_app/src/core/utilities/share%20app.dart';
 export 'package:maintenance_app/src/features/client%20app/presentation/screens/contant%20&%20display/display_screen.dart';
 export 'package:maintenance_app/src/features/client%20app/presentation/screens/contant%20&%20display/languages_screen.dart';
 export 'package:maintenance_app/src/features/client%20app/concat%20info%20page/presentation.dart';
-export 'package:maintenance_app/src/features/authentication/change%20password/presentation.dart';
 export 'package:maintenance_app/src/features/client%20app/presentation/screens/account/account_information_screen.dart';
 export 'package:maintenance_app/src/core/network/network_utils.dart';
 export 'package:maintenance_app/src/features/authentication/login/presentation.dart';
@@ -59,10 +58,8 @@ export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20profile/updateImageInProfile.dart';
 export 'package:maintenance_app/src/features/client%20app/presentation/screens/setting/setting_screen.dart';
 export 'package:maintenance_app/src/features/client%20app/presentation/screens/maintenance%20request/insert_maintenance_request_screen.dart';
-export 'package:maintenance_app/src/features/authentication/change%20email/presentation.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20profile/customButttonProfile.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20profile/onTapViewImageProfile.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20profile/userInfoProfile.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20profile/userImageProfile.dart';
-export 'package:maintenance_app/src/features/client%20app/presentation/screens/cart_shopping/cart_shopping_screen.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20cart%20shopping/isEmptyCartShopping.dart';

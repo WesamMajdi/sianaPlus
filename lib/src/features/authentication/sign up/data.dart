@@ -1,4 +1,5 @@
 import 'package:maintenance_app/src/core/network/api_setting.dart';
+import 'package:maintenance_app/src/core/network/global_token.dart';
 
 import 'domain.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
@@ -28,6 +29,17 @@ class ApiSignUpService {
 
     if (response.statusCode == 200) {
       final data = convert.jsonDecode(response.body);
+
+      String token = data['data']['token'];
+      String name = data['data']['username'];
+      // String email = data['data']['email'];
+      String role = data['role']['role'];
+
+      await TokenManager.saveToken(token);
+      await TokenManager.saveName(name);
+      // await TokenManager.saveEmail(email);
+      await TokenManager.saveRole(role);
+
       return SignUpResponse.fromJson(data);
     } else {
       throw Exception('Failed to register');

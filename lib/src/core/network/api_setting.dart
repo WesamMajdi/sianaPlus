@@ -1,6 +1,14 @@
 class ApiSetting {
   static String get baseUrl => 'http://ebrahim995-001-site3.ktempurl.com/api';
 
+// authentication
+  static String get login => '$baseUrl/account/login';
+  static String get signup => '$baseUrl/account/registerCustomer';
+  static String get updatePassword => '$baseUrl/account/ChangePassword';
+  static String get updateEmail => '$baseUrl/account/ChangeEmail';
+  static String get forgotPassword => '$baseUrl/account/SendVerificationCode';
+  static String get resetPassword => '$baseUrl/account/VerifyCode';
+
   static String get getMainCategory => '$baseUrl/Categories/GetMainCategories';
   static String get getSubCategory =>
       '$baseUrl/Categories/GetCategoriesByMainCategory';
@@ -122,7 +130,12 @@ class ApiSetting {
 
   static String get enterMaintenanceCostForOnlineItem =>
       '$baseUrl/Maintenances/EnterMaintenanceCostForOnlineItem';
-
+  static String get getAllForAllDeliveryTransfer =>
+      '$baseUrl/Convert/GetAllForAllDelivery';
+  static String get updateOrderTransfer =>
+      "$baseUrl/Convert/UpdateOrderMaintenance";
+  static String get takeOrderTransfer =>
+      "$baseUrl/Convert/TakeOrderMaintenance";
   // // Auth endpoints
   // static String get login => ;
   // static String get signup => '${AppConfig.authEndpoint}/signup';

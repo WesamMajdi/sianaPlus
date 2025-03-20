@@ -13,6 +13,8 @@ import 'package:maintenance_app/src/core/pagination/pagination_params.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/branch_model.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/order_maintenances_details_model.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/receive_order_maintenance_model.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/hand_receip_maintenance_parts/hand_receipt_model.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/entities/hand_receipt_maintenance_parts/hand_receipt_maintenance_parts_entitie.dart';
 
 class DeliveryMaintenanceRemoteDataSource {
   final ApiController apiController;
@@ -52,7 +54,6 @@ class DeliveryMaintenanceRemoteDataSource {
             );
           },
         );
-        print(handReceiptResponse.data!);
         return handReceiptResponse.data!;
       } on TimeOutExeption catch (e) {
         debugPrint('Timeout Exception: $e');
@@ -323,6 +324,108 @@ class DeliveryMaintenanceRemoteDataSource {
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
+        return responseBody;
+      } on TimeoutException catch (_) {
+        throw TimeoutException('Request timed out');
+      } catch (e) {
+        throw Exception('Unexpected error occurred');
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<PaginatedResponse<HandReceiptModel>> getAllForAllDeliveryTransfer(
+    PaginationParams paginationParams,
+  ) async {
+    String? token = await TokenManager.getToken();
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.get(
+          Uri.parse(
+              '${ApiSetting.getAllForAllDeliveryTransfer}?page=${paginationParams.page}&perPage=${paginationParams.perPage}'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+        );
+
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+        final transferResponse =
+            BaseResponse<PaginatedResponse<HandReceiptModel>>.fromJson(
+          responseBody,
+          (json) {
+            return PaginatedResponse<HandReceiptModel>.fromJson(
+              json,
+              (p0) => HandReceiptModel.fromJson(p0),
+            );
+          },
+        );
+        return transferResponse.data!;
+      } on TimeOutExeption catch (e) {
+        debugPrint('Timeout Exception: $e');
+        rethrow;
+      } catch (e) {
+        debugPrint('Unexpected Error: $e');
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<Map<String, dynamic>> updateOrderTransfer(
+      int itemId, int? status) async {
+    String? token = await TokenManager.getToken();
+
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.post(
+          Uri.parse(
+              '${ApiSetting.updateOrderTransfer}?itemId=$itemId&status=$status'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+        return responseBody;
+      } on TimeoutException catch (_) {
+        throw TimeoutException('Request timed out');
+      } catch (e) {
+        throw Exception('Unexpected error occurred');
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<Map<String, dynamic>> takeOrderTransfer(int orderMaintenancId) async {
+    String? token = await TokenManager.getToken();
+
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.post(
+          Uri.parse(
+              '${ApiSetting.takeOrderMaintenance}?OrderMaintenancId=$orderMaintenancId'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+
         return responseBody;
       } on TimeoutException catch (_) {
         throw TimeoutException('Request timed out');

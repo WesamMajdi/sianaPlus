@@ -31,6 +31,9 @@ class _SignupPageState extends State<SignupPage> {
       resizeToAvoidBottomInset: true,
       appBar: AppBarApplicationArrow(
         text: "تسجيل حساب جديد",
+        onBackTap: () {
+          Navigator.pop(context);
+        },
       ),
       body: ListView(
         children: [

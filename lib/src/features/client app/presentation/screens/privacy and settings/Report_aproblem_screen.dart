@@ -16,10 +16,13 @@ class _ReportProblemPageState extends State<ReportProblemPage> {
     return Scaffold(
       appBar: AppBarApplicationArrow(
         text: 'الإبلاغ عن المشكلة',
+        onBackTap: () {
+          Navigator.pop(context);
+        },
       ),
       body: Form(
           key: _formKey,
-          child: ListView(
+          child: Column(
             children: [
               Container(
                 decoration: BoxDecoration(
@@ -30,7 +33,7 @@ class _ReportProblemPageState extends State<ReportProblemPage> {
                         bottomLeft: Radius.circular(15),
                         bottomRight: Radius.circular(15))),
                 height: 140,
-                width: 120,
+                width: double.infinity,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   child: Image.asset("assets/images/logoWhit.png"),

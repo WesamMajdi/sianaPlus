@@ -8,7 +8,7 @@ class ProfileState extends Equatable {
   final String? email;
   final String? phone;
   final int? orderShopCount;
-  final int? orderMaintenancesCount; 
+  final int? orderMaintenancesCount;
   final int? orderShopNewCount;
   final int? orderMaintenancesNewCount;
   final String? errorMessage;
@@ -42,23 +42,25 @@ class ProfileState extends Equatable {
       email: email ?? this.email,
       phone: phone ?? this.phone,
       orderShopCount: orderShopCount ?? this.orderShopCount,
-      orderMaintenancesCount: orderMaintenancesCount ?? this.orderMaintenancesCount,
+      orderMaintenancesCount:
+          orderMaintenancesCount ?? this.orderMaintenancesCount,
       orderShopNewCount: orderShopNewCount ?? this.orderShopNewCount,
-      orderMaintenancesNewCount: orderMaintenancesNewCount ?? this.orderMaintenancesNewCount,
+      orderMaintenancesNewCount:
+          orderMaintenancesNewCount ?? this.orderMaintenancesNewCount,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
   @override
   List<Object?> get props => [
-    profileStatus,
-    name,
-    email,
-    phone,
-    orderShopCount,
-    orderMaintenancesCount,
-    orderShopNewCount,
-    orderMaintenancesNewCount,
-    errorMessage,
-  ];
+        profileStatus,
+        name,
+        email,
+        phone,
+        orderShopCount,
+        orderMaintenancesCount,
+        orderShopNewCount,
+        orderMaintenancesNewCount,
+        errorMessage,
+      ];
 }

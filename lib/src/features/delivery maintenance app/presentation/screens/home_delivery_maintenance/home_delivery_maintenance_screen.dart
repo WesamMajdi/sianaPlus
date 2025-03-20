@@ -161,6 +161,21 @@ final List<Map<String, Object>> shortcutsMaintenance = [
     'page': const PerviousOrderMaintenanceScreen(),
   },
   {
+    'icon': FontAwesomeIcons.rightLeft,
+    'label': 'طلبات التحويل ',
+    'page': const ReceiveOrderMaintenancesScreen(),
+  },
+  {
+    'icon': FontAwesomeIcons.rightLeft,
+    'label': 'طلبات تحويل القطع الحالية',
+    'page': const CurrentTakeOrderMaintenanceScreen(),
+  },
+  {
+    'icon': FontAwesomeIcons.rightLeft,
+    'label': 'طلبات تحويل القطع السابقة',
+    'page': const PerviousOrderMaintenanceScreen(),
+  },
+  {
     'icon': FontAwesomeIcons.gear,
     'label': 'الإعدادت',
     'page': const UserSettingProfile(),

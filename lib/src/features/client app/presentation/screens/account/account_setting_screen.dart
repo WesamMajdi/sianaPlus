@@ -1,4 +1,5 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/screens/update_password_screen.dart';
 
 class AccountSetting extends StatelessWidget {
   const AccountSetting({super.key});
@@ -6,7 +7,12 @@ class AccountSetting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarApplicationArrow(text: "الحساب"),
+      appBar: AppBarApplicationArrow(
+        text: "الحساب",
+        onBackTap: () {
+          Navigator.pop(context);
+        },
+      ),
       body: Container(
         margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         child: Column(
@@ -41,7 +47,7 @@ class AccountSetting extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const ChangePasswordPage(),
+                          builder: (context) => const UpdatePasswordScreen(),
                         ));
                   },
                   isVisibl: true,

@@ -198,4 +198,28 @@ class DeliveryMaintenanceCubit extends Cubit<DeliveryMaintenanceState> {
           errorMessage: 'Unexpected error occurred: $e'));
     }
   }
+
+  // Future<void> getAllForAllDeliveryTransfer({
+  //   bool refresh = false,
+  // }) async {
+  //   emit(state.copyWith(
+  //       deliveryMaintenanceStatus: DeliveryMaintenanceStatus.loading));
+  //   try {
+  //     final page = refresh ? 1 : (state.orders.length ~/ 10) + 1;
+  //     final result = await deliveryMaintenanceUseCase
+  //         .getAllForAllDeliveryTransfer(PaginationParams(page: page));
+  //     result.fold(
+  //       (failure) => emit(state.copyWith(
+  //           deliveryMaintenanceStatus: DeliveryMaintenanceStatus.failure,
+  //           errorMessage: failure.message)),
+  //       (transfer) => emit(state.copyWith(
+  //           deliveryMaintenanceStatus: DeliveryMaintenanceStatus.success,
+  //           transfer: transfer.items)),
+  //     );
+  //   } catch (e) {
+  //     emit(state.copyWith(
+  //         deliveryMaintenanceStatus: DeliveryMaintenanceStatus.failure,
+  //         errorMessage: 'Unexpected error occurred: $e'));
+  //   }
+  // }
 }

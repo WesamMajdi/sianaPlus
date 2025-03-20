@@ -1,5 +1,6 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/features/authentication/change%20phone%20number/presentation.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/screens/update_email_screen.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/screens/update_phone_number_screen.dart';
 
 class AccountInfoPage extends StatelessWidget {
   const AccountInfoPage({super.key});
@@ -7,7 +8,12 @@ class AccountInfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBarApplicationArrow(text: "معلومات الحساب"),
+      appBar: AppBarApplicationArrow(
+        text: "معلومات الحساب",
+        onBackTap: () {
+          Navigator.pop(context);
+        },
+      ),
       body: Container(
         margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         child: Column(
@@ -24,7 +30,7 @@ class AccountInfoPage extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const ChangePhoneNumberPage(),
+                          builder: (context) => const ChangePhoneNumberScreen(),
                         ));
                   },
                   isVisibl: true,
@@ -36,7 +42,7 @@ class AccountInfoPage extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const ChangeEmailPage(),
+                          builder: (context) => const UpdateEmailScreen(),
                         ));
                   },
                   isVisibl: true,

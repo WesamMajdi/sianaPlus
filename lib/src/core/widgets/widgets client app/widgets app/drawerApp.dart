@@ -1,4 +1,5 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/network/global_token.dart';
 import 'package:maintenance_app/src/features/authentication/login/data.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/category/category_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/ordered_product/ordered_product_screen.dart';
@@ -14,6 +15,25 @@ class MyDrawer extends StatefulWidget {
 }
 
 class _MyDrawerState extends State<MyDrawer> {
+  String? username = '';
+  String? email = '';
+
+  Future<void> _loadUserData() async {
+    String? storedName = await TokenManager.getName();
+    // String? storedEmail = await TokenManager.getEmail();
+
+    setState(() {
+      username = storedName ?? 'User';
+      // email = storedEmail ?? 'user@gmail.com';
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -46,7 +66,7 @@ class _MyDrawerState extends State<MyDrawer> {
             title: Row(
               children: [
                 CustomStyledText(
-                  text: truncateTextTitle("وسام البلعاوي"),
+                  text: truncateTextTitle(username!),
                   fontWeight: FontWeight.bold,
                   fontSize: 16.5,
                 ),
@@ -55,11 +75,11 @@ class _MyDrawerState extends State<MyDrawer> {
                     size: 12, textDirection: TextDirection.ltr),
               ],
             ),
-            subtitle: CustomStyledText(
-              text: 'admin@gmail.com',
-              fontSize: 14,
-              textColor: Colors.grey.shade500,
-            ),
+            // subtitle: CustomStyledText(
+            //   text: email!,
+            //   fontSize: 14,
+            //   textColor: Colors.grey.shade500,
+            // ),
           ),
           const Divider(),
           // DrawerHeader(

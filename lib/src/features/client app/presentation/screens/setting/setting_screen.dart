@@ -14,6 +14,9 @@ class _UserSettingProfileState extends State<UserSettingProfile> {
     return Scaffold(
       appBar: AppBarApplicationArrow(
         text: 'الإعدادات والخصوصية',
+        onBackTap: () {
+          Navigator.pop(context);
+        },
       ),
       body: SingleChildScrollView(
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/network/api_setting.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/screens/login_screen.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../../core/network/global_token.dart';
 import 'domain.dart';
@@ -23,13 +24,18 @@ class ApiLoginService {
       body: convert.jsonEncode(
           {'email': email, 'password': password, 'fcmToken': 'string'}),
     );
-
     if (response.statusCode == 200) {
       final data = convert.jsonDecode(response.body);
 
-      final role = data['data']['role'];
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('role', role);
+      String token = data['data']['token'];
+      String username = data['data']['username'];
+      // String email = data['data']['email'];
+      String role = data['data']['role'];
+
+      await TokenManager.saveToken(token);
+      await TokenManager.saveName(username);
+      // await TokenManager.saveEmail(email);
+      await TokenManager.saveRole(role);
 
       if (data['data'] != null) {
         return LoginResponse.fromJson(data);
@@ -186,7 +192,7 @@ Future<void> logout(BuildContext context, {bool resetFirstTime = false}) async {
 
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) => const LoginPage()),
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
       (Route<dynamic> route) => false,
     );
   }

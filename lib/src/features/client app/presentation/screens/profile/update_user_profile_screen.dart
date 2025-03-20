@@ -18,21 +18,29 @@ class _ChangeUserProfileState extends State<ChangeUserProfile> {
     return Scaffold(
         appBar: AppBarApplicationArrow(
           text: 'تعديل صفحتي ',
+          onBackTap: () {
+            Navigator.pop(context);
+          },
         ),
         body: Form(
             key: _formKey,
             child: ListView(
               children: [
                 Container(
-                  decoration: const BoxDecoration(
-                      color: AppColors.secondaryColor,
-                      borderRadius: BorderRadius.only(
+                  decoration: BoxDecoration(
+                      color: (Theme.of(context).brightness == Brightness.dark
+                          ? AppColors.lightGrayColor
+                          : AppColors.primaryColor),
+                      borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(15),
                           bottomRight: Radius.circular(15))),
-                  height: 150,
-                  width: 120,
-                  child: Image.asset("assets/images/logo.png"),
+                  height: 140,
+                  width: double.infinity,
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 25),
+                      child: Image.asset("assets/images/logoWhit.png")),
                 ),
+                AppSizedBox.kVSpace20,
                 AppSizedBox.kVSpace10,
                 const CustomLabelText(
                   text: 'الاسم الشخصي',

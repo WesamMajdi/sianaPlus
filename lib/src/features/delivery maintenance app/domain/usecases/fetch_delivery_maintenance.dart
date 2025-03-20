@@ -6,6 +6,7 @@ import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/m
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/order_maintenances_details_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/receive_order_Maintenance_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/repositories/delivery_maintenance.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/entities/hand_receipt_maintenance_parts/hand_receipt_maintenance_parts_entitie.dart';
 
 class DeliveryMaintenanceUseCase {
   final DeliveryMaintenanceRepository repository;
@@ -56,5 +57,12 @@ class DeliveryMaintenanceUseCase {
   Future<Either<Failure, Map<String, dynamic>>> selectBranch(
       int orderMaintenancId, int? branchId) {
     return repository.selectBranch(orderMaintenancId, branchId);
+  }
+
+  Future<Either<Failure, PaginatedResponse<HandReceiptEntity>>>
+      getAllForAllDeliveryTransfer(
+    PaginationParams paginationParams,
+  ) {
+    return repository.getAllForAllDeliveryTransfer(paginationParams);
   }
 }

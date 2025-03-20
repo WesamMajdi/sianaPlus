@@ -8,6 +8,9 @@ class PrivacyPolicyPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBarApplicationArrow(
         text: 'سياسة الخصوصية',
+        onBackTap: () {
+          Navigator.pop(context);
+        },
       ),
       body: SingleChildScrollView(
         child: Container(

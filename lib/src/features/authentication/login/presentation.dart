@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/features/authentication/forgot%20password/presentation.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/screens/forgot_password_screen.dart';
 import 'package:maintenance_app/src/features/authentication/sign%20up/presentation.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/home_delivery_maintenance/home_delivery_maintenance_screen.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/home_delivery/home_delivery_shop_screen.dart';
@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const ForgotPasswordPage(),
+                            builder: (context) => const ForgotPasswordScreen(),
                           ));
                     },
                     child: Container(

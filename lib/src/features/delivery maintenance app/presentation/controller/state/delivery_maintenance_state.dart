@@ -2,6 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/branch_model.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/order_maintenances_details_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/receive_order_Maintenance_entity.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/entities/hand_receipt_maintenance_parts/hand_receipt_maintenance_parts_entitie.dart';
 
 enum DeliveryMaintenanceStatus { initial, loading, success, failure }
 
@@ -42,6 +43,7 @@ class DeliveryMaintenanceState extends Equatable {
   DeliveryMaintenanceState copyWith({
     DeliveryMaintenanceStatus? deliveryMaintenanceStatus,
     List<ReceiveMaintenanceOrderEntity>? orders,
+    HandReceiptEntity? transfer,
     final List<OrderMaintenancesDetailsEntity>? selectedOrderDetilesItems,
     String? errorMessage,
     String? successMessage,

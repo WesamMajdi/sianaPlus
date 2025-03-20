@@ -1,5 +1,10 @@
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:maintenance_app/src/features/authentication/data/data_source/auth_data_source.dart';
+import 'package:maintenance_app/src/features/authentication/data/repositories/auth_repository_impl.dart';
+import 'package:maintenance_app/src/features/authentication/domain/repositories/auth_repository.dart';
+import 'package:maintenance_app/src/features/authentication/domain/usecases/auth_usecases.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/controller/cubit/auth_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/data/data_sources/notifications/notifications_data_source.dart';
 import 'package:maintenance_app/src/features/client%20app/data/data_sources/profile/user_profile_data_source.dart';
 import 'package:maintenance_app/src/features/client%20app/data/repositories/notifications/notifications_repository_impl..dart';
@@ -83,6 +88,7 @@ void _initCubits() {
   getIt.registerFactory<DeliveryMaintenanceCubit>(
       () => DeliveryMaintenanceCubit(getIt()));
   getIt.registerFactory<OnlineCubit>(() => OnlineCubit(getIt()));
+  getIt.registerFactory<AuthCubit>(() => AuthCubit(getIt()));
 }
 
 void _initUseCases() {
@@ -115,6 +121,9 @@ void _initUseCases() {
   );
   getIt.registerLazySingleton<DeliveryMaintenanceUseCase>(
     () => DeliveryMaintenanceUseCase(getIt()),
+  );
+  getIt.registerLazySingleton<AuthUseCase>(
+    () => AuthUseCase(getIt()),
   );
 }
 
@@ -184,6 +193,13 @@ void _initDataSources() {
       internetConnectionChecker: getIt(),
     ),
   );
+
+  getIt.registerLazySingleton<AuthRemoteDataSource>(
+    () => AuthRemoteDataSource(
+      apiController: getIt(),
+      internetConnectionChecker: getIt(),
+    ),
+  );
 }
 
 void _initRepositories() {
@@ -214,6 +230,11 @@ void _initRepositories() {
 
   getIt.registerLazySingleton<NotificationsRepository>(
     () => NotificationsRepositoryImpl(
+      getIt(),
+    ),
+  );
+  getIt.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(
       getIt(),
     ),
   );
