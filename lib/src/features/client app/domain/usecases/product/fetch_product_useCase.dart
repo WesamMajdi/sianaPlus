@@ -1,6 +1,7 @@
 // fetch_categories_usecase.dart
 import 'package:dartz/dartz.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/product/product_model.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/product/discount_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/repositories/product/product_repository.dart';
 
@@ -19,6 +20,11 @@ class ProductsUseCase {
   Future<Either<Failure, List<Product>>> getProductsByCategory(
       PaginationParams paginationParams) {
     return repository.getProductsByCategory(paginationParams);
+  }
+
+  Future<Either<Failure, List<DiscountEntity>>> getDiscounts(
+      PaginationParams paginationParams) {
+    return repository.getDiscounts(paginationParams);
   }
 
   Future<Either<Failure, void>> createFavorite(

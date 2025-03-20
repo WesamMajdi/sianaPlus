@@ -29,7 +29,7 @@ class Product {
         this.originalPrice,
       this.price,
       this.count,
-      this.userCount=0,
+      this.userCount=1,
       this.cost,
       this.countOrder,
       this.isFavorite=false,

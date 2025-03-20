@@ -5,6 +5,7 @@ import '../../../../../core/error/failure.dart';
 import '../../../../../core/pagination/paginated_response.dart';
 import '../../../../../core/pagination/pagination_params.dart';
 import '../../data_sources/product/product_data_source.dart';
+import '../../model/product/discount_model.dart';
 import '../../model/product/product_model.dart';
 
 class ProductRepositoryImpl implements ProductRepository {
@@ -51,6 +52,17 @@ class ProductRepositoryImpl implements ProductRepository {
     try {
       final response =
       await remoteDataSource.deleteAllFavorite();
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<DiscountModel>>> getDiscounts(PaginationParams paginationParams) async {
+    try {
+      final response =
+      await remoteDataSource.getDiscounts(paginationParams);
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));

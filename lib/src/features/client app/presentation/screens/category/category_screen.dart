@@ -19,21 +19,21 @@ class _CategoryPageState extends State<CategoryPage> {
   // int selectedMainCategoryId = 1;
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
+
+    context.read<CategoryCubit>().getDiscount(
+    );
     !widget.fromHomeScreen
         ? context.read<CategoryCubit>().fetchSubCategories(
-              mainCategoryId:
-                  context.read<CategoryCubit>().state.categories.first.id,
-            )
+      mainCategoryId:
+      context.read<CategoryCubit>().state.categories.first.id,
+    )
         : null;
-    // context.read<CategoryCubit>().state.selectedCategoryId ==null? context.read<CategoryCubit>().selectCategory(
-    //       categoryId: context.read<CategoryCubit>().state.categories.first.id,
-    //     ): null ;
-    // context.read<CategoryCubit>().fetchSubCategories(
-    //       mainCategoryId:
-    //           context.read<CategoryCubit>().state.categories.first.id,
-    //     );
+
+
+    super.initState();
+
+
+
   }
 
   @override

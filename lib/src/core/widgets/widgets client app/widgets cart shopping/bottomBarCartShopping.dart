@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/checkout/checkout_screen.dart';
+import '../../../../features/client app/domain/entities/product/discount_entity.dart';
 import '../../../../features/client app/presentation/controller/cubits/category_cubit.dart';
 import '../../../../features/client app/presentation/controller/states/category_state.dart';
 
@@ -13,15 +14,23 @@ class BottomBarCartTotal extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CategoryCubit,CategoryState>(
       builder: (context, state) => BottomAppBar(
-        height: 220,
+        height: 300,
         child:
         BlocBuilder<CategoryCubit, CategoryState>(builder: (context, state) {
-          final totalAmount = state.totalAmount ?? 0.0;
+          // print(state.discounts);
+
+          DiscountEntity? discountEntity= state.discounts.where(
+            (element) => element.id==1,
+          ).first;
+          final subTotalAmount = state.subTotalAmount ?? 0.0;
+          final discountWithFee = ((subTotalAmount) - ((subTotalAmount)*(discountEntity.discount!)/100) + discountEntity.deliveryfees!) ;
+
+          final totalAmount =discountWithFee + ((discountWithFee) * (discountEntity.tax!/100));
 
           return Column(
             children: [
               Container(
-                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                margin: const EdgeInsets.symmetric( horizontal: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -30,7 +39,7 @@ class BottomBarCartTotal extends StatelessWidget {
                       fontSize: 18,
                     ),
                     CustomStyledText(
-                      text: "\$${totalAmount.toStringAsFixed(2)}",
+                      text: "\$${subTotalAmount.toStringAsFixed(2)}",
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
@@ -48,8 +57,48 @@ class BottomBarCartTotal extends StatelessWidget {
                     ),
                     Container(
                       margin: const EdgeInsets.only(left: 30),
-                      child: const CustomStyledText(
-                        text: "0%",
+                      child:  CustomStyledText(
+                        text: "${discountEntity.discount ?? 0}%",
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const CustomStyledText(
+                      text: "رسوم التوصيل :",
+                      fontSize: 18,
+                    ),
+                    Container(
+                      // margin: const EdgeInsets.only(left: 30),
+                      child:  CustomStyledText(
+                        text: "${discountEntity.deliveryfees ?? 0} ر.س",
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const CustomStyledText(
+                      text: "الضريبة:",
+                      fontSize: 18,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(left: 30),
+                      child:  CustomStyledText(
+                        text: "${discountEntity.tax ?? 0}%",
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),

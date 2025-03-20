@@ -13,7 +13,7 @@ class CategoryCubit extends Cubit<CategoryState> {
   List<Product> cart = [];
 
   CategoryCubit(this.categoriesUseCase, this.productsUseCase)
-      : super(CategoryState(cartItems: {}));
+      : super(CategoryState(cartItems: {},));
 
   Future<void> fetchCategories({bool refresh = false}) async {
     emit(state.copyWith(mainCategoryStatus: MainCategoryStatus.loading));
@@ -88,6 +88,21 @@ class CategoryCubit extends Cubit<CategoryState> {
     );
   }
 
+  Future<void> getDiscount() async {
+    emit(state.copyWith(discountStatus: DiscountStatus.loading));
+    const page =  1 ;
+    final result = await productsUseCase.getDiscounts(
+        const PaginationParams(page: page,perPage: 10));
+    result.fold(
+          (failure) => emit(state.copyWith(
+              discountStatus: DiscountStatus.failure, errorMessage: failure.message)),
+          (discounts){
+            return emit(state.copyWith(
+                discountStatus: DiscountStatus.success, discounts: discounts));
+          },
+    );
+  }
+
   Future<void> createFavorite({int productId = 0}) async {
     final updatedItems = List<Product>.from(state.products);
     final favouriteList = List<Product>.from(state.favouriteProducts);
@@ -157,13 +172,17 @@ class CategoryCubit extends Cubit<CategoryState> {
         () => productItem,
       );
     }
+    // state.
 
-    final totalAmount = updatedItems.values.fold(0.0, (sum, item) {
-      print(item.count);
-      return sum + (item.price! * item.count!);
+    final subTotalAmount = updatedItems.values.fold(0.0, (sum, item) {
+      return sum + (item.basePrice! * item.userCount!);
     });
-    emit(state.copyWith(cartItems: updatedItems, totalAmount: totalAmount));
+
+    // final totalAmount =
+    emit(state.copyWith(cartItems: updatedItems, subTotalAmount: subTotalAmount));
   }
+
+
 
   void increaseQuantity(String productId) {
     final updatedItems = List<Product>.from(state.products);
@@ -175,11 +194,11 @@ class CategoryCubit extends Cubit<CategoryState> {
       updatedItems[productIndex].userCount = updatedItems[productIndex].userCount! + 1;
     }
 
-    final totalAmount = updatedItems.fold(0.0, (sum, item) {
-      return sum + (item.price! * item.userCount!);
+    final subTotalAmount = updatedItems.fold(0.0, (sum, item) {
+      return sum + (item.basePrice! * item.userCount!);
     });
-    print(totalAmount);
-    emit(state.copyWith(products: updatedItems, totalAmount: totalAmount));
+
+    emit(state.copyWith(products: updatedItems, subTotalAmount: subTotalAmount));
   }
 
   void decreaseQuantity(String productId) {
@@ -195,10 +214,10 @@ class CategoryCubit extends Cubit<CategoryState> {
       }
     }
 
-    final totalAmount = updatedItems.fold(0.0, (sum, item) {
-      return sum + (item.price! * item.userCount!);
+    final subTotalAmount = updatedItems.fold(0.0, (sum, item) {
+      return sum + (item.basePrice! * item.userCount!);
     });
-    emit(state.copyWith(products: updatedItems, totalAmount: totalAmount));
+    emit(state.copyWith(products: updatedItems, subTotalAmount: subTotalAmount));
   }
 
   void removeItem(String productId) {

@@ -21,6 +21,7 @@ class ApiSetting {
 
   static String get deleteFavorite => '$baseUrl/Products/DeleteFavorite';
   static String get deleteAllFavorite => '$baseUrl/Products/DeleteAllFavorite';
+  static String get getDiscount => '$baseUrl/Discount/GetDiscount';
   static String get createOrder => '$baseUrl/Orders/CreateOrder';
 
   static String get getColorList => '$baseUrl/List/GetColorList';

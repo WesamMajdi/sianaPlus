@@ -74,7 +74,7 @@ class _ItemsProductState extends State<ItemsProduct> {
                             child: Center(
                               child: CustomStyledText(
                                 text:
-                                    "%${(widget.products[index].discount! * 100).toInt()}",
+                                    "%${(widget.products[index].discount!).toInt()}",
                                 textColor: Colors.white,
                                 fontSize: 16,
                               ),
@@ -152,11 +152,36 @@ class _ItemsProductState extends State<ItemsProduct> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          CustomStyledText(
-                            text: "\$${widget.products[index].price}",
+                          widget.products[index].discount!>0 ?
+                          Row(
+                            children: [
+                              // CustomStyledText(
+                              //   text:"\$${widget.products[index].originalPrice}",
+                              //   fontWeight: FontWeight.bold,
+                              //   fontSize: 22,
+                              // ),
+                              Text(
+                                  "\$${widget.products[index].originalPrice}",
+                                style: const TextStyle(
+                                    fontSize: 15,
+                                  // fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.lineThrough
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              CustomStyledText(
+                                text:"\$${widget.products[index].price}",
+                                fontWeight: FontWeight.bold,
+                                fontSize: 22,
+                              )
+                            ],
+                          ) : CustomStyledText(
+                            text:"\$${widget.products[index].price}",
                             fontWeight: FontWeight.bold,
                             fontSize: 22,
-                          ),
+                          )  ,
                           Icon(FontAwesomeIcons.cartPlus,
                               color: (Theme.of(context).brightness ==
                                       Brightness.dark
