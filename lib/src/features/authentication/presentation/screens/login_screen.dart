@@ -139,13 +139,20 @@ class _LoginScreenState extends State<LoginScreen> {
                             const HomeDeliveryMaintenanceScreen(),
                       ),
                     );
-                  } else if (state.status == AuthStatus.failure) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: CustomStyledText(
-                          text: "فشل تسجيل دخول, يرجي اعادة المحاولة",
-                        ),
-                        backgroundColor: Colors.red));
+                  } else {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomePage(),
+                      ),
+                    );
                   }
+                } else if (state.status == AuthStatus.failure) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: CustomStyledText(
+                        text: "فشل تسجيل دخول, يرجي اعادة المحاولة",
+                      ),
+                      backgroundColor: Colors.red));
                 }
               },
               child: BlocBuilder<AuthCubit, AuthState>(

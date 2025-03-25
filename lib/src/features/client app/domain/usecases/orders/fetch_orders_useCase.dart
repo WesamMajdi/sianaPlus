@@ -2,6 +2,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:maintenance_app/src/core/network/base_response.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/color_entery.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/region/region_model.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/orders/orders_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/repositories/orders/orders_repository.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/repositories/product/product_repository.dart';
@@ -38,8 +39,9 @@ class OrderUseCase {
       getOrderMaintenanceByUserNew(PaginationParams paginationParams) {
     return repository.getOrderMaintenanceByUserNew(paginationParams);
   }
+
   Future<Either<Failure, PaginatedResponse<OrderEntity>>>
-  getOrderMaintenanceByUserOld(PaginationParams paginationParams) {
+      getOrderMaintenanceByUserOld(PaginationParams paginationParams) {
     return repository.getOrderMaintenanceByUserOld(paginationParams);
   }
 }

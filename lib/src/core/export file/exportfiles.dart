@@ -47,7 +47,6 @@ export 'package:maintenance_app/src/features/client%20app/presentation/screens/c
 export 'package:maintenance_app/src/features/client%20app/concat%20info%20page/presentation.dart';
 export 'package:maintenance_app/src/features/client%20app/presentation/screens/account/account_information_screen.dart';
 export 'package:maintenance_app/src/core/network/network_utils.dart';
-export 'package:maintenance_app/src/features/authentication/login/presentation.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/customSearchDropdown.dart';
 export 'package:maintenance_app/src/features/client%20app/presentation/screens/maintenance%20request/maintenance_request_screen.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20notifications/itemsNotifications.dart';
@@ -62,4 +61,3 @@ export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20profile/onTapViewImageProfile.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20profile/userInfoProfile.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20profile/userImageProfile.dart';
-export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20cart%20shopping/isEmptyCartShopping.dart';

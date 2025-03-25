@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'dart:async';
-import 'package:flutter/foundation.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/services.dart';
 import 'package:maintenance_app/src/core/error/exception.dart';
 import 'package:maintenance_app/src/core/error/handle_http_error.dart';
+import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/network/api_controller.dart';
 import 'package:maintenance_app/src/core/network/api_setting.dart';
 import 'package:maintenance_app/src/core/network/global_token.dart';
@@ -14,7 +14,7 @@ import 'package:maintenance_app/src/features/authentication/data/model/signup_mo
 import 'package:maintenance_app/src/features/authentication/data/model/update_email_model.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/update_password_model.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/user_model.dart';
-
+import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../core/network/base_response.dart';
 
 class AuthRemoteDataSource {
@@ -47,6 +47,13 @@ class AuthRemoteDataSource {
 
         await TokenManager.saveToken(token);
         await TokenManager.saveName(name);
+
+        final isDeviceRegistered = await registerDevice();
+        if (isDeviceRegistered) {
+          print("Device registered successfully after login.");
+        } else {
+          print("Device registration failed after login.");
+        }
 
         return BaseResponse<UserModel>.fromJson(
           responseBody,
@@ -84,7 +91,12 @@ class AuthRemoteDataSource {
         String name = responseBody['data']['username'];
         await TokenManager.saveToken(token);
         await TokenManager.saveName(name);
-
+        final isDeviceRegistered = await registerDevice();
+        if (isDeviceRegistered) {
+          print("Device registered successfully after login.");
+        } else {
+          print("Device registration failed after login.");
+        }
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
@@ -244,4 +256,172 @@ class AuthRemoteDataSource {
       throw OfflineException(errorMessage: 'No Internet Connection');
     }
   }
+
+  Future<bool> registerDevice() async {
+    try {
+      // Get Package Info
+      final PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      final String appVersion =
+          '${packageInfo.version}+${packageInfo.buildNumber}';
+
+      // Get Tokens
+      String? token = await TokenManager.getToken();
+      String? fcmToken = await TokenManager.getFcmToken();
+
+      if (token == null || fcmToken == null) {
+        print('Token or FCM Token is null');
+        return false;
+      }
+
+      final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+      // Get Device Info
+      late final String deviceId;
+      late final String deviceType;
+      late final String osVersion;
+
+      try {
+        if (Platform.isAndroid) {
+          final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+          deviceId = androidInfo.id;
+          deviceType = '${androidInfo.brand} ${androidInfo.model}';
+          osVersion = 'Android ${androidInfo.version.release}';
+        } else if (Platform.isIOS) {
+          final IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+          deviceId = iosInfo.identifierForVendor ?? 'Unknown';
+          deviceType = iosInfo.model;
+          osVersion = '${iosInfo.systemName} ${iosInfo.systemVersion}';
+        } else {
+          throw PlatformException(
+            code: 'UNSUPPORTED_PLATFORM',
+            message: 'This platform is not supported',
+          );
+        }
+      } catch (deviceError) {
+        print('Error getting device info: $deviceError');
+        return false;
+      }
+
+      final Map<String, dynamic> requestBody = {
+        'tokenText': fcmToken,
+        'deviceId': deviceId,
+        'deviceType': deviceType,
+        'osVersion': osVersion,
+        'appVersion': appVersion,
+      };
+      print(requestBody);
+
+      print("ppppppppppppppppppppppppppppppp");
+      print(fcmToken);
+      print(deviceId);
+      print(deviceType);
+      print(osVersion);
+      print(appVersion);
+      print('Sending device registration request: ${json.encode(requestBody)}');
+
+      final response = await apiController.post(
+        Uri.parse(ApiSetting.creatToken),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: requestBody,
+      );
+
+      if (response.statusCode == 200) {
+        print('Device token registered successfully');
+        return true;
+      } else {
+        print(' Failed to register device token: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      print('Error registering device token: $e');
+      return false;
+    }
+  }
+
+  Future<void> resetFirstTimeStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(FIRST_TIME_KEY, true);
+  }
+
+  // Future<void> logout(BuildContext context,
+  //     {bool resetFirstTime = false}) async {
+  //   final bool? confirmLogout = await showDialog<bool>(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       shape: RoundedRectangleBorder(
+  //         borderRadius: BorderRadius.circular(12.0),
+  //       ),
+  //       title: const Row(
+  //         children: [
+  //           Icon(FontAwesomeIcons.rightFromBracket,
+  //               color: AppColors.secondaryColor, size: 24.0),
+  //           AppSizedBox.kWSpace10,
+  //           Center(
+  //             child: CustomStyledText(
+  //               text: 'تأكيد تسجيل الخروج',
+  //               textColor: AppColors.secondaryColor,
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //       content: const CustomStyledText(
+  //         text: 'هل أنت متأكد أنك تريد تسجيل الخروج؟',
+  //         fontSize: 14,
+  //       ),
+  //       actions: [
+  //         TextButton(
+  //           onPressed: () => Navigator.of(context).pop(true),
+  //           style: TextButton.styleFrom(
+  //             backgroundColor: AppColors.secondaryColor,
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(8.0),
+  //             ),
+  //           ),
+  //           child: const CustomStyledText(
+  //               text: "تسجيل الخروج",
+  //               textColor: Colors.white,
+  //               fontSize: 12,
+  //               fontWeight: FontWeight.bold),
+  //         ),
+  //         TextButton(
+  //           onPressed: () => Navigator.of(context).pop(false),
+  //           style: TextButton.styleFrom(
+  //             backgroundColor: Colors.grey[200],
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(8.0),
+  //             ),
+  //           ),
+  //           child: const CustomStyledText(
+  //               text: "إلغاء",
+  //               fontSize: 12,
+  //               textColor: AppColors.darkGrayColor,
+  //               fontWeight: FontWeight.bold),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+
+  //   if (confirmLogout == true) {
+  //     try {
+  //       await TokenManager.removeToken();
+  //       if (resetFirstTime) {
+  //         await resetFirstTimeStatus();
+  //       }
+  //     } catch (e) {}
+  //     final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //     await prefs.remove('token');
+  //     await prefs.clear();
+
+  //     Navigator.pushAndRemoveUntil(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => const LoginScreen()),
+  //       (Route<dynamic> route) => false,
+  //     );
+  //   }
+  // }
 }

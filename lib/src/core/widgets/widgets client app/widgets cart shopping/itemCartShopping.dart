@@ -23,8 +23,8 @@ class CartShoppingItem extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            height: 70,
-            width: 70,
+            height: 45,
+            width: 45,
             margin: const EdgeInsets.only(left: 15),
             // child: Image.asset(item.image!),
             child: Container(
@@ -36,12 +36,8 @@ class CartShoppingItem extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
-              width: 100,
-              height: 100,
-
             ),
           ),
-          AppSizedBox.kWSpace15,
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -52,11 +48,23 @@ class CartShoppingItem extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 fontSize: 18,
               ),
-              AppSizedBox.kVSpace10,
-              CustomStyledText(
-                text: "\$${item.basePrice?.toStringAsFixed(2)}",
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: CustomStyledText(
+                      text: "${item.basePrice?.toStringAsFixed(2)}",
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                  AppSizedBox.kWSpace10,
+                  Image.asset(
+                    "assets/images/logoRiyal.png",
+                    width: 20,
+                    color: AppColors.primaryColor,
+                  )
+                ],
               ),
             ],
           ),
@@ -123,6 +131,7 @@ class CartShoppingItem extends StatelessWidget {
                         child: Container(
                           padding: const EdgeInsets.all(5),
                           decoration: BoxDecoration(
+                            // ignore: deprecated_member_use
                             color: Colors.grey.withOpacity(0.2),
                             borderRadius: BorderRadius.circular(20),
                           ),

@@ -24,10 +24,9 @@ class StatisticsCard extends StatelessWidget {
               fontSize: 40,
               fontWeight: FontWeight.w600,
             ),
-            AppSizedBox.kVSpace5,
             CustomStyledText(
               text: title,
-              fontSize: 13.2,
+              fontSize: 14,
               fontWeight: FontWeight.bold,
               textColor: (Theme.of(context).brightness == Brightness.dark
                   ? AppColors.lightGrayColor

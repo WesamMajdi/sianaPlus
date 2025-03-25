@@ -19,6 +19,14 @@ abstract class ProductRepository {
   Future<Either<Failure, void>> deleteFavorite(
       PaginationParams paginationParams);
   Future<Either<Failure, void>> deleteAllFavorite();
-  Future<Either<Failure, List<DiscountEntity>>> getDiscounts(PaginationParams paginationParams);
-  Future<Either<Failure, void>> createOrder(Map<String, Product> cartItems);
+  Future<Either<Failure, List<DiscountEntity>>> getDiscounts(
+      PaginationParams paginationParams);
+  Future<Either<Failure, void>> createOrder(
+    Map<String, Product> cartItems, {
+    required int? region,
+    required int? city,
+    required int? village,
+    required String addressLine1,
+    required String addressLine2,
+  });
 }

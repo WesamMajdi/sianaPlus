@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/signup_model.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/controller/cubit/auth_cubit.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/screens/login_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
 
 import '../controller/state/auth_state.dart';
@@ -305,7 +306,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const LoginPage(),
+                        builder: (context) => const LoginScreen(),
                       ),
                     );
                   },

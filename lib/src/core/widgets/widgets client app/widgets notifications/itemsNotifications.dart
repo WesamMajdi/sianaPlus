@@ -1,9 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../features/client app/presentation/controller/cubits/notification_cubit.dart';
 import '../../../../features/client app/presentation/controller/states/notification_state.dart';
-import '../../../constants/constants.dart';
 import '../../../export file/exportfiles.dart';
 
 class ItemsNotifications extends StatefulWidget {
@@ -16,7 +12,7 @@ class ItemsNotifications extends StatefulWidget {
 class _ItemsNotificationsState extends State<ItemsNotifications> {
   @override
   void initState() {
-    super.initState();  // Move super.initState() to the top
+    super.initState(); // Move super.initState() to the top
     context.read<NotificationCubit>().getNotifications();
   }
 
@@ -31,53 +27,53 @@ class _ItemsNotificationsState extends State<ItemsNotifications> {
               child: CircularProgressIndicator(),
             );
           case NotificationStatus.failure:
-            return Center(child: Text(state.errorMessage));
+            return Center(child: CustomStyledText(text: state.errorMessage));
           case NotificationStatus.success:
             if (state.notifications.isNotEmpty) {
-              return ListView.builder(  // Added return statement
+              return ListView.builder(
                 scrollDirection: Axis.vertical,
                 itemCount: state.notifications.length,
                 itemBuilder: (BuildContext context, int index) {
-                  final notification = state.notifications[index];  // Use the notification object
+                  final notification =
+                      state.notifications[index]; // Use the notification object
                   return Column(
                     children: [
                       ListTile(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(3)
-                        ),
                         leading: CircleAvatar(
-                          backgroundColor: AppColors.secondaryColor,
+                          radius: 30,
+                          backgroundColor: Colors.white,
                           child: Image.asset(
-                          'assets/images/logo.png' ?? '', // Use null safety
+                            'assets/images/ic_launcher.png' ?? '',
                             width: 100,
-                            height: 100,
                           ),
                         ),
                         title: CustomStyledText(
-                            text: notification.title ?? '',  // Use null safety
-                            fontSize: 18
-                        ),
+                            text: notification.title ?? '', fontSize: 16),
                         subtitle: Column(
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(top: AppPadding.smallPadding),
+                                  padding: const EdgeInsets.only(top: 5),
                                   child: CustomStyledText(
-                                    text: notification.message!,  // Fixed string interpolation
+                                    text: notification.message!,
                                     textColor: Colors.grey,
                                     fontSize: 14,
                                   ),
                                 ),
-
                               ],
                             ),
                           ],
                         ),
                         onTap: () {},
                       ),
-                      const Divider()
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Divider(
+                          color: Colors.grey.shade300,
+                        ),
+                      )
                     ],
                   );
                 },
@@ -85,18 +81,13 @@ class _ItemsNotificationsState extends State<ItemsNotifications> {
             } else {
               return const Center(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,  // Added for better centering
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CustomStyledText(text: 'لا توجد اشعارات')
-                  ],
+                  children: [CustomStyledText(text: 'لا توجد اشعارات')],
                 ),
               );
             }
         }
-        return const Center(  // Changed to be more descriptive and consistent
-          child: Text('Something went wrong'),
-        );
       },
     );
   }

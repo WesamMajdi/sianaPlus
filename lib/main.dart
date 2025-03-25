@@ -5,12 +5,8 @@ import 'package:maintenance_app/src/core/di/dependency_injection.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/network/connectivity_cubit.dart';
 import 'package:maintenance_app/src/core/services/notification_service.dart';
-import 'package:maintenance_app/src/features/authentication/login/application.dart';
-import 'package:maintenance_app/src/features/authentication/login/data.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/controller/cubit/auth_cubit.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/screens/login_screen.dart';
-import 'package:maintenance_app/src/features/authentication/sign%20up/application.dart';
-import 'package:maintenance_app/src/features/authentication/sign%20up/data.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/notification_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
@@ -57,12 +53,6 @@ void main() async {
       providers: [
         BlocProvider<ThemeChangerBloc>.value(value: themeChangerBloc),
         BlocProvider<LocalizationBloc>.value(value: localizationBloc),
-        BlocProvider<LoginCubit>(
-          create: (context) => LoginCubit(ApiLoginService()),
-        ),
-        BlocProvider<SignUpCubit>(
-          create: (context) => SignUpCubit(ApiSignUpService()),
-        ),
         BlocProvider<ConnectivityCubit>(
           create: (context) => ConnectivityCubit(),
         ),

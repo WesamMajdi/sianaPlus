@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/color_entery.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/region/region_model.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/orders/orders_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
 
@@ -37,65 +38,68 @@ class OrderState extends Equatable {
   final OrderEntery? selectedItem;
   final OrderEntery? selectedCompany;
   late bool notifyCustomerOfTheCost;
+  final List<BaseViewModel> listofRegion;
 
-  OrderState({
-    this.orderCreationStatus = OrderCreationStatus.initial,
-    this.colorStatus = ColorStatus.initial,
-    this.orderStatus = OrderStatus.initial,
-    this.itemOrdersStatus = ItemOrdersStatus.initial,
-    this.itemsStatus = ItemsStatus.initial,
-    this.companiesStatus = CompaniesStatus.initial,
-    this.colorsList = const <OrderEntery>[],
-    this.itemsList = const <OrderEntery>[],
-    this.ordersItemsNew = const <OrderEntity>[],
-    this.ordersItemsOld = const <OrderEntity>[],
-    this.companiesList = const <OrderEntery>[],
-    this.items = const <ItemsEntity>[],
-    this.selectedColor,
-    this.orderCurrentPage = 1,
-    this.selectedItem,
-    this.notifyCustomerOfTheCost = false,
-    this.selectedCompany,
-  });
+  OrderState(
+      {this.orderCreationStatus = OrderCreationStatus.initial,
+      this.colorStatus = ColorStatus.initial,
+      this.orderStatus = OrderStatus.initial,
+      this.itemOrdersStatus = ItemOrdersStatus.initial,
+      this.itemsStatus = ItemsStatus.initial,
+      this.companiesStatus = CompaniesStatus.initial,
+      this.colorsList = const <OrderEntery>[],
+      this.itemsList = const <OrderEntery>[],
+      this.ordersItemsNew = const <OrderEntity>[],
+      this.ordersItemsOld = const <OrderEntity>[],
+      this.companiesList = const <OrderEntery>[],
+      this.items = const <ItemsEntity>[],
+      this.selectedColor,
+      this.orderCurrentPage = 1,
+      this.selectedItem,
+      this.notifyCustomerOfTheCost = false,
+      this.selectedCompany,
+      this.listofRegion = const <BaseViewModel>[]});
 
-  OrderState copyWith(
-      {OrderCreationStatus? orderCreationStatus,
-      ColorStatus? colorStatus,
-      ItemOrdersStatus? itemOrdersStatus,
-      ItemsStatus? itemsStatus,
-      OrderStatus? orderStatus,
-      int? orderCurrentPage,
-      CompaniesStatus? companiesStatus,
-      List<OrderEntery>? colorsList,
-      List<OrderEntity>? ordersItemsNew,
-      List<OrderEntity>? ordersItemsOld,
-      List<OrderEntery>? itemsList,
-      List<OrderEntery>? companiesList,
-      List<ItemsEntity>? items,
-      OrderEntery? selectedColor,
-      OrderEntery? selectedItem,
-      OrderEntery? selectedCompany,
-      bool? notifyCustomerOfTheCost}) {
+  OrderState copyWith({
+    OrderCreationStatus? orderCreationStatus,
+    ColorStatus? colorStatus,
+    ItemOrdersStatus? itemOrdersStatus,
+    ItemsStatus? itemsStatus,
+    OrderStatus? orderStatus,
+    int? orderCurrentPage,
+    CompaniesStatus? companiesStatus,
+    List<OrderEntery>? colorsList,
+    List<OrderEntity>? ordersItemsNew,
+    List<OrderEntity>? ordersItemsOld,
+    List<OrderEntery>? itemsList,
+    List<OrderEntery>? companiesList,
+    List<ItemsEntity>? items,
+    OrderEntery? selectedColor,
+    OrderEntery? selectedItem,
+    OrderEntery? selectedCompany,
+    bool? notifyCustomerOfTheCost,
+    final List<BaseViewModel>? listofRegion,
+  }) {
     return OrderState(
-      orderCreationStatus: orderCreationStatus ?? this.orderCreationStatus,
-      colorStatus: colorStatus ?? this.colorStatus,
-      orderCurrentPage: orderCurrentPage ?? this.orderCurrentPage,
-      itemOrdersStatus: itemOrdersStatus ?? this.itemOrdersStatus,
-      itemsStatus: itemsStatus ?? this.itemsStatus,
-      companiesStatus: companiesStatus ?? this.companiesStatus,
-      colorsList: colorsList ?? this.colorsList,
-      orderStatus: orderStatus ?? this.orderStatus,
-      notifyCustomerOfTheCost:
-          notifyCustomerOfTheCost ?? this.notifyCustomerOfTheCost,
-      itemsList: itemsList ?? this.itemsList,
-      ordersItemsNew: ordersItemsNew ?? this.ordersItemsNew,
-      ordersItemsOld: ordersItemsOld ?? this.ordersItemsOld,
-      companiesList: companiesList ?? this.companiesList,
-      items: items ?? this.items,
-      selectedColor: selectedColor ?? this.selectedColor,
-      selectedItem: selectedItem ?? this.selectedItem,
-      selectedCompany: selectedCompany ?? this.selectedCompany,
-    );
+        orderCreationStatus: orderCreationStatus ?? this.orderCreationStatus,
+        colorStatus: colorStatus ?? this.colorStatus,
+        orderCurrentPage: orderCurrentPage ?? this.orderCurrentPage,
+        itemOrdersStatus: itemOrdersStatus ?? this.itemOrdersStatus,
+        itemsStatus: itemsStatus ?? this.itemsStatus,
+        companiesStatus: companiesStatus ?? this.companiesStatus,
+        colorsList: colorsList ?? this.colorsList,
+        orderStatus: orderStatus ?? this.orderStatus,
+        notifyCustomerOfTheCost:
+            notifyCustomerOfTheCost ?? this.notifyCustomerOfTheCost,
+        itemsList: itemsList ?? this.itemsList,
+        ordersItemsNew: ordersItemsNew ?? this.ordersItemsNew,
+        ordersItemsOld: ordersItemsOld ?? this.ordersItemsOld,
+        companiesList: companiesList ?? this.companiesList,
+        items: items ?? this.items,
+        selectedColor: selectedColor ?? this.selectedColor,
+        selectedItem: selectedItem ?? this.selectedItem,
+        selectedCompany: selectedCompany ?? this.selectedCompany,
+        listofRegion: listofRegion ?? this.listofRegion);
   }
 
   @override
@@ -109,13 +113,14 @@ class OrderState extends Equatable {
         itemsList,
         items,
         orderStatus,
-    ordersItemsOld,
-    ordersItemsNew,
+        ordersItemsOld,
+        ordersItemsNew,
         companiesList,
         selectedCompany,
         selectedItem,
         selectedColor,
         orderCurrentPage,
-        notifyCustomerOfTheCost
+        notifyCustomerOfTheCost,
+        listofRegion
       ];
 }

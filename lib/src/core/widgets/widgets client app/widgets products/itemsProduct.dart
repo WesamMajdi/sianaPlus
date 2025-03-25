@@ -42,7 +42,7 @@ class _ItemsProductState extends State<ItemsProduct> {
             shrinkWrap: true,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 0.62,
+              childAspectRatio: 0.65,
             ),
             itemBuilder: (context, index) {
               final product = widget.products[index];
@@ -152,42 +152,78 @@ class _ItemsProductState extends State<ItemsProduct> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          widget.products[index].discount!>0 ?
-                          Row(
-                            children: [
-                              // CustomStyledText(
-                              //   text:"\$${widget.products[index].originalPrice}",
-                              //   fontWeight: FontWeight.bold,
-                              //   fontSize: 22,
-                              // ),
-                              Text(
-                                  "\$${widget.products[index].originalPrice}",
-                                style: const TextStyle(
-                                    fontSize: 15,
-                                  // fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.lineThrough
+                          widget.products[index].discount! > 0
+                              ? Row(
+                                  children: [
+                                    // CustomStyledText(
+                                    //   text:"\$${widget.products[index].originalPrice}",
+                                    //   fontWeight: FontWeight.bold,
+                                    //   fontSize: 22,
+                                    // ),
+                                    Text(
+                                      "\$${widget.products[index].originalPrice}",
+                                      style: const TextStyle(
+                                          fontSize: 15,
+                                          // fontWeight: FontWeight.bold,
+                                          decoration:
+                                              TextDecoration.lineThrough),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Row(
+                                      children: [
+                                        CustomStyledText(
+                                          text:
+                                              "${widget.products[index].price}",
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 22,
+                                        ),
+                                        AppSizedBox.kWSpace10,
+                                        Image.asset(
+                                          "assets/images/logoRiyal.png",
+                                          width: 25,
+                                          color: AppColors.primaryColor,
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                )
+                              : Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: CustomStyledText(
+                                        text: "${widget.products[index].price}",
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 22,
+                                      ),
+                                    ),
+                                    AppSizedBox.kWSpace5,
+                                    Image.asset(
+                                      "assets/images/logoRiyal.png",
+                                      width: 20,
+                                      color: AppColors.primaryColor,
+                                    )
+                                  ],
                                 ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              CustomStyledText(
-                                text:"\$${widget.products[index].price}",
-                                fontWeight: FontWeight.bold,
-                                fontSize: 22,
-                              )
-                            ],
-                          ) : CustomStyledText(
-                            text:"\$${widget.products[index].price}",
-                            fontWeight: FontWeight.bold,
-                            fontSize: 22,
-                          )  ,
-                          Icon(FontAwesomeIcons.cartPlus,
-                              color: (Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? Colors.white
-                                  : Colors.black),
-                              size: 24),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductDetailsPage(
+                                      product: widget.products[index]),
+                                ),
+                              );
+                            },
+                            child: Icon(FontAwesomeIcons.cartPlus,
+                                color: (Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black),
+                                size: 24),
+                          ),
                         ],
                       ),
                     ),

@@ -1,8 +1,6 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/network/global_token.dart';
-import 'package:maintenance_app/src/features/authentication/login/data.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/category/category_screen.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/screens/ordered_product/ordered_product_screen.dart';
 import '../../../../features/client app/presentation/screens/home/home_screen.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -139,17 +137,17 @@ class _MyDrawerState extends State<MyDrawer> {
                   ));
             },
           ),
-          SideMenuTile(
-            icon: FontAwesomeIcons.boxOpen,
-            title: ' طلبات المنتجات',
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const OrderedProductPage(),
-                  ));
-            },
-          ),
+          // SideMenuTile(
+          //   icon: FontAwesomeIcons.boxOpen,
+          //   title: ' طلبات المنتجات',
+          //   onTap: () {
+          //     Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //           builder: (context) => const OrderedProductPage(),
+          //         ));
+          //   },
+          // ),
           SideMenuTile(
             icon: FontAwesomeIcons.toolbox,
             title: 'طلبات الصيانة',
@@ -189,7 +187,7 @@ class _MyDrawerState extends State<MyDrawer> {
             icon: FontAwesomeIcons.rightFromBracket,
             title: 'تسجيل خروج',
             onTap: () {
-              logout(context);
+              // logout(context);
             },
           ),
         ],

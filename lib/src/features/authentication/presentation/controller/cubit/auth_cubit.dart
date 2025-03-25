@@ -1,5 +1,6 @@
 // ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
+import 'package:maintenance_app/src/core/constants/constants.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/forgot_password_model.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/login_model.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/reset_password_model.dart';
@@ -8,6 +9,7 @@ import 'package:maintenance_app/src/features/authentication/data/model/update_em
 import 'package:maintenance_app/src/features/authentication/data/model/update_password_model.dart';
 import 'package:maintenance_app/src/features/authentication/domain/usecases/auth_usecases.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/controller/state/auth_state.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthUseCase authUseCase;
@@ -22,7 +24,18 @@ class AuthCubit extends Cubit<AuthState> {
       result.fold(
         (failure) => emit(state.copyWith(
             status: AuthStatus.failure, errorMessage: failure.message)),
-        (user) => emit(state.copyWith(status: AuthStatus.success, user: user)),
+        (user) async {
+          final prefs = await SharedPreferences.getInstance();
+
+          final isFirstTime = prefs.getBool(FIRST_TIME_KEY) ?? true;
+
+          if (isFirstTime) {
+            // await authRemoteDataSource.registerDevice();
+            await prefs.setBool(FIRST_TIME_KEY, false);
+          }
+
+          emit(state.copyWith(status: AuthStatus.success, user: user));
+        },
       );
     } catch (e) {
       emit(state.copyWith(

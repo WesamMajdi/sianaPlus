@@ -26,10 +26,10 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Either<Failure, void>> createFavorite(PaginationParams paginationParams) async {
+  Future<Either<Failure, void>> createFavorite(
+      PaginationParams paginationParams) async {
     try {
-      final response =
-      await remoteDataSource.createFavorite(paginationParams);
+      final response = await remoteDataSource.createFavorite(paginationParams);
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
@@ -37,10 +37,10 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Either<Failure, void>> deleteFavorite(PaginationParams paginationParams) async {
+  Future<Either<Failure, void>> deleteFavorite(
+      PaginationParams paginationParams) async {
     try {
-      final response =
-      await remoteDataSource.deleteFavorite(paginationParams);
+      final response = await remoteDataSource.deleteFavorite(paginationParams);
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
@@ -50,8 +50,7 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   Future<Either<Failure, void>> deleteAllFavorite() async {
     try {
-      final response =
-      await remoteDataSource.deleteAllFavorite();
+      final response = await remoteDataSource.deleteAllFavorite();
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
@@ -59,10 +58,10 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Either<Failure, List<DiscountModel>>> getDiscounts(PaginationParams paginationParams) async {
+  Future<Either<Failure, List<DiscountModel>>> getDiscounts(
+      PaginationParams paginationParams) async {
     try {
-      final response =
-      await remoteDataSource.getDiscounts(paginationParams);
+      final response = await remoteDataSource.getDiscounts(paginationParams);
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
@@ -70,10 +69,21 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Either<Failure, void>> createOrder(Map<String, Product> cartItems) async {
+  Future<Either<Failure, void>> createOrder(
+    Map<String, Product> cartItems, {
+    required int? region,
+    required int? city,
+    required int? village,
+    required String addressLine1,
+    required String addressLine2,
+  }) async {
     try {
-      final response =
-      await remoteDataSource.createOrder(cartItems);
+      final response = await remoteDataSource.createOrder(cartItems,
+          region: region,
+          city: city,
+          village: village,
+          addressLine1: addressLine1,
+          addressLine2: addressLine2);
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));

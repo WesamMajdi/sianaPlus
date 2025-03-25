@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/gestures.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20categorys/itemsMainCategorys.dart';
@@ -16,24 +15,20 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
-  // int selectedMainCategoryId = 1;
   @override
   void initState() {
-
-    context.read<CategoryCubit>().getDiscount(
-    );
-    !widget.fromHomeScreen
-        ? context.read<CategoryCubit>().fetchSubCategories(
-      mainCategoryId:
-      context.read<CategoryCubit>().state.categories.first.id,
-    )
-        : null;
-
-
     super.initState();
 
+    context.read<CategoryCubit>().getDiscount();
 
-
+    if (!widget.fromHomeScreen) {
+      final categories = context.read<CategoryCubit>().state.categories;
+      if (categories.isNotEmpty) {
+        context.read<CategoryCubit>().fetchSubCategories(
+              mainCategoryId: categories.first.id,
+            );
+      }
+    }
   }
 
   @override

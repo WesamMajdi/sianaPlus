@@ -1,7 +1,6 @@
 import 'package:maintenance_app/src/features/client%20app/domain/entities/notifications/notifications_entity.dart';
 
-class NotificationModel extends NotificationEntity{
-
+class NotificationModel extends NotificationEntity {
   NotificationModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];

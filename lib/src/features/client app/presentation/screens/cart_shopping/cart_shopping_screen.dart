@@ -16,36 +16,35 @@ class CartShoppingPage extends StatelessWidget {
       drawer: const MyDrawer(),
       appBar: const AppBarApplication(text: "سلة التسوق"),
       body: Column(children: [
-        Expanded(child: BlocConsumer<CategoryCubit, CategoryState>(
-          listener: (context, state) {
-            if (state.orderStatus ==OrderStatus.failure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: CustomStyledText(
-                    text: state.errorMessage!,
-                    textColor: Colors.white,
-                  ),
-                  backgroundColor: Colors.red,
+        Expanded(
+            child: BlocConsumer<CategoryCubit, CategoryState>(
+                listener: (context, state) {
+          if (state.orderStatus == OrderStatus.failure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: CustomStyledText(
+                  text: state.errorMessage!,
+                  textColor: Colors.white,
                 ),
-              );
-            }else if(state.orderStatus==OrderStatus.success){
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: CustomStyledText(
-                    text: "تم اضافة الطلب بنجاح",
-                    textColor: Colors.white,
-                  ),
-                  backgroundColor: Colors.green,
+                backgroundColor: Colors.red,
+              ),
+            );
+          } else if (state.orderStatus == OrderStatus.success) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: CustomStyledText(
+                  text: "تم اضافة الطلب بنجاح",
+                  textColor: Colors.white,
                 ),
-              );
+                backgroundColor: Colors.green,
+              ),
+            );
 
-              Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context)=>const HomePage())
-              );
-            }
-          },
-            builder: (context, state) {
-            // context.read<CategoryCubit>().getDiscount();
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const HomePage()));
+          }
+        }, builder: (context, state) {
+          // context.read<CategoryCubit>().getDiscount();
           if (state.cartItems.isEmpty) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,

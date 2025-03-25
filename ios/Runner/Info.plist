@@ -48,12 +48,27 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 
-	<!-- Camera and Photo Library permissions -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>maintenanceplus</string>
+			</array>
+		</dict>
+	</array>
+
 	<key>NSCameraUsageDescription</key>
 	<string>We need access to the camera to take pictures.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need access to the photo library to select pictures.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
     <string>We need your location to show nearby services.</string>
+
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

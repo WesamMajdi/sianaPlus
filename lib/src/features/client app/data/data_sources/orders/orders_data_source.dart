@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/region/region_model.dart';
 import '../../../../../core/error/exception.dart';
 import '../../../../../core/error/handle_http_error.dart';
 import '../../../../../core/network/api_controller.dart';
@@ -346,6 +347,37 @@ class OrderRemoteDataSource {
           },
         );
         return ordersResponse.data!;
+      } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<void> createOrderProduct(CreateOrderRequest createOrderRequest) async {
+    String? token = await TokenManager.getToken();
+    debugPrint(jsonEncode(createOrderRequest.toJson()).toString());
+
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.post(
+          Uri.parse(ApiSetting.createOrder),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode(createOrderRequest.toJson()),
+        );
+
+        debugPrint(response.statusCode.toString());
+
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        debugPrint(responseBody.toString());
+
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
       } on TimeOutExeption {
         rethrow;
       }

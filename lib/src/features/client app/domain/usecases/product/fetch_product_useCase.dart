@@ -41,7 +41,19 @@ class ProductsUseCase {
     return repository.deleteAllFavorite();
   }
 
-  Future<Either<Failure, void>> createOrder(Map<String, Product> cartItems) {
-    return repository.createOrder(cartItems);
+  Future<Either<Failure, void>> createOrder(
+    Map<String, Product> cartItems, {
+    required int? region,
+    required int? city,
+    required int? village,
+    required String addressLine1,
+    required String addressLine2,
+  }) {
+    return repository.createOrder(cartItems,
+        region: region,
+        city: city,
+        village: village,
+        addressLine1: addressLine1,
+        addressLine2: addressLine2);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/screens/login_screen.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -13,7 +14,7 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
     Timer(const Duration(seconds: 5), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const LoginPage()),
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
     });
     //_checkInternetConnection();
@@ -25,7 +26,7 @@ class _SplashPageState extends State<SplashPage> {
     if (isConnected) {
       Timer(const Duration(seconds: 10), () {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const LoginPage()),
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
         );
       });
     } else {

@@ -49,8 +49,7 @@ class ProductRemoteDataSource {
           HandleHttpError.handleHttpError(responseBody);
         }
 
-        final productResponse =
-            BaseResponse<List<ProductModel>>.fromJson(
+        final productResponse = BaseResponse<List<ProductModel>>.fromJson(
           responseBody,
           (json) {
             if (kDebugMode) {
@@ -162,30 +161,31 @@ class ProductRemoteDataSource {
     }
   }
 
-  Future<List<DiscountModel>> getDiscounts(PaginationParams paginationParams) async {
+  Future<List<DiscountModel>> getDiscounts(
+      PaginationParams paginationParams) async {
     String? token = await TokenManager.getToken();
 
     if (await internetConnectionChecker.hasConnection) {
       try {
         final response = await apiController.get(
-          Uri.parse('${ApiSetting.getDiscount}?page=${paginationParams.page}&perPage=${paginationParams.perPage}'),
+          Uri.parse(
+              '${ApiSetting.getDiscount}?page=${paginationParams.page}&perPage=${paginationParams.perPage}'),
           headers: {
             // 'Content-Type': 'application/json',
             'accept': '*/*',
             'Authorization': 'Bearer $token'
           },
         );
-        print( Uri.parse('${ApiSetting.getDiscount}?page=${paginationParams.page}&perPage=${paginationParams.perPage}').toString());
+        print(Uri.parse(
+                '${ApiSetting.getDiscount}?page=${paginationParams.page}&perPage=${paginationParams.perPage}')
+            .toString());
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
-        final productResponse =
-        BaseResponse<List<DiscountModel>>.fromJson(
+        final productResponse = BaseResponse<List<DiscountModel>>.fromJson(
           responseBody,
-              (json) {
-
-
+          (json) {
             return (json['data'] as List)
                 .map((item) => DiscountModel.fromJson(item))
                 .toList();
@@ -196,8 +196,6 @@ class ProductRemoteDataSource {
           print(productResponse.data!);
         }
         return productResponse.data!;
-
-
       } on TimeOutExeption {
         rethrow;
       }
@@ -206,56 +204,50 @@ class ProductRemoteDataSource {
     }
   }
 
-  Future<void> createOrder(Map<String, Product> cartItems) async {
+  Future<void> createOrder(
+    Map<String, Product> cartItems, {
+    required int? region,
+    required int? city,
+    required int? village,
+    required String addressLine1,
+    required String addressLine2,
+  }) async {
     String? token = await TokenManager.getToken();
 
     if (await internetConnectionChecker.hasConnection) {
       try {
-/*
+        final response = await apiController
+            .post(Uri.parse(ApiSetting.createOrder), headers: {
+          'accept': '*/*',
+          'Authorization': 'Bearer $token'
+        }, body: {
+          'total': NavigationService.navigatorKey.currentContext!
+              .read<CategoryCubit>()
+              .state
+              .totalAmount,
+          'regionId': region,
+          'cityId': city,
+          'villageId': village,
+          'addressLine1': addressLine1,
+          'addressLine2': addressLine2,
+          'discount': 0,
+          'orderId': 745,
+          'orders': cartItems.values
+              .map(
+                (e) => {
+                  'count': e.count,
+                  'discount': e.discount,
+                  'price': e.price,
+                  'productName': e.name,
+                  'productColorId': e.selectedColor?.id,
+                  'productColor': e.selectedColor?.name
+                },
+              )
+              .toList()
+        });
+        print(response.body);
+        print(response.statusCode);
 
-{
-  "total": 0,
-  "discount": 0,
-  "orders": [
-    {
-      "count": 0,
-      "discount": 0,
-      "price": 0,
-      "productColorId": 0
-    }
-  ]
-}
- */
-        // if (kDebugMode) {
-        //
-        //   print(
-
-        //   );
-        //
-        //
-        // }
-        final response = await apiController.post(
-          Uri.parse(ApiSetting.createOrder),
-          headers: {
-            'accept': '*/*',
-            'Authorization': 'Bearer $token'
-          },
-          body:{
-            'total': NavigationService.navigatorKey.currentContext!.read<CategoryCubit>().state.totalAmount,
-            'discount': 0,
-            'orders': cartItems.values
-                .map(
-                  (e) => {
-                'count': e.count,
-                'discount': e.discount,
-                'price': e.price,
-                'productColorId': e.selectedColor?.id
-              },
-            )
-                .toList()
-          }
-        );
-        // print( jsonEncode());
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         debugPrint(responseBody.toString());
         if (response.statusCode >= 400) {

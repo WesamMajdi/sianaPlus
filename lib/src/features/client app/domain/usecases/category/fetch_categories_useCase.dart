@@ -1,5 +1,7 @@
 // fetch_categories_usecase.dart
 import 'package:dartz/dartz.dart';
+import 'package:maintenance_app/src/core/network/base_response.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/region/region_model.dart';
 
 import '../../../../../core/error/failure.dart';
 import '../../../../../core/pagination/paginated_response.dart';
@@ -21,5 +23,19 @@ class CategoriesUseCase {
   Future<Either<Failure, PaginatedResponse<CategoryModel>>> getSubCategories(
       PaginationParams paginationParams) {
     return repository.getSubCategories(paginationParams);
+  }
+
+  Future<Either<Failure, BaseResponse<List<BaseViewModel>>>> getRegion() {
+    return repository.getRegion();
+  }
+
+  Future<Either<Failure, BaseResponse<List<BaseViewModel>>>> getCity(
+      int regionId) {
+    return repository.getCity(regionId);
+  }
+
+  Future<Either<Failure, BaseResponse<List<BaseViewModel>>>> getVillage(
+      int cityId) {
+    return repository.getVillage(cityId);
   }
 }

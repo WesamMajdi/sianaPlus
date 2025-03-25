@@ -109,12 +109,12 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const OrderedProductPage(),
+                            builder: (context) => const CartShoppingPage(),
                           ),
                         );
                       },
                       url: 'assets/images/features_4059923.png',
-                      title: 'طلبات المتجر',
+                      title: 'سلة تسوق',
                       color: AppColors.lightGrayColor),
                   ServiceCard(
                       onTap: () {

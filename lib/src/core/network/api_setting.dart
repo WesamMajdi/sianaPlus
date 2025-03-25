@@ -8,7 +8,7 @@ class ApiSetting {
   static String get updateEmail => '$baseUrl/account/ChangeEmail';
   static String get forgotPassword => '$baseUrl/account/SendVerificationCode';
   static String get resetPassword => '$baseUrl/account/VerifyCode';
-
+  static String get creatToken => '$baseUrl/account/CreateToken';
   static String get getMainCategory => '$baseUrl/Categories/GetMainCategories';
   static String get getSubCategory =>
       '$baseUrl/Categories/GetCategoriesByMainCategory';
@@ -137,6 +137,11 @@ class ApiSetting {
       "$baseUrl/Convert/UpdateOrderMaintenance";
   static String get takeOrderTransfer =>
       "$baseUrl/Convert/TakeOrderMaintenance";
+  static String get getRegion => "$baseUrl/Orders/ListRegion";
+  static String get getCity => "$baseUrl/Orders/ListCity";
+  static String get getVillage => "$baseUrl/Orders/ListVillage";
+  static String get createOrderProduct =>
+      '$baseUrl/OrderMaintenances/CreateOrder';
   // // Auth endpoints
   // static String get login => ;
   // static String get signup => '${AppConfig.authEndpoint}/signup';

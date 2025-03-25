@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class TelrService {
-  static Future<String?> createPayment() async {
+  static Future<String?> createPayment(double totalAmount) async {
+    print(totalAmount);
     final url = Uri.parse("https://secure.telr.com/gateway/order.json");
 
     final response = await http.post(
@@ -10,23 +11,31 @@ class TelrService {
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({
         "method": "create",
-        "store": "YOUR_STORE_ID",
-        "authkey": "YOUR_API_KEY",
+        "store": "32217",
+        "authkey": "kpDGr^vFDj@VXFJ6",
         "order": {
           "cartid": "123456",
-          "amount": "10.00",
-          "currency": "AED",
+          "test": 1,
+          "amount": totalAmount.toString(),
+          "currency": "SAR",
           "description": "شراء منتج"
         },
-        "customer": {"name": "John Doe", "email": "johndoe@example.com"},
-        "return": {"url": "yourapp://payment-success"}
+        "return": {
+          "authorised":
+              "http://ebrahim995-001-site3.ktempurl.com/api/Orders/Success",
+          "declined":
+              "http://ebrahim995-001-site3.ktempurl.com/api/Orders/Failed",
+          "cancelled":
+              "http://ebrahim995-001-site3.ktempurl.com/api/Orders/Cancelled"
+        }
       }),
     );
-
+    print(";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;");
+    print(response.body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final ref = data['order']['ref'];
-      return "https://secure.telr.com/gateway/process.html?ref=$ref";
+      String? paymentUrl = data['order']['url'];
+      return paymentUrl;
     } else {
       print("Error: ${response.body}");
       return null;

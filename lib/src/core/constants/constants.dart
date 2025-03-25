@@ -54,6 +54,10 @@ String truncateTextDescription(String text, {int maxLength = 40}) {
   return text.length > maxLength ? '${text.substring(0, maxLength)}...' : text;
 }
 
+String truncateTextEmail(String text, {int maxLength = 30}) {
+  return text.length > maxLength ? '${text.substring(0, maxLength)}...' : text;
+}
+
 List<BoxShadow> shadowList = [
   BoxShadow(
       // ignore: deprecated_member_use

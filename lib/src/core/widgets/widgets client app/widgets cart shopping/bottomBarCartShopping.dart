@@ -1,6 +1,11 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/foundation.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/screens/checkout/checkout_screen.dart';
+import 'package:maintenance_app/src/core/services/telr_service.dart';
+import 'package:maintenance_app/src/core/services/telr_service_xml.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/region/region_model.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/shipping/shipping_screen.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/webviwe/telr_payment_screen.dart';
 import '../../../../features/client app/domain/entities/product/discount_entity.dart';
 import '../../../../features/client app/presentation/controller/cubits/category_cubit.dart';
 import '../../../../features/client app/presentation/controller/states/category_state.dart';
@@ -12,25 +17,30 @@ class BottomBarCartTotal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CategoryCubit,CategoryState>(
+    return BlocBuilder<CategoryCubit, CategoryState>(
       builder: (context, state) => BottomAppBar(
         height: 300,
-        child:
-        BlocBuilder<CategoryCubit, CategoryState>(builder: (context, state) {
+        child: BlocBuilder<CategoryCubit, CategoryState>(
+            builder: (context, state) {
           // print(state.discounts);
 
-          DiscountEntity? discountEntity= state.discounts.where(
-            (element) => element.id==1,
-          ).first;
+          DiscountEntity? discountEntity = state.discounts
+              .where(
+                (element) => element.id == 1,
+              )
+              .first;
           final subTotalAmount = state.subTotalAmount ?? 0.0;
-          final discountWithFee = ((subTotalAmount) - ((subTotalAmount)*(discountEntity.discount!)/100) + discountEntity.deliveryfees!) ;
+          final discountWithFee = ((subTotalAmount) -
+              ((subTotalAmount) * (discountEntity.discount!) / 100) +
+              discountEntity.deliveryfees!);
 
-          final totalAmount =discountWithFee + ((discountWithFee) * (discountEntity.tax!/100));
+          final totalAmount = discountWithFee +
+              ((discountWithFee) * (discountEntity.tax! / 100));
 
           return Column(
             children: [
               Container(
-                margin: const EdgeInsets.symmetric( horizontal: 10),
+                margin: const EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -38,10 +48,23 @@ class BottomBarCartTotal extends StatelessWidget {
                       text: "المجموع الفرعي:",
                       fontSize: 18,
                     ),
-                    CustomStyledText(
-                      text: "\$${subTotalAmount.toStringAsFixed(2)}",
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: CustomStyledText(
+                            text: "${subTotalAmount.toStringAsFixed(2)}",
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        AppSizedBox.kWSpace10,
+                        Image.asset(
+                          "assets/images/logoRiyal.png",
+                          width: 20,
+                          color: AppColors.primaryColor,
+                        )
+                      ],
                     ),
                   ],
                 ),
@@ -57,7 +80,7 @@ class BottomBarCartTotal extends StatelessWidget {
                     ),
                     Container(
                       margin: const EdgeInsets.only(left: 30),
-                      child:  CustomStyledText(
+                      child: CustomStyledText(
                         text: "${discountEntity.discount ?? 0}%",
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -75,13 +98,23 @@ class BottomBarCartTotal extends StatelessWidget {
                       text: "رسوم التوصيل :",
                       fontSize: 18,
                     ),
-                    Container(
-                      // margin: const EdgeInsets.only(left: 30),
-                      child:  CustomStyledText(
-                        text: "${discountEntity.deliveryfees ?? 0} ر.س",
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: CustomStyledText(
+                            text: "${discountEntity.deliveryfees ?? 0}",
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        AppSizedBox.kWSpace10,
+                        Image.asset(
+                          "assets/images/logoRiyal.png",
+                          width: 20,
+                          color: AppColors.primaryColor,
+                        )
+                      ],
                     ),
                   ],
                 ),
@@ -97,7 +130,7 @@ class BottomBarCartTotal extends StatelessWidget {
                     ),
                     Container(
                       margin: const EdgeInsets.only(left: 30),
-                      child:  CustomStyledText(
+                      child: CustomStyledText(
                         text: "${discountEntity.tax ?? 0}%",
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -120,48 +153,85 @@ class BottomBarCartTotal extends StatelessWidget {
                       text: "المجموع الكلي:",
                       fontSize: 18,
                     ),
-                    CustomStyledText(
-                      text: "\$${totalAmount.toStringAsFixed(2)}",
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Row(
+                        children: [
+                          CustomStyledText(
+                            text: "${totalAmount.toStringAsFixed(2)}",
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          AppSizedBox.kWSpace10,
+                          Image.asset(
+                            "assets/images/logoRiyal.png",
+                            width: 20,
+                            color: AppColors.primaryColor,
+                          )
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-              AppSizedBox.kVSpace10,
               SizedBox(
-                width: double.infinity,
-                child:state.orderStatus == OrderStatus.loading
-                    ? const Center(child: CircularProgressIndicator())
-                    :  ElevatedButton.icon(
-                  style: ButtonStyle(
-                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    padding: WidgetStateProperty.all(
-                      const EdgeInsets.symmetric(vertical: 13, horizontal: 15),
-                    ),
-                    backgroundColor: WidgetStateProperty.all(
-                      (Theme.of(context).brightness == Brightness.dark
-                          ? AppColors.lightGrayColor
-                          : AppColors.primaryColor),
-                    ),
-                  ),
-                  onPressed: () {
-                    context.read<CategoryCubit>().createOrder(state.cartItems);
-                  },
-                  icon: const Icon(
-                    FontAwesomeIcons.creditCard,
-                    color: Colors.white,
-                  ),
-                  label: const CustomStyledText(
-                    text: "انشاء طلب",
-                    textColor: Colors.white,
-                  ),
-                ),
-              )
+                  width: double.infinity,
+                  child: state.orderStatus == OrderStatus.loading
+                      ? const Center(child: CircularProgressIndicator())
+                      : ElevatedButton.icon(
+                          style: ButtonStyle(
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            padding: WidgetStateProperty.all(
+                              const EdgeInsets.symmetric(
+                                  vertical: 13, horizontal: 15),
+                            ),
+                            backgroundColor: WidgetStateProperty.all(
+                              (Theme.of(context).brightness == Brightness.dark
+                                  ? AppColors.lightGrayColor
+                                  : AppColors.primaryColor),
+                            ),
+                          ),
+                          onPressed: () async {
+                            final totalAmount = discountWithFee +
+                                ((discountWithFee) *
+                                    (discountEntity.tax! / 100));
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CheckoutPage(onConfirm: () async {
+                                  String? paymentUrl =
+                                      await TelrServiceXML.createPayment(
+                                          totalAmount);
+                                  if (paymentUrl != null) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => TelrPaymentScreen(
+                                            paymentUrl: paymentUrl),
+                                      ),
+                                    );
+                                  } else {
+                                    print('faild');
+                                  }
+                                }),
+                              ),
+                            );
+                          },
+                          icon: const Icon(
+                            FontAwesomeIcons.creditCard,
+                            color: Colors.white,
+                          ),
+                          label: const CustomStyledText(
+                            text: "انشاء طلب",
+                            textColor: Color.fromARGB(255, 255, 255, 255),
+                          ),
+                        )),
             ],
           );
         }),

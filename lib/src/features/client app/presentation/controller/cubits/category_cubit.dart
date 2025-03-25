@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/region/region_model.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_color.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/usecases/product/fetch_product_useCase.dart';
@@ -13,7 +14,9 @@ class CategoryCubit extends Cubit<CategoryState> {
   List<Product> cart = [];
 
   CategoryCubit(this.categoriesUseCase, this.productsUseCase)
-      : super(CategoryState(cartItems: {},));
+      : super(CategoryState(
+          cartItems: {},
+        ));
 
   Future<void> fetchCategories({bool refresh = false}) async {
     emit(state.copyWith(mainCategoryStatus: MainCategoryStatus.loading));
@@ -65,13 +68,54 @@ class CategoryCubit extends Cubit<CategoryState> {
 
   Future<void> createOrder(Map<String, Product> cartItems) async {
     emit(state.copyWith(orderStatus: OrderStatus.loading));
-    final result = await productsUseCase.createOrder(cartItems);
+
+    final regionId = state.regionId;
+    final cityId = state.cityId;
+    final villageId = state.villageId;
+    final addressLine1 = state.addressLine1 ?? '';
+    final addressLine2 = state.addressLine2 ?? '';
+
+    print('Region: $regionId');
+    print('City: $cityId');
+    print('Village: $villageId');
+    print('Address Line 1: $addressLine1');
+    print('Address Line 2: $addressLine2');
+
+    final result = await productsUseCase.createOrder(
+      cartItems,
+      region: regionId,
+      city: cityId,
+      village: villageId,
+      addressLine1: addressLine1,
+      addressLine2: addressLine2,
+    );
+
     result.fold(
       (failure) => emit(state.copyWith(
           orderStatus: OrderStatus.failure, errorMessage: failure.message)),
       (order) =>
           emit(state.copyWith(orderStatus: OrderStatus.success, cartItems: {})),
     );
+  }
+
+  void updateCheckoutData({
+    required int? region,
+    required int? city,
+    required int? village,
+    required String addressLine1,
+    required String addressLine2,
+  }) {
+    emit(CategoryState(
+      listofRegion: state.listofRegion,
+      listOfCity: state.listOfCity,
+      listOfVillage: state.listOfVillage,
+      regionId: region,
+      cityId: city,
+      villageId: village,
+      addressLine1: addressLine1,
+      addressLine2: addressLine2,
+      cartItems: {},
+    ));
   }
 
   Future<void> getProductByCategory(
@@ -90,16 +134,17 @@ class CategoryCubit extends Cubit<CategoryState> {
 
   Future<void> getDiscount() async {
     emit(state.copyWith(discountStatus: DiscountStatus.loading));
-    const page =  1 ;
-    final result = await productsUseCase.getDiscounts(
-        const PaginationParams(page: page,perPage: 10));
+    const page = 1;
+    final result = await productsUseCase
+        .getDiscounts(const PaginationParams(page: page, perPage: 10));
     result.fold(
-          (failure) => emit(state.copyWith(
-              discountStatus: DiscountStatus.failure, errorMessage: failure.message)),
-          (discounts){
-            return emit(state.copyWith(
-                discountStatus: DiscountStatus.success, discounts: discounts));
-          },
+      (failure) => emit(state.copyWith(
+          discountStatus: DiscountStatus.failure,
+          errorMessage: failure.message)),
+      (discounts) {
+        return emit(state.copyWith(
+            discountStatus: DiscountStatus.success, discounts: discounts));
+      },
     );
   }
 
@@ -179,10 +224,9 @@ class CategoryCubit extends Cubit<CategoryState> {
     });
 
     // final totalAmount =
-    emit(state.copyWith(cartItems: updatedItems, subTotalAmount: subTotalAmount));
+    emit(state.copyWith(
+        cartItems: updatedItems, subTotalAmount: subTotalAmount));
   }
-
-
 
   void increaseQuantity(String productId) {
     final updatedItems = List<Product>.from(state.products);
@@ -191,14 +235,16 @@ class CategoryCubit extends Cubit<CategoryState> {
         .indexWhere((element) => element.id.toString() == productId);
 
     if (productIndex != -1) {
-      updatedItems[productIndex].userCount = updatedItems[productIndex].userCount! + 1;
+      updatedItems[productIndex].userCount =
+          updatedItems[productIndex].userCount! + 1;
     }
 
     final subTotalAmount = updatedItems.fold(0.0, (sum, item) {
       return sum + (item.basePrice! * item.userCount!);
     });
 
-    emit(state.copyWith(products: updatedItems, subTotalAmount: subTotalAmount));
+    emit(
+        state.copyWith(products: updatedItems, subTotalAmount: subTotalAmount));
   }
 
   void decreaseQuantity(String productId) {
@@ -217,7 +263,8 @@ class CategoryCubit extends Cubit<CategoryState> {
     final subTotalAmount = updatedItems.fold(0.0, (sum, item) {
       return sum + (item.basePrice! * item.userCount!);
     });
-    emit(state.copyWith(products: updatedItems, subTotalAmount: subTotalAmount));
+    emit(
+        state.copyWith(products: updatedItems, subTotalAmount: subTotalAmount));
   }
 
   void removeItem(String productId) {
@@ -266,5 +313,83 @@ class CategoryCubit extends Cubit<CategoryState> {
 
   void clearCart() {
     emit(state.copyWith(cartItems: {}, totalAmount: 0.0));
+  }
+
+  // Future<void> fetchAllRegion() async {
+  //   emit(state.copyWith(regionStatus: RegionStatus.loading));
+  //   try {
+  //     final result = await categoriesUseCase.getRegion();
+
+  //     result.fold(
+  //       (failure) => emit(state.copyWith(
+  //         regionStatus: RegionStatus.failure,
+  //       )),
+  //       (region) => emit(state.copyWith(
+  //           regionStatus: RegionStatus.success, listofRegion: region.data)),
+  //     );
+  //   } catch (e) {
+  //     emit(state.copyWith(
+  //       orderStatus: OrderStatus.failure,
+  //     ));
+  //   }
+  // }
+
+  Future<void> fetchAllRegion() async {
+    emit(state.copyWith(regionStatus: RegionStatus.loading));
+    final result = await categoriesUseCase.getRegion();
+    result.fold(
+      (failure) => emit(state.copyWith(regionStatus: RegionStatus.failure)),
+      (region) => emit(state.copyWith(
+          regionStatus: RegionStatus.success, listofRegion: region.data!)),
+    );
+  }
+
+  selectItem(BaseViewModel item) {
+    emit(state.copyWith(
+      selectedItem: item,
+      selectedItemCity: null,
+      selectedItemVillage: null,
+      listOfCity: [],
+      listOfVillage: [],
+      regionStatus: RegionStatus.initial,
+    ));
+    fetchAllCity(item.id);
+  }
+
+  Future<void> fetchAllCity(int regionId) async {
+    emit(state.copyWith(regionStatus: RegionStatus.loading));
+    final result = await categoriesUseCase.getCity(regionId);
+    result.fold(
+      (failure) => emit(state.copyWith(regionStatus: RegionStatus.failure)),
+      (city) => emit(state.copyWith(
+          regionStatus: RegionStatus.success, listOfCity: city.data!)),
+    );
+  }
+
+  selectItemCity(BaseViewModel item) {
+    emit(state.copyWith(
+      selectedItemCity: item,
+      selectedItemVillage: null,
+      listOfVillage: [],
+      regionStatus: RegionStatus.initial,
+    ));
+    fetchAllVillage(item.id);
+  }
+
+  Future<void> fetchAllVillage(int cityId) async {
+    emit(state.copyWith(regionStatus: RegionStatus.loading));
+    final result = await categoriesUseCase.getVillage(cityId);
+    result.fold(
+      (failure) => emit(state.copyWith(regionStatus: RegionStatus.failure)),
+      (village) => emit(state.copyWith(
+          regionStatus: RegionStatus.success, listOfVillage: village.data!)),
+    );
+  }
+
+  selectItemVillage(BaseViewModel item) {
+    emit(state.copyWith(
+      selectedItemVillage: item,
+      regionStatus: RegionStatus.initial,
+    ));
   }
 }

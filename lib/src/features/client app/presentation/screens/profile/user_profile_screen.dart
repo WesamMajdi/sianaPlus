@@ -103,7 +103,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     children: [
                       UserInfoProfile(
                         icon: CupertinoIcons.mail_solid,
-                        text: profile.email ?? "لا يوجد بريد إلكتروني",
+                        text: truncateTextEmail(profile.email!) ??
+                            "لا يوجد بريد إلكتروني",
                       ),
                       const Divider(),
                       UserInfoProfile(
@@ -141,14 +142,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     childAspectRatio: 1.7,
                     children: [
                       StatisticsCard(
-                          title: 'عدد الطلبات الحالية',
+                          title: 'الطلبات الحالية',
                           value: profile.orderShopCount?.toString() ?? "0"),
                       StatisticsCard(
-                          title: 'عدد الطلبات السابقة',
+                          title: 'الطلبات السابقة',
                           value: profile.orderMaintenancesCount?.toString() ??
                               "0"),
                       StatisticsCard(
-                          title: 'عدد المنتجات المفضلة',
+                          title: 'المنتجات المفضلة',
                           value: profile.orderShopNewCount?.toString() ?? "0"),
                       StatisticsCard(
                           title: 'مشتريات الشهر الحالي',

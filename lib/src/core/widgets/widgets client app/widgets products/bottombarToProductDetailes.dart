@@ -15,18 +15,30 @@ class BottombarToProductDetailes extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CategoryCubit, CategoryState>(
       builder: (context, state) {
-        state.subTotalAmount = product.basePrice* product.userCount;
+        state.subTotalAmount = product.price * product.userCount;
         return BottomAppBar(
           child: Container(
-            height: 70,
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CustomStyledText(
-                  text: "\$${state.subTotalAmount}",
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: CustomStyledText(
+                        text: "${state.subTotalAmount}",
+                        fontSize: 24,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    AppSizedBox.kWSpace10,
+                    Image.asset(
+                      "assets/images/logoRiyal.png",
+                      width: 25,
+                      color: AppColors.primaryColor,
+                    )
+                  ],
                 ),
                 ElevatedButton.icon(
                     style: ButtonStyle(
@@ -38,9 +50,9 @@ class BottombarToProductDetailes extends StatelessWidget {
                             const EdgeInsets.symmetric(
                                 vertical: 13, horizontal: 15)),
                         backgroundColor:
-                        WidgetStateProperty.all(AppColors.secondaryColor)),
+                            WidgetStateProperty.all(AppColors.secondaryColor)),
                     onPressed: () {
-                      if(product.selectedColor!=null){
+                      if (product.selectedColor != null) {
                         context.read<CategoryCubit>().addProductToCart(product);
                         Navigator.push(
                           context,
@@ -48,9 +60,10 @@ class BottombarToProductDetailes extends StatelessWidget {
                             builder: (context) => const CartShoppingPage(),
                           ),
                         );
-                      }else{
+                      } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
+                            duration: Duration(seconds: 2),
                             content: CustomStyledText(
                               text: "يجب اختيار اللون",
                               textColor: Colors.white,
