@@ -16,7 +16,7 @@ class OnlineCubit extends Cubit<OnlineState> {
   }) async {
     emit(state.copyWith(onlineStatus: OnlineStatus.loading));
     try {
-      final page = refresh ? 1 : (state.receiptsOnline.length ~/ 10) + 1;
+      final page = refresh ? 1 : 1;
       final result = await onlineUseCase.getAllOnlineItem(
         PaginationParams(page: page),
         searchQuery,

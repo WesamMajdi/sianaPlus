@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1017929308152",
-    "project_id": "maintenanceapp-5d302",
-    "storage_bucket": "maintenanceapp-5d302.firebasestorage.app"
+    "project_number": "536326779179",
+    "project_id": "maintenanceapp-98abd",
+    "storage_bucket": "maintenanceapp-98abd.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1017929308152:android:bbd9034b71488a0a66280d",
+        "mobilesdk_app_id": "1:536326779179:android:81f93144071c5640fa956e",
         "android_client_info": {
           "package_name": "com.example.maintenance_app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBlUFEmJD0TZyvi2oUe6ci7PdKvx1MYxT8"
+          "current_key": "AIzaSyC27o8KluDir8XUnpkOMUEBvazbOM-TtWI"
         }
       ],
       "services": {

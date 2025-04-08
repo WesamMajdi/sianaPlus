@@ -10,6 +10,7 @@ class ReceiveOrderMaintenancesModel
           company: json['company'],
           color: json['color'],
           description: json['description'],
+          maintenanceRequestStatus: json['maintenanceRequestStatus'],
         );
 
   Map<String, dynamic> toJson() => {
@@ -18,5 +19,6 @@ class ReceiveOrderMaintenancesModel
         'company': company,
         'color': color,
         'description': description,
+        'maintenanceRequestStatus': maintenanceRequestStatus
       };
 }

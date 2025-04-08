@@ -3,17 +3,19 @@ import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain
 class ReceiveMaintenanceOrderModel extends ReceiveMaintenanceOrderEntity {
   ReceiveMaintenanceOrderModel.fromJson(Map<String, dynamic> json)
       : super(
-          id: json['id'],
-          customerName: json['customerName'],
-          locationForDelivery: json['locationForDelivery'],
-          customerPhoneNumber: json['customerPhoneNumber'],
-          total: (json['total'] as int?)?.toDouble(),
-          discount: (json['discount'] as int?)?.toDouble(),
-          totalAfterDiscount: (json['totalAfterDiscount'] as int?)?.toDouble(),
-          handReceiptId: json['handReceiptId'],
-          deliveryDate: json['deliveryDate'],
-          orderMaintenanceStatus: json['orderMaintenanceStatus'],
-        );
+            id: json['id'],
+            customerName: json['customerName'],
+            locationForDelivery: json['locationForDelivery'],
+            customerPhoneNumber: json['customerPhoneNumber'],
+            total: (json['total'] as int?)?.toDouble(),
+            discount: (json['discount'] as int?)?.toDouble(),
+            totalAfterDiscount:
+                (json['totalAfterDiscount'] as int?)?.toDouble(),
+            handReceiptId: json['handReceiptId'],
+            deliveryDate: json['deliveryDate'],
+            orderMaintenanceStatus: json['orderMaintenanceStatus'],
+            createdAt: json['createdAt'],
+            isPayid: json['isPayid']);
 
   Map<String, dynamic> toJson() {
     return {
@@ -27,6 +29,8 @@ class ReceiveMaintenanceOrderModel extends ReceiveMaintenanceOrderEntity {
       'handReceiptId': handReceiptId,
       'deliveryDate': deliveryDate,
       'orderMaintenanceStatus': orderMaintenanceStatus,
+      'createdAt': createdAt,
+      'isPayid': isPayid
     };
   }
 }

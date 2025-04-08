@@ -137,4 +137,156 @@ class OrderCubit extends Cubit<OrderState> {
           orderStatus: OrderStatus.success, ordersItemsOld: orders.items)),
     );
   }
+
+  Future<void> getNewOrderId() async {
+    emit(state.copyWith(orderStatus: OrderStatus.loading));
+
+    try {
+      final result = await orderUseCase.getNewOrderId();
+
+      result.fold(
+        (failure) => emit(state.copyWith(orderStatus: OrderStatus.failure)),
+        (orderId) => emit(state.copyWith(
+          orderStatus: OrderStatus.success,
+          newOrderId: orderId,
+        )),
+      );
+    } catch (e) {
+      emit(state.copyWith(orderStatus: OrderStatus.failure));
+      print('Error: $e');
+    }
+  }
+
+  Future<void> getNewOrderMaintenance() async {
+    emit(state.copyWith(orderStatus: OrderStatus.loading));
+
+    try {
+      final result = await orderUseCase.getNewOrderMaintenance();
+
+      result.fold(
+        (failure) => emit(state.copyWith(orderStatus: OrderStatus.failure)),
+        (order) => emit(state.copyWith(
+          orderStatus: OrderStatus.success,
+          newOrderMaintenanceId: order.newId,
+          fees: order.fees,
+        )),
+      );
+    } catch (e) {
+      emit(state.copyWith(orderStatus: OrderStatus.failure));
+      print('Error: $e');
+    }
+  }
+
+  Future<void> getOrderMaintenanceRequestsForApproval(
+      {bool refresh = false}) async {
+    emit(state.copyWith(orderApprovalStatus: OrderForApprovalStatus.loading));
+    final page = refresh ? 1 : 1;
+    final result = await orderUseCase
+        .getOrderMaintenanceRequestsForApproval(PaginationParams(page: page));
+    result.fold(
+      (failure) => emit(
+          state.copyWith(orderApprovalStatus: OrderForApprovalStatus.failure)),
+      (orders) => emit(state.copyWith(
+          orderApprovalStatus: OrderForApprovalStatus.success,
+          ordersItemsApprovel: orders.items)),
+    );
+  }
+
+  Future<void> responseFromTheCustomer(
+      {required int receiptItemId,
+      bool? customerApproved,
+      String? reasonForRefusingMaintenance}) async {
+    emit(state.copyWith(orderApprovalStatus: OrderForApprovalStatus.loading));
+    try {
+      final result = await orderUseCase.responseFromTheCustomer(
+        receiptItemId: receiptItemId,
+        customerApproved: customerApproved,
+        reasonForRefusingMaintenance: reasonForRefusingMaintenance,
+      );
+      result.fold(
+        (failure) => emit(state.copyWith(
+          orderApprovalStatus: OrderForApprovalStatus.failure,
+        )),
+        (response) => emit(state.copyWith(
+          orderApprovalStatus: OrderForApprovalStatus.success,
+        )),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        orderApprovalStatus: OrderForApprovalStatus.failure,
+      ));
+    }
+  }
+
+  Future<void> addHandReceiptItemsByDm(
+      int receiptItemId, createOrderRequest) async {
+    emit(state.copyWith(orderCreationStatus: OrderCreationStatus.loading));
+    try {
+      final result = await orderUseCase.addHandReceiptItemsByDm(
+          receiptItemId, createOrderRequest);
+      result.fold(
+        (failure) => emit(state.copyWith(
+          orderCreationStatus: OrderCreationStatus.failure,
+        )),
+        (response) => emit(state.copyWith(
+          orderCreationStatus: OrderCreationStatus.success,
+        )),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        orderCreationStatus: OrderCreationStatus.failure,
+      ));
+    }
+  }
+
+  Future<void> getOrderProductByUserNew({bool refresh = false}) async {
+    emit(state.copyWith(orderProductStatus: OrderProductStatus.loading));
+    final page = refresh ? 1 : state.orderCurrentPage;
+    final result = await orderUseCase
+        .getOrderProductByUserNew(PaginationParams(page: page));
+    result.fold(
+      (failure) =>
+          emit(state.copyWith(orderProductStatus: OrderProductStatus.failure)),
+      (orders) => emit(state.copyWith(
+          orderProductStatus: OrderProductStatus.success,
+          ordersProductItemsNew: orders.items)),
+    );
+  }
+
+  Future<void> getOrderProductByUserOld({bool refresh = false}) async {
+    emit(state.copyWith(orderProductStatus: OrderProductStatus.loading));
+    final page = refresh ? 1 : state.orderCurrentPage;
+    final result = await orderUseCase
+        .getOrderProductByUserOld(PaginationParams(page: page));
+    result.fold(
+      (failure) =>
+          emit(state.copyWith(orderProductStatus: OrderProductStatus.failure)),
+      (orders) => emit(state.copyWith(
+          orderProductStatus: OrderProductStatus.success,
+          ordersProductItemsOld: orders.items)),
+    );
+  }
+
+  Future<void> getAllItemByOrder(int basketId) async {
+    emit(state.copyWith(orderProductStatus: OrderProductStatus.loading));
+
+    try {
+      final result = await orderUseCase.getAllItemByOrder(basketId);
+
+      result.fold(
+        (failure) {
+          emit(state.copyWith(orderProductStatus: OrderProductStatus.failure));
+        },
+        (order) {
+          emit(state.copyWith(
+            orderProductStatus: OrderProductStatus.success,
+            basket: order,
+          ));
+        },
+      );
+    } catch (e) {
+      emit(state.copyWith(orderProductStatus: OrderProductStatus.failure));
+      print('Error: $e');
+    }
+  }
 }

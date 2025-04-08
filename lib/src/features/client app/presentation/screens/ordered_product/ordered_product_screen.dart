@@ -1,7 +1,23 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20order/itemMaintenanceOrders.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20order/itemsProductOrders.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
 
-class OrderedProductPage extends StatelessWidget {
-  const OrderedProductPage({Key? key}) : super(key: key);
+class OrdersProductPage extends StatefulWidget {
+  const OrdersProductPage({super.key});
+
+  @override
+  State<OrdersProductPage> createState() => _OrdersProductPageState();
+}
+
+class _OrdersProductPageState extends State<OrdersProductPage> {
+  @override
+  void initState() {
+    context.read<OrderCubit>().getOrderProductByUserNew();
+    context.read<OrderCubit>().getOrderProductByUserOld();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +38,11 @@ class OrderedProductPage extends StatelessWidget {
           bottom: TabBar(
             labelColor: (Theme.of(context).brightness == Brightness.dark
                 ? AppColors.lightGrayColor
-                : AppColors.darkGrayColor),
-            unselectedLabelColor:
-                (Theme.of(context).brightness == Brightness.dark
-                    ? AppColors.lightGrayColor
-                    : AppColors.darkGrayColor),
-            indicatorColor: AppColors.secondaryColor,
+                : AppColors.primaryColor),
+            unselectedLabelColor: Colors.grey.withOpacity(0.5),
+            indicatorColor: (Theme.of(context).brightness == Brightness.dark
+                ? AppColors.lightGrayColor
+                : AppColors.primaryColor),
             labelStyle: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w500,
@@ -43,18 +58,73 @@ class OrderedProductPage extends StatelessWidget {
           backgroundColor: Colors.transparent,
           title: Container(
             margin: const EdgeInsets.only(left: 60),
-            child: const Center(
+            child: Center(
               child: CustomStyledText(
                 text: 'طلبات المنتجات',
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
-                textColor: AppColors.secondaryColor,
+                textColor: (Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.lightGrayColor
+                    : AppColors.primaryColor),
               ),
             ),
           ),
         ),
-        body: const TabBarView(
-          children: [PreviousProductOrdersTab(), CurrentProductOrdersTab()],
+        body: TabBarView(
+          children: [
+            BlocBuilder<OrderCubit, OrderState>(
+              builder: (context, state) {
+                if (state.orderProductStatus == OrderProductStatus.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state.orderProductStatus == OrderProductStatus.failure) {
+                  return const Center(child: Text('فشلت العملية'));
+                }
+                if (state.orderProductStatus == OrderProductStatus.success &&
+                    state.ordersProductItemsNew!.isNotEmpty) {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: state.ordersProductItemsNew!.length,
+                    itemBuilder: (context, index) {
+                      return ProductOrdersPage(
+                        state: state,
+                        orderProductEntity: state.ordersProductItemsNew![index],
+                      );
+                    },
+                  );
+                }
+                return const Center(
+                    child:
+                        CustomStyledText(text: 'لا توجد طلبات منتجات سابقة'));
+              },
+            ),
+            BlocBuilder<OrderCubit, OrderState>(
+              builder: (context, state) {
+                if (state.orderProductStatus == OrderProductStatus.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (state.orderProductStatus == OrderProductStatus.failure) {
+                  return const Center(child: Text('فشلت العملية'));
+                }
+                if (state.orderProductStatus == OrderProductStatus.success &&
+                    state.ordersProductItemsOld!.isNotEmpty) {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: state.ordersProductItemsOld!.length,
+                    itemBuilder: (context, index) {
+                      return ProductOrdersPage(
+                        state: state,
+                        orderProductEntity: state.ordersProductItemsOld![index],
+                      );
+                    },
+                  );
+                }
+                return const Center(
+                    child:
+                        CustomStyledText(text: 'لا توجد طلبات منتجات سابقة'));
+              },
+            ),
+          ],
         ),
       ),
     );

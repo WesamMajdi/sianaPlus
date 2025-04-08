@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/appBarApp.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/customButtonApp.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/customStyledText.dart';
 
 // ignore: use_key_in_widget_constructors
@@ -84,12 +85,6 @@ class _MapPickerScreenState extends State<MapPickerScreen> {
     return Scaffold(
       appBar: AppBarApplicationArrow(
         text: "حدد موقعك",
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.check),
-            onPressed: _confirmLocation,
-          )
-        ],
       ),
       body: Stack(
         children: [
@@ -111,14 +106,8 @@ class _MapPickerScreenState extends State<MapPickerScreen> {
             bottom: 20,
             left: 20,
             right: 20,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                textStyle: const TextStyle(fontSize: 16),
-              ),
-              onPressed: _confirmLocation,
-              child: const CustomStyledText(text: 'تأكيد الموقع'),
-            ),
+            child:
+                CustomButton(text: "تأكيد الموقع", onPressed: _confirmLocation),
           ),
         ],
       ),

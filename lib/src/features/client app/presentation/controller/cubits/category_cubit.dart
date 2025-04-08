@@ -1,7 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/region/region_model.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/product/discount_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_color.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/product/search_product_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/usecases/product/fetch_product_useCase.dart';
 
 import '../../../../../core/pagination/pagination_params.dart';
@@ -11,6 +14,7 @@ import '../states/category_state.dart';
 class CategoryCubit extends Cubit<CategoryState> {
   final CategoriesUseCase categoriesUseCase;
   final ProductsUseCase productsUseCase;
+
   List<Product> cart = [];
 
   CategoryCubit(this.categoriesUseCase, this.productsUseCase)
@@ -74,12 +78,6 @@ class CategoryCubit extends Cubit<CategoryState> {
     final villageId = state.villageId;
     final addressLine1 = state.addressLine1 ?? '';
     final addressLine2 = state.addressLine2 ?? '';
-
-    print('Region: $regionId');
-    print('City: $cityId');
-    print('Village: $villageId');
-    print('Address Line 1: $addressLine1');
-    print('Address Line 2: $addressLine2');
 
     final result = await productsUseCase.createOrder(
       cartItems,
@@ -268,13 +266,29 @@ class CategoryCubit extends Cubit<CategoryState> {
   }
 
   void removeItem(String productId) {
-    final updatedItems = Map<String, Product>.from(state.cartItems!);
-    updatedItems.remove(productId);
+    final updatedCart = Map<String, Product>.from(state.cartItems);
 
-    final totalAmount = updatedItems.values
-        .fold(0.0, (sum, item) => sum + (item.price! * item.count!));
+    updatedCart.remove(productId);
 
-    emit(state.copyWith(cartItems: updatedItems, totalAmount: totalAmount));
+    if (updatedCart.isEmpty) {
+      emit(state.copyWith(
+        cartItems: updatedCart,
+        subTotalAmount: 0,
+        totalAmount: 0,
+        discounts: [],
+      ));
+    } else {
+      final newSubTotal = updatedCart.values.fold(
+        0.0,
+        (total, product) => total + product.price,
+      );
+
+      emit(state.copyWith(
+        cartItems: updatedCart,
+        subTotalAmount: newSubTotal,
+        discounts: state.discounts,
+      ));
+    }
   }
 
   void toggleFavorite(int productId) {
@@ -288,12 +302,10 @@ class CategoryCubit extends Cubit<CategoryState> {
       updatedItems[productIndex].isFavorite =
           !updatedItems[productIndex].isFavorite!;
       if (updatedItems[productIndex].isFavorite!) {
-        // Add only if it's marked as favorite
         if (!favouriteList.contains(updatedItems[productIndex])) {
           favouriteList.add(updatedItems[productIndex]);
         }
       } else {
-        // Remove if it's unmarked as favorite
         favouriteList.removeWhere((item) => item.id == productId);
       }
     }
@@ -312,27 +324,9 @@ class CategoryCubit extends Cubit<CategoryState> {
   }
 
   void clearCart() {
-    emit(state.copyWith(cartItems: {}, totalAmount: 0.0));
+    emit(state.copyWith(
+        cartItems: {}, subTotalAmount: 0, totalAmount: 0, discounts: []));
   }
-
-  // Future<void> fetchAllRegion() async {
-  //   emit(state.copyWith(regionStatus: RegionStatus.loading));
-  //   try {
-  //     final result = await categoriesUseCase.getRegion();
-
-  //     result.fold(
-  //       (failure) => emit(state.copyWith(
-  //         regionStatus: RegionStatus.failure,
-  //       )),
-  //       (region) => emit(state.copyWith(
-  //           regionStatus: RegionStatus.success, listofRegion: region.data)),
-  //     );
-  //   } catch (e) {
-  //     emit(state.copyWith(
-  //       orderStatus: OrderStatus.failure,
-  //     ));
-  //   }
-  // }
 
   Future<void> fetchAllRegion() async {
     emit(state.copyWith(regionStatus: RegionStatus.loading));
@@ -391,5 +385,45 @@ class CategoryCubit extends Cubit<CategoryState> {
       selectedItemVillage: item,
       regionStatus: RegionStatus.initial,
     ));
+  }
+
+  Future<void> getSearchProduct({bool refresh = false}) async {
+    emit(state.copyWith(searchProductStatus: SearchProductStatus.loading));
+    final page = refresh ? 1 : 10;
+    final result =
+        await productsUseCase.getSearchProduct(PaginationParams(page: page));
+    result.fold(
+      (failure) => emit(state.copyWith(
+          searchProductStatus: SearchProductStatus.failure,
+          errorMessage: failure.message)),
+      (p) => emit(state.copyWith(
+          searchProductStatus: SearchProductStatus.success,
+          listOfSearch: p.items)),
+    );
+  }
+
+  Future<void> createSearch(BuildContext context, String searchText) async {
+    emit(state.copyWith(searchProductStatus: SearchProductStatus.loading));
+
+    final result = await productsUseCase.createSearch(searchText);
+
+    result.fold(
+      (failure) => emit(
+          state.copyWith(searchProductStatus: SearchProductStatus.failure)),
+      (_) {
+        context.read<CategoryCubit>().getSearchProduct(refresh: true);
+        emit(state.copyWith(
+          searchProductStatus: SearchProductStatus.success,
+          listOfSearch: [],
+        ));
+      },
+    );
+  }
+
+  void deleteSearchProduct(SearchProductEntity product) {
+    List<SearchProductEntity> updatedList = List.from(state.listOfSearch)
+      ..removeWhere((item) => item.id == product.id);
+
+    emit(state.copyWith(listOfSearch: updatedList));
   }
 }

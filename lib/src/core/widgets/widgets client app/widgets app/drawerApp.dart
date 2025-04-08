@@ -1,6 +1,10 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/network/global_token.dart';
+import 'package:maintenance_app/src/features/authentication/data/data_source/auth_data_source.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/screens/login_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/category/category_screen.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/ordered_product/ordered_product_screen.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/orders_maintenance/maintenance_requests_for_approval_screen.dart';
 import '../../../../features/client app/presentation/screens/home/home_screen.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -137,17 +141,18 @@ class _MyDrawerState extends State<MyDrawer> {
                   ));
             },
           ),
-          // SideMenuTile(
-          //   icon: FontAwesomeIcons.boxOpen,
-          //   title: ' طلبات المنتجات',
-          //   onTap: () {
-          //     Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //           builder: (context) => const OrderedProductPage(),
-          //         ));
-          //   },
-          // ),
+          SideMenuTile(
+            icon: FontAwesomeIcons.solidCircleCheck,
+            title: ' طلبات الموافقة',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const MaintenanceRequestsForApprovalScreen(),
+                  ));
+            },
+          ),
           SideMenuTile(
             icon: FontAwesomeIcons.toolbox,
             title: 'طلبات الصيانة',
@@ -159,6 +164,18 @@ class _MyDrawerState extends State<MyDrawer> {
                   ));
             },
           ),
+          SideMenuTile(
+            icon: FontAwesomeIcons.boxOpen,
+            title: ' طلبات المنتجات',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const OrdersProductPage(),
+                  ));
+            },
+          ),
+
           SideMenuTile(
             icon: FontAwesomeIcons.solidUser,
             title: 'صفحتي الشخصية',
@@ -186,8 +203,90 @@ class _MyDrawerState extends State<MyDrawer> {
           SideMenuTile(
             icon: FontAwesomeIcons.rightFromBracket,
             title: 'تسجيل خروج',
-            onTap: () {
-              // logout(context);
+            onTap: () async {
+              bool resetFirstTime = false;
+              final bool? confirmLogout = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                  title: const Row(
+                    children: [
+                      Icon(FontAwesomeIcons.rightFromBracket,
+                          color: Color.fromARGB(255, 162, 148, 199),
+                          size: 24.0),
+                      AppSizedBox.kWSpace10,
+                      Center(
+                        child: CustomStyledText(
+                          text: 'تأكيد تسجيل الخروج',
+                          textColor: AppColors.secondaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  content: const CustomStyledText(
+                    text: 'هل أنت متأكد أنك تريد تسجيل الخروج؟',
+                    fontSize: 14,
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      style: TextButton.styleFrom(
+                        backgroundColor: AppColors.secondaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      child: const CustomStyledText(
+                          text: "تسجيل الخروج",
+                          textColor: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.grey[200],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      child: const CustomStyledText(
+                          text: "إلغاء",
+                          fontSize: 12,
+                          textColor: AppColors.darkGrayColor,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirmLogout == true) {
+                try {
+                  Future<void> resetFirstTimeStatus() async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setBool(FIRST_TIME_KEY, true);
+                  }
+
+                  await TokenManager.removeToken();
+                  // ignore: dead_code
+                  if (resetFirstTime) {
+                    await resetFirstTimeStatus();
+                  }
+                } catch (e) {}
+                final SharedPreferences prefs =
+                    await SharedPreferences.getInstance();
+                await prefs.remove('token');
+                await prefs.clear();
+
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  (Route<dynamic> route) => false,
+                );
+              }
             },
           ),
         ],

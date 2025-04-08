@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const kAppName = 'Siana Plus';
-const IMAGE_URL = 'https://ebrahim995-001-site2.ktempurl.com';
+const IMAGE_URL = 'https://sianaplus.com';
 
 const String FIRST_TIME_KEY = 'is_first_time';
 

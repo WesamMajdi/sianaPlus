@@ -172,7 +172,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                           onChanged: (value) {
                             setState(() {
-                              selectedCountryCode = value;
+                              selectedCountryCode = value?.replaceAll("+", "");
                             });
                           },
                         ),
@@ -187,7 +187,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           if (value == null || value.isEmpty) {
                             return 'عفوا.رقم الموبايل مطلوب';
                           }
-                          if (!RegExp(r'^\+?[0-9]{10,15}$').hasMatch(value)) {
+                          if (!RegExp(r'^\+?[0-9]{9,15}$').hasMatch(value)) {
                             return 'رقم الموبايل غير صحيح';
                           }
                           return null;

@@ -1,5 +1,6 @@
 // ignore: use_key_in_widget_constructors
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/network/global_token.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/current_order/current_order_screen.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/pervious_order/pervious_order_screen.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/receive_order/receive_order_screen.dart';
@@ -13,6 +14,25 @@ class HomeDeliveryScreen extends StatefulWidget {
 }
 
 class _HomeDeliveryScreenState extends State<HomeDeliveryScreen> {
+  String? username = '';
+  String? email = '';
+
+  Future<void> _loadUserData() async {
+    String? storedName = await TokenManager.getName();
+    // String? storedEmail = await TokenManager.getEmail();
+
+    setState(() {
+      username = storedName ?? 'User';
+      // email = storedEmail ?? 'user@gmail.com';
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,7 +106,7 @@ class _HomeDeliveryScreenState extends State<HomeDeliveryScreen> {
                           ),
                           AppSizedBox.kVSpace5,
                           CustomStyledText(
-                            text: 'طارق التري',
+                            text: username!,
                             textColor: Colors.grey[400],
                             fontSize: 16,
                           )

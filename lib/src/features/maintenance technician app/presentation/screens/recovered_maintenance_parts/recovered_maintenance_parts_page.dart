@@ -19,7 +19,7 @@ class _RecoveredMaintenancePartsPageState
   @override
   void initState() {
     super.initState();
-    context.read<ReturnHandReceiptCubit>().fetchReturnHandReceipts();
+    context.read<ReturnHandReceiptCubit>().getAllReturnHandReceiptItems();
   }
 
   String barcodeResult = "لم يتم مسح الباركود";
@@ -45,7 +45,7 @@ class _RecoveredMaintenancePartsPageState
     final searchQuery = searchController.text;
     final barcode = barcodeResult != "لم يتم مسح الباركود" ? barcodeResult : '';
 
-    context.read<ReturnHandReceiptCubit>().fetchReturnHandReceipts(
+    context.read<ReturnHandReceiptCubit>().getAllReturnHandReceiptItems(
           refresh: refresh,
           searchQuery: searchQuery,
           barcode: barcode,

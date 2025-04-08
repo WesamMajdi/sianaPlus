@@ -1,9 +1,9 @@
 // ignore: use_key_in_widget_constructors
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/network/global_token.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/maintenance_parts_hand_receipt/maintenance_parts_screen.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/maintenance_parts_online/maintenance_parts_online_screen.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/recovered_maintenance_parts/recovered_maintenance_parts_page.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/transferred_maintenance_parts/transferred_maintenance_parts_screen.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/profile_maintenance/profile_maintenance.dart';
 
 class HomeMaintenanceScreen extends StatefulWidget {
@@ -14,6 +14,25 @@ class HomeMaintenanceScreen extends StatefulWidget {
 }
 
 class _HomeMaintenanceScreenState extends State<HomeMaintenanceScreen> {
+  String? username = '';
+  String? email = '';
+
+  Future<void> _loadUserData() async {
+    String? storedName = await TokenManager.getName();
+    // String? storedEmail = await TokenManager.getEmail();
+
+    setState(() {
+      username = storedName ?? 'User';
+      // email = storedEmail ?? 'user@gmail.com';
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,7 +103,7 @@ class _HomeMaintenanceScreenState extends State<HomeMaintenanceScreen> {
                           ),
                           AppSizedBox.kVSpace5,
                           CustomStyledText(
-                            text: 'طارق التري',
+                            text: username!,
                             textColor: Colors.grey[400],
                             fontSize: 16,
                           )
@@ -154,11 +173,11 @@ final List<Map<String, Object>> shortcuts = [
     'label': 'العناصر المعادة',
     'page': const RecoveredMaintenancePartsPage(),
   },
-  {
-    'icon': FontAwesomeIcons.car,
-    'label': 'القطع المحولة إلى الفرع',
-    'page': const TransferredMaintenancePartsPage(),
-  },
+  // {
+  //   'icon': FontAwesomeIcons.car,
+  //   'label': 'القطع المحولة إلى الفرع',
+  //   'page': const TransferredMaintenancePartsPage(),
+  // },
   {
     'icon': FontAwesomeIcons.gear,
     'label': 'الإعدادت',

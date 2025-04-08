@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/successPage.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/category_state.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -41,7 +42,12 @@ class _TelrPaymentScreenState extends State<TelrPaymentScreen> {
                             context
                                 .read<CategoryCubit>()
                                 .createOrder(state.cartItems);
-                            Navigator.pop(context, "success");
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (_) => const SuccessPage(
+                                        message: "تم طلب بنجاح!!",
+                                      )),
+                            );
                           } else if (url.contains("webview_abort.html")) {
                             Navigator.pop(context, "cancelled");
                           } else {}

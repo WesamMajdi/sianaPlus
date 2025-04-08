@@ -5,6 +5,7 @@ import 'package:maintenance_app/src/core/pagination/pagination_params.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model_request.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/data_sources/delivery_maintenance_data_source.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/branch_model.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/create_order_request.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/order_maintenances_details_model.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/order_maintenances_details_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/receive_order_Maintenance_entity.dart';
@@ -123,6 +124,26 @@ class DeliveryMaintenanceRepositoryImpl
           await remoteDataSource.getAllForAllDeliveryTransfer(paginationParams);
 
       return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> payWithCard(int orderMaintenancId) async {
+    try {
+      await remoteDataSource.payWithCard(orderMaintenancId);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> payWithCash(int orderMaintenancId) async {
+    try {
+      await remoteDataSource.payWithCash(orderMaintenancId);
+      return const Right(null);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
     }

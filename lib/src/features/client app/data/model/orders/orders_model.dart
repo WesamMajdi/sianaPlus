@@ -11,6 +11,8 @@ class OrderModel extends OrderEntity {
     handReceiptId = json['handReceiptId'];
     deliveryDate = json['deliveryDate'];
     orderMaintenanceStatus = json['orderMaintenanceStatus'];
+    isPayid = json['isPayid'];
+    createdAt = json['createdAt'];
   }
 
   Map<String, dynamic> toJson() {
@@ -24,6 +26,8 @@ class OrderModel extends OrderEntity {
     data['handReceiptId'] = this.handReceiptId;
     data['deliveryDate'] = this.deliveryDate;
     data['orderMaintenanceStatus'] = this.orderMaintenanceStatus;
+    data['isPayid'] = this.isPayid;
+    data['createdAts'] = this.createdAt;
     return data;
   }
 }

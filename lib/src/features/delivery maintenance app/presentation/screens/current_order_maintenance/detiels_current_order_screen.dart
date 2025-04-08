@@ -1,21 +1,24 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customSureDialog.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/order_maintenances_details_entity.dart';
-import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/receive_order_maintenance_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/cubit/delivery_maintenance_cubit.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/state/delivery_maintenance_state.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/current_order_maintenance/current_order_maintenance_screen.dart';
-import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/current_order/current_order_screen.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/receive_maintenances_order/insert_maintenance_request_delevery_screen.dart';
 
 class CurrentMaintenanceOrdersDetailsScreen extends StatefulWidget {
   final int handReceiptId;
   final int orderMaintenancId;
+  final bool? isPayid;
+  final int? orderMaintenanceStatus;
 
-  const CurrentMaintenanceOrdersDetailsScreen({
-    Key? key,
-    required this.handReceiptId,
-    required this.orderMaintenancId,
-  }) : super(key: key);
+  const CurrentMaintenanceOrdersDetailsScreen(
+      {Key? key,
+      required this.handReceiptId,
+      required this.orderMaintenancId,
+      this.isPayid,
+      this.orderMaintenanceStatus})
+      : super(key: key);
 
   @override
   State<CurrentMaintenanceOrdersDetailsScreen> createState() =>
@@ -65,7 +68,6 @@ class _CurrentMaintenanceOrdersDetailsScreenState
               itemCount: state.selectedOrderDetilesItems.length,
               itemBuilder: (context, index) {
                 final ordersCurrent = state.selectedOrderDetilesItems[index];
-
                 return _buildOrderItem(context, ordersCurrent);
               },
             );
@@ -95,51 +97,198 @@ class _CurrentMaintenanceOrdersDetailsScreenState
                   : Colors.white),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(AppPadding.largePadding),
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: order.orders!.length,
-                itemBuilder: (context, index) {
-                  final orderItem = order.orders![index];
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: CustomStyledText(
-                          text: orderItem.item.toString() ?? "غير محدد",
-                          fontSize: 16,
-                          textColor: AppColors.lightGrayColor,
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomStyledText(
-                                  text:
-                                      orderItem.color.toString() ?? "غير محدد",
-                                ),
-                                CustomStyledText(
-                                    text:
-                                        "الشركة:  ${orderItem.company.toString() ?? "غير محدد"}")
-                              ],
-                            ),
-                          ],
-                        ),
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: order.orders!.length,
+              itemBuilder: (context, index) {
+                final orderItem = order.orders![index];
+                return Card(
+                  elevation: 0,
+                  child: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: CustomStyledText(
+                        text: "رقم الطلب #${orderItem.id.toString()}",
+                        fontSize: 16,
                       ),
-                    ],
-                  );
-                },
-              ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AppSizedBox.kVSpace10,
+                          CustomStyledText(
+                            text: " ${orderItem.item.toString()}",
+                            textColor: AppColors.secondaryColor,
+                          ),
+                          AppSizedBox.kVSpace10,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CustomStyledText(
+                                text:
+                                    "لون الجهاز: ${orderItem.color.toString()}",
+                              ),
+                              CustomStyledText(
+                                  text:
+                                      "الشركة:  ${orderItem.company.toString() ?? "غير محدد"}")
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ),
-        buildProccesOrderButtonWidget(context),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            buildProccesOrderButtonWidget(context),
+            SizedBox(
+              height: 80,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                InsertMaintenanceRequestDeleveryPage(
+                              handReceiptId: widget.handReceiptId,
+                              orderMaintenancId: widget.orderMaintenancId,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 150,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          color: AppColors.secondaryColor,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.add,
+                                size: 20,
+                              ),
+                              AppSizedBox.kWSpace10,
+                              Container(
+                                margin: const EdgeInsets.only(top: 5),
+                                child: const CustomStyledText(
+                                  text: 'اضافة جهاز',
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        if (!widget.isPayid! && widget.orderMaintenanceStatus == 5)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SizedBox(
+                height: 80,
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          context
+                              .read<DeliveryMaintenanceCubit>()
+                              .payWithCash(widget.orderMaintenancId);
+                        },
+                        child: Container(
+                          width: 150,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            color: AppColors.secondaryColor,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Container(
+                                  margin: const EdgeInsets.only(top: 5),
+                                  child: const CustomStyledText(
+                                    text: 'دفع كاش',
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 80,
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          context
+                              .read<DeliveryMaintenanceCubit>()
+                              .payWithCash(widget.orderMaintenancId);
+                        },
+                        child: Container(
+                          width: 150,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            color: AppColors.secondaryColor,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                AppSizedBox.kWSpace10,
+                                Container(
+                                  margin: const EdgeInsets.only(top: 5),
+                                  child: const CustomStyledText(
+                                    text: 'دفع فيزا ',
+                                    fontSize: 19,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          )
       ],
     );
   }
@@ -216,7 +365,7 @@ class _CurrentMaintenanceOrdersDetailsScreenState
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Container(
-                width: 200,
+                width: 150,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25),
                   color: AppColors.secondaryColor,
@@ -274,9 +423,11 @@ class _CurrentMaintenanceOrdersDetailsScreenState
                       MaterialPageRoute(
                         builder: (context) =>
                             CurrentMaintenanceOrdersDetailsScreen(
-                          handReceiptId: widget.handReceiptId,
-                          orderMaintenancId: widget.orderMaintenancId,
-                        ),
+                                handReceiptId: widget.handReceiptId,
+                                orderMaintenancId: widget.orderMaintenancId,
+                                isPayid: widget.isPayid,
+                                orderMaintenanceStatus:
+                                    widget.orderMaintenanceStatus),
                       ),
                     );
                   } catch (e) {
@@ -340,9 +491,11 @@ class _CurrentMaintenanceOrdersDetailsScreenState
                       MaterialPageRoute(
                         builder: (context) =>
                             CurrentMaintenanceOrdersDetailsScreen(
-                          handReceiptId: widget.handReceiptId,
-                          orderMaintenancId: widget.orderMaintenancId,
-                        ),
+                                handReceiptId: widget.handReceiptId,
+                                orderMaintenancId: widget.orderMaintenancId,
+                                orderMaintenanceStatus:
+                                    widget.orderMaintenanceStatus,
+                                isPayid: widget.isPayid),
                       ),
                     );
                   } catch (e) {
@@ -377,9 +530,11 @@ class _CurrentMaintenanceOrdersDetailsScreenState
                       MaterialPageRoute(
                         builder: (context) =>
                             CurrentMaintenanceOrdersDetailsScreen(
-                          handReceiptId: widget.handReceiptId,
-                          orderMaintenancId: widget.orderMaintenancId,
-                        ),
+                                handReceiptId: widget.handReceiptId,
+                                orderMaintenancId: widget.orderMaintenancId,
+                                orderMaintenanceStatus:
+                                    widget.orderMaintenanceStatus,
+                                isPayid: widget.isPayid),
                       ),
                     );
                   } catch (e) {
@@ -416,6 +571,8 @@ class _CurrentMaintenanceOrdersDetailsScreenState
                             CurrentMaintenanceOrdersDetailsScreen(
                           handReceiptId: widget.handReceiptId,
                           orderMaintenancId: widget.orderMaintenancId,
+                          isPayid: widget.isPayid,
+                          orderMaintenanceStatus: widget.orderMaintenanceStatus,
                         ),
                       ),
                     );
@@ -453,6 +610,8 @@ class _CurrentMaintenanceOrdersDetailsScreenState
                             CurrentMaintenanceOrdersDetailsScreen(
                           handReceiptId: widget.handReceiptId,
                           orderMaintenancId: widget.orderMaintenancId,
+                          orderMaintenanceStatus: widget.orderMaintenanceStatus,
+                          isPayid: widget.isPayid,
                         ),
                       ),
                     );
@@ -490,6 +649,8 @@ class _CurrentMaintenanceOrdersDetailsScreenState
                             CurrentMaintenanceOrdersDetailsScreen(
                           handReceiptId: widget.handReceiptId,
                           orderMaintenancId: widget.orderMaintenancId,
+                          orderMaintenanceStatus: widget.orderMaintenanceStatus,
+                          isPayid: widget.isPayid,
                         ),
                       ),
                     );
@@ -520,12 +681,15 @@ class _CurrentMaintenanceOrdersDetailsScreenState
 
 class ShowDilogDeliveringOrderToBranch extends StatelessWidget {
   final int? orderMaintenanceId;
-  const ShowDilogDeliveringOrderToBranch({super.key, this.orderMaintenanceId});
+
+  const ShowDilogDeliveringOrderToBranch({
+    super.key,
+    this.orderMaintenanceId,
+  });
 
   @override
   Widget build(BuildContext context) {
     context.read<DeliveryMaintenanceCubit>().fetchBranch();
-    print(orderMaintenanceId);
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(25),
@@ -584,18 +748,15 @@ class ShowDilogDeliveringOrderToBranch extends StatelessWidget {
                       title: CustomStyledText(text: branch.name),
                       onTap: () async {
                         final branchId = branch.id;
-                        await context
-                            .read<DeliveryMaintenanceCubit>()
-                            .selectBranch(
-                                orderMaintenancId: orderMaintenanceId!,
-                                branchId: branchId);
+                        context.read<DeliveryMaintenanceCubit>().selectBranch(
+                            orderMaintenancId: orderMaintenanceId!,
+                            branchId: branchId);
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const CurrentTakeOrderMaintenanceScreen(),
-                          ),
-                        );
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  CurrentTakeOrderMaintenanceScreen(),
+                            ));
                       },
                     ),
                   );

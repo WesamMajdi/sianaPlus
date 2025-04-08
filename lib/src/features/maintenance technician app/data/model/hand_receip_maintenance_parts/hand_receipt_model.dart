@@ -32,13 +32,13 @@ String getText(int status) {
   } else if (status == 3) {
     return "يتم تحديد العطل";
   } else if (status == 4) {
-    return "إبلاغ العميل بالتكاليف";
+    return "إبلاغ بالتكلفة";
   } else if (status == 5) {
     return "تمت الموافقة عليه";
   } else if (status == 6) {
     return "رفض العميل";
   } else if (status == 7) {
-    return "لا يوجد رد من العميل";
+    return "لا يوجد رد ";
   } else if (status == 8) {
     return "لا يمكن صيانة العنصر";
   } else if (status == 9) {

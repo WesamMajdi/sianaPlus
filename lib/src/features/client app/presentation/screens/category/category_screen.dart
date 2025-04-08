@@ -27,6 +27,8 @@ class _CategoryPageState extends State<CategoryPage> {
         context.read<CategoryCubit>().fetchSubCategories(
               mainCategoryId: categories.first.id,
             );
+      } else {
+        print('No categories available');
       }
     }
   }
@@ -47,9 +49,6 @@ class _CategoryPageState extends State<CategoryPage> {
               text: "الاصناف الرئيسية",
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              textColor: (Theme.of(context).brightness == Brightness.dark
-                  ? AppColors.lightGrayColor
-                  : AppColors.primaryColor),
             ),
           ),
           BlocBuilder<CategoryCubit, CategoryState>(
@@ -100,13 +99,10 @@ class _CategoryPageState extends State<CategoryPage> {
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 16),
             alignment: Alignment.centerRight,
-            child: CustomStyledText(
+            child: const CustomStyledText(
               text: "الاصناف الفرعية",
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              textColor: (Theme.of(context).brightness == Brightness.dark
-                  ? AppColors.lightGrayColor
-                  : AppColors.primaryColor),
             ),
           ),
           const ItemsSubCategorys(),

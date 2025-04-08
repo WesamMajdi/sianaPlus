@@ -1,8 +1,10 @@
 // category_repository.dart
 import 'package:dartz/dartz.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/product/product_model.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/product/search_product_model.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/discount_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/product/search_product_entity.dart';
 
 import '../../../../../core/error/failure.dart';
 import '../../../../../core/pagination/paginated_response.dart';
@@ -29,4 +31,9 @@ abstract class ProductRepository {
     required String addressLine1,
     required String addressLine2,
   });
+
+  Future<Either<Failure, PaginatedResponse<SearchProductEntity>>>
+      getSearchProduct(PaginationParams paginationParams);
+
+  Future<Either<Failure, void>> createSearch(String searchText);
 }

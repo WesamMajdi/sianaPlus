@@ -5,6 +5,7 @@ import 'package:maintenance_app/src/features/maintenance%20technician%20app/pres
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/online_maintenance_parts/online_maintenance_parts_cubit.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/state/online_state.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/home_maintenance/home_maintenance_screen.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class MaintenancePartsOnlinePage extends StatefulWidget {
   const MaintenancePartsOnlinePage({Key? key}) : super(key: key);
@@ -19,27 +20,60 @@ class _MaintenancePartsOnlinePageState
   @override
   void initState() {
     super.initState();
-    context.read<OnlineCubit>().fetchOnline();
+    Future.microtask(() {
+      // ignore: use_build_context_synchronously
+      context.read<OnlineCubit>().fetchOnline();
+    });
   }
 
   String barcodeResult = "لم يتم مسح الباركود";
   TextEditingController searchController = TextEditingController();
 
-  // Future<void> scanBarcode() async {
-  //   try {
-  //     var result = await BarcodeScanner.scan();
-  //     setState(() {
-  //       barcodeResult = result.rawContent.isEmpty
-  //           ? "لم يتم العثور على نتيجة"
-  //           : result.rawContent;
-  //     });
-  //     fetchHandReceipts();
-  //   } catch (e) {
-  //     setState(() {
-  //       barcodeResult = "حدث خطأ أثناء مسح الباركود: $e";
-  //     });
-  //   }
-  // }
+  Future<void> scanBarcode() async {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return Dialog(
+          child: MobileScanner(
+            controller: MobileScannerController(
+              facing: CameraFacing.back,
+              torchEnabled: false,
+            ),
+            onDetect: (barcodeCapture) {
+              final code = barcodeCapture.barcodes.first.rawValue;
+              if (code != null) {
+                setState(() {
+                  barcodeResult = code;
+                });
+                Navigator.of(context).pop();
+                fetchOnline(refresh: true);
+              }
+            },
+            errorBuilder: (context, error, child) {
+              return Center(child: Text('خطأ بالكاميرا: ${error.errorCode}'));
+            },
+            overlayBuilder: (context, constraints) {
+              return Align(
+                alignment: Alignment.center,
+                child: Container(
+                  width: 250,
+                  height: 250,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.green, width: 2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              );
+            },
+            placeholderBuilder: (context, child) => const Center(
+              child: CircularProgressIndicator(),
+            ),
+            fit: BoxFit.cover,
+          ),
+        );
+      },
+    );
+  }
 
   Future<void> fetchOnline({bool refresh = false}) async {
     final searchQuery = searchController.text;
@@ -145,7 +179,7 @@ class _MaintenancePartsOnlinePageState
           size: 32,
           color: AppColors.secondaryColor,
         ),
-        onPressed: () {},
+        onPressed: scanBarcode,
       ),
     );
   }

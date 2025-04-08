@@ -607,13 +607,14 @@ class _MaintenancePartsDetailsPageState
                             ),
                           );
                         } catch (e) {
+                          // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('فشل في تحديد العطل: $e')),
                           );
                         }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('الرجاء إدخال الوصف')),
+                          const SnackBar(content: Text('الرجاء إدخال الوصف')),
                         );
                       }
                     },
@@ -645,7 +646,6 @@ class _MaintenancePartsDetailsPageState
                                 partId: widget.partId),
                           ),
                         );
-                        Navigator.of(context).pop();
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -675,17 +675,18 @@ class _MaintenancePartsDetailsPageState
                     onConfirm: () async {
                       final cubit = context.read<HandReceiptCubit>();
                       try {
-                        await cubit.updateStatusForHandReceiptItem(
-                            receiptItemId: widget.partId);
+                        cubit.updateStatusForHandReceiptItem(
+                            receiptItemId: widget.partId, status: 4);
                         Navigator.pushReplacement(
-                          // ignore: use_build_context_synchronously
                           context,
                           MaterialPageRoute(
                             builder: (context) => MaintenancePartsDetailsPage(
-                                partId: widget.partId),
+                              partId: widget.partId,
+                            ),
                           ),
                         );
                       } catch (e) {
+                        // ignore: use_build_context_synchronously
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                               content: Text('Failed to update status: $e')),
@@ -717,10 +718,9 @@ class _MaintenancePartsDetailsPageState
                     onConfirm: () async {
                       final cubit = context.read<HandReceiptCubit>();
                       try {
-                        await cubit.updateStatusForHandReceiptItem(
+                        cubit.updateStatusForHandReceiptItem(
                             receiptItemId: widget.partId, status: 11);
                         Navigator.pushReplacement(
-                          // ignore: use_build_context_synchronously
                           context,
                           MaterialPageRoute(
                             builder: (context) => MaintenancePartsDetailsPage(
@@ -745,16 +745,97 @@ class _MaintenancePartsDetailsPageState
         return [
           ListTile(
             title: const CustomStyledText(
-              text: "إبلاغ العميل بالتكلفة",
+              text: "موافقة العميل",
               fontSize: 20,
             ),
             onTap: () {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return ShowDilogInformCustomerOfTheCost(
-                      status: maintenanceRequestStatus!,
-                      receiptItemId: widget.partId);
+                  return CustomSureDialog(
+                    onConfirm: () async {
+                      final cubit = context.read<HandReceiptCubit>();
+                      try {
+                        cubit.updateStatusForHandReceiptItem(
+                            receiptItemId: widget.partId, status: 5);
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MaintenancePartsDetailsPage(
+                              partId: widget.partId,
+                            ),
+                          ),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Failed to update status: $e')),
+                        );
+                      }
+                    }, //UpdateStatusForHandReceiptItem
+                  );
+                },
+              );
+            },
+          ),
+          ListTile(
+            title: const CustomStyledText(
+              text: "رفض العميل",
+              fontSize: 20,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomInputDialog(
+                    titleDialog: 'رفض العميل',
+                    text: 'سبب رفض العميل للصيانة:',
+                    hintText: 'ادخل سبب رفض العميل للصيانة',
+                    // controller: ,
+                    validators: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'عفوا.سبب مطلوب';
+                      }
+                      return null;
+                    },
+                    onConfirm: () {},
+                  );
+                },
+              );
+            },
+          ),
+          ListTile(
+            title: const CustomStyledText(
+              text: "لم يرد العميل",
+              fontSize: 20,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomSureDialog(
+                    onConfirm: () async {
+                      final cubit = context.read<HandReceiptCubit>();
+                      try {
+                        cubit.updateStatusForHandReceiptItem(
+                          receiptItemId: widget.partId,
+                          status: 7,
+                        );
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MaintenancePartsDetailsPage(
+                                partId: widget.partId),
+                          ),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Failed to update status: $e')),
+                        );
+                      }
+                    }, //UpdateStatusForHandReceiptItem
+                  );
                 },
               );
             },
@@ -764,7 +845,7 @@ class _MaintenancePartsDetailsPageState
         return [
           ListTile(
             title: const CustomStyledText(
-              text: "لا يوجد استجابة من العميل",
+              text: "موافقة العميل",
               fontSize: 20,
             ),
             onTap: () {
@@ -776,7 +857,7 @@ class _MaintenancePartsDetailsPageState
                       final cubit = context.read<HandReceiptCubit>();
                       try {
                         await cubit.updateStatusForHandReceiptItem(
-                            receiptItemId: widget.partId, status: 7);
+                            receiptItemId: widget.partId, status: 5);
                         Navigator.pushReplacement(
                           // ignore: use_build_context_synchronously
                           context,
@@ -889,10 +970,9 @@ class _MaintenancePartsDetailsPageState
                     onConfirm: () async {
                       final cubit = context.read<HandReceiptCubit>();
                       try {
-                        await cubit.updateStatusForHandReceiptItem(
-                            receiptItemId: widget.partId);
+                        cubit.updateStatusForHandReceiptItem(
+                            receiptItemId: widget.partId, status: 11);
                         Navigator.pushReplacement(
-                          // ignore: use_build_context_synchronously
                           context,
                           MaterialPageRoute(
                             builder: (context) => MaintenancePartsDetailsPage(
@@ -1013,249 +1093,222 @@ class _MaintenancePartsDetailsPageState
   }
 }
 
-class ShowDilogInformCustomerOfTheCost extends StatefulWidget {
-  final int status;
-  final int receiptItemId;
-  const ShowDilogInformCustomerOfTheCost({
-    super.key,
-    required this.status,
-    required this.receiptItemId,
-  });
+// class ShowDilogInformCustomerOfTheCost extends StatefulWidget {
+//   final int status;
+//   final int receiptItemId;
+//   const ShowDilogInformCustomerOfTheCost({
+//     super.key,
+//     required this.status,
+//     required this.receiptItemId,
+//   });
 
-  @override
-  State<ShowDilogInformCustomerOfTheCost> createState() =>
-      _ShowDilogInformCustomerOfTheCostState();
-}
+//   @override
+//   State<ShowDilogInformCustomerOfTheCost> createState() =>
+//       _ShowDilogInformCustomerOfTheCostState();
+// }
 
-class _ShowDilogInformCustomerOfTheCostState
-    extends State<ShowDilogInformCustomerOfTheCost> {
-  StatusEnum? statusEnum = StatusEnum.EnterMaintenanceCost;
+// class _ShowDilogInformCustomerOfTheCostState
+//     extends State<ShowDilogInformCustomerOfTheCost> {
+//   StatusEnum? statusEnum = StatusEnum.EnterMaintenanceCost;
 
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(25),
-      ),
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Container(
-              width: 50,
-              height: 5,
-              margin: const EdgeInsets.only(bottom: 15, top: 10),
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(bottom: 5),
-            alignment: Alignment.topRight,
-            child: const CustomStyledText(
-              text: 'اختر العملية',
-              fontSize: 20,
-              textColor: AppColors.secondaryColor,
-            ),
-          ),
-          Container(
-            width: double.infinity,
-            color: Colors.grey,
-            height: 0.5,
-          ),
-        ],
-      ),
-      content: SizedBox(
-        height: 150,
-        width: 300,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Radio<StatusEnum>(
-                  value: StatusEnum.CustomerApproved,
-                  groupValue: statusEnum,
-                  onChanged: (StatusEnum? value) {
-                    setState(() {
-                      statusEnum = value;
-                    });
-                  },
-                  fillColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
-                      if (states.contains(WidgetState.selected)) {
-                        return AppColors.secondaryColor;
-                      }
-                      return Colors.grey;
-                    },
-                  ),
-                ),
-                const CustomStyledText(
-                  text: 'موافقة العميل',
-                  fontSize: 17,
-                ),
-              ],
-            ), // UpdateStatusForHandReceiptItem '&Status=5
-            Row(
-              children: [
-                Radio<StatusEnum>(
-                  value: StatusEnum.CustomerRefused,
-                  groupValue: statusEnum,
-                  onChanged: (StatusEnum? value) {
-                    setState(() {
-                      statusEnum = value;
-                    });
-                  },
-                  fillColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
-                      if (states.contains(WidgetState.selected)) {
-                        return AppColors.secondaryColor;
-                      }
-                      return Colors.grey;
-                    },
-                  ),
-                ),
-                const CustomStyledText(
-                  text: 'رفض العميل',
-                  fontSize: 17,
-                ),
-              ],
-            ), //CustomerRefuseMaintenanceForHandReceiptItem
-            Row(
-              children: [
-                Radio<StatusEnum>(
-                  value: StatusEnum.NoResponseFromTheCustomer,
-                  groupValue: statusEnum,
-                  onChanged: (StatusEnum? value) {
-                    setState(() {
-                      statusEnum = value;
-                    });
-                  },
-                  fillColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
-                      if (states.contains(WidgetState.selected)) {
-                        return AppColors.secondaryColor;
-                      }
-                      return Colors.grey;
-                    },
-                  ),
-                ),
-                const CustomStyledText(
-                  text: 'لا يوجد رد من العميل',
-                  fontSize: 17,
-                ),
-              ],
-            ), // UpdateStatusForHandReceiptItem '&Status=7 // بدي احط حالتين موافقة العميل ورفض
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(false),
-          style: TextButton.styleFrom(
-            backgroundColor: Colors.grey[500],
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-          ),
-          child: const CustomStyledText(
-            text: "إلغاء",
-          ),
-        ),
-        TextButton(
-          onPressed: () {
-            if (widget.status == 5) {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CustomSureDialog(
-                    onConfirm: () async {
-                      final cubit = context.read<HandReceiptCubit>();
-                      try {
-                        await cubit.updateStatusForHandReceiptItem(
-                            receiptItemId: widget.receiptItemId, status: 5);
-
-                        Navigator.pushReplacement(
-                          // ignore: use_build_context_synchronously
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MaintenancePartsDetailsPage(
-                                partId: widget.receiptItemId),
-                          ),
-                        );
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text('Failed to update status: $e')),
-                        );
-                      }
-                    }, //UpdateStatusForHandReceiptItem
-                  );
-                },
-              );
-            } else if (widget.status == 6) {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CustomInputDialog(
-                    titleDialog: 'رفض العميل',
-                    text: 'سبب رفض العميل للصيانة:',
-                    hintText: 'ادخل سبب رفض العميل للصيانة',
-                    // controller: ,
-                    validators: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'عفوا.سبب مطلوب';
-                      }
-                      return null;
-                    },
-                    onConfirm: () {},
-                  );
-                },
-              );
-            } else if (widget.status == 7) //NoResponseFromTheCustomer
-            {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CustomSureDialog(
-                    onConfirm: () async {
-                      final cubit = context.read<HandReceiptCubit>();
-                      try {
-                        await cubit.updateStatusForHandReceiptItem(
-                          receiptItemId: widget.receiptItemId,
-                          status: 7,
-                        );
-                        Navigator.pushReplacement(
-                          // ignore: use_build_context_synchronously
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MaintenancePartsDetailsPage(
-                                partId: widget.receiptItemId),
-                          ),
-                        );
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text('Failed to update status: $e')),
-                        );
-                      }
-                    }, //UpdateStatusForHandReceiptItem
-                  );
-                },
-              );
-            }
-          },
-          style: TextButton.styleFrom(
-            backgroundColor: AppColors.secondaryColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
-            ),
-          ),
-          child: const CustomStyledText(text: "تأكيد", textColor: Colors.white),
-        ),
-      ],
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return AlertDialog(
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(25),
+//       ),
+//       title: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Center(
+//             child: Container(
+//               width: 50,
+//               height: 5,
+//               margin: const EdgeInsets.only(bottom: 15, top: 10),
+//               decoration: BoxDecoration(
+//                 color: Colors.grey,
+//                 borderRadius: BorderRadius.circular(10),
+//               ),
+//             ),
+//           ),
+//           Container(
+//             margin: const EdgeInsets.only(bottom: 5),
+//             alignment: Alignment.topRight,
+//             child: const CustomStyledText(
+//               text: 'اختر العملية',
+//               fontSize: 20,
+//               textColor: AppColors.secondaryColor,
+//             ),
+//           ),
+//           Container(
+//             width: double.infinity,
+//             color: Colors.grey,
+//             height: 0.5,
+//           ),
+//         ],
+//       ),
+//       content: SizedBox(
+//         height: 150,
+//         width: 300,
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Row(
+//               children: [
+//                 Radio<StatusEnum>(
+//                   value: StatusEnum.CustomerApproved,
+//                   groupValue: statusEnum,
+//                   onChanged: (StatusEnum? value) {
+//                     setState(() {
+//                       statusEnum = value;
+//                     });
+//                   },
+//                   fillColor: WidgetStateProperty.resolveWith<Color>(
+//                     (Set<WidgetState> states) {
+//                       if (states.contains(WidgetState.selected)) {
+//                         return AppColors.secondaryColor;
+//                       }
+//                       return Colors.grey;
+//                     },
+//                   ),
+//                 ),
+//                 const CustomStyledText(
+//                   text: 'موافقة العميل',
+//                   fontSize: 17,
+//                 ),
+//               ],
+//             ), // UpdateStatusForHandReceiptItem '&Status=5
+//             Row(
+//               children: [
+//                 Radio<StatusEnum>(
+//                   value: StatusEnum.CustomerRefused,
+//                   groupValue: statusEnum,
+//                   onChanged: (StatusEnum? value) {
+//                     setState(() {
+//                       statusEnum = value;
+//                     });
+//                   },
+//                   fillColor: WidgetStateProperty.resolveWith<Color>(
+//                     (Set<WidgetState> states) {
+//                       if (states.contains(WidgetState.selected)) {
+//                         return AppColors.secondaryColor;
+//                       }
+//                       return Colors.grey;
+//                     },
+//                   ),
+//                 ),
+//                 const CustomStyledText(
+//                   text: 'رفض العميل',
+//                   fontSize: 17,
+//                 ),
+//               ],
+//             ), //CustomerRefuseMaintenanceForHandReceiptItem
+//             Row(
+//               children: [
+//                 Radio<StatusEnum>(
+//                   value: StatusEnum.NoResponseFromTheCustomer,
+//                   groupValue: statusEnum,
+//                   onChanged: (StatusEnum? value) {
+//                     setState(() {
+//                       statusEnum = value;
+//                     });
+//                   },
+//                   fillColor: WidgetStateProperty.resolveWith<Color>(
+//                     (Set<WidgetState> states) {
+//                       if (states.contains(WidgetState.selected)) {
+//                         return AppColors.secondaryColor;
+//                       }
+//                       return Colors.grey;
+//                     },
+//                   ),
+//                 ),
+//                 const CustomStyledText(
+//                   text: 'لا يوجد رد من العميل',
+//                   fontSize: 17,
+//                 ),
+//               ],
+//             ), // UpdateStatusForHandReceiptItem '&Status=7 // بدي احط حالتين موافقة العميل ورفض
+//           ],
+//         ),
+//       ),
+//       actions: [
+//         TextButton(
+//           onPressed: () => Navigator.of(context).pop(false),
+//           style: TextButton.styleFrom(
+//             backgroundColor: Colors.grey[500],
+//             shape: RoundedRectangleBorder(
+//               borderRadius: BorderRadius.circular(8.0),
+//             ),
+//           ),
+//           child: const CustomStyledText(
+//             text: "إلغاء",
+//           ),
+//         ),
+//         TextButton(
+//           onPressed: () {
+//             print(widget.status);
+//             if (widget.status == 5) {
+//             } else if (widget.status == 6) {
+//               showDialog(
+//                 context: context,
+//                 builder: (BuildContext context) {
+//                   return CustomInputDialog(
+//                     titleDialog: 'رفض العميل',
+//                     text: 'سبب رفض العميل للصيانة:',
+//                     hintText: 'ادخل سبب رفض العميل للصيانة',
+//                     // controller: ,
+//                     validators: (value) {
+//                       if (value == null || value.isEmpty) {
+//                         return 'عفوا.سبب مطلوب';
+//                       }
+//                       return null;
+//                     },
+//                     onConfirm: () {},
+//                   );
+//                 },
+//               );
+//             } else if (widget.status == 7) //NoResponseFromTheCustomer
+//             {
+//               showDialog(
+//                 context: context,
+//                 builder: (BuildContext context) {
+//                   return CustomSureDialog(
+//                     onConfirm: () async {
+//                       final cubit = context.read<HandReceiptCubit>();
+//                       try {
+//                         await cubit.updateStatusForHandReceiptItem(
+//                           receiptItemId: widget.receiptItemId,
+//                           status: 7,
+//                         );
+//                         Navigator.pushReplacement(
+//                           // ignore: use_build_context_synchronously
+//                           context,
+//                           MaterialPageRoute(
+//                             builder: (context) => MaintenancePartsDetailsPage(
+//                                 partId: widget.receiptItemId),
+//                           ),
+//                         );
+//                       } catch (e) {
+//                         ScaffoldMessenger.of(context).showSnackBar(
+//                           SnackBar(
+//                               content: Text('Failed to update status: $e')),
+//                         );
+//                       }
+//                     }, //UpdateStatusForHandReceiptItem
+//                   );
+//                 },
+//               );
+//             }
+//           },
+//           style: TextButton.styleFrom(
+//             backgroundColor: AppColors.secondaryColor,
+//             shape: RoundedRectangleBorder(
+//               borderRadius: BorderRadius.circular(8.0),
+//             ),
+//           ),
+//           child: const CustomStyledText(text: "تأكيد", textColor: Colors.white),
+//         ),
+//       ],
+//     );
+//   }
+// }

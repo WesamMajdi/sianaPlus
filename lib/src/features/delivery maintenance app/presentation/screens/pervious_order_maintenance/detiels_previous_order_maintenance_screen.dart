@@ -91,46 +91,49 @@ class _PerviousOrdersDetailsScreenState
                   : Colors.white),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(AppPadding.largePadding),
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: order.orders!.length,
-                itemBuilder: (context, index) {
-                  final orderItem = order.orders![index];
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: CustomStyledText(
-                          text: orderItem.item.toString() ?? "غير محدد",
-                          fontSize: 16,
-                          textColor: AppColors.lightGrayColor,
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                CustomStyledText(
-                                  text:
-                                      orderItem.color.toString() ?? "غير محدد",
-                                ),
-                                CustomStyledText(
-                                    text:
-                                        "الشركة:  ${orderItem.company.toString() ?? "غير محدد"}")
-                              ],
-                            )
-                          ],
-                        ),
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: order.orders!.length,
+              itemBuilder: (context, index) {
+                final orderItem = order.orders![index];
+                return Card(
+                  elevation: 0,
+                  child: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      title: CustomStyledText(
+                        text: "رقم الطلب #${orderItem.id.toString()}",
+                        fontSize: 16,
                       ),
-                    ],
-                  );
-                },
-              ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AppSizedBox.kVSpace10,
+                          CustomStyledText(
+                            text: " ${orderItem.item.toString()}",
+                            textColor: AppColors.secondaryColor,
+                          ),
+                          AppSizedBox.kVSpace10,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CustomStyledText(
+                                text:
+                                    "لون الجهاز: ${orderItem.color.toString()}",
+                              ),
+                              CustomStyledText(
+                                  text:
+                                      "الشركة:  ${orderItem.company.toString() ?? "غير محدد"}")
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ),

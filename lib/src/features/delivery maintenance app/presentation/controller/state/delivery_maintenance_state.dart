@@ -10,6 +10,8 @@ class DeliveryMaintenanceState extends Equatable {
   final DeliveryMaintenanceStatus deliveryMaintenanceStatus;
   final List<ReceiveMaintenanceOrderEntity> orders;
   final String errorMessage;
+  final int orderCurrentPage;
+  final int orderPerviousPage;
   final List<Branch> branch;
   final List<OrderMaintenancesDetailsEntity> selectedOrderDetilesItems;
   final String successMessage;
@@ -20,6 +22,8 @@ class DeliveryMaintenanceState extends Equatable {
     this.deliveryMaintenanceStatus = DeliveryMaintenanceStatus.initial,
     this.orders = const <ReceiveMaintenanceOrderEntity>[],
     this.errorMessage = '',
+    this.orderCurrentPage = 1,
+    this.orderPerviousPage = 1,
     this.successMessage = '',
     this.branch = const <Branch>[],
     this.selectedOrderDetilesItems = const <OrderMaintenancesDetailsEntity>[],
@@ -37,6 +41,8 @@ class DeliveryMaintenanceState extends Equatable {
       ordersCurrent: [],
       errorMessage: '',
       successMessage: '',
+      orderCurrentPage: 1,
+      orderPerviousPage: 1,
     );
   }
 
@@ -47,6 +53,8 @@ class DeliveryMaintenanceState extends Equatable {
     final List<OrderMaintenancesDetailsEntity>? selectedOrderDetilesItems,
     String? errorMessage,
     String? successMessage,
+    int? orderCurrentPage,
+    int? orderPerviousPage,
     List<ReceiveMaintenanceOrderEntity>? ordersOld,
     List<ReceiveMaintenanceOrderEntity>? ordersCurrent,
     final List<Branch>? branch,
@@ -61,6 +69,8 @@ class DeliveryMaintenanceState extends Equatable {
         ordersOld: ordersOld ?? this.ordersOld,
         errorMessage: errorMessage ?? this.errorMessage,
         successMessage: successMessage ?? this.successMessage,
+        orderCurrentPage: orderCurrentPage ?? this.orderCurrentPage,
+        orderPerviousPage: orderPerviousPage ?? this.orderPerviousPage,
         branch: branch ?? this.branch);
   }
 
@@ -74,5 +84,7 @@ class DeliveryMaintenanceState extends Equatable {
         errorMessage,
         branch,
         successMessage,
+        orderCurrentPage,
+        orderPerviousPage
       ];
 }

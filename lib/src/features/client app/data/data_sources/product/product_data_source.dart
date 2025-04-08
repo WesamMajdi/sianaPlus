@@ -1,24 +1,23 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:maintenance_app/main.dart';
 import 'package:maintenance_app/src/core/network/global_token.dart';
+import 'package:maintenance_app/src/core/pagination/paginated_response.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/product/product_model.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/product/search_product_model.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
-
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
 import '../../../../../core/error/exception.dart';
 import '../../../../../core/error/handle_http_error.dart';
 import '../../../../../core/network/api_controller.dart';
 import '../../../../../core/network/base_response.dart';
 import '../../../../../core/network/api_setting.dart';
-import '../../../../../core/pagination/paginated_response.dart';
 import '../../../../../core/pagination/pagination_params.dart';
 import '../../../domain/entities/product/product_entity.dart';
-import '../../model/category/category_model.dart';
 import '../../model/product/discount_model.dart';
 
 class ProductRemoteDataSource {
@@ -231,7 +230,10 @@ class ProductRemoteDataSource {
           'addressLine1': addressLine1,
           'addressLine2': addressLine2,
           'discount': 0,
-          'orderId': 745,
+          'orderId': NavigationService.navigatorKey.currentContext!
+              .read<OrderCubit>()
+              .state
+              .newOrderId,
           'orders': cartItems.values
               .map(
                 (e) => {
@@ -248,6 +250,71 @@ class ProductRemoteDataSource {
         print(response.body);
         print(response.statusCode);
 
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        debugPrint(responseBody.toString());
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+      } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<PaginatedResponse<SearchProductModel>> getSearchProduct(
+      PaginationParams paginationParams) async {
+    String? token = await TokenManager.getToken();
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.get(
+          Uri.parse('${ApiSetting.getSearch}?page=${1}&perPage=${100000}'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+        );
+        debugPrint(response.statusCode.toString());
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        debugPrint(responseBody.toString());
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+        final searchResponse =
+            BaseResponse<PaginatedResponse<SearchProductModel>>.fromJson(
+          responseBody,
+          (json) {
+            return PaginatedResponse<SearchProductModel>.fromJson(
+              json,
+              (p0) {
+                return SearchProductModel.fromJson(p0);
+              },
+            );
+          },
+        );
+        print(searchResponse.data!);
+        return searchResponse.data!;
+      } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<void> createSearch(String searchText) async {
+    String? token = await TokenManager.getToken();
+    debugPrint(Uri.parse(ApiSetting.createFavorite).toString());
+
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.post(
+          Uri.parse(ApiSetting.createSearch),
+          headers: {'accept': '*/*', 'Authorization': 'Bearer $token'},
+          body: {'model': searchText},
+        );
+        debugPrint(response.statusCode.toString());
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         debugPrint(responseBody.toString());
         if (response.statusCode >= 400) {

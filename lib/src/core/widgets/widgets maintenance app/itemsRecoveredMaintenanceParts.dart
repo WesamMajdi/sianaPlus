@@ -50,21 +50,21 @@ class ItemsRecoveredMaintenancePart extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomStyledText(
-                        text: part.item!,
+                        text: part.customer?.name ?? "اسم غير معروف",
                         fontSize: 18,
                         textColor: AppColors.secondaryColor,
                         fontWeight: FontWeight.bold,
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: getColor(part.maintenanceRequestStatus!),
+                          color: getColor(part.maintenanceRequestStatus ?? 0),
                           borderRadius: BorderRadius.circular(25),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 2, horizontal: 10),
                           child: CustomStyledText(
-                            text: getText(part.maintenanceRequestStatus!),
+                            text: getText(part.maintenanceRequestStatus ?? 0),
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -79,13 +79,13 @@ class ItemsRecoveredMaintenancePart extends StatelessWidget {
                       Column(
                         children: [
                           CustomStyledText(
-                            text: part.customer!.name,
+                            text: part.customer?.name ?? "لا يوجد اسم",
                             fontSize: 16,
                             textColor: Colors.grey,
                           ),
                           AppSizedBox.kVSpace5,
                           CustomStyledText(
-                            text: part.customer!.phoneNumber,
+                            text: part.customer?.phoneNumber ?? "لا يوجد رقم",
                             fontSize: 16,
                             textColor: Colors.grey,
                           ),

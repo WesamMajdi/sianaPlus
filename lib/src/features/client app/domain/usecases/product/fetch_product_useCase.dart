@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/product/product_model.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/discount_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/product/search_product_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/repositories/product/product_repository.dart';
 
 import '../../../../../core/error/failure.dart';
@@ -55,5 +56,14 @@ class ProductsUseCase {
         village: village,
         addressLine1: addressLine1,
         addressLine2: addressLine2);
+  }
+
+  Future<Either<Failure, PaginatedResponse<SearchProductEntity>>>
+      getSearchProduct(PaginationParams paginationParams) {
+    return repository.getSearchProduct(paginationParams);
+  }
+
+  Future<Either<Failure, void>> createSearch(String searchText) {
+    return repository.createSearch(searchText);
   }
 }

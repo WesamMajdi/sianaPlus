@@ -36,12 +36,6 @@ class AccountSetting extends StatelessWidget {
                 ),
                 const Divider(),
                 UserProfileMenu(
-                  text: "تنزيل سجل الطلبات",
-                  onTap: () {},
-                  isVisibl: true,
-                ),
-                const Divider(),
-                UserProfileMenu(
                   text: "كلمة السر",
                   onTap: () {
                     Navigator.push(
@@ -50,12 +44,6 @@ class AccountSetting extends StatelessWidget {
                           builder: (context) => const UpdatePasswordScreen(),
                         ));
                   },
-                  isVisibl: true,
-                ),
-                const Divider(),
-                UserProfileMenu(
-                  text: "تعطيل الحساب او حذفه",
-                  onTap: () {},
                   isVisibl: true,
                 ),
               ]),

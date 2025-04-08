@@ -1,10 +1,14 @@
 import 'package:maintenance_app/src/core/network/global_token.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/orders/basket_Model.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/orders/order_maintenance%20_model.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/orders/order_product.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/orders/order_product_model.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:maintenance_app/src/features/client%20app/data/model/region/region_model.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/create_Order_request.dart';
 import '../../../../../core/error/exception.dart';
 import '../../../../../core/error/handle_http_error.dart';
 import '../../../../../core/network/api_controller.dart';
@@ -229,7 +233,7 @@ class OrderRemoteDataSource {
     }
   }
 
-  Future<PaginatedResponse<OrderModel>> getOrderMaintenanceByUser(
+  Future<PaginatedResponse<OrderModel>> getOrderMaintenanceItem(
       PaginationParams paginationParams) async {
     String? token = await TokenManager.getToken();
     if (await internetConnectionChecker.hasConnection) {
@@ -380,6 +384,309 @@ class OrderRemoteDataSource {
         }
       } on TimeOutExeption {
         rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<int> getNewOrderId() async {
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        String? token = await TokenManager.getToken();
+        final response = await apiController.get(
+          Uri.parse(ApiSetting.getNewOrderId),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+        );
+
+        debugPrint('Response Status Code: ${response.statusCode}');
+        debugPrint('Response Body: ${response.body}');
+
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+          throw Exception('HTTP Error');
+        }
+        return responseBody['data'] as int;
+      } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<OrderMaintenanceRequest> getNewOrderMaintenance() async {
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        String? token = await TokenManager.getToken();
+        final response = await apiController.get(
+          Uri.parse(ApiSetting.getBeforeOrder),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+        );
+
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+          throw Exception('HTTP Error');
+        }
+        print(response.body);
+        return OrderMaintenanceRequest.fromJson(responseBody);
+      } on TimeoutException {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<PaginatedResponse<OrderModel>> getOrderMaintenanceRequestsForApproval(
+      PaginationParams paginationParams) async {
+    String? token = await TokenManager.getToken();
+
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.get(
+          Uri.parse(
+              '${ApiSetting.getCostNotifiedToTheCustomer}?page=${paginationParams.page}&perPage=${paginationParams.perPage}'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+        );
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        debugPrint(responseBody.toString());
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+        print(response.statusCode);
+        final ordersResponse =
+            BaseResponse<PaginatedResponse<OrderModel>>.fromJson(
+          responseBody,
+          (json) {
+            return PaginatedResponse<OrderModel>.fromJson(
+              json,
+              (p0) {
+                return OrderModel.fromJson(p0);
+              },
+            );
+          },
+        );
+        return ordersResponse.data!;
+      } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<Map<String, dynamic>> responseFromTheCustomer(int receiptItemId,
+      bool? customerApproved, String reasonForRefusingMaintenance) async {
+    print(receiptItemId);
+    print(customerApproved);
+
+    String? token = await TokenManager.getToken();
+    if (token == null) {
+      throw Exception('Authorization token is missing or expired');
+    }
+
+    if (reasonForRefusingMaintenance.isEmpty) {
+      throw Exception('reasonForRefusingMaintenance is required');
+    }
+
+    if (!await internetConnectionChecker.hasConnection) {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+
+    try {
+      final requestBody = {
+        'receiptItemId': receiptItemId,
+        'customerApproved': customerApproved,
+        'reasonForRefusingMaintenance': reasonForRefusingMaintenance,
+      };
+
+      final response = await apiController.post(
+        Uri.parse(ApiSetting.defineMalfunctionForHandReceiptItem),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: requestBody,
+      );
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      print(requestBody);
+      if (response.statusCode >= 400) {
+        HandleHttpError.handleHttpError(responseBody);
+      }
+
+      return responseBody;
+    } on TimeoutException catch (_) {
+      throw TimeoutException('Request timed out');
+    } catch (e) {
+      throw Exception('Unexpected error occurred: $e');
+    }
+  }
+
+  Future<void> addHandReceiptItemsByDm(
+      int handReceiptId, CreateOrderDeliveryRequest createOrderRequest) async {
+    print(handReceiptId);
+    print(createOrderRequest.description);
+    String? token = await TokenManager.getToken();
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.post(
+            Uri.parse(
+                '${ApiSetting.addHandReceiptItemsByDm}?handReceiptId=$handReceiptId'),
+            headers: {
+              'Content-Type': 'application/json',
+              'accept': '*/*',
+              'Authorization': 'Bearer $token'
+            },
+            body: createOrderRequest.toJson());
+
+        print(response.statusCode);
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        debugPrint(responseBody.toString());
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+      } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<PaginatedResponse<OrderProductModel>> getOrderProductByUserNew(
+      PaginationParams paginationParams) async {
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        String? token = await TokenManager.getToken();
+        final response = await apiController.get(
+          Uri.parse(
+              '${ApiSetting.getOrderByUserNew}?page=${paginationParams.page}&perPage=${paginationParams.perPage}'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+        );
+
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+          throw Exception('HTTP Error');
+        }
+        final ordersResponse =
+            BaseResponse<PaginatedResponse<OrderProductModel>>.fromJson(
+          responseBody,
+          (json) {
+            return PaginatedResponse<OrderProductModel>.fromJson(
+              json,
+              (p0) {
+                return OrderProductModel.fromJson(p0);
+              },
+            );
+          },
+        );
+        return ordersResponse.data!;
+      } on TimeoutException {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<PaginatedResponse<OrderProductModel>> getOrderProductByUserOld(
+      PaginationParams paginationParams) async {
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        String? token = await TokenManager.getToken();
+        final response = await apiController.get(
+          Uri.parse(
+              '${ApiSetting.getOrderByUserOld}?page=${paginationParams.page}&perPage=${paginationParams.perPage}'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+        );
+
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+          throw Exception('HTTP Error');
+        }
+
+        final ordersResponse =
+            BaseResponse<PaginatedResponse<OrderProductModel>>.fromJson(
+          responseBody,
+          (json) {
+            return PaginatedResponse<OrderProductModel>.fromJson(
+              json,
+              (p0) {
+                return OrderProductModel.fromJson(p0);
+              },
+            );
+          },
+        );
+        return ordersResponse.data!;
+      } on TimeoutException {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<List<BasketModel>> getAllItemByOrder(int? basketId) async {
+    String? token = await TokenManager.getToken();
+
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.get(
+          Uri.parse('${ApiSetting.getAllItemByOrder}?basketId=$basketId'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+
+        if (response.statusCode >= 400) {
+          final Map<String, dynamic> responseBody = jsonDecode(response.body);
+          HandleHttpError.handleHttpError(responseBody);
+          throw Exception(
+              'Error: ${responseBody['message'] ?? 'Unknown error'}');
+        }
+
+        // تحليل الـ JSON من الاستجابة
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        final data = responseBody['data'];
+
+        if (data == null || data['orders'] == null) {
+          return [];
+        }
+
+        final List<dynamic> ordersJson = data['orders'];
+        List<BasketModel> baskets = ordersJson.map((json) {
+          return BasketModel.fromJson(json);
+        }).toList();
+
+        return baskets;
+      } catch (e) {
+        throw Exception("An error occurred: $e");
       }
     } else {
       throw OfflineException(errorMessage: 'No Internet Connection');

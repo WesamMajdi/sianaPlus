@@ -11,4 +11,8 @@ class FetchProfileUseCase {
   Future<Either<Failure, ProfileEntity>> call() async {
     return await repository.getUserProfile();
   }
+
+  Future<Either<Failure, void>> createProblem(String text) {
+    return repository.createProblem(text);
+  }
 }

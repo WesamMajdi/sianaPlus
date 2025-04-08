@@ -3,6 +3,7 @@ import 'package:maintenance_app/src/features/client%20app/data/model/region/regi
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/discount_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_color.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/product/search_product_entity.dart';
 
 import '../../../domain/entities/category/category_entity.dart';
 
@@ -18,8 +19,11 @@ enum DiscountStatus { initial, loading, success, failure }
 
 enum RegionStatus { initial, loading, success, failure }
 
+enum SearchProductStatus { initial, loading, success, failure }
+
 class CategoryState extends Equatable {
   final MainCategoryStatus mainCategoryStatus;
+  final SearchProductStatus searchProductStatus;
   final RegionStatus regionStatus;
   final BaseViewModel? selectedItem;
   final SubCategoryStatus subCategoryStatus;
@@ -32,6 +36,7 @@ class CategoryState extends Equatable {
   final List<BaseViewModel> listofRegion;
   final List<BaseViewModel> listOfCity;
   final List<BaseViewModel> listOfVillage;
+  final List<SearchProductEntity> listOfSearch;
   final List<Category> subCategories;
   final List<Product> products;
   final List<DiscountEntity> discounts;
@@ -61,6 +66,7 @@ class CategoryState extends Equatable {
       this.orderStatus = OrderStatus.initial,
       this.subCategoryStatus = SubCategoryStatus.initial,
       this.regionStatus = RegionStatus.initial,
+      this.searchProductStatus = SearchProductStatus.initial,
       this.discountStatus = DiscountStatus.initial,
       this.categories = const <Category>[],
       this.products = const <Product>[],
@@ -68,6 +74,7 @@ class CategoryState extends Equatable {
       this.listOfCity = const <BaseViewModel>[],
       this.listOfVillage = const <BaseViewModel>[],
       this.discounts = const <DiscountEntity>[],
+      this.listOfSearch = const <SearchProductEntity>[],
       this.favouriteProducts = const <Product>[],
       this.subCategories = const <Category>[],
       this.hasCategoryReachedMax = false,
@@ -89,10 +96,50 @@ class CategoryState extends Equatable {
       this.villageId,
       this.addressLine1,
       this.addressLine2});
+  factory CategoryState.initial({required Map<String, Product> cartItems}) {
+    return CategoryState(
+      mainCategoryStatus: MainCategoryStatus.initial,
+      productStatus: ProductStatus.initial,
+      orderStatus: OrderStatus.initial,
+      subCategoryStatus: SubCategoryStatus.initial,
+      regionStatus: RegionStatus.initial,
+      searchProductStatus: SearchProductStatus.initial,
+      discountStatus: DiscountStatus.initial,
+      categories: const <Category>[],
+      products: const <Product>[],
+      listofRegion: const <BaseViewModel>[],
+      listOfCity: const <BaseViewModel>[],
+      listOfVillage: const <BaseViewModel>[],
+      discounts: const <DiscountEntity>[],
+      listOfSearch: const <SearchProductEntity>[],
+      favouriteProducts: const <Product>[],
+      subCategories: const <Category>[],
+      hasCategoryReachedMax: false,
+      productColor: null,
+      quantity: 0,
+      selectedIndex: null,
+      categoryCurrentPage: 1,
+      productCurrentPage: 1,
+      selectedCategoryId: 0,
+      errorMessage: null,
+      cartItems: {},
+      subTotalAmount: 0,
+      totalAmount: 0,
+      selectedItem: null,
+      selectedItemCity: null,
+      selectedItemVillage: null,
+      cityId: null,
+      regionId: null,
+      villageId: null,
+      addressLine1: null,
+      addressLine2: null,
+    );
+  }
 
   CategoryState copyWith(
       {MainCategoryStatus? mainCategoryStatus,
       SubCategoryStatus? subCategoryStatus,
+      SearchProductStatus? searchProductStatus,
       OrderStatus? orderStatus,
       ProductStatus? productStatus,
       RegionStatus? regionStatus,
@@ -100,6 +147,7 @@ class CategoryState extends Equatable {
       DiscountStatus? discountStatus,
       List<Category>? categories,
       List<Category>? subCategories,
+      List<SearchProductEntity>? listOfSearch,
       List<Product>? products,
       List<Product>? favouriteProducts,
       List<BaseViewModel>? listofRegion,
@@ -114,7 +162,7 @@ class CategoryState extends Equatable {
       int? selectedCategoryId,
       String? errorMessage,
       Map<String, Product>? cartItems,
-      dynamic? subTotalAmount,
+      dynamic? subTotalAmount = 0,
       double? totalAmount,
       BaseViewModel? selectedItem,
       BaseViewModel? selectedItemCity,
@@ -160,7 +208,9 @@ class CategoryState extends Equatable {
         regionId: regionId ?? this.regionId,
         villageId: villageId ?? this.villageId,
         addressLine1: addressLine1 ?? this.addressLine1,
-        addressLine2: addressLine2 ?? this.addressLine2);
+        addressLine2: addressLine2 ?? this.addressLine2,
+        searchProductStatus: searchProductStatus ?? this.searchProductStatus,
+        listOfSearch: listOfSearch ?? this.listOfSearch);
   }
 
   @override
@@ -196,6 +246,7 @@ class CategoryState extends Equatable {
         regionId,
         villageId,
         addressLine1,
-        addressLine2
+        addressLine2,
+        listOfSearch
       ];
 }

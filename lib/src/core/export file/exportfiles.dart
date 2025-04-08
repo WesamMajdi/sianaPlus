@@ -50,8 +50,6 @@ export 'package:maintenance_app/src/core/network/network_utils.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/customSearchDropdown.dart';
 export 'package:maintenance_app/src/features/client%20app/presentation/screens/maintenance%20request/maintenance_request_screen.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20notifications/itemsNotifications.dart';
-export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20order/itemsCurrentProductOrdersTab.dart';
-export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20order/itemsPreviousProductOrdersTab.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/floatingButtonInBottomBar.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20profile/itemsStatisticsCard.dart';
 export 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20profile/updateImageInProfile.dart';

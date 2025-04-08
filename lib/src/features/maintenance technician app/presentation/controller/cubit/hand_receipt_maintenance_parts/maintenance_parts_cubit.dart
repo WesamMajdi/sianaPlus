@@ -15,9 +15,11 @@ class HandReceiptCubit extends Cubit<HandReceiptState> {
   }) async {
     emit(state.copyWith(handReceiptStatus: HandReceiptStatus.loading));
     try {
-      final page = refresh ? 1 : (state.receipts.length ~/ 10) + 1;
+      final page = refresh ? 1 : 1;
       final result = await handReceiptUseCase.getAllHandHandReceiptItem(
-        PaginationParams(page: page),
+        PaginationParams(
+          page: page,
+        ),
         searchQuery,
         barcode,
       );

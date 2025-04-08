@@ -1,5 +1,8 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/features/authentication/presentation/screens/login_screen.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/home_delivery_maintenance/home_delivery_maintenance_screen.dart';
+import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/home_delivery/home_delivery_shop_screen.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/home_maintenance/home_maintenance_screen.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -9,26 +12,60 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  void _initializeApp() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? role = prefs.getString('role');
+    print(role);
+    if (role == 'MaintenanceTechnician') {
+      Navigator.pushReplacement(
+        // ignore: use_build_context_synchronously
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomeMaintenanceScreen(),
+        ),
+      );
+    } else if (role == 'Customer') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ),
+      );
+    } else if (role == 'DeliveryShop') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomeDeliveryScreen(),
+        ),
+      );
+    } else if (role == 'DeliveryMaintenance') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomeDeliveryMaintenanceScreen(),
+        ),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const HomePage(),
+        ),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 5), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
-      );
-    });
-    //_checkInternetConnection();
+
+    _initializeApp();
   }
 
   Future<void> _checkInternetConnection() async {
     bool isConnected = await hasInternetConnection();
-
     if (isConnected) {
-      Timer(const Duration(seconds: 10), () {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
-        );
-      });
+      _initializeApp();
     } else {
       _showNoInternetDialog();
     }

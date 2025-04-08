@@ -1,6 +1,7 @@
 // ignore: use_key_in_widget_constructors
 import 'package:flutter/material.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/network/global_token.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/current_order_maintenance/current_order_maintenance_screen.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/pervious_order_maintenance/pervious_order_maintenance_screen.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/receive_maintenances_order/receive_order_maintenances_screen.dart';
@@ -17,6 +18,25 @@ class HomeDeliveryMaintenanceScreen extends StatefulWidget {
 
 class _HomeDeliveryMaintenanceScreenState
     extends State<HomeDeliveryMaintenanceScreen> {
+  String? username = '';
+  String? email = '';
+
+  Future<void> _loadUserData() async {
+    String? storedName = await TokenManager.getName();
+    // String? storedEmail = await TokenManager.getEmail();
+
+    setState(() {
+      username = storedName ?? 'User';
+      // email = storedEmail ?? 'user@gmail.com';
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,7 +110,7 @@ class _HomeDeliveryMaintenanceScreenState
                           ),
                           AppSizedBox.kVSpace5,
                           CustomStyledText(
-                            text: 'طارق التري',
+                            text: username!,
                             textColor: Colors.grey[400],
                             fontSize: 16,
                           )
@@ -160,21 +180,21 @@ final List<Map<String, Object>> shortcutsMaintenance = [
     'label': 'الطلبات السابقة',
     'page': const PerviousOrderMaintenanceScreen(),
   },
-  {
-    'icon': FontAwesomeIcons.rightLeft,
-    'label': 'طلبات التحويل ',
-    'page': const ReceiveOrderMaintenancesScreen(),
-  },
-  {
-    'icon': FontAwesomeIcons.rightLeft,
-    'label': 'طلبات تحويل القطع الحالية',
-    'page': const CurrentTakeOrderMaintenanceScreen(),
-  },
-  {
-    'icon': FontAwesomeIcons.rightLeft,
-    'label': 'طلبات تحويل القطع السابقة',
-    'page': const PerviousOrderMaintenanceScreen(),
-  },
+  // {
+  //   'icon': FontAwesomeIcons.rightLeft,
+  //   'label': 'طلبات التحويل ',
+  //   'page': const ReceiveOrderMaintenancesScreen(),
+  // },
+  // {
+  //   'icon': FontAwesomeIcons.rightLeft,
+  //   'label': 'طلبات تحويل القطع الحالية',
+  //   'page': const CurrentTakeOrderMaintenanceScreen(),
+  // },
+  // {
+  //   'icon': FontAwesomeIcons.rightLeft,
+  //   'label': 'طلبات تحويل القطع السابقة',
+  //   'page': const PerviousOrderMaintenanceScreen(),
+  // },
   {
     'icon': FontAwesomeIcons.gear,
     'label': 'الإعدادت',

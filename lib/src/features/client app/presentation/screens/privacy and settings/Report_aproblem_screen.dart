@@ -1,4 +1,7 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/successPage.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/profile_cubit.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/profile_state.dart';
 
 class ReportProblemPage extends StatefulWidget {
   const ReportProblemPage({super.key});
@@ -54,12 +57,38 @@ class _ReportProblemPageState extends State<ReportProblemPage> {
                 },
               ),
               AppSizedBox.kVSpace10,
-              CustomButton(
-                text: 'ارسال الإبلاغ',
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {}
+              BlocBuilder<ProfileCubit, ProfileState>(
+                builder: (context, state) {
+                  if (state.problemStatus == ProblemStatus.loading) {
+                    return CustomButton(
+                      text: "",
+                      onPressed: () {},
+                      child: const SizedBox(
+                          width: 30.0,
+                          height: 30.0,
+                          child: CircularProgressIndicator()),
+                    );
+                  }
+
+                  return CustomButton(
+                    text: "ارسال الإبلاغ",
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        context
+                            .read<ProfileCubit>()
+                            .createProblem(problemController.text);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                const SuccessPage(message: "تمت العملية بنجاح"),
+                          ),
+                        );
+                      }
+                    },
+                  );
                 },
-              ),
+              )
             ],
           )),
     );

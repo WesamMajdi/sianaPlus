@@ -18,4 +18,14 @@ class UserProfileRepositoryImpl implements ProfileRepository {
       return Left(ServerFailure(message: 'There is an error'));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> createProblem(String text) async {
+    try {
+      await remoteDataSource.createProblem(text);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
 }

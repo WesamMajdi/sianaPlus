@@ -24,139 +24,74 @@ class ItemsSubCategorys extends StatelessWidget {
           case SubCategoryStatus.success:
             if (state.subCategories.isNotEmpty) {
               return Expanded(
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 1,
-                    childAspectRatio: 3 / 2,
-                  ),
+                child: ListView.builder(
                   itemCount: state.subCategories.length,
                   itemBuilder: (context, index) {
                     final subCategory = state.subCategories[index];
                     return Container(
-                      height: 240,
                       margin: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: AppPadding.smallPadding),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Stack(
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  ProductPage(categoryId: subCategory.id),
+                            ),
+                          );
+                        },
+                        child: Card(
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.all(16),
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: CachedNetworkImage(
+                                imageUrl: IMAGE_URL + subCategory.image,
+                                fit: BoxFit.cover,
+                                height: 100,
+                                width: 100,
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                              ),
+                            ),
+                            title: CustomStyledText(
+                              text: truncateTextTitle(subCategory.name),
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              textColor: (Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? AppColors.lightGrayColor
+                                  : AppColors.primaryColor),
+                            ),
+                            subtitle: Padding(
+                              padding: const EdgeInsets.only(top: 5),
+                              child: CustomStyledText(
+                                text: truncateTextDescription(
+                                    subCategory.description ?? ''),
+                                fontSize: 14,
+                              ),
+                            ),
+                            trailing: const Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: (Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? AppColors.lightGrayColor
-                                        : AppColors.secondaryColor),
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: shadowList,
-                                  ),
-                                  margin: const EdgeInsets.only(top: 30),
+                                Icon(
+                                  Icons.info_outline,
                                 ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ProductPage(
-                                            categoryId: subCategory.id),
-                                      ),
-                                    );
-                                  },
-                                  child: Align(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: (Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? Colors.black54
-                                            : Colors.white),
-                                        image: DecorationImage(
-                                          image: CachedNetworkImageProvider(
-                                              IMAGE_URL + subCategory.image,
-                                          ),
-                                          fit: BoxFit.cover,
-                                        ),
-                                        borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(20),
-                                            bottomLeft: Radius.circular(20)),
-                                      ),
-                                    )
-
-                                  ),
-                                )
+                                SizedBox(width: 5),
+                                Icon(
+                                  Icons.arrow_forward_ios,
+                                ),
                               ],
                             ),
                           ),
-                          Expanded(
-                              child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ProductPage(
-                                    categoryId: subCategory.id,
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              margin:
-                                  const EdgeInsets.only(top: 40, bottom: 10),
-                              decoration: BoxDecoration(
-                                  color: (Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.black54
-                                      : Colors.white),
-                                  boxShadow: shadowList,
-                                  borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(20),
-                                      bottomLeft: Radius.circular(20))),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  AppSizedBox.kVSpace20,
-                                  CustomStyledText(
-                                    text: truncateTextTitle(subCategory.name),
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    textColor: (Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? AppColors.lightGrayColor
-                                        : AppColors.primaryColor),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 15),
-                                    child: Center(
-                                      child: CustomStyledText(
-                                        text: truncateTextDescription(
-                                            subCategory.description ?? ''),
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ),
-                                  // AppSizedBox.kVSpace10,
-                                  // CustomStyledText(
-                                  //   text: "عدد الاصناف",
-                                  //   fontSize: 18,
-                                  //   fontWeight: FontWeight.bold,
-                                  //   textColor: (Theme.of(context).brightness ==
-                                  //           Brightness.dark
-                                  //       ? AppColors.lightGrayColor
-                                  //       : AppColors.primaryColor),
-                                  // ),
-                                  // AppSizedBox.kVSpace5,
-                                  // const CustomStyledText(
-                                  //   text: "10",
-                                  //   fontSize: 20,
-                                  //   fontWeight: FontWeight.bold,
-                                  //   textColor: AppColors.secondaryColor,
-                                  // ),
-                                ],
-                              ),
-                            ),
-                          )),
-                        ],
+                        ),
                       ),
                     );
                   },
@@ -168,7 +103,6 @@ class ItemsSubCategorys extends StatelessWidget {
               );
             }
         }
-
         return const Text('Some thing error');
       },
     );

@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model_request.dart';
-import 'package:maintenance_app/src/features/client%20app/domain/entities/orders/orders_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
 
@@ -18,6 +17,14 @@ class InsertMaintenanceRequestPage extends StatefulWidget {
 
 class _InsertMaintenanceRequestPageState
     extends State<InsertMaintenanceRequestPage> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<OrderCubit>().fetchColorList();
+    context.read<OrderCubit>().fetchCompaniesList();
+    context.read<OrderCubit>().fetchItemsList();
+  }
+
   final _formKey = GlobalKey<FormState>();
   TextEditingController nameController = TextEditingController();
   TextEditingController devicenameController = TextEditingController();
@@ -29,6 +36,9 @@ class _InsertMaintenanceRequestPageState
           resizeToAvoidBottomInset: true,
           appBar: AppBarApplicationArrow(
             text: 'اضافة طلب صيانة',
+            onBackTap: () {
+              Navigator.pop(context);
+            },
           ),
           body: ListView(
             children: [
@@ -118,45 +128,47 @@ class _InsertMaintenanceRequestPageState
                           : CustomButton(
                               text: 'ارسال طلب',
                               onPressed: () async {
-                                final createItem = Items(
-                                    itemId: context
-                                        .read<OrderCubit>()
-                                        .state
-                                        .selectedItem!
-                                        .id!,
-                                    colorId: context
-                                        .read<OrderCubit>()
-                                        .state
-                                        .selectedColor!
-                                        .id!,
-                                    companyId: context
-                                        .read<OrderCubit>()
-                                        .state
-                                        .selectedCompany!
-                                        .id!,
-                                    description:
-                                        causeofthebreakdownController.text);
-                                final createItemEntity = ItemsEntity(
-                                    item: context
-                                        .read<OrderCubit>()
-                                        .state
-                                        .selectedItem!,
-                                    color: context
-                                        .read<OrderCubit>()
-                                        .state
-                                        .selectedColor!,
-                                    company: context
-                                        .read<OrderCubit>()
-                                        .state
-                                        .selectedCompany!,
-                                    description:
-                                        causeofthebreakdownController.text);
+                                if (_formKey.currentState!.validate()) {
+                                  final createItem = Items(
+                                      itemId: context
+                                          .read<OrderCubit>()
+                                          .state
+                                          .selectedItem!
+                                          .id!,
+                                      colorId: context
+                                          .read<OrderCubit>()
+                                          .state
+                                          .selectedColor!
+                                          .id!,
+                                      companyId: context
+                                          .read<OrderCubit>()
+                                          .state
+                                          .selectedCompany!
+                                          .id!,
+                                      description:
+                                          causeofthebreakdownController.text);
+                                  final createItemEntity = ItemsEntity(
+                                      item: context
+                                          .read<OrderCubit>()
+                                          .state
+                                          .selectedItem!,
+                                      color: context
+                                          .read<OrderCubit>()
+                                          .state
+                                          .selectedColor!,
+                                      company: context
+                                          .read<OrderCubit>()
+                                          .state
+                                          .selectedCompany!,
+                                      description:
+                                          causeofthebreakdownController.text);
 
-                                context.read<OrderCubit>().saveItem(
-                                    item: createItem,
-                                    itemsEntity: createItemEntity);
+                                  context.read<OrderCubit>().saveItem(
+                                      item: createItem,
+                                      itemsEntity: createItemEntity);
 
-                                Navigator.pop(context);
+                                  Navigator.pop(context);
+                                }
                               },
                             ),
                     ],

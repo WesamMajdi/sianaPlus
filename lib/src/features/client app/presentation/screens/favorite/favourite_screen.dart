@@ -40,7 +40,7 @@ class FavouritePage extends StatelessWidget {
           ],
         ),
         body: state.favouriteProducts.isEmpty
-            ? _buildEmptyFavorites(context) // Show message when empty
+            ? _buildEmptyFavorites(context)
             : ListView.builder(
                 itemCount: state.favouriteProducts.length,
                 itemBuilder: (context, index) {
@@ -61,20 +61,19 @@ class FavouritePage extends StatelessWidget {
         children: [
           const Icon(
             FontAwesomeIcons.heart,
-            size: 100,
-            color: Colors.grey,
+            size: 120,
+            color: Colors.redAccent,
           ),
           AppSizedBox.kVSpace10,
           const SizedBox(height: 20),
           const CustomStyledText(
             text: "لا توجد منتجات في المفضلة",
-            textColor: Colors.grey,
+            textColor: Colors.black,
             fontWeight: FontWeight.bold,
           ),
           AppSizedBox.kVSpace10,
-          SizedBox(
-            height: 45,
-            child: ElevatedButton.icon(
+          CustomButton(
+              text: "ابحث عن منتجات",
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
@@ -82,14 +81,7 @@ class FavouritePage extends StatelessWidget {
                     builder: (context) => const SearchProductPage(),
                   ),
                 );
-              },
-              icon: const Icon(
-                FontAwesomeIcons.magnifyingGlass,
-                size: 20,
-              ),
-              label: const CustomStyledText(text: "ابحث عن منتجات"),
-            ),
-          ),
+              })
         ],
       ),
     );

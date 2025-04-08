@@ -14,27 +14,24 @@ class ItemsMainCategories extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    final backgroundColor = state.selectedCategoryId == category.id
+        ? (isDarkMode ? AppColors.lightGrayColor : AppColors.primaryColor)
+        : AppColors.secondaryColor;
+
+    final nameColor =
+        (isDarkMode ? AppColors.primaryColor : AppColors.lightGrayColor);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Container(
         height: 70,
         padding: const EdgeInsets.symmetric(
             horizontal: AppPadding.mediumPadding,
             vertical: AppPadding.smallPadding),
         decoration: BoxDecoration(
-          border: state.selectedCategoryId == category.id
-              ? null
-              : Border.all(
-                  color: (Theme.of(context).brightness == Brightness.dark
-                      ? AppColors.primaryColor
-                      : AppColors.lightGrayColor),
-                  width: 0.6,
-                ),
-          color: state.selectedCategoryId == category.id
-              ? (Theme.of(context).brightness == Brightness.dark
-                  ? AppColors.primaryColor
-                  : AppColors.lightGrayColor)
-              : AppColors.secondaryColor,
+          color: backgroundColor,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Container(
@@ -43,7 +40,7 @@ class ItemsMainCategories extends StatelessWidget {
             child: CustomStyledText(
               text: category.name,
               fontWeight: FontWeight.bold,
-              textColor: Colors.white,
+              textColor: nameColor,
               fontSize: 16,
             ),
           ),

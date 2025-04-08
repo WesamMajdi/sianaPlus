@@ -16,16 +16,18 @@ class NotificationCubit extends Cubit<NotificationState> {
 
   NotificationCubit(this.notificationUseCase) : super(NotificationState());
 
-
   Future<void> getNotifications({bool refresh = false}) async {
     emit(state.copyWith(notificationStatus: NotificationStatus.loading));
     final page = refresh ? 1 : state.notificationCurrentPage;
     final result = await notificationUseCase
         .getNotifications(PaginationParams(page: page));
     result.fold(
-          (failure) => emit(state.copyWith(notificationStatus: NotificationStatus.failure,errorMessage: failure.message)),
-          (notifications) => emit(state.copyWith(
-              notificationStatus: NotificationStatus.success, notifications: notifications.items)),
+      (failure) => emit(state.copyWith(
+          notificationStatus: NotificationStatus.failure,
+          errorMessage: failure.message)),
+      (notifications) => emit(state.copyWith(
+          notificationStatus: NotificationStatus.success,
+          notifications: notifications.items)),
     );
-   }
+  }
 }

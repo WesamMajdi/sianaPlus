@@ -1,4 +1,5 @@
-// import 'package:barcode_scan2/barcode_scan2.dart';
+import 'package:flutter/material.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/itemsToMaintenancePart.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/hand_receipt_maintenance_parts/maintenance_parts_cubit.dart';
@@ -16,21 +17,52 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
   String barcodeResult = "لم يتم مسح الباركود";
   TextEditingController searchController = TextEditingController();
 
-  // Future<void> scanBarcode() async {
-  //   try {
-  //     var result = await BarcodeScanner.scan();
-  //     setState(() {
-  //       barcodeResult = result.rawContent.isEmpty
-  //           ? "لم يتم العثور على نتيجة"
-  //           : result.rawContent;
-  //     });
-  //     fetchHandReceipts();
-  //   } catch (e) {
-  //     setState(() {
-  //       barcodeResult = "حدث خطأ أثناء مسح الباركود: $e";
-  //     });
-  //   }
-  // }
+  Future<void> scanBarcode() async {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return Dialog(
+          child: MobileScanner(
+            controller: MobileScannerController(
+              facing: CameraFacing.back,
+              torchEnabled: false,
+            ),
+            onDetect: (barcodeCapture) {
+              final code = barcodeCapture.barcodes.first.rawValue;
+              if (code != null) {
+                setState(() {
+                  barcodeResult = code;
+                });
+                Navigator.of(context).pop();
+                fetchHandReceipts(refresh: true);
+              }
+            },
+            errorBuilder: (context, error, child) {
+              return Center(child: Text('خطأ بالكاميرا: ${error.errorCode}'));
+            },
+            overlayBuilder: (context, constraints) {
+              return Align(
+                alignment: Alignment.center,
+                child: Container(
+                  width: 250,
+                  height: 250,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.green, width: 2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              );
+            },
+            placeholderBuilder: (context, child) => const Center(
+              child: CircularProgressIndicator(),
+            ),
+            fit: BoxFit.cover,
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -49,6 +81,7 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
           searchQuery: searchQuery,
           barcode: barcode,
         );
+    print('🔍 Barcode Scan Result: $barcodeResult');
   }
 
   @override
@@ -78,8 +111,9 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
                     child: buildSearchBar(),
                   ),
                   Container(
-                      margin: const EdgeInsets.only(left: 20),
-                      child: buildBarcodeScanner()),
+                    margin: const EdgeInsets.only(left: 20),
+                    child: buildBarcodeScanner(),
+                  ),
                 ],
               ),
             ),
@@ -144,7 +178,7 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
           size: 32,
           color: AppColors.secondaryColor,
         ),
-        onPressed: () {},
+        onPressed: scanBarcode,
       ),
     );
   }

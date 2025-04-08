@@ -1,4 +1,5 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
 
 class SuccessPage extends StatelessWidget {
   final String message;
@@ -38,19 +39,13 @@ class SuccessPage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                  // primary: AppColors.secondaryColor,
-                  ),
-              child: const CustomStyledText(
-                text: "العودة",
-                fontSize: 16,
-                textColor: Colors.white,
-              ),
-            ),
+            CustomButton(
+                text: "العودة لصفحة الرئيسية",
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const HomePage()),
+                  );
+                })
           ],
         ),
       ),

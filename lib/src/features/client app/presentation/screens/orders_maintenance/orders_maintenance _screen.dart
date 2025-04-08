@@ -1,16 +1,7 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20order/itemCurrentMaintenanceOrderTab.dart';
-import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20order/itemsPerviousMaintenanceOrderTab.dart';
-import 'package:maintenance_app/src/features/client%20app/data/data_sources/orders/orders_data_source.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20order/itemMaintenanceOrders.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
-
-// class OrdersMaintenancePage extends StatelessWidget {
-//   const OrdersMaintenancePage({Key? key}) : super(key: key);
-//
-//
-// }
-
 
 class OrdersMaintenancePage extends StatefulWidget {
   const OrdersMaintenancePage({super.key});
@@ -20,15 +11,13 @@ class OrdersMaintenancePage extends StatefulWidget {
 }
 
 class _OrdersMaintenancePageState extends State<OrdersMaintenancePage> {
-
   @override
   void initState() {
-    // TODO: implement initState
-
     context.read<OrderCubit>().getOrderMaintenanceByUserNew();
     context.read<OrderCubit>().getOrderMaintenanceByUserOld();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -48,11 +37,11 @@ class _OrdersMaintenancePageState extends State<OrdersMaintenancePage> {
           bottom: TabBar(
             labelColor: (Theme.of(context).brightness == Brightness.dark
                 ? AppColors.lightGrayColor
-                : AppColors.darkGrayColor),
+                : AppColors.primaryColor),
             unselectedLabelColor: Colors.grey.withOpacity(0.5),
             indicatorColor: (Theme.of(context).brightness == Brightness.dark
                 ? AppColors.lightGrayColor
-                : AppColors.darkGrayColor),
+                : AppColors.primaryColor),
             labelStyle: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w500,
@@ -96,9 +85,10 @@ class _OrdersMaintenancePageState extends State<OrdersMaintenancePage> {
                     shrinkWrap: true,
                     itemCount: state.ordersItemsNew.length,
                     itemBuilder: (context, index) {
-                      return CurrentMaintenanceOrdersTab(
+                      return MaintenanceOrders(
                         state: state,
                         orderEntity: state.ordersItemsNew[index],
+                        isTab: true,
                       );
                     },
                   );
@@ -107,7 +97,6 @@ class _OrdersMaintenancePageState extends State<OrdersMaintenancePage> {
                     child: CustomStyledText(text: 'لا توجد طلبات صيانة'));
               },
             ),
-
             BlocBuilder<OrderCubit, OrderState>(
               builder: (context, state) {
                 if (state.orderStatus == OrderStatus.loading) {
@@ -122,9 +111,10 @@ class _OrdersMaintenancePageState extends State<OrdersMaintenancePage> {
                     shrinkWrap: true,
                     itemCount: state.ordersItemsOld.length,
                     itemBuilder: (context, index) {
-                      return CurrentMaintenanceOrdersTab(
+                      return MaintenanceOrders(
                         state: state,
                         orderEntity: state.ordersItemsOld[index],
+                        isTab: true,
                       );
                     },
                   );

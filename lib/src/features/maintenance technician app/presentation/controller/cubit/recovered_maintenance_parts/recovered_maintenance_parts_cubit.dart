@@ -9,7 +9,7 @@ class ReturnHandReceiptCubit extends Cubit<ReturnHandReceiptState> {
   ReturnHandReceiptCubit(this.returnHandReceiptUseCase)
       : super(ReturnHandReceiptState());
 
-  Future<void> fetchReturnHandReceipts({
+  Future<void> getAllReturnHandReceiptItems({
     bool refresh = false,
     String searchQuery = '',
     String barcode = '',
@@ -17,7 +17,7 @@ class ReturnHandReceiptCubit extends Cubit<ReturnHandReceiptState> {
     emit(state.copyWith(
         returnHandReceiptStatus: ReturnHandReceiptStatus.loading));
     try {
-      final page = refresh ? 1 : (state.returnHandReceipts.length ~/ 10) + 1;
+      final page = refresh ? 1 : 1;
       final result =
           await returnHandReceiptUseCase.getAllReturnHandReceiptItems(
         PaginationParams(page: page),
@@ -47,12 +47,8 @@ class ReturnHandReceiptCubit extends Cubit<ReturnHandReceiptState> {
       final result =
           await returnHandReceiptUseCase.getReturnHandReceiptItem(id);
 
-      // طباعة النتيجة للتحقق من محتوياتها
-      print("Result: $result");
-
       result.fold(
         (failure) {
-          // إذا كانت النتيجة هي failure، اطبع الرسالة
           print("Failure: ${failure.message}");
           emit(state.copyWith(
             returnHandReceiptStatus: ReturnHandReceiptStatus.failure,
@@ -60,7 +56,6 @@ class ReturnHandReceiptCubit extends Cubit<ReturnHandReceiptState> {
           ));
         },
         (returnHandReceipt) {
-          // إذا كانت النتيجة هي success، اطبع البيانات
           print("Success: $returnHandReceipt");
           emit(state.copyWith(
             returnHandReceiptStatus: ReturnHandReceiptStatus.success,

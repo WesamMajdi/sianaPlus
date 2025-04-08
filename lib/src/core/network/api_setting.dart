@@ -142,6 +142,22 @@ class ApiSetting {
   static String get getVillage => "$baseUrl/Orders/ListVillage";
   static String get createOrderProduct =>
       '$baseUrl/OrderMaintenances/CreateOrder';
+  static String get getNewOrderId => '$baseUrl/Orders/GetNewOrderId';
+  static String get getSearch => '$baseUrl/Search/GetSearch';
+  static String get createSearch => '$baseUrl/Search/CreateSearch';
+  static String get getBeforeOrder =>
+      '$baseUrl/OrderMaintenances/GetBeforeOrder';
+  static String get getCostNotifiedToTheCustomer =>
+      '$baseUrl/OrderMaintenances/GetCostNotifiedToTheCustomer';
+  static String get addHandReceiptItemsByDm =>
+      '$baseUrl/OrderMaintenances/AddHandReceiptItemsByDm';
+  static String get payWithCard => '$baseUrl/OrderMaintenances/PayWithCard';
+  static String get payWithCash => '$baseUrl/OrderMaintenances/PayWithCash';
+  static String get createProblem => '$baseUrl/Communication/CreateProblem';
+  static String get getOrderByUserNew => '$baseUrl/Orders/GetOrderByUserNew';
+  static String get getOrderByUserOld => '$baseUrl/Orders/GetOrderByUserOld';
+  static String get customerRefuseMaintenanceForOnlineItem =>
+      '$baseUrl/Maintenances/CustomerRefuseMaintenanceForOnlineItem';
   // // Auth endpoints
   // static String get login => ;
   // static String get signup => '${AppConfig.authEndpoint}/signup';

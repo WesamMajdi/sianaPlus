@@ -3,6 +3,7 @@ import 'package:maintenance_app/src/core/error/failure.dart';
 import 'package:maintenance_app/src/core/pagination/paginated_response.dart';
 import 'package:maintenance_app/src/core/pagination/pagination_params.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/branch_model.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/create_order_request.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/order_maintenances_details_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/receive_order_Maintenance_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/repositories/delivery_maintenance.dart';
@@ -64,5 +65,13 @@ class DeliveryMaintenanceUseCase {
     PaginationParams paginationParams,
   ) {
     return repository.getAllForAllDeliveryTransfer(paginationParams);
+  }
+
+  Future<Either<Failure, void>> payWithCard(int orderMaintenancId) {
+    return repository.payWithCard(orderMaintenancId);
+  }
+
+  Future<Either<Failure, void>> payWithCash(int orderMaintenancId) {
+    return repository.payWithCash(orderMaintenancId);
   }
 }

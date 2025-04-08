@@ -176,6 +176,10 @@ class _RecoveredMaintenancePartsDetailsPageState
                 if (state.returnHandReceiptStatus ==
                     ReturnHandReceiptStatus.success) {
                   final handReceiptItem = state.returnHandReceiptItem;
+                  print(
+                    handReceiptItem!.maintenanceRequestStatus!,
+                  );
+
                   return Container(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 16),
@@ -207,9 +211,11 @@ class _RecoveredMaintenancePartsDetailsPageState
                         ),
                         ...getItemsBasedOnStatus(
                             context,
-                            handReceiptItem!.maintenanceRequestStatus!,
+                            handReceiptItem.maintenanceRequestStatus!,
                             handReceiptItem.notifyCustomerOfTheCost!,
-                            handReceiptItem.warrantyDaysNumber!,
+                            handReceiptItem.warrantyDaysNumber != null
+                                ? handReceiptItem.warrantyDaysNumber!
+                                : 0,
                             handReceiptItem.maintenanceRequestStatus!),
                       ],
                     ),

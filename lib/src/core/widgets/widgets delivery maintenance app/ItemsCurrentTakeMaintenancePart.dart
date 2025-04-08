@@ -21,9 +21,10 @@ class ItemsCurrentTakeMaintenancePart extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => CurrentMaintenanceOrdersDetailsScreen(
-              handReceiptId: items.handReceiptId!,
-              orderMaintenancId: items.id,
-            ),
+                handReceiptId: items.handReceiptId!,
+                orderMaintenancId: items.id,
+                isPayid: items.isPayid!,
+                orderMaintenanceStatus: items.orderMaintenanceStatus!),
           ),
         );
       },
@@ -52,18 +53,27 @@ class ItemsCurrentTakeMaintenancePart extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomStyledText(
-                        text: (' رقم الطلب#${items!.id.toString()}' ?? ''),
+                        text: (' رقم الطلب#${items.id.toString()}'),
                         fontSize: 18,
                         textColor: AppColors.secondaryColor,
                         fontWeight: FontWeight.bold,
                       ),
-                      CustomStyledText(
-                        text:
-                            (' رقم الطلب#${items!.orderMaintenanceStatus.toString()}' ??
-                                ''),
-                        fontSize: 18,
-                        textColor: AppColors.secondaryColor,
-                        fontWeight: FontWeight.bold,
+                      Container(
+                        decoration: BoxDecoration(
+                          color: getColorOrderStatusDeliveryMaintenance(
+                              items.orderMaintenanceStatus),
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 2, horizontal: 10),
+                          child: CustomStyledText(
+                            text: getTextOrderStatusDeliveryMaintenance(
+                                items.orderMaintenanceStatus),
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -77,23 +87,6 @@ class ItemsCurrentTakeMaintenancePart extends StatelessWidget {
                           CustomStyledText(
                             text: items.customerName.toString(),
                             fontWeight: FontWeight.bold,
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: getColorOrderStatusDeliveryMaintenance(
-                                  items.orderMaintenanceStatus),
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 2, horizontal: 10),
-                              child: CustomStyledText(
-                                text: getTextOrderStatusDeliveryMaintenance(
-                                    items.orderMaintenanceStatus),
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
                           ),
                         ],
                       ),
@@ -121,6 +114,7 @@ class ItemsCurrentTakeMaintenancePart extends StatelessWidget {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
+                                // ignore: deprecated_member_use
                                 backgroundColor: Colors.grey.withOpacity(0.2),
                                 elevation: 0),
                             onPressed: () {

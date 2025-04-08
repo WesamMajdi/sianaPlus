@@ -97,7 +97,7 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const OrderedProductPage(),
+                            builder: (context) => const OrdersMaintenancePage(),
                           ),
                         );
                       },
@@ -121,12 +121,12 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const ReportProblemPage(),
+                            builder: (context) => const ConcatInfoPage(),
                           ),
                         );
                       },
                       url: 'assets/images/chat_3959680.png',
-                      title: 'شكاوي',
+                      title: 'تواصل معنا',
                       color: Colors.grey),
                 ],
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maintenance_app/src/core/pagination/pagination_params.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/create_order_request.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/usecases/fetch_delivery_maintenance.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/state/delivery_maintenance_state.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/controller/state/deliveryShop_state.dart';
@@ -16,7 +17,8 @@ class DeliveryMaintenanceCubit extends Cubit<DeliveryMaintenanceState> {
     emit(state.copyWith(
         deliveryMaintenanceStatus: DeliveryMaintenanceStatus.loading));
     try {
-      final page = refresh ? 1 : (state.orders.length ~/ 10) + 1;
+      final page = refresh ? 1 : 1;
+
       final result = await deliveryMaintenanceUseCase
           .getAllForAllDelivery(PaginationParams(page: page));
       result.fold(
@@ -40,7 +42,8 @@ class DeliveryMaintenanceCubit extends Cubit<DeliveryMaintenanceState> {
     emit(state.copyWith(
         deliveryMaintenanceStatus: DeliveryMaintenanceStatus.loading));
     try {
-      final page = refresh ? 1 : (state.ordersCurrent.length ~/ 10) + 1;
+      final page = refresh ? 1 : 1;
+      print(page);
       final result = await deliveryMaintenanceUseCase
           .getAllTakeDelivery(PaginationParams(page: page));
       result.fold(
@@ -64,7 +67,7 @@ class DeliveryMaintenanceCubit extends Cubit<DeliveryMaintenanceState> {
     emit(state.copyWith(
         deliveryMaintenanceStatus: DeliveryMaintenanceStatus.loading));
     try {
-      final page = refresh ? 1 : (state.orders.length ~/ 10) + 1;
+      final page = refresh ? 1 : 1;
       final result = await deliveryMaintenanceUseCase
           .getAllTakePerviousOrder(PaginationParams(page: page));
       result.fold(
@@ -197,29 +200,55 @@ class DeliveryMaintenanceCubit extends Cubit<DeliveryMaintenanceState> {
           deliveryMaintenanceStatus: DeliveryMaintenanceStatus.failure,
           errorMessage: 'Unexpected error occurred: $e'));
     }
+
+    // Future<void> getAllForAllDeliveryTransfer({
+    //   bool refresh = false,
+    // }) async {
+    //   emit(state.copyWith(
+    //       deliveryMaintenanceStatus: DeliveryMaintenanceStatus.loading));
+    //   try {
+    //     final page = refresh ? 1 : (state.orders.length ~/ 10) + 1;
+    //     final result = await deliveryMaintenanceUseCase
+    //         .getAllForAllDeliveryTransfer(PaginationParams(page: page));
+    //     result.fold(
+    //       (failure) => emit(state.copyWith(
+    //           deliveryMaintenanceStatus: DeliveryMaintenanceStatus.failure,
+    //           errorMessage: failure.message)),
+    //       (transfer) => emit(state.copyWith(
+    //           deliveryMaintenanceStatus: DeliveryMaintenanceStatus.success,
+    //           transfer: transfer.items)),
+    //     );
+    //   } catch (e) {
+    //     emit(state.copyWith(
+    //         deliveryMaintenanceStatus: DeliveryMaintenanceStatus.failure,
+    //         errorMessage: 'Unexpected error occurred: $e'));
+    //   }
+    // }
   }
 
-  // Future<void> getAllForAllDeliveryTransfer({
-  //   bool refresh = false,
-  // }) async {
-  //   emit(state.copyWith(
-  //       deliveryMaintenanceStatus: DeliveryMaintenanceStatus.loading));
-  //   try {
-  //     final page = refresh ? 1 : (state.orders.length ~/ 10) + 1;
-  //     final result = await deliveryMaintenanceUseCase
-  //         .getAllForAllDeliveryTransfer(PaginationParams(page: page));
-  //     result.fold(
-  //       (failure) => emit(state.copyWith(
-  //           deliveryMaintenanceStatus: DeliveryMaintenanceStatus.failure,
-  //           errorMessage: failure.message)),
-  //       (transfer) => emit(state.copyWith(
-  //           deliveryMaintenanceStatus: DeliveryMaintenanceStatus.success,
-  //           transfer: transfer.items)),
-  //     );
-  //   } catch (e) {
-  //     emit(state.copyWith(
-  //         deliveryMaintenanceStatus: DeliveryMaintenanceStatus.failure,
-  //         errorMessage: 'Unexpected error occurred: $e'));
-  //   }
-  // }
+  Future<void> payWithCard(int orderMaintenancId) async {
+    emit(state.copyWith(
+        deliveryMaintenanceStatus: DeliveryMaintenanceStatus.loading));
+    final result =
+        await deliveryMaintenanceUseCase.payWithCard(orderMaintenancId);
+    result.fold(
+      (failure) => emit(state.copyWith(
+          deliveryMaintenanceStatus: DeliveryMaintenanceStatus.failure,
+          errorMessage: failure.message)),
+      (_) => (),
+    );
+  }
+
+  Future<void> payWithCash(int orderMaintenancId) async {
+    emit(state.copyWith(
+        deliveryMaintenanceStatus: DeliveryMaintenanceStatus.loading));
+    final result =
+        await deliveryMaintenanceUseCase.payWithCash(orderMaintenancId);
+    result.fold(
+      (failure) => emit(state.copyWith(
+          deliveryMaintenanceStatus: DeliveryMaintenanceStatus.failure,
+          errorMessage: failure.message)),
+      (_) => fetchReceiveMaintenanceOrder(),
+    );
+  }
 }

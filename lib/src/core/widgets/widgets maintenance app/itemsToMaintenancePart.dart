@@ -52,21 +52,21 @@ class ItemsMaintenancePart extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomStyledText(
-                        text: items.item!,
+                        text: items.item ?? 'غير معروف',
                         fontSize: 18,
                         textColor: AppColors.secondaryColor,
                         fontWeight: FontWeight.bold,
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: getColor(items.maintenanceRequestStatus!),
+                          color: getColor(items.maintenanceRequestStatus ?? 0),
                           borderRadius: BorderRadius.circular(25),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 2, horizontal: 10),
                           child: CustomStyledText(
-                            text: getText(items.maintenanceRequestStatus!),
+                            text: getText(items.maintenanceRequestStatus ?? 0),
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -81,13 +81,13 @@ class ItemsMaintenancePart extends StatelessWidget {
                       Column(
                         children: [
                           CustomStyledText(
-                            text: items.customer!.name,
+                            text: items.customer?.name ?? 'غير معروف',
                             fontSize: 16,
                             textColor: Colors.grey,
                           ),
                           AppSizedBox.kVSpace5,
                           CustomStyledText(
-                            text: items.customer!.phoneNumber,
+                            text: items.customer?.phoneNumber ?? 'غير معروف',
                             fontSize: 16,
                             textColor: Colors.grey,
                           ),

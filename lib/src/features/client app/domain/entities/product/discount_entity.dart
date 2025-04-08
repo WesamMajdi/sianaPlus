@@ -4,7 +4,11 @@ class DiscountEntity {
   int? discount;
   int? tax;
   int? deliveryfees;
-
-  DiscountEntity(
-      {this.id, this.name, this.discount, this.tax, this.deliveryfees});
+  DiscountEntity({
+    this.id = 0,
+    this.name = '',
+    this.discount = 0,
+    this.tax = 0,
+    this.deliveryfees = 0,
+  });
 }

@@ -10,7 +10,9 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/pagination/paginated_response.dart';
 import 'package:maintenance_app/src/core/pagination/pagination_params.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model_request.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/branch_model.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/create_order_request.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/order_maintenances_details_model.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/receive_order_maintenance_model.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/hand_receip_maintenance_parts/hand_receipt_model.dart';
@@ -431,6 +433,71 @@ class DeliveryMaintenanceRemoteDataSource {
         throw TimeoutException('Request timed out');
       } catch (e) {
         throw Exception('Unexpected error occurred');
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<void> payWithCard(int orderMaintenancId) async {
+    String? token = await TokenManager.getToken();
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.post(
+          Uri.parse(
+              '${ApiSetting.payWithCard}?OrderMaintenancId=$orderMaintenancId'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+          body: orderMaintenancId,
+        );
+
+        debugPrint(response.statusCode.toString());
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        debugPrint(responseBody.toString());
+
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+
+        if (responseBody['status'] == 1) {
+          debugPrint("تمت العملية بنجاح");
+        }
+      } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<void> payWithCash(int orderMaintenancId) async {
+    String? token = await TokenManager.getToken();
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.post(
+          Uri.parse(
+              '${ApiSetting.payWithCash}?OrderMaintenancId=$orderMaintenancId'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+        );
+
+        debugPrint(response.statusCode.toString());
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        debugPrint(responseBody.toString());
+
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+
+        if (responseBody['status'] == 1) {
+          debugPrint("تمت العملية بنجاح");
+        }
+      } on TimeOutExeption {
+        rethrow;
       }
     } else {
       throw OfflineException(errorMessage: 'No Internet Connection');

@@ -44,9 +44,10 @@ class AuthRemoteDataSource {
         }
         String token = responseBody['data']['token'];
         String name = responseBody['data']['username'];
-
+        String role = responseBody['data']['role'];
         await TokenManager.saveToken(token);
         await TokenManager.saveName(name);
+        await TokenManager.saveRole(role);
 
         final isDeviceRegistered = await registerDevice();
         if (isDeviceRegistered) {
@@ -89,8 +90,10 @@ class AuthRemoteDataSource {
 
         String token = responseBody['data']['token'];
         String name = responseBody['data']['username'];
+        String role = responseBody['data']['role'];
         await TokenManager.saveToken(token);
         await TokenManager.saveName(name);
+        await TokenManager.saveRole(role);
         final isDeviceRegistered = await registerDevice();
         if (isDeviceRegistered) {
           print("Device registered successfully after login.");
@@ -309,15 +312,6 @@ class AuthRemoteDataSource {
         'osVersion': osVersion,
         'appVersion': appVersion,
       };
-      print(requestBody);
-
-      print("ppppppppppppppppppppppppppppppp");
-      print(fcmToken);
-      print(deviceId);
-      print(deviceType);
-      print(osVersion);
-      print(appVersion);
-      print('Sending device registration request: ${json.encode(requestBody)}');
 
       final response = await apiController.post(
         Uri.parse(ApiSetting.creatToken),
@@ -346,82 +340,4 @@ class AuthRemoteDataSource {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(FIRST_TIME_KEY, true);
   }
-
-  // Future<void> logout(BuildContext context,
-  //     {bool resetFirstTime = false}) async {
-  //   final bool? confirmLogout = await showDialog<bool>(
-  //     context: context,
-  //     builder: (context) => AlertDialog(
-  //       shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.circular(12.0),
-  //       ),
-  //       title: const Row(
-  //         children: [
-  //           Icon(FontAwesomeIcons.rightFromBracket,
-  //               color: AppColors.secondaryColor, size: 24.0),
-  //           AppSizedBox.kWSpace10,
-  //           Center(
-  //             child: CustomStyledText(
-  //               text: 'تأكيد تسجيل الخروج',
-  //               textColor: AppColors.secondaryColor,
-  //               fontWeight: FontWeight.bold,
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //       content: const CustomStyledText(
-  //         text: 'هل أنت متأكد أنك تريد تسجيل الخروج؟',
-  //         fontSize: 14,
-  //       ),
-  //       actions: [
-  //         TextButton(
-  //           onPressed: () => Navigator.of(context).pop(true),
-  //           style: TextButton.styleFrom(
-  //             backgroundColor: AppColors.secondaryColor,
-  //             shape: RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(8.0),
-  //             ),
-  //           ),
-  //           child: const CustomStyledText(
-  //               text: "تسجيل الخروج",
-  //               textColor: Colors.white,
-  //               fontSize: 12,
-  //               fontWeight: FontWeight.bold),
-  //         ),
-  //         TextButton(
-  //           onPressed: () => Navigator.of(context).pop(false),
-  //           style: TextButton.styleFrom(
-  //             backgroundColor: Colors.grey[200],
-  //             shape: RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(8.0),
-  //             ),
-  //           ),
-  //           child: const CustomStyledText(
-  //               text: "إلغاء",
-  //               fontSize: 12,
-  //               textColor: AppColors.darkGrayColor,
-  //               fontWeight: FontWeight.bold),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-
-  //   if (confirmLogout == true) {
-  //     try {
-  //       await TokenManager.removeToken();
-  //       if (resetFirstTime) {
-  //         await resetFirstTimeStatus();
-  //       }
-  //     } catch (e) {}
-  //     final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //     await prefs.remove('token');
-  //     await prefs.clear();
-
-  //     Navigator.pushAndRemoveUntil(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => const LoginScreen()),
-  //       (Route<dynamic> route) => false,
-  //     );
-  //   }
-  // }
 }

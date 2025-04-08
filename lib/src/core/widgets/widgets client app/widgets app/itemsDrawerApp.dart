@@ -24,7 +24,7 @@ class SideMenuTile extends StatelessWidget {
           children: [
             Icon(
               icon,
-              size: 20,
+              size: 18,
               color: (Theme.of(context).brightness == Brightness.dark
                   ? AppColors.lightGrayColor
                   : AppColors.primaryColor),
@@ -33,7 +33,7 @@ class SideMenuTile extends StatelessWidget {
             CustomStyledText(
               text: title,
               fontWeight: FontWeight.w500,
-              fontSize: 20,
+              fontSize: 18,
             ),
           ],
         ),

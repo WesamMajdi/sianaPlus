@@ -33,11 +33,10 @@ class ProfileRemoteDataSource {
         );
 
         debugPrint(response.statusCode.toString());
-        print(response.body.toString());
-        
+
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         debugPrint(responseBody.toString());
-        
+
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
@@ -46,8 +45,36 @@ class ProfileRemoteDataSource {
           responseBody,
           (json) => ProfileModel.fromJson(json),
         );
-        
+
         return profileResponse.data!;
+      } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<void> createProblem(String text) async {
+    String? token = await TokenManager.getToken();
+
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.post(
+          Uri.parse(ApiSetting.createProblem),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: {'text': text},
+        );
+
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        debugPrint(responseBody.toString());
+
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
       } on TimeOutExeption {
         rethrow;
       }

@@ -50,19 +50,16 @@ class _ItemsNotificationsState extends State<ItemsNotifications> {
                         title: CustomStyledText(
                             text: notification.title ?? '', fontSize: 16),
                         subtitle: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 5),
-                                  child: CustomStyledText(
-                                    text: notification.message!,
-                                    textColor: Colors.grey,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
+                            Padding(
+                              padding: const EdgeInsets.only(top: 5),
+                              child: CustomStyledText(
+                                text: notification.message!,
+                                textColor: Colors.grey,
+                                fontSize: 14,
+                              ),
                             ),
                           ],
                         ),

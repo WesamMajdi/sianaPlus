@@ -634,7 +634,6 @@ class _MaintenancePartsOnlineDetailsPageState
                         await cubit.updateStatusForOnlineItem(
                             receiptItemId: widget.partId, status: 8);
                         Navigator.pushReplacement(
-                          // ignore: use_build_context_synchronously
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
@@ -642,7 +641,6 @@ class _MaintenancePartsOnlineDetailsPageState
                                     partId: widget.partId),
                           ),
                         );
-                        Navigator.of(context).pop();
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

@@ -11,19 +11,22 @@ class ReceiveMaintenanceOrderEntity {
   final String? locationForDelivery;
   final int? orderMaintenanceStatus;
   final int? handReceiptId;
+  final bool? isPayid;
+  final String? createdAt;
 
-  ReceiveMaintenanceOrderEntity({
-    required this.id,
-    required this.customerName,
-    this.locationForDelivery,
-    this.customerPhoneNumber,
-    required this.total,
-    required this.discount,
-    required this.totalAfterDiscount,
-    required this.handReceiptId,
-    this.deliveryDate,
-    required this.orderMaintenanceStatus,
-  });
+  ReceiveMaintenanceOrderEntity(
+      {required this.id,
+      required this.customerName,
+      this.locationForDelivery,
+      this.customerPhoneNumber,
+      required this.total,
+      required this.discount,
+      required this.totalAfterDiscount,
+      required this.handReceiptId,
+      this.deliveryDate,
+      required this.orderMaintenanceStatus,
+      required this.isPayid,
+      required this.createdAt});
 }
 
 String getTextOrderStatusDeliveryMaintenance(int? status) {

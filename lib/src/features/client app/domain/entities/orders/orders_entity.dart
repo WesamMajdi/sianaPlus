@@ -1,11 +1,111 @@
+import 'package:flutter/material.dart';
+
 enum OrderMaintenanceStatus {
-  newOrder, // ID 1
-  takeFromCustomer, // ID 2
-  deliveryToBranch, // ID 3
-  maintenanceEnd, // ID 4
-  takeFromBranch, // ID 5
-  returnToCustomer, // ID 6
-  completed // ID 7
+  newOrder, // طلب جديد
+  takeFromCustomer, // تم استلامه من العميل
+  deliveryToBranch, // تم تسليمه للفرع
+  costNotifiedToTheCustomer, // تم إشعار العميل بالتكلفة
+  maintenanceEnd, // تم الانتهاء من الصيانة
+  takeFromBranch, // تم استلامه من الفرع
+  returnToCustomer, // تم إرجاعه للعميل
+  completed, // مكتمل
+  orderRejected, // تم رفض الطلب
+}
+
+extension OrderMaintenanceStatusExtension on OrderMaintenanceStatus {
+  String get nameAr {
+    switch (this) {
+      case OrderMaintenanceStatus.newOrder:
+        return 'طلب جديد';
+      case OrderMaintenanceStatus.takeFromCustomer:
+        return 'تم استلامه من العميل';
+      case OrderMaintenanceStatus.deliveryToBranch:
+        return 'تم تسليمه للفرع';
+      case OrderMaintenanceStatus.costNotifiedToTheCustomer:
+        return 'اخبار العميل بالتكلفة';
+      case OrderMaintenanceStatus.maintenanceEnd:
+        return 'انتهت الصيانة';
+      case OrderMaintenanceStatus.takeFromBranch:
+        return 'تم استلامه من الفرع';
+      case OrderMaintenanceStatus.returnToCustomer:
+        return 'تم إرجاعه للعميل';
+      case OrderMaintenanceStatus.completed:
+        return 'مكتمل';
+      case OrderMaintenanceStatus.orderRejected:
+        return 'تم رفض الطلب';
+      default:
+        return '';
+    }
+  }
+
+  Color get statusColor {
+    switch (this) {
+      case OrderMaintenanceStatus.newOrder:
+        return Colors.blue;
+      case OrderMaintenanceStatus.takeFromCustomer:
+        return Colors.orange;
+      case OrderMaintenanceStatus.deliveryToBranch:
+        return Colors.green;
+      case OrderMaintenanceStatus.costNotifiedToTheCustomer:
+        return Colors.pink; // لون مناسب لهذا الحالة
+      case OrderMaintenanceStatus.maintenanceEnd:
+        return Colors.purple;
+      case OrderMaintenanceStatus.takeFromBranch:
+        return Colors.red;
+      case OrderMaintenanceStatus.returnToCustomer:
+        return Colors.yellow;
+      case OrderMaintenanceStatus.completed:
+        return Colors.grey;
+      case OrderMaintenanceStatus.orderRejected:
+        return Colors.black;
+    }
+  }
+}
+
+enum OrderProduct {
+  New, // طلب جديد
+  TakeFromStorage, // تم أخذه من المخزن
+  DeliveryToCustomer, // تم تسليمه للعميل
+  Completed, // مكتمل
+  OrderRejected, // تم رفض الطلب
+}
+
+extension OrderProductStatusExtension on OrderProduct {
+  // إرجاع النص العربي لكل حالة
+  String get nameAr {
+    switch (this) {
+      case OrderProduct.New:
+        return 'جديد';
+      case OrderProduct.TakeFromStorage:
+        return 'تم أخذه من المخزن';
+      case OrderProduct.DeliveryToCustomer:
+        return 'تم تسليمه للعميل';
+      case OrderProduct.Completed:
+        return 'مكتمل';
+      case OrderProduct.OrderRejected:
+        return 'تم رفض الطلب';
+      default:
+        return '';
+    }
+  }
+
+  // إرجاع اللون المناسب لكل حالة
+  Color get statusColor {
+    switch (this) {
+      case OrderProduct.New:
+        return Colors.blue;
+      case OrderProduct.TakeFromStorage:
+        return Colors.orange;
+      case OrderProduct.DeliveryToCustomer:
+        return Colors.green;
+      case OrderProduct.Completed:
+        return Colors.purple;
+      case OrderProduct.OrderRejected:
+        return Colors.red;
+      default:
+        return Colors.black;
+    }
+  }
 }
 
 class OrderEntity {
@@ -17,7 +117,9 @@ class OrderEntity {
   int? totalAfterDiscount;
   int? handReceiptId;
   DateTime? deliveryDate;
+  String? createdAt;
   int? orderMaintenanceStatus;
+  bool? isPayid;
 
   OrderEntity(
       {this.id,
@@ -28,5 +130,7 @@ class OrderEntity {
       this.totalAfterDiscount,
       this.handReceiptId,
       this.deliveryDate,
+      this.isPayid,
+      this.createdAt,
       this.orderMaintenanceStatus});
 }

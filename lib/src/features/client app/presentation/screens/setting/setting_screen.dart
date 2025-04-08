@@ -1,4 +1,6 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/network/global_token.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/screens/login_screen.dart';
 
 class UserSettingProfile extends StatefulWidget {
   const UserSettingProfile({super.key});
@@ -93,24 +95,6 @@ class _UserSettingProfileState extends State<UserSettingProfile> {
                 },
                 isVisibl: true,
               ),
-              const Divider(),
-              UserProfileMenu(
-                icon: FontAwesomeIcons.language,
-                text: "اللغة",
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(10)),
-                    ),
-                    builder: (BuildContext context) {
-                      return const LanguageSelectionSheet();
-                    },
-                  );
-                },
-                isVisibl: true,
-              ),
             ]),
           ),
           AppSizedBox.kVSpace10,
@@ -189,8 +173,92 @@ class _UserSettingProfileState extends State<UserSettingProfile> {
                 isVisibl: false,
                 text: "تسجيل الخروج",
                 icon: FontAwesomeIcons.rightFromBracket,
-                onTap: () {
-                  // logout(context);
+                onTap: () async {
+                  bool resetFirstTime = false;
+                  final bool? confirmLogout = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      title: const Row(
+                        children: [
+                          Icon(FontAwesomeIcons.rightFromBracket,
+                              color: Color.fromARGB(255, 162, 148, 199),
+                              size: 24.0),
+                          AppSizedBox.kWSpace10,
+                          Center(
+                            child: CustomStyledText(
+                              text: 'تأكيد تسجيل الخروج',
+                              textColor: AppColors.secondaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      content: const CustomStyledText(
+                        text: 'هل أنت متأكد أنك تريد تسجيل الخروج؟',
+                        fontSize: 14,
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          style: TextButton.styleFrom(
+                            backgroundColor: AppColors.secondaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                          child: const CustomStyledText(
+                              text: "تسجيل الخروج",
+                              textColor: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.grey[200],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                          child: const CustomStyledText(
+                              text: "إلغاء",
+                              fontSize: 12,
+                              textColor: AppColors.darkGrayColor,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  if (confirmLogout == true) {
+                    try {
+                      Future<void> resetFirstTimeStatus() async {
+                        final prefs = await SharedPreferences.getInstance();
+                        await prefs.setBool(FIRST_TIME_KEY, true);
+                      }
+
+                      await TokenManager.removeToken();
+                      // ignore: dead_code
+                      if (resetFirstTime) {
+                        await resetFirstTimeStatus();
+                      }
+                    } catch (e) {}
+                    final SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    await prefs.remove('token');
+                    await prefs.clear();
+
+                    Navigator.pushAndRemoveUntil(
+                      // ignore: use_build_context_synchronously
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()),
+                      (Route<dynamic> route) => false,
+                    );
+                  }
                 },
               ),
             ]),

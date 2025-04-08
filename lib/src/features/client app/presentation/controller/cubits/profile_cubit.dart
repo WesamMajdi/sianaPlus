@@ -28,4 +28,20 @@ class ProfileCubit extends Cubit<ProfileState> {
       )),
     );
   }
+
+  Future<void> createProblem(String text) async {
+    emit(state.copyWith(problemStatus: ProblemStatus.loading));
+
+    final result = await profileUseCase.createProblem(text);
+
+    result.fold(
+      (failure) => emit(state.copyWith(
+        problemStatus: ProblemStatus.failure,
+        errorMessage: failure.message,
+      )),
+      (_) => emit(state.copyWith(
+        problemStatus: ProblemStatus.success,
+      )),
+    );
+  }
 }
