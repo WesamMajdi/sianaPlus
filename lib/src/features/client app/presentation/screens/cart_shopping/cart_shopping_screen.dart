@@ -6,14 +6,18 @@ import 'package:maintenance_app/src/features/maintenance%20technician%20app/pres
 import '../home/home_screen.dart';
 
 class CartShoppingPage extends StatelessWidget {
+  final int? currentIndex;
   const CartShoppingPage({
     super.key,
+    this.currentIndex = 2,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const MyDrawer(),
+      drawer: MyDrawer(
+        currentIndex: currentIndex,
+      ),
       appBar: const AppBarApplication(text: "سلة التسوق"),
       body: Column(children: [
         Expanded(
@@ -29,42 +33,26 @@ class CartShoppingPage extends StatelessWidget {
                 backgroundColor: Colors.red,
               ),
             );
-          } else if (state.orderStatus == OrderStatus.success) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: CustomStyledText(
-                  text: "تم اضافة الطلب بنجاح",
-                  textColor: Colors.white,
-                ),
-                backgroundColor: Colors.green,
-              ),
-            );
-
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const HomePage()));
           }
         }, builder: (context, state) {
-          // context.read<CategoryCubit>().getDiscount();
           if (state.cartItems.isEmpty) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Container(
-                    child: Image.asset(
-                      'assets/images/cartShopping.png',
-                      width: 300,
-                      fit: BoxFit.contain,
-                    ),
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/cartShopping.png',
+                    width: 300,
+                    fit: BoxFit.contain,
                   ),
-                ),
-                const CustomStyledText(
-                  text: 'سلة التسوق فارغة',
-                  fontSize: 20,
-                )
-              ],
+                  const SizedBox(height: 16),
+                  const CustomStyledText(
+                    text: 'سلة التسوق فارغة',
+                    fontSize: 20,
+                  )
+                ],
+              ),
             );
           }
           return ListView.builder(

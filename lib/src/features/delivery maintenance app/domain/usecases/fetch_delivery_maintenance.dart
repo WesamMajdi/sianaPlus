@@ -4,6 +4,7 @@ import 'package:maintenance_app/src/core/pagination/paginated_response.dart';
 import 'package:maintenance_app/src/core/pagination/pagination_params.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/branch_model.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/create_order_request.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/receipt_item_convert_model.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/order_maintenances_details_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/receive_order_Maintenance_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/repositories/delivery_maintenance.dart';
@@ -73,5 +74,67 @@ class DeliveryMaintenanceUseCase {
 
   Future<Either<Failure, void>> payWithCash(int orderMaintenancId) {
     return repository.payWithCash(orderMaintenancId);
+  }
+
+  Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
+      getAllForAllDeliveryConvert(
+    PaginationParams paginationParams,
+  ) {
+    return repository.getAllForAllDeliveryConvert(paginationParams);
+  }
+
+  Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
+      getAllTakeDeliveryConvert(
+    PaginationParams paginationParams,
+  ) {
+    return repository.getAllTakeDeliveryConvert(paginationParams);
+  }
+
+  Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
+      getAllForDeliveryConvert(
+    PaginationParams paginationParams,
+  ) {
+    return repository.getAllForDeliveryConvert(paginationParams);
+  }
+
+  Future<Either<Failure, Map<String, dynamic>>> updateOrderMaintenanceConvert(
+      int orderMaintenancId, int? status) {
+    return repository.updateOrderMaintenanceConvert(orderMaintenancId, status);
+  }
+
+  Future<Either<Failure, Map<String, dynamic>>> takeOrderMaintenanceConvert(
+      int orderMaintenancId) {
+    return repository.takeOrderMaintenanceConvert(orderMaintenancId);
+  }
+
+  Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
+      getAllForAllDeliveryOutSide(
+    PaginationParams paginationParams,
+  ) {
+    return repository.getAllForAllDeliveryOutSide(paginationParams);
+  }
+
+  Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
+      getAllTakeDeliveryOutSide(
+    PaginationParams paginationParams,
+  ) {
+    return repository.getAllTakeDeliveryOutSide(paginationParams);
+  }
+
+  Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
+      getAllForDeliveryOutSide(
+    PaginationParams paginationParams,
+  ) {
+    return repository.getAllForDeliveryOutSide(paginationParams);
+  }
+
+  Future<Either<Failure, Map<String, dynamic>>> updateOrderMaintenanceOutSide(
+      int orderMaintenancId, int? status) {
+    return repository.updateOrderMaintenanceOutSide(orderMaintenancId, status);
+  }
+
+  Future<Either<Failure, Map<String, dynamic>>> takeOrderMaintenanceoOutSide(
+      int orderMaintenancId) {
+    return repository.takeOrderMaintenanceoOutSide(orderMaintenancId);
   }
 }

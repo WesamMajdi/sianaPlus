@@ -10,7 +10,9 @@ import '../../../../features/client app/presentation/screens/home/home_screen.da
 class MyDrawer extends StatefulWidget {
   const MyDrawer({
     super.key,
+    this.currentIndex,
   });
+  final int? currentIndex;
 
   @override
   State<MyDrawer> createState() => _MyDrawerState();
@@ -39,16 +41,15 @@ class _MyDrawerState extends State<MyDrawer> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-
     return Drawer(
       shape: const RoundedRectangleBorder(),
       shadowColor: AppColors.secondaryColor,
-      width: screenWidth * 0.72,
+      width: screenWidth * 0.68,
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
           const SizedBox(
-            height: 50,
+            height: 60,
           ),
           ListTile(
             onTap: () {
@@ -60,130 +61,146 @@ class _MyDrawerState extends State<MyDrawer> {
             },
             leading: const CircleAvatar(
               radius: 25,
+              backgroundColor: AppColors.lightGrayColor,
               child: Icon(
-                FontAwesomeIcons.user,
+                FontAwesomeIcons.solidUser,
+                color: Colors.black,
                 size: 20,
               ),
             ),
-            title: Row(
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomStyledText(
-                  text: truncateTextTitle(username!),
+                const CustomStyledText(
+                  text: "مرحبًا بِكَ عزيزيّ",
                   fontWeight: FontWeight.bold,
-                  fontSize: 16.5,
+                  fontSize: 18,
+                  textColor: AppColors.lightGrayColor,
                 ),
                 AppSizedBox.kWSpace5,
-                const Icon(Icons.arrow_back_ios,
-                    size: 12, textDirection: TextDirection.ltr),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    CustomStyledText(
+                      text: truncateTextTitle(username!),
+                      fontSize: 16,
+                    ),
+                    const Icon(Icons.arrow_back_ios,
+                        size: 12, textDirection: TextDirection.ltr),
+                  ],
+                ),
               ],
             ),
-            // subtitle: CustomStyledText(
-            //   text: email!,
-            //   fontSize: 14,
-            //   textColor: Colors.grey.shade500,
-            // ),
           ),
           const Divider(),
-          // DrawerHeader(
-          //   decoration: BoxDecoration(
-          //     color: (Theme.of(context).brightness == Brightness.dark
-          //         ? AppColors.lightGrayColor
-          //         : AppColors.primaryColor),
-          //   ),
-          //   child: const InfoCard(
-          //     name: 'مدير التطبيق',
-          //     username: '',
-          //   ),
-          // ),
           AppSizedBox.kVSpace5,
           SideMenuTile(
             icon: FontAwesomeIcons.house,
             title: 'الرئيسية',
+            isActive: widget.currentIndex == 0,
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const HomePage(),
+                    builder: (context) => const HomePage(
+                      currentIndex: 0,
+                    ),
                   ));
             },
           ),
           SideMenuTile(
             icon: FontAwesomeIcons.shapes,
             title: 'تسوق اونلاين',
+            isActive: widget.currentIndex == 1,
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CategoryPage(),
+                    builder: (context) =>
+                        CategoryPage(fromHomeScreen: false, currentIndex: 1),
                   ));
             },
           ),
           SideMenuTile(
             icon: FontAwesomeIcons.cartShopping,
             title: 'سلة التسوق',
+            isActive: widget.currentIndex == 2,
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const CartShoppingPage(),
+                    builder: (context) => const CartShoppingPage(
+                      currentIndex: 2,
+                    ),
                   ));
             },
           ),
           SideMenuTile(
             // ignore: deprecated_member_use
             icon: FontAwesomeIcons.tools,
+            isActive: widget.currentIndex == 3,
+
             title: 'طلب صيانة',
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const MaintenanceRequestPage(),
+                    builder: (context) => const MaintenanceRequestPage(
+                      currentIndex: 3,
+                    ),
                   ));
             },
           ),
           SideMenuTile(
             icon: FontAwesomeIcons.solidCircleCheck,
             title: ' طلبات الموافقة',
+            isActive: widget.currentIndex == 4,
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        const MaintenanceRequestsForApprovalScreen(),
+                        const MaintenanceRequestsForApprovalScreen(
+                            currentIndex: 4),
                   ));
             },
           ),
           SideMenuTile(
             icon: FontAwesomeIcons.toolbox,
             title: 'طلبات الصيانة',
+            isActive: widget.currentIndex == 5,
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const OrdersMaintenancePage(),
+                    builder: (context) =>
+                        const OrdersMaintenancePage(currentIndex: 5),
                   ));
             },
           ),
           SideMenuTile(
+            isActive: widget.currentIndex == 6,
             icon: FontAwesomeIcons.boxOpen,
             title: ' طلبات المنتجات',
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const OrdersProductPage(),
+                    builder: (context) =>
+                        const OrdersProductPage(currentIndex: 6),
                   ));
             },
           ),
-
           SideMenuTile(
+            isActive: widget.currentIndex == 7,
             icon: FontAwesomeIcons.solidUser,
-            title: 'صفحتي الشخصية',
+            title: 'الملف الشخصية',
             onTap: () {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const UserProfilePage(),
+                    builder: (context) =>
+                        const UserProfilePage(currentIndex: 7),
                   ));
             },
           ),

@@ -172,7 +172,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                           onChanged: (value) {
                             setState(() {
-                              selectedCountryCode = value?.replaceAll("+", "");
+                              selectedCountryCode = value;
                             });
                           },
                         ),
@@ -242,11 +242,10 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
           ),
           AppSizedBox.kVSpace10,
-          AppSizedBox.kVSpace10,
           BlocListener<AuthCubit, AuthState>(
             listener: (context, state) {
               if (state.status == AuthStatus.failure) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     content: CustomStyledText(
                       text: "فشل تسجيل دخول , يرجي اعادة المحاولة",
                     ),
@@ -277,6 +276,9 @@ class _SignupScreenState extends State<SignupScreen> {
                   text: "تسجيل حساب",
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
+                      selectedCountryCode =
+                          selectedCountryCode?.replaceAll("+", "");
+
                       context.read<AuthCubit>().signup(SignupModel(
                             fullName: fullnameController.text,
                             email: usernameController.text,

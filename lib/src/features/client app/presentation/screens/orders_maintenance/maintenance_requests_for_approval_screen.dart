@@ -4,7 +4,9 @@ import 'package:maintenance_app/src/features/client%20app/presentation/controlle
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
 
 class MaintenanceRequestsForApprovalScreen extends StatefulWidget {
-  const MaintenanceRequestsForApprovalScreen({super.key});
+  final int? currentIndex;
+  const MaintenanceRequestsForApprovalScreen(
+      {super.key, this.currentIndex = 4});
 
   @override
   State<MaintenanceRequestsForApprovalScreen> createState() =>
@@ -22,7 +24,7 @@ class _MaintenanceRequestsForApprovalScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const MyDrawer(),
+      drawer: MyDrawer(currentIndex: widget.currentIndex),
       appBar: const AppBarApplication(text: "طلبات الموافقة"),
       body: BlocBuilder<OrderCubit, OrderState>(
         builder: (context, state) {
@@ -30,7 +32,7 @@ class _MaintenanceRequestsForApprovalScreenState
             return const Center(child: CircularProgressIndicator());
           }
           if (state.orderApprovalStatus == OrderForApprovalStatus.failure) {
-            return const Center(child: Text('فشلت العملية'));
+            return const Center(child: CircularProgressIndicator());
           }
           if (state.orderApprovalStatus == OrderForApprovalStatus.success &&
               state.ordersItemsApprovel.isNotEmpty) {
@@ -47,8 +49,11 @@ class _MaintenanceRequestsForApprovalScreenState
           }
           return Column(
             children: [
-              Image.asset(
-                  'images/asstes/WhatsApp Image 2025-04-06 at 14.16.45_ea2b1950.jpg'),
+              AppSizedBox.kVSpace20,
+              AppSizedBox.kVSpace20,
+              Image.asset('assets/images/Approval.png'),
+              AppSizedBox.kVSpace20,
+              AppSizedBox.kVSpace20,
               const Center(
                   child: CustomStyledText(text: 'لا توجد طلبات صيانة')),
             ],

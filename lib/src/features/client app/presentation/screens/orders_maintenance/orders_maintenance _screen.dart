@@ -4,7 +4,8 @@ import 'package:maintenance_app/src/features/client%20app/presentation/controlle
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
 
 class OrdersMaintenancePage extends StatefulWidget {
-  const OrdersMaintenancePage({super.key});
+  const OrdersMaintenancePage({super.key, this.currentIndex = 5});
+  final int? currentIndex;
 
   @override
   State<OrdersMaintenancePage> createState() => _OrdersMaintenancePageState();
@@ -13,9 +14,9 @@ class OrdersMaintenancePage extends StatefulWidget {
 class _OrdersMaintenancePageState extends State<OrdersMaintenancePage> {
   @override
   void initState() {
+    super.initState();
     context.read<OrderCubit>().getOrderMaintenanceByUserNew();
     context.read<OrderCubit>().getOrderMaintenanceByUserOld();
-    super.initState();
   }
 
   @override
@@ -23,7 +24,7 @@ class _OrdersMaintenancePageState extends State<OrdersMaintenancePage> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        drawer: const MyDrawer(),
+        drawer: MyDrawer(currentIndex: widget.currentIndex),
         appBar: AppBar(
           iconTheme: IconThemeData(
               weight: 100,
@@ -77,7 +78,7 @@ class _OrdersMaintenancePageState extends State<OrdersMaintenancePage> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (state.orderStatus == OrderStatus.failure) {
-                  return const Center(child: Text('فشلت العملية'));
+                  return const Center(child: Text("data"));
                 }
                 if (state.orderStatus == OrderStatus.success &&
                     state.ordersItemsNew.isNotEmpty) {
@@ -99,13 +100,13 @@ class _OrdersMaintenancePageState extends State<OrdersMaintenancePage> {
             ),
             BlocBuilder<OrderCubit, OrderState>(
               builder: (context, state) {
-                if (state.orderStatus == OrderStatus.loading) {
+                if (state.orderOldStatus == OrderStatus.loading) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (state.orderStatus == OrderStatus.failure) {
-                  return const Center(child: Text('فشلت العملية'));
+                if (state.orderOldStatus == OrderStatus.failure) {
+                  return const Center(child: Text("data"));
                 }
-                if (state.orderStatus == OrderStatus.success &&
+                if (state.orderOldStatus == OrderStatus.success &&
                     state.ordersItemsOld.isNotEmpty) {
                   return ListView.builder(
                     shrinkWrap: true,

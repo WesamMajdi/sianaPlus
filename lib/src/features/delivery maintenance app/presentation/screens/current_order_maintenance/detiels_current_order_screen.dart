@@ -1,5 +1,6 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customSureDialog.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/orders_maintenance/details_orders_screen.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/order_maintenances_details_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/cubit/delivery_maintenance_cubit.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/state/delivery_maintenance_state.dart';
@@ -83,6 +84,8 @@ class _CurrentMaintenanceOrdersDetailsScreenState
 
   Widget _buildOrderItem(
       BuildContext context, OrderMaintenancesDetailsEntity order) {
+    bool isApproved = true;
+
     return Column(
       children: [
         Padding(
@@ -118,7 +121,7 @@ class _CurrentMaintenanceOrdersDetailsScreenState
                         children: [
                           AppSizedBox.kVSpace10,
                           CustomStyledText(
-                            text: " ${orderItem.item.toString()}",
+                            text: " ${orderItem.item ?? "غير محدد"}",
                             textColor: AppColors.secondaryColor,
                           ),
                           AppSizedBox.kVSpace10,
@@ -127,11 +130,11 @@ class _CurrentMaintenanceOrdersDetailsScreenState
                             children: [
                               CustomStyledText(
                                 text:
-                                    "لون الجهاز: ${orderItem.color.toString()}",
+                                    "لون الجهاز: ${orderItem.color ?? "غير محدد"}",
                               ),
                               CustomStyledText(
                                   text:
-                                      "الشركة:  ${orderItem.company.toString() ?? "غير محدد"}")
+                                      "الشركة:  ${orderItem.company ?? "غير محدد"}")
                             ],
                           ),
                         ],
@@ -178,15 +181,15 @@ class _CurrentMaintenanceOrdersDetailsScreenState
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Icon(
-                                Icons.add,
+                                FontAwesomeIcons.plusCircle,
                                 size: 20,
                               ),
                               AppSizedBox.kWSpace10,
                               Container(
                                 margin: const EdgeInsets.only(top: 5),
                                 child: const CustomStyledText(
-                                  text: 'اضافة جهاز',
-                                  fontSize: 19,
+                                  text: 'اضافة',
+                                  fontSize: 18,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -202,93 +205,80 @@ class _CurrentMaintenanceOrdersDetailsScreenState
           ],
         ),
         if (!widget.isPayid! && widget.orderMaintenanceStatus == 5)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                height: 80,
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          context
-                              .read<DeliveryMaintenanceCubit>()
-                              .payWithCash(widget.orderMaintenancId);
-                        },
-                        child: Container(
-                          width: 150,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
-                            color: AppColors.secondaryColor,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Container(
-                                  margin: const EdgeInsets.only(top: 5),
-                                  child: const CustomStyledText(
-                                    text: 'دفع كاش',
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                child: CustomStyledText(text: "طريقة دفع الزبون"),
               ),
-              SizedBox(
-                height: 80,
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          context
-                              .read<DeliveryMaintenanceCubit>()
-                              .payWithCash(widget.orderMaintenancId);
-                        },
-                        child: Container(
-                          width: 150,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
-                            color: AppColors.secondaryColor,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                AppSizedBox.kWSpace10,
-                                Container(
-                                  margin: const EdgeInsets.only(top: 5),
-                                  child: const CustomStyledText(
-                                    text: 'دفع فيزا ',
-                                    fontSize: 19,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SelectableOption(
+                    text: 'دفع كاش',
+                    isActive: isApproved,
+                    width: 120,
+                    onTap: () async {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => CustomSureDialog(
+                          onConfirm: () async {
+                            await context
+                                .read<DeliveryMaintenanceCubit>()
+                                .payWithCash(widget.orderMaintenancId);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const CurrentTakeOrderMaintenanceScreen(),
+                                ));
+                          },
                         ),
-                      ),
-                    ],
+                      );
+
+                      if (confirmed == true) {
+                        setState(() {
+                          isApproved = true;
+                        });
+                      }
+                    },
                   ),
-                ),
+                  const SizedBox(width: 10),
+                  SelectableOption(
+                    text: 'دفع فيزا',
+                    isActive: !isApproved,
+                    width: 120,
+                    onTap: () async {
+                      final confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (context) => CustomSureDialog(
+                          onConfirm: () async {
+                            await context
+                                .read<DeliveryMaintenanceCubit>()
+                                .payWithCard(widget.orderMaintenancId);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const CurrentTakeOrderMaintenanceScreen(),
+                                ));
+                          },
+                        ),
+                      );
+
+                      if (confirmed == true) {
+                        setState(() {
+                          isApproved = false;
+                        });
+                      }
+                    },
+                  ),
+                ],
               ),
             ],
-          )
+          ),
       ],
     );
   }
@@ -384,7 +374,7 @@ class _CurrentMaintenanceOrdersDetailsScreenState
                         margin: const EdgeInsets.only(top: 5),
                         child: const CustomStyledText(
                           text: 'العمليات',
-                          fontSize: 20,
+                          fontSize: 18,
                         ),
                       ),
                     ],

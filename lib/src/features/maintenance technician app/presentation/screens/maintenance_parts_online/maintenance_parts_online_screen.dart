@@ -21,13 +21,29 @@ class _MaintenancePartsOnlinePageState
   void initState() {
     super.initState();
     Future.microtask(() {
-      // ignore: use_build_context_synchronously
-      context.read<OnlineCubit>().fetchOnline();
+      context.read<OnlineCubit>().fetchOnline(refresh: true);
     });
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent - 200 &&
+          !context.read<OnlineCubit>().state.hasReachedEnd &&
+          context.read<OnlineCubit>().state.onlineStatus !=
+              OnlineStatus.loading) {
+        fetchOnline();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   String barcodeResult = "لم يتم مسح الباركود";
   TextEditingController searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   Future<void> scanBarcode() async {
     showDialog(
@@ -79,7 +95,7 @@ class _MaintenancePartsOnlinePageState
     final searchQuery = searchController.text;
     final barcode = barcodeResult != "لم يتم مسح الباركود" ? barcodeResult : '';
 
-    context.read<HandReceiptCubit>().fetchHandReceipts(
+    context.read<OnlineCubit>().fetchOnline(
           refresh: refresh,
           searchQuery: searchQuery,
           barcode: barcode,
@@ -101,27 +117,25 @@ class _MaintenancePartsOnlinePageState
           );
         },
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 3),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: buildSearchBar(),
-                  ),
-                  Container(
-                      margin: const EdgeInsets.only(left: 20),
-                      child: buildBarcodeScanner()),
-                ],
-              ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 3),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: buildSearchBar(),
+                ),
+                Container(
+                    margin: const EdgeInsets.only(left: 20),
+                    child: buildBarcodeScanner()),
+              ],
             ),
-            AppSizedBox.kVSpace10,
-            buildMaintenancePartsList(),
-          ],
-        ),
+          ),
+          AppSizedBox.kVSpace10,
+          Expanded(child: buildMaintenancePartsList()),
+        ],
       ),
     );
   }
@@ -188,20 +202,50 @@ class _MaintenancePartsOnlinePageState
     return BlocBuilder<OnlineCubit, OnlineState>(
       builder: (context, state) {
         if (state.onlineStatus == OnlineStatus.loading) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.8,
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
         }
         if (state.onlineStatus == OnlineStatus.failure) {
-          return const Center(child: Text('فشلت العملية'));
+          return Center(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.8,
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
         }
         if (state.onlineStatus == OnlineStatus.success) {
+          if (state.receiptsOnline.isEmpty) {
+            return SizedBox(
+              height: MediaQuery.of(context).size.height * 0.8,
+              child: const Center(
+                child: CustomStyledText(text: 'لا توجد إيصالات استلام'),
+              ),
+            );
+          }
+
           return ListView.builder(
-            shrinkWrap: true,
-            physics: const BouncingScrollPhysics(),
-            itemCount: state.receiptsOnline.length,
+            controller: _scrollController,
+            itemCount: state.hasReachedEnd
+                ? state.receiptsOnline.length
+                : state.receiptsOnline.length + 1,
             itemBuilder: (context, index) {
-              return ItemsMaintenanceOnlinePart(
-                items: state.receiptsOnline[index],
-              );
+              if (index < state.receiptsOnline.length) {
+                return ItemsMaintenanceOnlinePart(
+                  items: state.receiptsOnline[index],
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
             },
           );
         }

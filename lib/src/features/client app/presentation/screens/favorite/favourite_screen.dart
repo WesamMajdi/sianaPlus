@@ -68,7 +68,6 @@ class FavouritePage extends StatelessWidget {
           const SizedBox(height: 20),
           const CustomStyledText(
             text: "لا توجد منتجات في المفضلة",
-            textColor: Colors.black,
             fontWeight: FontWeight.bold,
           ),
           AppSizedBox.kVSpace10,

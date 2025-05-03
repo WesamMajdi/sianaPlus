@@ -22,7 +22,7 @@ class MainteanceRequestDetalies extends StatelessWidget {
                 text: 'تفاصيل القطعة',
                 textColor: AppColors.secondaryColor,
                 fontWeight: FontWeight.bold,
-                fontSize: 22,
+                fontSize: 18,
               ),
               Container(
                 decoration: BoxDecoration(

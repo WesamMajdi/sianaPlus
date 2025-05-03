@@ -156,9 +156,6 @@ class _ReceiveOrdersMaintenanceDetailsScreenState
             return BlocBuilder<DeliveryMaintenanceCubit,
                 DeliveryMaintenanceState>(
               builder: (context, state) {
-                final selectedOrderDetilesItems =
-                    state.selectedOrderDetilesItems;
-
                 if (state.deliveryMaintenanceStatus ==
                     DeliveryMaintenanceStatus.loading) {
                   return const Center(child: CircularProgressIndicator());
@@ -267,8 +264,9 @@ class _ReceiveOrdersMaintenanceDetailsScreenState
                       orderMaintenancId: orderMaintenancId,
                     );
 
+                BlocProvider.of<DeliveryMaintenanceCubit>(context)
+                    .fetchReceiveMaintenanceOrder(refresh: true);
                 Navigator.pushReplacement(
-                  // ignore: use_build_context_synchronously
                   context,
                   MaterialPageRoute(
                     builder: (context) =>

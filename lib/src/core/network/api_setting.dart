@@ -6,7 +6,7 @@ class ApiSetting {
   static String get signup => '$baseUrl/account/registerCustomer';
   static String get updatePassword => '$baseUrl/account/ChangePassword';
   static String get updateEmail => '$baseUrl/account/ChangeEmail';
-  static String get forgotPassword => '$baseUrl/account/SendVerificationCode';
+  static String get forgotPassword => '$baseUrl/account/ChangePassword';
   static String get resetPassword => '$baseUrl/account/VerifyCode';
   static String get creatToken => '$baseUrl/account/CreateToken';
   static String get getMainCategory => '$baseUrl/Categories/GetMainCategories';
@@ -52,6 +52,9 @@ class ApiSetting {
 
   static String get defineMalfunctionForHandReceiptItem =>
       '$baseUrl/Maintenances/DefineMalfunctionForHandReceiptItem';
+
+  static String get responseFromTheCustomer =>
+      '$baseUrl/OrderMaintenances/ResponseFromTheCustomer';
 
   static String get enterMaintenanceCostForHandReceiptItem =>
       '$baseUrl/Maintenances/EnterMaintenanceCostForHandReceiptItem';
@@ -153,27 +156,36 @@ class ApiSetting {
       '$baseUrl/OrderMaintenances/AddHandReceiptItemsByDm';
   static String get payWithCard => '$baseUrl/OrderMaintenances/PayWithCard';
   static String get payWithCash => '$baseUrl/OrderMaintenances/PayWithCash';
+  static String get payWithApp => '$baseUrl/OrderMaintenances/payWithApp';
   static String get createProblem => '$baseUrl/Communication/CreateProblem';
   static String get getOrderByUserNew => '$baseUrl/Orders/GetOrderByUserNew';
   static String get getOrderByUserOld => '$baseUrl/Orders/GetOrderByUserOld';
   static String get customerRefuseMaintenanceForOnlineItem =>
       '$baseUrl/Maintenances/CustomerRefuseMaintenanceForOnlineItem';
-  // // Auth endpoints
-  // static String get login => ;
-  // static String get signup => '${AppConfig.authEndpoint}/signup';
-  //
-  // // tags endpoints
-  // static String get colleges => '${AppConfig.tagsEndpoint}/colleges';
-  // static String get majors => '${AppConfig.tagsEndpoint}/majors';
-  //
-  //
-  // //
-  // // // create post
-  // static String createPost = AppConfig.postsEndpoint;
-  // static String getTags = AppConfig.getTagsEndpoint;
-  //
-  // static String get getPosts => AppConfig.postsEndpoint;
-  // static String get getComments => AppConfig.postsEndpoint;
-  // static String get getUserReactionByType => AppConfig.postsEndpoint;
-  // static String get reactionToPost => AppConfig.postsEndpoint;
+  static String get changeName => '$baseUrl/account/ChangeName';
+  static String get updatePhoneNumber => '$baseUrl/account/ChangePhoneNumber';
+  static String get getSuggestSearch => '$baseUrl/Search/GetSuggestSearch';
+
+  static String get getAllForAllDeliveryConvert =>
+      "$baseUrl/Convert/GetAllForAllDelivery";
+
+  static String get getAllTakeDeliveryConvert =>
+      "$baseUrl/Convert/GetAllTakeDelivery";
+
+  static String get getAllForDeliveryConvert =>
+      "$baseUrl/Convert/GetAllForDelivery";
+
+  static String get takeOrderMaintenanceConvert =>
+      "$baseUrl/Convert/TakeOrderMaintenance";
+  static String get updateOrderMaintenanceConvert =>
+      "$baseUrl/Convert/UpdateOrderMaintenance";
+
+  static String get getAllForAllDeliveryOutSide =>
+      "$baseUrl/Convert/GetAllForAllDeliveryOutSide";
+  static String get getAllTakeDeliveryOutSide =>
+      "$baseUrl/Convert/GetAllTakeDeliveryOutSide";
+  static String get getAllForDeliveryOutSide =>
+      "$baseUrl/Convert/GetAllForDeliveryOutSide";
+  static String get updateOrderMaintenanceOutSide =>
+      "$baseUrl/Convert/UpdateOrderMaintenanceOutSide";
 }

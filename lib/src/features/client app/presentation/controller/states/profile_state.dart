@@ -4,6 +4,8 @@ enum ProfileStatus { initial, loading, success, failure }
 
 enum ProblemStatus { initial, loading, success, failure }
 
+enum ChangeNameStatus { initial, loading, success, failure }
+
 class ProfileState extends Equatable {
   final ProfileStatus profileStatus;
   final String? name;
@@ -15,18 +17,21 @@ class ProfileState extends Equatable {
   final int? orderMaintenancesNewCount;
   final String? errorMessage;
   final ProblemStatus? problemStatus;
+  final ChangeNameStatus changeNameStatus;
 
-  const ProfileState(
-      {this.profileStatus = ProfileStatus.initial,
-      this.name,
-      this.email,
-      this.phone,
-      this.orderShopCount,
-      this.orderMaintenancesCount,
-      this.orderShopNewCount,
-      this.orderMaintenancesNewCount,
-      this.errorMessage,
-      this.problemStatus});
+  const ProfileState({
+    this.profileStatus = ProfileStatus.initial,
+    this.name,
+    this.email,
+    this.phone,
+    this.orderShopCount,
+    this.orderMaintenancesCount,
+    this.orderShopNewCount,
+    this.orderMaintenancesNewCount,
+    this.errorMessage,
+    this.problemStatus = ProblemStatus.initial,
+    this.changeNameStatus = ChangeNameStatus.initial,
+  });
 
   ProfileState copyWith({
     ProfileStatus? profileStatus,
@@ -38,21 +43,24 @@ class ProfileState extends Equatable {
     int? orderShopNewCount,
     int? orderMaintenancesNewCount,
     ProblemStatus? problemStatus,
+    ChangeNameStatus? changeNameStatus,
     String? errorMessage,
   }) {
     return ProfileState(
-        profileStatus: profileStatus ?? this.profileStatus,
-        name: name ?? this.name,
-        email: email ?? this.email,
-        phone: phone ?? this.phone,
-        orderShopCount: orderShopCount ?? this.orderShopCount,
-        orderMaintenancesCount:
-            orderMaintenancesCount ?? this.orderMaintenancesCount,
-        orderShopNewCount: orderShopNewCount ?? this.orderShopNewCount,
-        orderMaintenancesNewCount:
-            orderMaintenancesNewCount ?? this.orderMaintenancesNewCount,
-        errorMessage: errorMessage ?? this.errorMessage,
-        problemStatus: problemStatus ?? this.problemStatus);
+      profileStatus: profileStatus ?? this.profileStatus,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      orderShopCount: orderShopCount ?? this.orderShopCount,
+      orderMaintenancesCount:
+          orderMaintenancesCount ?? this.orderMaintenancesCount,
+      orderShopNewCount: orderShopNewCount ?? this.orderShopNewCount,
+      orderMaintenancesNewCount:
+          orderMaintenancesNewCount ?? this.orderMaintenancesNewCount,
+      errorMessage: errorMessage ?? this.errorMessage,
+      problemStatus: problemStatus ?? this.problemStatus,
+      changeNameStatus: changeNameStatus ?? this.changeNameStatus,
+    );
   }
 
   @override
@@ -66,6 +74,7 @@ class ProfileState extends Equatable {
         orderShopNewCount,
         orderMaintenancesNewCount,
         errorMessage,
-        problemStatus
+        problemStatus,
+        changeNameStatus,
       ];
 }

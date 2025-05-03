@@ -23,6 +23,9 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
       resizeToAvoidBottomInset: true,
       appBar: AppBarApplicationArrow(
         text: "تغيير كلمة المرور",
+        onBackTap: () {
+          Navigator.pop(context);
+        },
       ),
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
@@ -47,6 +50,21 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
         builder: (context, state) {
           return ListView(
             children: [
+              Container(
+                decoration: BoxDecoration(
+                    color: (Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.lightGrayColor
+                        : AppColors.primaryColor),
+                    borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(15),
+                        bottomRight: Radius.circular(15))),
+                height: 140,
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Image.asset("assets/images/logoWhit.png"),
+                ),
+              ),
               AppSizedBox.kVSpace20,
               Form(
                 key: _formKey,

@@ -28,4 +28,14 @@ class UserProfileRepositoryImpl implements ProfileRepository {
       return Left(ServerFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> changeName(String fullName) async {
+    try {
+      await remoteDataSource.changeName(fullName);
+      return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
 }

@@ -1,8 +1,10 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20delivery%20maintenance%20app/ItemsMaintenancePart.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/cubit/delivery_maintenance_cubit.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/state/delivery_maintenance_state.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/current_order_maintenance/detiels_current_order_screen.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/home_delivery_maintenance/home_delivery_maintenance_screen.dart';
-import '../../../../../core/widgets/widgets delivery maintenance app/ItemsPerviousMaintenancePart.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/pervious_order_maintenance/detiels_previous_order_maintenance_screen.dart';
 
 class PerviousOrderMaintenanceScreen extends StatefulWidget {
   const PerviousOrderMaintenanceScreen({Key? key}) : super(key: key);
@@ -56,7 +58,7 @@ class _PerviousOrderMaintenanceScreenState
       }
       if (state.deliveryMaintenanceStatus ==
           DeliveryMaintenanceStatus.failure) {
-        return const Center(child: Text('فشلت العملية'));
+        return const Center(child: CircularProgressIndicator());
       }
       if (state.deliveryMaintenanceStatus ==
           DeliveryMaintenanceStatus.success) {
@@ -65,8 +67,19 @@ class _PerviousOrderMaintenanceScreenState
           physics: const BouncingScrollPhysics(),
           itemCount: state.ordersOld.length,
           itemBuilder: (context, index) {
-            return ItemsPerviousMaintenanceOrderPart(
-              item: state.ordersOld[index],
+            return ItemsMaintenancePart(
+              items: state.ordersOld[index],
+              ontap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PerviousOrdersDetailsScreen(
+                      handReceiptId: state.ordersOld[index].handReceiptId!,
+                      orderMaintenancId: state.ordersOld[index].id,
+                    ),
+                  ),
+                );
+              },
             );
           },
         );

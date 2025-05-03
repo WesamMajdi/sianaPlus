@@ -6,19 +6,27 @@ import 'package:maintenance_app/src/features/client%20app/presentation/screens/p
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/profile_cubit.dart';
 
 class UserProfilePage extends StatefulWidget {
-  const UserProfilePage({super.key});
-
+  const UserProfilePage({super.key, this.currentIndex = 7});
+  final int? currentIndex;
   @override
   _UserProfilePageState createState() => _UserProfilePageState();
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
   bool? isDropdownVisible = false;
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 50));
+    if (mounted) {
+      context.read<ProfileCubit>().getUserProfile();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const MyDrawer(),
+      drawer: MyDrawer(currentIndex: widget.currentIndex),
       appBar: const AppBarApplication(
         text: 'صفحتي الشخصية',
       ),
@@ -28,7 +36,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
             return const Center(child: CircularProgressIndicator());
           }
           if (state.profileStatus == ProfileStatus.failure) {
-            return Center(child: Text(state.errorMessage!));
+            return const Center(child: CircularProgressIndicator());
           }
           if (state.profileStatus == ProfileStatus.success) {
             final profile = state;
@@ -39,17 +47,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     margin: const EdgeInsets.only(top: 5),
                     child: const UserImageProfile()),
                 AppSizedBox.kVSpace10,
-                // Container(
-                //   alignment: Alignment.center,
-                //   child: CustomStyledText(
-                //     text: profile.role ?? "مستخدم",
-                //     fontSize: 20,
-                //     fontWeight: FontWeight.bold,
-                //     textColor: (Theme.of(context).brightness == Brightness.dark
-                //         ? AppColors.lightGrayColor
-                //         : AppColors.primaryColor),
-                //   ),
-                // ),
+                Container(
+                  alignment: Alignment.center,
+                  child: CustomStyledText(
+                    text: profile.name ?? "مستخدم",
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    textColor: (Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.lightGrayColor
+                        : AppColors.primaryColor),
+                  ),
+                ),
                 AppSizedBox.kVSpace10,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -119,7 +127,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     ],
                   ),
                 ),
-
                 AppSizedBox.kVSpace10,
                 Container(
                   margin:
@@ -142,17 +149,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     childAspectRatio: 1.7,
                     children: [
                       StatisticsCard(
-                          title: 'الطلبات الحالية',
+                          title: 'عدد طلبات المتجر',
                           value: profile.orderShopCount?.toString() ?? "0"),
                       StatisticsCard(
-                          title: 'الطلبات السابقة',
+                          title: 'عدد طلبات الصيانة',
                           value: profile.orderMaintenancesCount?.toString() ??
                               "0"),
                       StatisticsCard(
-                          title: 'المنتجات المفضلة',
+                          title: 'طلبات المتجر الجديدة',
                           value: profile.orderShopNewCount?.toString() ?? "0"),
                       StatisticsCard(
-                          title: 'مشتريات الشهر الحالي',
+                          title: 'طلبات الصيانة الجديدة',
                           value:
                               profile.orderMaintenancesNewCount?.toString() ??
                                   "0"),

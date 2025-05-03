@@ -74,6 +74,17 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, void>> updatePhone(String phone) async {
+    try {
+      await remoteDataSource.updatePhone(phone);
+      return const Right(null);
+    } catch (e) {
+      debugPrint('Error in updatePhoneNumber: $e');
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> resetPassword(
       ResetPasswordModel resetPasswordRequest) async {
     try {

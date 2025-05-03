@@ -44,7 +44,7 @@ class CategoryState extends Equatable {
   int categoryCurrentPage;
   int selectedCategoryId;
   int productCurrentPage;
-  int? selectedIndex;
+  int? selectedIndex = 0;
   final String? errorMessage;
   Map<String, Product> cartItems;
   dynamic subTotalAmount = 0;
@@ -52,11 +52,13 @@ class CategoryState extends Equatable {
   int? cityId = 0;
   int? regionId = 0;
   int? villageId = 0;
+  int? newOrderId = 0;
   String? addressLine1;
   String? addressLine2;
   int quantity = 0;
   final BaseViewModel? selectedItemCity;
   final BaseViewModel? selectedItemVillage;
+  List<SearchCategoryEntity>? listOfSearchCategory;
 
   // bool isColorSelected;
 
@@ -77,11 +79,13 @@ class CategoryState extends Equatable {
       this.listOfSearch = const <SearchProductEntity>[],
       this.favouriteProducts = const <Product>[],
       this.subCategories = const <Category>[],
+      this.listOfSearchCategory = const <SearchCategoryEntity>[],
       this.hasCategoryReachedMax = false,
       this.productColor,
       this.quantity = 0,
-      this.selectedIndex,
+      this.selectedIndex = 0,
       this.categoryCurrentPage = 1,
+      this.newOrderId = 0,
       this.productCurrentPage = 1,
       this.selectedCategoryId = 0,
       this.errorMessage,
@@ -109,6 +113,7 @@ class CategoryState extends Equatable {
       products: const <Product>[],
       listofRegion: const <BaseViewModel>[],
       listOfCity: const <BaseViewModel>[],
+      listOfSearchCategory: const <SearchCategoryEntity>[],
       listOfVillage: const <BaseViewModel>[],
       discounts: const <DiscountEntity>[],
       listOfSearch: const <SearchProductEntity>[],
@@ -117,7 +122,7 @@ class CategoryState extends Equatable {
       hasCategoryReachedMax: false,
       productColor: null,
       quantity: 0,
-      selectedIndex: null,
+      selectedIndex: 0,
       categoryCurrentPage: 1,
       productCurrentPage: 1,
       selectedCategoryId: 0,
@@ -125,6 +130,7 @@ class CategoryState extends Equatable {
       cartItems: {},
       subTotalAmount: 0,
       totalAmount: 0,
+      newOrderId: 0,
       selectedItem: null,
       selectedItemCity: null,
       selectedItemVillage: null,
@@ -148,6 +154,7 @@ class CategoryState extends Equatable {
       List<Category>? categories,
       List<Category>? subCategories,
       List<SearchProductEntity>? listOfSearch,
+      List<SearchCategoryEntity>? listOfSearchCategory,
       List<Product>? products,
       List<Product>? favouriteProducts,
       List<BaseViewModel>? listofRegion,
@@ -159,6 +166,7 @@ class CategoryState extends Equatable {
       int? categoryCurrentPage,
       int? productCurrentPage,
       int? quantity,
+      int? newOrderId,
       int? selectedCategoryId,
       String? errorMessage,
       Map<String, Product>? cartItems,
@@ -210,7 +218,9 @@ class CategoryState extends Equatable {
         addressLine1: addressLine1 ?? this.addressLine1,
         addressLine2: addressLine2 ?? this.addressLine2,
         searchProductStatus: searchProductStatus ?? this.searchProductStatus,
-        listOfSearch: listOfSearch ?? this.listOfSearch);
+        listOfSearchCategory: listOfSearchCategory ?? this.listOfSearchCategory,
+        listOfSearch: listOfSearch ?? this.listOfSearch,
+        newOrderId: newOrderId ?? this.newOrderId);
   }
 
   @override
@@ -247,6 +257,8 @@ class CategoryState extends Equatable {
         villageId,
         addressLine1,
         addressLine2,
-        listOfSearch
+        listOfSearchCategory,
+        listOfSearch,
+        newOrderId
       ];
 }

@@ -20,11 +20,9 @@ class ProductModel extends Product {
     cost = json['cost'];
     countOrder = json['countOrder'];
     isFavorite = json['isFavorite'] ?? false;
-    productColors =  (json['productColors'] as List)
+    productColors = (json['productColors'] as List)
         .map((item) => ProductColorModel.fromJson(item as Map<String, dynamic>))
         .toList();
-
-
   }
 
   Map<String, dynamic> toJson() {

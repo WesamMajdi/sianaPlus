@@ -164,16 +164,17 @@ class AuthRemoteDataSource {
       String? token = await TokenManager.getToken();
 
       try {
-        final response =
-            await apiController.post(Uri.parse(ApiSetting.updateEmail),
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': 'Bearer $token',
-                },
-                body: updateEmailRequest.toJson());
+        final response = await apiController.post(
+          Uri.parse(
+              '${ApiSetting.updateEmail}?newEmail=${updateEmailRequest.newEmail}'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
 
         final responseBody = jsonDecode(response.body);
-
+        print(response.statusCode);
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
@@ -253,6 +254,52 @@ class AuthRemoteDataSource {
         throw TimeoutException('Request timed out, please try again.');
       } catch (e) {
         debugPrint('Unexpected Error: $e');
+        throw Exception('An unexpected error occurred.');
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<BaseResponse<void>> updatePhone(String phone) async {
+    if (await internetConnectionChecker.hasConnection) {
+      String? token = await TokenManager.getToken();
+
+      try {
+        final url =
+            Uri.parse('${ApiSetting.updatePhoneNumber}?newPhoneNumber=$phone');
+        debugPrint('Request URL: $url');
+
+        final response = await apiController.post(
+          url,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+
+        debugPrint('Status Code: ${response.statusCode}');
+        debugPrint('Response Body: "${response.body}"');
+
+        if (response.body.isEmpty) {
+          throw Exception('Response body is empty');
+        }
+
+        final responseBody = jsonDecode(response.body);
+
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+
+        return BaseResponse<void>.fromJson(
+          responseBody,
+          (data) {},
+        );
+      } on TimeoutException catch (e) {
+        debugPrint('Timeout Exception: $e');
+        throw TimeoutException('Request timed out, please try again.');
+      } catch (e) {
+        debugPrint('Unexpected Error in updatePhoneNumber: $e');
         throw Exception('An unexpected error occurred.');
       }
     } else {

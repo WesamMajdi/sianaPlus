@@ -21,7 +21,7 @@ abstract class AuthRepository {
 
   Future<Either<Failure, void>> forgotPassword(
       ForgotPasswordModel forgotPasswordRequest);
-
+  Future<Either<Failure, void>> updatePhone(String phone);
   Future<Either<Failure, void>> resetPassword(
       ResetPasswordModel resetPasswordRequest);
 }

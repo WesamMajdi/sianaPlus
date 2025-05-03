@@ -51,7 +51,7 @@ class _PerviousOrdersDetailsScreenState
 
           if (state.deliveryMaintenanceStatus ==
               DeliveryMaintenanceStatus.failure) {
-            return const Center(child: Text('فشلت العملية'));
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (state.deliveryMaintenanceStatus ==
@@ -112,7 +112,7 @@ class _PerviousOrdersDetailsScreenState
                         children: [
                           AppSizedBox.kVSpace10,
                           CustomStyledText(
-                            text: " ${orderItem.item.toString()}",
+                            text: " ${orderItem.item ?? "غير محدد"}",
                             textColor: AppColors.secondaryColor,
                           ),
                           AppSizedBox.kVSpace10,
@@ -121,11 +121,11 @@ class _PerviousOrdersDetailsScreenState
                             children: [
                               CustomStyledText(
                                 text:
-                                    "لون الجهاز: ${orderItem.color.toString()}",
+                                    "لون الجهاز: ${orderItem.color ?? "غير محدد"}",
                               ),
                               CustomStyledText(
                                   text:
-                                      "الشركة:  ${orderItem.company.toString() ?? "غير محدد"}")
+                                      "الشركة:  ${orderItem.company ?? "غير محدد"}")
                             ],
                           ),
                         ],

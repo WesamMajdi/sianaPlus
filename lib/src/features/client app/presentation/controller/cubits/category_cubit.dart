@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:maintenance_app/main.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/region/region_model.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/discount_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_color.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/search_product_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/usecases/product/fetch_product_useCase.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
 
 import '../../../../../core/pagination/pagination_params.dart';
 import '../../../domain/usecases/category/fetch_categories_useCase.dart';
@@ -28,19 +30,25 @@ class CategoryCubit extends Cubit<CategoryState> {
     final result =
         await categoriesUseCase.getMainCategory(PaginationParams(page: page));
     result.fold(
-      (failure) => emit(state.copyWith(
-          mainCategoryStatus: MainCategoryStatus.failure,
-          errorMessage: failure.message)),
-      (categories) => emit(state.copyWith(
+        (failure) => emit(state.copyWith(
+            mainCategoryStatus: MainCategoryStatus.failure,
+            errorMessage: failure.message)), (categories) {
+      if (categories.items.isEmpty) {
+        selectCategory(categoryId: categories.items.first.id);
+        fetchSubCategories(mainCategoryId: categories.items.first.id);
+      }
+
+      emit(state.copyWith(
           mainCategoryStatus: MainCategoryStatus.success,
-          categories: categories.items)),
-    );
+          categories: categories.items));
+    });
   }
 
-  void selectProductColor(
-      {required int index,
-      required ProductColorEntity productColor,
-      required int productId}) async {
+  void selectProductColor({
+    required int index,
+    required ProductColorEntity productColor,
+    required int productId,
+  }) async {
     final updatedItems = List<Product>.from(state.products);
 
     int productIndex =
@@ -49,7 +57,16 @@ class CategoryCubit extends Cubit<CategoryState> {
     if (productIndex != -1) {
       updatedItems[productIndex].selectedColor = productColor;
     }
-    emit(state.copyWith(selectedIndex: index, productColor: productColor));
+
+    emit(state.copyWith(
+      selectedIndex: index,
+      productColor: productColor,
+      products: updatedItems,
+    ));
+  }
+
+  void resetSelectedIndex() {
+    emit(state.copyWith(selectedIndex: -1));
   }
 
   Future<void> fetchSubCategories(
@@ -70,30 +87,75 @@ class CategoryCubit extends Cubit<CategoryState> {
     );
   }
 
-  Future<void> createOrder(Map<String, Product> cartItems) async {
+  Future<int?> getNewOrderId() async {
     emit(state.copyWith(orderStatus: OrderStatus.loading));
 
+    try {
+      final result = await categoriesUseCase.getNewOrderId();
+      return result.fold(
+        (failure) {
+          emit(state.copyWith(orderStatus: OrderStatus.failure));
+          return null;
+        },
+        (orderId) {
+          print("OrderId from API: $orderId");
+          emit(state.copyWith(
+            orderStatus: OrderStatus.success,
+            newOrderId: orderId,
+          ));
+          return orderId;
+        },
+      );
+    } catch (e) {
+      emit(state.copyWith(orderStatus: OrderStatus.failure));
+      print('Error: $e');
+      return null;
+    }
+  }
+
+  void resetOrderStatus() {
+    emit(state.copyWith(orderStatus: OrderStatus.initial));
+  }
+
+  Future<void> createOrder(double? totalAmount) async {
+    emit(state.copyWith(orderStatus: OrderStatus.loading));
     final regionId = state.regionId;
     final cityId = state.cityId;
     final villageId = state.villageId;
+    Map<String, Product> cartItems = state.cartItems;
     final addressLine1 = state.addressLine1 ?? '';
     final addressLine2 = state.addressLine2 ?? '';
+    int? orderId = state.newOrderId;
+    if (orderId == null || orderId == 0) {
+      orderId = await getNewOrderId();
+    }
 
-    final result = await productsUseCase.createOrder(
-      cartItems,
-      region: regionId,
-      city: cityId,
-      village: villageId,
-      addressLine1: addressLine1,
-      addressLine2: addressLine2,
-    );
+    if (orderId == null) {
+      emit(state.copyWith(orderStatus: OrderStatus.failure));
+      return;
+    }
+    final result = await productsUseCase.createOrder(cartItems,
+        region: regionId,
+        city: cityId,
+        village: villageId,
+        addressLine1: addressLine1,
+        addressLine2: addressLine2,
+        orderId: orderId,
+        totalAmount: totalAmount!);
 
     result.fold(
-      (failure) => emit(state.copyWith(
-          orderStatus: OrderStatus.failure, errorMessage: failure.message)),
-      (order) =>
-          emit(state.copyWith(orderStatus: OrderStatus.success, cartItems: {})),
-    );
+        (failure) => emit(state.copyWith(
+            orderStatus: OrderStatus.failure,
+            errorMessage: failure.message)), (order) async {
+      emit(state.copyWith(
+        orderStatus: OrderStatus.success,
+        cartItems: {},
+        totalAmount: 0,
+        subTotalAmount: 0,
+      ));
+      await Future.delayed(Duration.zero);
+      resetOrderStatus();
+    });
   }
 
   void updateCheckoutData({
@@ -112,7 +174,7 @@ class CategoryCubit extends Cubit<CategoryState> {
       villageId: village,
       addressLine1: addressLine1,
       addressLine2: addressLine2,
-      cartItems: {},
+      cartItems: state.cartItems,
     ));
   }
 
@@ -207,7 +269,11 @@ class CategoryCubit extends Cubit<CategoryState> {
     if (updatedItems.containsKey(productItem.id.toString())) {
       updatedItems.update(
         productItem.id.toString(),
-        (existingItem) => productItem,
+        (existingItem) {
+          existingItem.userCount =
+              existingItem.userCount! + productItem.userCount!;
+          return existingItem;
+        },
       );
     } else {
       updatedItems.putIfAbsent(
@@ -215,58 +281,63 @@ class CategoryCubit extends Cubit<CategoryState> {
         () => productItem,
       );
     }
-    // state.
-
     final subTotalAmount = updatedItems.values.fold(0.0, (sum, item) {
       return sum + (item.basePrice! * item.userCount!);
     });
 
-    // final totalAmount =
     emit(state.copyWith(
-        cartItems: updatedItems, subTotalAmount: subTotalAmount));
+      cartItems: updatedItems,
+      subTotalAmount: subTotalAmount,
+    ));
   }
 
   void increaseQuantity(String productId) {
-    final updatedItems = List<Product>.from(state.products);
+    final updatedItems = Map<String, Product>.from(state.cartItems);
 
-    int productIndex = updatedItems
-        .indexWhere((element) => element.id.toString() == productId);
+    if (updatedItems.containsKey(productId)) {
+      // زيادة الكمية
+      updatedItems[productId]!.userCount =
+          updatedItems[productId]!.userCount! + 1;
 
-    if (productIndex != -1) {
-      updatedItems[productIndex].userCount =
-          updatedItems[productIndex].userCount! + 1;
+      // حساب المجموع الفرعي لجميع العناصر في السلة
+      final subTotalAmount = updatedItems.values.fold(0.0, (sum, item) {
+        return sum + (item.basePrice! * item.userCount!);
+      });
+
+      // تحديث الحالة
+      emit(state.copyWith(
+        cartItems: updatedItems,
+        subTotalAmount: subTotalAmount,
+      ));
     }
-
-    final subTotalAmount = updatedItems.fold(0.0, (sum, item) {
-      return sum + (item.basePrice! * item.userCount!);
-    });
-
-    emit(
-        state.copyWith(products: updatedItems, subTotalAmount: subTotalAmount));
   }
 
   void decreaseQuantity(String productId) {
-    final updatedItems = List<Product>.from(state.products);
+    final updatedItems = Map<String, Product>.from(state.cartItems);
 
-    int productIndex = updatedItems
-        .indexWhere((element) => element.id.toString() == productId);
+    if (updatedItems.containsKey(productId)) {
+      if (updatedItems[productId]!.userCount! > 1) {
+        // تقليل الكمية
+        updatedItems[productId]!.userCount =
+            updatedItems[productId]!.userCount! - 1;
 
-    if (productIndex != -1) {
-      if (updatedItems[productIndex].userCount! != 0) {
-        updatedItems[productIndex].userCount =
-            updatedItems[productIndex].userCount! - 1;
+        // حساب المجموع الفرعي لجميع العناصر في السلة
+        final subTotalAmount = updatedItems.values.fold(0.0, (sum, item) {
+          return sum + (item.basePrice! * item.userCount!);
+        });
+
+        // تحديث الحالة
+        emit(state.copyWith(
+          cartItems: updatedItems,
+          subTotalAmount: subTotalAmount,
+        ));
       }
     }
-
-    final subTotalAmount = updatedItems.fold(0.0, (sum, item) {
-      return sum + (item.basePrice! * item.userCount!);
-    });
-    emit(
-        state.copyWith(products: updatedItems, subTotalAmount: subTotalAmount));
   }
 
   void removeItem(String productId) {
     final updatedCart = Map<String, Product>.from(state.cartItems);
+    print(productId);
 
     updatedCart.remove(productId);
 
@@ -282,6 +353,7 @@ class CategoryCubit extends Cubit<CategoryState> {
         0.0,
         (total, product) => total + product.price,
       );
+      print(newSubTotal);
 
       emit(state.copyWith(
         cartItems: updatedCart,
@@ -289,6 +361,7 @@ class CategoryCubit extends Cubit<CategoryState> {
         discounts: state.discounts,
       ));
     }
+    print(state.subTotalAmount);
   }
 
   void toggleFavorite(int productId) {
@@ -338,16 +411,15 @@ class CategoryCubit extends Cubit<CategoryState> {
     );
   }
 
-  selectItem(BaseViewModel item) {
+  void selectItem(BaseViewModel selected) {
     emit(state.copyWith(
-      selectedItem: item,
+      selectedItem: selected,
       selectedItemCity: null,
       selectedItemVillage: null,
-      listOfCity: [],
-      listOfVillage: [],
-      regionStatus: RegionStatus.initial,
+      listOfCity: null,
+      listOfVillage: null,
     ));
-    fetchAllCity(item.id);
+    fetchAllCity(selected.id);
   }
 
   Future<void> fetchAllCity(int regionId) async {
@@ -360,14 +432,13 @@ class CategoryCubit extends Cubit<CategoryState> {
     );
   }
 
-  selectItemCity(BaseViewModel item) {
+  void selectItemCity(BaseViewModel selected) {
     emit(state.copyWith(
-      selectedItemCity: item,
+      selectedItemCity: selected,
       selectedItemVillage: null,
-      listOfVillage: [],
-      regionStatus: RegionStatus.initial,
+      listOfVillage: null,
     ));
-    fetchAllVillage(item.id);
+    fetchAllVillage(selected.id);
   }
 
   Future<void> fetchAllVillage(int cityId) async {
@@ -389,9 +460,8 @@ class CategoryCubit extends Cubit<CategoryState> {
 
   Future<void> getSearchProduct({bool refresh = false}) async {
     emit(state.copyWith(searchProductStatus: SearchProductStatus.loading));
-    final page = refresh ? 1 : 10;
-    final result =
-        await productsUseCase.getSearchProduct(PaginationParams(page: page));
+    final result = await productsUseCase
+        .getSearchProduct(const PaginationParams(page: 1, perPage: 5));
     result.fold(
       (failure) => emit(state.copyWith(
           searchProductStatus: SearchProductStatus.failure,
@@ -399,6 +469,20 @@ class CategoryCubit extends Cubit<CategoryState> {
       (p) => emit(state.copyWith(
           searchProductStatus: SearchProductStatus.success,
           listOfSearch: p.items)),
+    );
+  }
+
+  Future<void> getSubCategory({bool refresh = false}) async {
+    emit(state.copyWith(searchProductStatus: SearchProductStatus.loading));
+    final result = await productsUseCase
+        .getSubCategory(const PaginationParams(page: 1, perPage: 5));
+    result.fold(
+      (failure) => emit(state.copyWith(
+          searchProductStatus: SearchProductStatus.failure,
+          errorMessage: failure.message)),
+      (p) => emit(state.copyWith(
+          searchProductStatus: SearchProductStatus.success,
+          listOfSearchCategory: p.items)),
     );
   }
 

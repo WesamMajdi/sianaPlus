@@ -6,6 +6,7 @@ import 'package:maintenance_app/src/core/di/dependency_injection.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/network/connectivity_cubit.dart';
 import 'package:maintenance_app/src/core/services/notification_service.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/showTopSnackBar.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/controller/cubit/auth_cubit.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/screens/login_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
@@ -35,7 +36,6 @@ void main() async {
   final localizationBloc = LocalizationBloc();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   final themeChangerBloc = ThemeChangerBloc(prefs);
-  String? token = prefs.getString('token');
   LocationPermission permission = await Geolocator.checkPermission();
   if (permission == LocationPermission.denied) {
     permission = await Geolocator.requestPermission();
@@ -208,7 +208,7 @@ class _MyAppState extends State<MyApp> {
                         }
                       },
                     ),
-                  ], child: SplashPage());
+                  ], child: const SplashPage());
                 },
               ),
             );
@@ -220,18 +220,11 @@ class _MyAppState extends State<MyApp> {
       BuildContext context, ConnectivityStatus disconnected) {
     switch (disconnected) {
       case ConnectivityStatus.connected:
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: const CustomStyledText(
-              text: 'تم الاتصال بالانترنت', textColor: Colors.white),
-          backgroundColor: Colors.green.shade800,
-        ));
-
+        showTopSnackBar(context, 'تم الاتصال بالانترنت', Colors.green.shade800);
         break;
       case ConnectivityStatus.disconnected:
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: const CustomStyledText(
-                text: 'لا يوجد اتصال بالإنترنت', textColor: Colors.white),
-            backgroundColor: Colors.red.shade800));
+        showTopSnackBar(context, 'لا يوجد اتصال بالإنترنت', Colors.red);
+
         break;
     }
   }

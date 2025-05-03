@@ -267,7 +267,15 @@ class _MaintenancePartsOnlineDetailsPageState
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (state.onlineStatus == OnlineStatus.failure) {
-                  return const Center(child: Text('فشلت العملية'));
+                  return Center(
+                      child: Center(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  ));
                 }
                 if (state.onlineStatus == OnlineStatus.success) {
                   return Container(
@@ -358,7 +366,12 @@ class _MaintenancePartsOnlineDetailsPageState
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (state.onlineStatus == OnlineStatus.failure) {
-                  return const Center(child: Text('فشلت العملية'));
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
                 }
                 if (state.onlineStatus == OnlineStatus.success) {
                   return Container(

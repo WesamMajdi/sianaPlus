@@ -1,11 +1,11 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20order/itemMaintenanceOrders.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20order/itemsProductOrders.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
 
 class OrdersProductPage extends StatefulWidget {
-  const OrdersProductPage({super.key});
+  const OrdersProductPage({super.key, this.currentIndex = 6});
+  final int? currentIndex;
 
   @override
   State<OrdersProductPage> createState() => _OrdersProductPageState();
@@ -14,9 +14,9 @@ class OrdersProductPage extends StatefulWidget {
 class _OrdersProductPageState extends State<OrdersProductPage> {
   @override
   void initState() {
+    super.initState();
     context.read<OrderCubit>().getOrderProductByUserNew();
     context.read<OrderCubit>().getOrderProductByUserOld();
-    super.initState();
   }
 
   @override
@@ -24,7 +24,7 @@ class _OrdersProductPageState extends State<OrdersProductPage> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        drawer: const MyDrawer(),
+        drawer: MyDrawer(currentIndex: widget.currentIndex),
         appBar: AppBar(
           iconTheme: IconThemeData(
               weight: 100,
@@ -78,7 +78,7 @@ class _OrdersProductPageState extends State<OrdersProductPage> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (state.orderProductStatus == OrderProductStatus.failure) {
-                  return const Center(child: Text('فشلت العملية'));
+                  return const Center(child: CircularProgressIndicator());
                 }
                 if (state.orderProductStatus == OrderProductStatus.success &&
                     state.ordersProductItemsNew!.isNotEmpty) {
@@ -104,7 +104,7 @@ class _OrdersProductPageState extends State<OrdersProductPage> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (state.orderProductStatus == OrderProductStatus.failure) {
-                  return const Center(child: Text('فشلت العملية'));
+                  return const Center(child: CircularProgressIndicator());
                 }
                 if (state.orderProductStatus == OrderProductStatus.success &&
                     state.ordersProductItemsOld!.isNotEmpty) {

@@ -46,7 +46,14 @@ class _MaintenancePartsDetailsPageState
               return const Center(child: CircularProgressIndicator());
             }
             if (state.handReceiptStatus == HandReceiptStatus.failure) {
-              return const Center(child: Text('فشلت العملية'));
+              return Center(
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              );
             }
             if (state.handReceiptStatus == HandReceiptStatus.success) {
               return ListView(
@@ -165,7 +172,14 @@ class _MaintenancePartsDetailsPageState
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (state.handReceiptStatus == HandReceiptStatus.failure) {
-                  return const Center(child: Text('فشلت العملية'));
+                  return Center(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  );
                 }
                 if (state.handReceiptStatus == HandReceiptStatus.success) {
                   final handReceiptItem = state.handReceiptItem;
@@ -272,7 +286,15 @@ class _MaintenancePartsDetailsPageState
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (state.handReceiptStatus == HandReceiptStatus.failure) {
-                  return const Center(child: Text('فشلت العملية'));
+                  return Center(
+                      child: Center(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  ));
                 }
                 if (state.handReceiptStatus == HandReceiptStatus.success) {
                   return Container(
@@ -363,7 +385,15 @@ class _MaintenancePartsDetailsPageState
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (state.handReceiptStatus == HandReceiptStatus.failure) {
-                  return const Center(child: Text('فشلت العملية'));
+                  return Center(
+                      child: Center(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  ));
                 }
                 if (state.handReceiptStatus == HandReceiptStatus.success) {
                   return Container(

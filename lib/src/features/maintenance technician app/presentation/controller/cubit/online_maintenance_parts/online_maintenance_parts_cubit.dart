@@ -8,7 +8,6 @@ class OnlineCubit extends Cubit<OnlineState> {
   final OnlineUseCase onlineUseCase;
 
   OnlineCubit(this.onlineUseCase) : super(OnlineState());
-
   Future<void> fetchOnline({
     bool refresh = false,
     String searchQuery = '',
@@ -16,23 +15,40 @@ class OnlineCubit extends Cubit<OnlineState> {
   }) async {
     emit(state.copyWith(onlineStatus: OnlineStatus.loading));
     try {
-      final page = refresh ? 1 : 1;
+      final page = refresh ? 1 : (state.currentPage + 1);
+
       final result = await onlineUseCase.getAllOnlineItem(
-        PaginationParams(page: page),
+        PaginationParams(
+          page: page,
+          perPage: 10,
+        ),
         searchQuery,
         barcode,
       );
+
       result.fold(
         (failure) => emit(state.copyWith(
-            onlineStatus: OnlineStatus.failure, errorMessage: failure.message)),
-        (onlineReceipts) => emit(state.copyWith(
+          onlineStatus: OnlineStatus.failure,
+          errorMessage: failure.message,
+        )),
+        (onlineReceipts) {
+          final updatedList = refresh
+              ? onlineReceipts.items
+              : [...state.receiptsOnline, ...onlineReceipts.items];
+
+          emit(state.copyWith(
             onlineStatus: OnlineStatus.success,
-            receiptsOnline: onlineReceipts.items)),
+            receiptsOnline: updatedList,
+            hasReachedEnd: onlineReceipts.items.length < 10,
+            currentPage: page,
+          ));
+        },
       );
     } catch (e) {
       emit(state.copyWith(
-          onlineStatus: OnlineStatus.failure,
-          errorMessage: 'Unexpected error occurred: $e'));
+        onlineStatus: OnlineStatus.failure,
+        errorMessage: 'Unexpected error occurred: $e',
+      ));
     }
   }
 

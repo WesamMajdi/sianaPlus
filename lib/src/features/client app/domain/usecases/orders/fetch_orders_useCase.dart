@@ -49,10 +49,6 @@ class OrderUseCase {
     return repository.getOrderMaintenanceByUserOld(paginationParams);
   }
 
-  Future<Either<Failure, int>> getNewOrderId() {
-    return repository.getNewOrderId();
-  }
-
   Future<Either<Failure, OrderMaintenanceRequest>> getNewOrderMaintenance() {
     return repository.getNewOrderMaintenance();
   }
@@ -92,5 +88,9 @@ class OrderUseCase {
 
   Future<Either<Failure, List<BasketModel>>> getAllItemByOrder(int basketId) {
     return repository.getAllItemByOrder(basketId);
+  }
+
+  Future<Either<Failure, bool>> payWithApp(int orderMaintenancId) {
+    return repository.payWithApp(orderMaintenancId);
   }
 }

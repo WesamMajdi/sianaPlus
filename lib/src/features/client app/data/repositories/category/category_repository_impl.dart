@@ -70,4 +70,14 @@ class CategoryRepositoryImpl implements CategoryRepository {
       return Left(ServerFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, int>> getNewOrderId() async {
+    try {
+      final response = await remoteDataSource.getNewOrderId();
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
 }

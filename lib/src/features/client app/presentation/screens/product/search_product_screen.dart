@@ -99,7 +99,7 @@ class _SearchProductPageState extends State<SearchProductPage> {
                         borderRadius: BorderRadius.circular(15),
                       ),
                       child: IconButton(
-                          icon: const Icon(Icons.tune, color: Colors.white),
+                          icon: const Icon(Icons.search, color: Colors.white),
                           onPressed: _onSearch))
                 ],
               ),
@@ -122,9 +122,7 @@ class _SearchProductPageState extends State<SearchProductPage> {
                       return const Center(child: CircularProgressIndicator());
                     } else if (state.searchProductStatus ==
                         SearchProductStatus.failure) {
-                      return Center(
-                          child: Text(
-                              'فشل في تحميل البيانات: ${state.errorMessage}'));
+                      return const Center(child: CircularProgressIndicator());
                     } else if (state.searchProductStatus ==
                         SearchProductStatus.success) {
                       return ListView.builder(
@@ -135,41 +133,60 @@ class _SearchProductPageState extends State<SearchProductPage> {
                         shrinkWrap: true,
                       );
                     } else {
-                      return SizedBox.shrink();
+                      return CustomStyledText(text: 'لم يتم البحث بعد');
                     }
                   },
                 ),
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppSizedBox.kVSpace20,
-                const Padding(
-                  padding: EdgeInsets.only(right: AppPadding.mediumPadding),
-                  child: CustomStyledText(
-                    text: "اقترحات البحث",
-                    textColor: AppColors.secondaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                  ),
-                ),
-                AppSizedBox.kVSpace20,
-                Row(
+            BlocBuilder<CategoryCubit, CategoryState>(
+              builder: (context, state) {
+                List<SearchCategoryEntity> suggestions =
+                    state.listOfSearchCategory ?? [];
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    searchSuggestionsTimes("الغسالة"),
-                    searchSuggestionsTimes("الثلاجة")
+                    AppSizedBox.kVSpace20,
+                    const Padding(
+                      padding: EdgeInsets.only(right: AppPadding.mediumPadding),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: CustomStyledText(
+                          text: "اقتراحات البحث",
+                          textColor: AppColors.secondaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                    AppSizedBox.kVSpace20,
+                    if (state.searchProductStatus ==
+                        SearchProductStatus.loading)
+                      const Center(child: CircularProgressIndicator()),
+                    if (suggestions.isNotEmpty)
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: suggestions.map<Widget>((item) {
+                          return searchSuggestionsTimes(
+                            item.categoryName ?? "N/A",
+                          );
+                        }).toList(),
+                      ),
+                    if (suggestions.isEmpty &&
+                        state.searchProductStatus ==
+                            SearchProductStatus.success)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        child: Center(
+                            child: CustomStyledText(
+                                text: "لا توجد اقتراحات حالياً")),
+                      ),
+                    AppSizedBox.kVSpace20,
                   ],
-                ),
-                AppSizedBox.kVSpace20,
-                Row(
-                  children: [
-                    searchSuggestionsTimes("طقم طناجر"),
-                    searchSuggestionsTimes("مكيروويف"),
-                    searchSuggestionsTimes("مروحة")
-                  ],
-                )
-              ],
+                );
+              },
             )
           ],
         ),

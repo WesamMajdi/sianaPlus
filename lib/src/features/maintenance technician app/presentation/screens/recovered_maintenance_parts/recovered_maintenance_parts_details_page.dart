@@ -48,7 +48,14 @@ class _RecoveredMaintenancePartsDetailsPageState
             }
             if (state.returnHandReceiptStatus ==
                 ReturnHandReceiptStatus.failure) {
-              return const Center(child: Text('فشلت العملية'));
+              return Center(
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.8,
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              );
             }
             if (state.returnHandReceiptStatus ==
                 ReturnHandReceiptStatus.success) {
@@ -171,7 +178,14 @@ class _RecoveredMaintenancePartsDetailsPageState
                 }
                 if (state.returnHandReceiptStatus ==
                     ReturnHandReceiptStatus.failure) {
-                  return const Center(child: Text('فشلت العملية'));
+                  return Center(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  );
                 }
                 if (state.returnHandReceiptStatus ==
                     ReturnHandReceiptStatus.success) {
@@ -285,7 +299,14 @@ class _RecoveredMaintenancePartsDetailsPageState
                 }
                 if (state.returnHandReceiptStatus ==
                     ReturnHandReceiptStatus.failure) {
-                  return const Center(child: Text('فشلت العملية'));
+                  return Center(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  );
                 }
                 if (state.returnHandReceiptStatus ==
                     ReturnHandReceiptStatus.success) {
@@ -379,7 +400,14 @@ class _RecoveredMaintenancePartsDetailsPageState
                 }
                 if (state.returnHandReceiptStatus ==
                     ReturnHandReceiptStatus.failure) {
-                  return const Center(child: Text('فشلت العملية'));
+                  return Center(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.8,
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  );
                 }
                 if (state.returnHandReceiptStatus ==
                     ReturnHandReceiptStatus.success) {
@@ -543,8 +571,8 @@ class _RecoveredMaintenancePartsDetailsPageState
       bool? notifyCustomerOfTheCost,
       int? warrantyDaysNumber,
       int? maintenanceRequestStatus) {
-    if (status != 17) {
-      if (status == 4) // new
+    if (status != 14) {
+      if (status == 1) // new
       {
         return [
           ListTile(
@@ -581,7 +609,7 @@ class _RecoveredMaintenancePartsDetailsPageState
             },
           ),
         ];
-      } else if (status == 5) // CheckItem
+      } else if (status == 2) // CheckItem
       {
         return [
           ListTile(
@@ -592,11 +620,13 @@ class _RecoveredMaintenancePartsDetailsPageState
             onTap: () {
               final TextEditingController descriptionController =
                   TextEditingController();
+              final FocusNode _descriptionFocusNode = FocusNode();
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return CustomInputDialog(
                     titleDialog: 'تحديد العطل',
+                    focusNode: _descriptionFocusNode,
                     text: 'الوصف:',
                     hintText: 'ادخل الوصف',
                     validators: (value) {
@@ -625,6 +655,7 @@ class _RecoveredMaintenancePartsDetailsPageState
                             ),
                           );
                         } catch (e) {
+                          // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('فشل في تحديد العطل: $e')),
                           );
@@ -664,7 +695,6 @@ class _RecoveredMaintenancePartsDetailsPageState
                                     partId: widget.partId),
                           ),
                         );
-                        Navigator.of(context).pop();
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -678,7 +708,7 @@ class _RecoveredMaintenancePartsDetailsPageState
             },
           ),
         ];
-      } else if (status == 6 && notifyCustomerOfTheCost!) //DefineMalfunction
+      } else if (status == 3 && notifyCustomerOfTheCost!) //DefineMalfunction
       {
         return [
           ListTile(
@@ -694,18 +724,19 @@ class _RecoveredMaintenancePartsDetailsPageState
                     onConfirm: () async {
                       final cubit = context.read<ReturnHandReceiptCubit>();
                       try {
-                        await cubit.updateReturnStatusForReceiptItem(
-                            receiptItemId: widget.partId);
+                        cubit.updateReturnStatusForReceiptItem(
+                            receiptItemId: widget.partId, status: 4);
                         Navigator.pushReplacement(
-                          // ignore: use_build_context_synchronously
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
                                 RecoveredMaintenancePartsDetailsPage(
-                                    partId: widget.partId),
+                              partId: widget.partId,
+                            ),
                           ),
                         );
                       } catch (e) {
+                        // ignore: use_build_context_synchronously
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                               content: Text('Failed to update status: $e')),
@@ -718,7 +749,7 @@ class _RecoveredMaintenancePartsDetailsPageState
             },
           ),
         ];
-      } else if (status == 6 &&
+      } else if (status == 3 &&
           // ignore: dead_code
           !notifyCustomerOfTheCost!)
       //DefineMalfunction
@@ -737,10 +768,9 @@ class _RecoveredMaintenancePartsDetailsPageState
                     onConfirm: () async {
                       final cubit = context.read<ReturnHandReceiptCubit>();
                       try {
-                        await cubit.updateReturnStatusForReceiptItem(
+                        cubit.updateReturnStatusForReceiptItem(
                             receiptItemId: widget.partId, status: 11);
                         Navigator.pushReplacement(
-                          // ignore: use_build_context_synchronously
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
@@ -762,30 +792,113 @@ class _RecoveredMaintenancePartsDetailsPageState
             },
           ),
         ];
-      } else if (status == 7) {
+      } else if (status == 4) {
         return [
           ListTile(
             title: const CustomStyledText(
-              text: "إبلاغ العميل بالتكلفة",
+              text: "موافقة العميل",
               fontSize: 20,
             ),
             onTap: () {
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return ShowDilogInformCustomerOfTheCost(
-                      status: maintenanceRequestStatus!,
-                      receiptItemId: widget.partId);
+                  return CustomSureDialog(
+                    onConfirm: () async {
+                      final cubit = context.read<ReturnHandReceiptCubit>();
+                      try {
+                        cubit.updateReturnStatusForReceiptItem(
+                            receiptItemId: widget.partId, status: 5);
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                RecoveredMaintenancePartsDetailsPage(
+                              partId: widget.partId,
+                            ),
+                          ),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Failed to update status: $e')),
+                        );
+                      }
+                    }, //UpdateStatusForHandReceiptItem
+                  );
+                },
+              );
+            },
+          ),
+          ListTile(
+            title: const CustomStyledText(
+              text: "رفض العميل",
+              fontSize: 20,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomInputDialog(
+                    titleDialog: 'رفض العميل',
+                    text: 'سبب رفض العميل للصيانة:',
+                    hintText: 'ادخل سبب رفض العميل للصيانة',
+                    // controller: ,
+                    validators: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'عفوا.سبب مطلوب';
+                      }
+                      return null;
+                    },
+                    onConfirm: () {},
+                  );
+                },
+              );
+            },
+          ),
+          ListTile(
+            title: const CustomStyledText(
+              text: "لم يرد العميل",
+              fontSize: 20,
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomSureDialog(
+                    onConfirm: () async {
+                      final cubit = context.read<ReturnHandReceiptCubit>();
+                      try {
+                        cubit.updateReturnStatusForReceiptItem(
+                          receiptItemId: widget.partId,
+                          status: 7,
+                        );
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                RecoveredMaintenancePartsDetailsPage(
+                                    partId: widget.partId),
+                          ),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Failed to update status: $e')),
+                        );
+                      }
+                    }, //UpdateStatusForHandReceiptItem
+                  );
                 },
               );
             },
           ),
         ];
-      } else if (status == 10) {
+      } else if (status == 7) {
         return [
           ListTile(
             title: const CustomStyledText(
-              text: "لا يوجد استجابة من العميل",
+              text: "موافقة العميل",
               fontSize: 20,
             ),
             onTap: () {
@@ -797,7 +910,7 @@ class _RecoveredMaintenancePartsDetailsPageState
                       final cubit = context.read<ReturnHandReceiptCubit>();
                       try {
                         await cubit.updateReturnStatusForReceiptItem(
-                            receiptItemId: widget.partId, status: 7);
+                            receiptItemId: widget.partId, status: 5);
                         Navigator.pushReplacement(
                           // ignore: use_build_context_synchronously
                           context,
@@ -838,7 +951,7 @@ class _RecoveredMaintenancePartsDetailsPageState
             },
           ),
         ];
-      } else if (status == 8 && notifyCustomerOfTheCost!) //CustomerApproved
+      } else if (status == 5 && notifyCustomerOfTheCost!) //CustomerApproved
       {
         return [
           ListTile(
@@ -873,7 +986,7 @@ class _RecoveredMaintenancePartsDetailsPageState
                             .enterReturnMaintenanceCostForItem(
                               receiptItemId: widget.partId,
                               costNotifiedToTheCustomer: price,
-                              warrantyDaysNumber: warrantyDaysNumber!,
+                              warrantyDaysNumber: warrantyDaysNumber ?? 0,
                             );
 
                         Navigator.pushReplacement(
@@ -897,7 +1010,7 @@ class _RecoveredMaintenancePartsDetailsPageState
             },
           ),
         ];
-      } else if ((status == 8 && !notifyCustomerOfTheCost!) || status == 10) {
+      } else if ((status == 5 && !notifyCustomerOfTheCost!) || status == 10) {
         return [
           ListTile(
             title: const CustomStyledText(
@@ -912,10 +1025,9 @@ class _RecoveredMaintenancePartsDetailsPageState
                     onConfirm: () async {
                       final cubit = context.read<ReturnHandReceiptCubit>();
                       try {
-                        await cubit.updateReturnStatusForReceiptItem(
-                            receiptItemId: widget.partId);
+                        cubit.updateReturnStatusForReceiptItem(
+                            receiptItemId: widget.partId, status: 11);
                         Navigator.pushReplacement(
-                          // ignore: use_build_context_synchronously
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
@@ -938,7 +1050,7 @@ class _RecoveredMaintenancePartsDetailsPageState
         ];
 
         ///UpdateStatusForHandReceiptItem
-      } else if (status == 14) {
+      } else if (status == 11) {
         return [
           ListTile(
             title: const CustomStyledText(
@@ -986,7 +1098,7 @@ class _RecoveredMaintenancePartsDetailsPageState
             },
           ),
         ];
-      } else if (status == 11) {
+      } else if (status == 8) {
         return [
           ListTile(
             title: const CustomStyledText(

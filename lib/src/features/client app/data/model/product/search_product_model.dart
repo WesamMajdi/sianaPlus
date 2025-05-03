@@ -18,3 +18,25 @@ class SearchProductModel extends SearchProductEntity {
     };
   }
 }
+
+class SearchCategoryModel extends SearchCategoryEntity {
+  SearchCategoryModel(
+      {required int id, required int categoryId, required String categoryName})
+      : super(id: id, categoryId: categoryId, categoryName: categoryName);
+
+  factory SearchCategoryModel.fromJson(Map<String, dynamic> json) {
+    return SearchCategoryModel(
+      id: json['id'],
+      categoryId: json['categoryId'],
+      categoryName: json['categoryName'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': this.id,
+      'categoryId': this.categoryId,
+      'categoryName': this.categoryName
+    };
+  }
+}

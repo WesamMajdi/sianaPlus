@@ -40,4 +40,8 @@ class AuthUseCase {
       ResetPasswordModel resetPasswordRequest) {
     return repository.resetPassword(resetPasswordRequest);
   }
+
+  Future<Either<Failure, void>> updatePhone(String phone) {
+    return repository.updatePhone(phone);
+  }
 }

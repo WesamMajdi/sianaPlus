@@ -1,34 +1,20 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
-import 'package:maintenance_app/src/core/services/telr_service_xml.dart';
-import 'package:maintenance_app/src/core/services/telr_service_xml_order.dart';
-import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customInputDialog.dart';
-import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customSureDialog.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/basket_Model.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/orders/orders_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/ordered_product/ordered_product_screen.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/screens/orders_maintenance/maintenance_requests_for_approval_screen.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/screens/webviwe/telr_order_maintenace_payment_screen.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/screens/webviwe/telr_payment_screen.dart';
-import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/order_maintenances_details_entity.dart';
-import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/cubit/delivery_maintenance_cubit.dart';
-import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/state/delivery_maintenance_state.dart';
 
 class PrductOrdersDetailsScreen extends StatefulWidget {
   final int basketId;
 
-  const PrductOrdersDetailsScreen({
-    Key? key,
-    required this.basketId,
-  }) : super(key: key);
+  const PrductOrdersDetailsScreen({Key? key, required this.basketId})
+      : super(key: key);
 
   @override
   State<PrductOrdersDetailsScreen> createState() =>
       _PrductOrdersDetailsScreenState();
 }
-
-final TextEditingController desController = TextEditingController();
 
 class _PrductOrdersDetailsScreenState extends State<PrductOrdersDetailsScreen> {
   @override
@@ -45,9 +31,7 @@ class _PrductOrdersDetailsScreenState extends State<PrductOrdersDetailsScreen> {
         onBackTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const OrdersProductPage(),
-            ),
+            MaterialPageRoute(builder: (context) => const OrdersProductPage()),
           );
         },
       ),
@@ -58,122 +42,84 @@ class _PrductOrdersDetailsScreenState extends State<PrductOrdersDetailsScreen> {
           }
 
           if (state.orderProductStatus == OrderProductStatus.failure) {
-            return const Center(child: Text('فشلت العملية'));
+            return const Center(child: Text('حدث خطأ أثناء التحميل'));
           }
 
           if (state.orderProductStatus == OrderProductStatus.success) {
-            return Column(
-              children: [
-                Container(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: state.basket.length,
-                    itemBuilder: (context, index) {
-                      final basket = state.basket[index];
-                      return _buildOrderItem(context, basket);
-                    },
+            if (state.basket.isEmpty) {
+              return const Center(child: Text('لا توجد بيانات'));
+            }
+
+            return ListView.builder(
+              padding: const EdgeInsets.all(8),
+              physics: const BouncingScrollPhysics(),
+              itemCount: state.basket.length,
+              itemBuilder: (context, basketIndex) {
+                final basket = state.basket[basketIndex];
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    elevation: 0,
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomStyledText(
+                            text: 'رقم السلة:# ${basket.basketId}',
+                          ),
+                          const SizedBox(height: 8),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: basket.orders.length,
+                            itemBuilder: (context, orderIndex) {
+                              final order = basket.orders[orderIndex];
+                              return _buildOrderItem(order);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                );
+              },
             );
           }
 
-          return const Center(
-            child: CustomStyledText(text: 'جاري التحميل...'),
-          );
+          return const Center(child: Text('جاري التحميل...'));
         },
       ),
     );
   }
 
-  Widget _buildOrderItem(BuildContext context, BasketModel order) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppPadding.mediumPadding,
-            vertical: AppPadding.smallPadding,
+  Widget _buildOrderItem(BasketItem order) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomStyledText(
+            text: order.productName ?? "غير محدد",
+            textColor: AppColors.lightGrayColor,
           ),
-          child: Container(
-            decoration: BoxDecoration(
-              color: (Theme.of(context).brightness == Brightness.dark
-                  ? Colors.black54
-                  : Colors.white),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: order.items!.length,
-              itemBuilder: (context, index) {
-                final orderItem = order.items![index];
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Card(
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              title: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  CustomStyledText(
-                                    text: orderItem.productName ?? "غير محدد",
-                                    fontSize: 18,
-                                    textColor: AppColors.lightGrayColor,
-                                  ),
-                                ],
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  AppSizedBox.kVSpace10,
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      CustomStyledText(
-                                        text:
-                                            "لون القطعة: ${orderItem.productColor ?? "غير محدد"}",
-                                        fontSize: 14,
-                                      ),
-                                      CustomStyledText(
-                                        text:
-                                            "الشركة: ${orderItem.productCompany ?? "غير محدد"}",
-                                        fontSize: 14,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 8),
-                                  CustomStyledText(
-                                    text:
-                                        "السعر: ${orderItem.price ?? "غير محدد"}",
-                                    fontSize: 14,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                );
-              },
-            ),
+          const SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomStyledText(
+                  text: "اللون: ${order.productColor ?? "غير محدد"}"),
+              CustomStyledText(
+                  text: "الشركة: ${order.productCompany ?? "غير محدد"}"),
+            ],
           ),
-        ),
-      ],
+          const SizedBox(height: 4),
+          CustomStyledText(
+              text: "السعر: ${order.price?.toStringAsFixed(2) ?? "0.00"}"),
+          const Divider(),
+        ],
+      ),
     );
   }
 }

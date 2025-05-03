@@ -42,11 +42,12 @@ class CartShoppingItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomStyledText(
-                text: item.name!,
-                textColor: AppColors.secondaryColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
+              Flexible(
+                child: CustomStyledText(
+                  text: item.name!,
+                  textColor: AppColors.secondaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Row(
                 children: [

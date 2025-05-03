@@ -87,16 +87,6 @@ class OrderRepositoryImpl implements OrderRepository {
   }
 
   @override
-  Future<Either<Failure, int>> getNewOrderId() async {
-    try {
-      final response = await remoteDataSource.getNewOrderId();
-      return Right(response);
-    } catch (e) {
-      return Left(ServerFailure(message: e.toString()));
-    }
-  }
-
-  @override
   Future<Either<Failure, OrderMaintenanceRequest>>
       getNewOrderMaintenance() async {
     try {
@@ -180,6 +170,16 @@ class OrderRepositoryImpl implements OrderRepository {
       final response = await remoteDataSource.getAllItemByOrder(basketId);
 
       return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> payWithApp(int orderMaintenancId) async {
+    try {
+      await remoteDataSource.payWithApp(orderMaintenancId);
+      return const Right(true);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
     }

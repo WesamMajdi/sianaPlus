@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/services/telr_service.dart';
 import 'package:maintenance_app/src/core/services/telr_service_xml.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/successPage.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/region/region_model.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/shipping/shipping_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/webviwe/telr_payment_screen.dart';
@@ -41,6 +42,7 @@ class _BottomBarCartTotalState extends State<BottomBarCartTotal> {
               DiscountEntity(id: 0, discount: 0, deliveryfees: 0, tax: 0);
         }
         final subTotalAmount = state.subTotalAmount ?? 0.0;
+
         final discountWithFee = ((subTotalAmount) -
             ((subTotalAmount) * (discountEntity.discount!) / 100) +
             discountEntity.deliveryfees!);
@@ -71,11 +73,11 @@ class _BottomBarCartTotalState extends State<BottomBarCartTotal> {
                         ),
                       ),
                       AppSizedBox.kWSpace10,
-                      Image.asset(
-                        "assets/images/logoRiyal.png",
-                        width: 20,
-                        color: AppColors.primaryColor,
-                      )
+                      Image.asset("assets/images/logoRiyal.png",
+                          width: 20,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black)
                     ],
                   ),
                 ],
@@ -121,11 +123,11 @@ class _BottomBarCartTotalState extends State<BottomBarCartTotal> {
                         ),
                       ),
                       AppSizedBox.kWSpace10,
-                      Image.asset(
-                        "assets/images/logoRiyal.png",
-                        width: 20,
-                        color: AppColors.primaryColor,
-                      )
+                      Image.asset("assets/images/logoRiyal.png",
+                          width: 20,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black)
                     ],
                   ),
                 ],
@@ -175,11 +177,12 @@ class _BottomBarCartTotalState extends State<BottomBarCartTotal> {
                           fontWeight: FontWeight.bold,
                         ),
                         AppSizedBox.kWSpace10,
-                        Image.asset(
-                          "assets/images/logoRiyal.png",
-                          width: 20,
-                          color: AppColors.primaryColor,
-                        )
+                        Image.asset("assets/images/logoRiyal.png",
+                            width: 20,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black)
                       ],
                     ),
                   ),
@@ -211,28 +214,40 @@ class _BottomBarCartTotalState extends State<BottomBarCartTotal> {
                         onPressed: () async {
                           final totalAmount = discountWithFee +
                               ((discountWithFee) * (discountEntity.tax! / 100));
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  CheckoutPage(onConfirm: () async {
-                                String? paymentUrl =
-                                    await TelrServiceXML.createPayment(
-                                        totalAmount);
-                                if (paymentUrl != null) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => TelrPaymentScreen(
-                                          paymentUrl: paymentUrl),
-                                    ),
-                                  );
-                                } else {
-                                  print('faild');
-                                }
-                              }),
-                            ),
-                          );
+                          if (totalAmount != 0) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CheckoutPage(onConfirm: () async {
+                                  String? paymentUrl =
+                                      await TelrServiceXML.createPayment(
+                                          totalAmount);
+                                  if (paymentUrl != null) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => TelrPaymentScreen(
+                                          paymentUrl: paymentUrl,
+                                          totalAmount: totalAmount,
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: CustomStyledText(
+                                          text: "فشل في إنشاء رابط الدفع",
+                                          textColor: Colors.white,
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                }),
+                              ),
+                            );
+                          }
                         },
                         icon: const Icon(
                           FontAwesomeIcons.creditCard,

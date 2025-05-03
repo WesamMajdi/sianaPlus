@@ -47,7 +47,7 @@ extension OrderMaintenanceStatusExtension on OrderMaintenanceStatus {
       case OrderMaintenanceStatus.deliveryToBranch:
         return Colors.green;
       case OrderMaintenanceStatus.costNotifiedToTheCustomer:
-        return Colors.pink; // لون مناسب لهذا الحالة
+        return Colors.pink;
       case OrderMaintenanceStatus.maintenanceEnd:
         return Colors.purple;
       case OrderMaintenanceStatus.takeFromBranch:
@@ -71,7 +71,6 @@ enum OrderProduct {
 }
 
 extension OrderProductStatusExtension on OrderProduct {
-  // إرجاع النص العربي لكل حالة
   String get nameAr {
     switch (this) {
       case OrderProduct.New:
@@ -84,12 +83,9 @@ extension OrderProductStatusExtension on OrderProduct {
         return 'مكتمل';
       case OrderProduct.OrderRejected:
         return 'تم رفض الطلب';
-      default:
-        return '';
     }
   }
 
-  // إرجاع اللون المناسب لكل حالة
   Color get statusColor {
     switch (this) {
       case OrderProduct.New:
@@ -120,17 +116,22 @@ class OrderEntity {
   String? createdAt;
   int? orderMaintenanceStatus;
   bool? isPayid;
+  String? deliveryName;
+  String? locationForDelivery;
 
-  OrderEntity(
-      {this.id,
-      this.customerName,
-      this.customerPhoneNumber,
-      this.total,
-      this.discount,
-      this.totalAfterDiscount,
-      this.handReceiptId,
-      this.deliveryDate,
-      this.isPayid,
-      this.createdAt,
-      this.orderMaintenanceStatus});
+  OrderEntity({
+    this.id,
+    this.customerName,
+    this.customerPhoneNumber,
+    this.total,
+    this.discount,
+    this.totalAfterDiscount,
+    this.handReceiptId,
+    this.deliveryDate,
+    this.createdAt,
+    this.orderMaintenanceStatus,
+    this.isPayid,
+    this.deliveryName,
+    this.locationForDelivery,
+  });
 }

@@ -14,37 +14,49 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   void _initializeApp() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    String? token = prefs.getString('token');
     String? role = prefs.getString('role');
-    print(role);
-    if (role == 'MaintenanceTechnician') {
-      Navigator.pushReplacement(
-        // ignore: use_build_context_synchronously
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomeMaintenanceScreen(),
-        ),
-      );
-    } else if (role == 'Customer') {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ),
-      );
-    } else if (role == 'DeliveryShop') {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomeDeliveryScreen(),
-        ),
-      );
-    } else if (role == 'DeliveryMaintenance') {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomeDeliveryMaintenanceScreen(),
-        ),
-      );
+
+    if (!mounted) return;
+
+    if (token != null && role != null) {
+      if (role == 'MaintenanceTechnician') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomeMaintenanceScreen(),
+          ),
+        );
+      } else if (role == 'Customer') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ),
+        );
+      } else if (role == 'DeliveryShop') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomeDeliveryScreen(),
+          ),
+        );
+      } else if (role == 'DeliveryMaintenance') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomeDeliveryMaintenanceScreen(),
+          ),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ),
+        );
+      }
     } else {
       Navigator.pushReplacement(
         context,
@@ -53,13 +65,6 @@ class _SplashPageState extends State<SplashPage> {
         ),
       );
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    _initializeApp();
   }
 
   Future<void> _checkInternetConnection() async {
@@ -67,27 +72,8 @@ class _SplashPageState extends State<SplashPage> {
     if (isConnected) {
       _initializeApp();
     } else {
-      _showNoInternetDialog();
+      // _showNoInternetDialog();
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: Container(
-      color: AppColors.secondaryColor,
-      child: SizedBox.expand(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/logoSplash.gif',
-            ),
-          ],
-        ),
-      ),
-    ));
   }
 
   void _showNoInternetDialog() {
@@ -96,55 +82,59 @@ class _SplashPageState extends State<SplashPage> {
       builder: (context) => AlertDialog(
         title: const Row(
           children: [
-            Icon(Icons.signal_wifi_off,
-                color: AppColors.secondaryColor, size: 24.0),
-            AppSizedBox.kWSpace10,
-            CustomStyledText(
-                text: "لا يوجد اتصال بالإنترنت",
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-                textColor: AppColors.darkGrayColor),
+            Icon(Icons.signal_wifi_off, color: Colors.red, size: 24.0),
+            SizedBox(width: 10),
+            Text("لا يوجد اتصال بالإنترنت",
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.black)),
           ],
         ),
-        content: const CustomStyledText(
-          text: "يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.",
-          fontSize: 14,
-          fontWeight: FontWeight.w700,
-          textColor: Colors.grey,
-        ),
+        content: const Text(
+            "يرجى التحقق من اتصالك بالإنترنت والمحاولة مرة أخرى.",
+            style: TextStyle(
+                fontSize: 14, fontWeight: FontWeight.w700, color: Colors.grey)),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
               _checkInternetConnection();
             },
-            style: TextButton.styleFrom(
-              backgroundColor: AppColors.secondaryColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            ),
-            child: const CustomStyledText(
-                text: "إعادة المحاولة",
-                textColor: Colors.white,
-                fontWeight: FontWeight.bold),
+            style: TextButton.styleFrom(backgroundColor: Colors.blue),
+            child: const Text("إعادة المحاولة",
+                style: TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold)),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.grey[200],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            ),
-            child: const CustomStyledText(
-                text: "إغلاق",
-                textColor: AppColors.darkGrayColor,
-                fontWeight: FontWeight.bold),
+            style: TextButton.styleFrom(backgroundColor: Colors.grey[200]),
+            child: const Text("إغلاق",
+                style: TextStyle(
+                    color: Colors.black, fontWeight: FontWeight.bold)),
           ),
         ],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkInternetConnection();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        color: Colors.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset('assets/images/logoSplash.gif'),
+          ],
         ),
       ),
     );

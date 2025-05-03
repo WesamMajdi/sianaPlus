@@ -19,27 +19,26 @@ class _RecoveredMaintenancePartsPageState
   @override
   void initState() {
     super.initState();
-    context.read<ReturnHandReceiptCubit>().getAllReturnHandReceiptItems();
+    context
+        .read<ReturnHandReceiptCubit>()
+        .getAllReturnHandReceiptItems(refresh: true);
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent - 200 &&
+          !context.read<ReturnHandReceiptCubit>().state.hasReachedEnd &&
+          context
+                  .read<ReturnHandReceiptCubit>()
+                  .state
+                  .returnHandReceiptStatus !=
+              ReturnHandReceiptStatus.loading) {
+        fetcReturnhHandReceipts();
+      }
+    });
   }
 
   String barcodeResult = "لم يتم مسح الباركود";
   TextEditingController searchController = TextEditingController();
-
-  // Future<void> scanBarcode() async {
-  //   try {
-  //     var result = await BarcodeScanner.scan();
-  //     setState(() {
-  //       barcodeResult = result.rawContent.isEmpty
-  //           ? "لم يتم العثور على نتيجة"
-  //           : result.rawContent;
-  //     });
-  //     fetcReturnhHandReceipts();
-  //   } catch (e) {
-  //     setState(() {
-  //       barcodeResult = "حدث خطأ أثناء مسح الباركود: $e";
-  //     });
-  //   }
-  // }
+  final ScrollController _scrollController = ScrollController();
 
   Future<void> fetcReturnhHandReceipts({bool refresh = false}) async {
     final searchQuery = searchController.text;
@@ -67,27 +66,25 @@ class _RecoveredMaintenancePartsPageState
           );
         },
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 3),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: buildSearchBar(),
-                  ),
-                  Container(
-                      margin: const EdgeInsets.only(left: 20),
-                      child: buildBarcodeScanner()),
-                ],
-              ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 3),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: buildSearchBar(),
+                ),
+                Container(
+                    margin: const EdgeInsets.only(left: 20),
+                    child: buildBarcodeScanner()),
+              ],
             ),
-            AppSizedBox.kVSpace10,
-            buildRecoveredMaintenancePartsList(),
-          ],
-        ),
+          ),
+          AppSizedBox.kVSpace10,
+          Expanded(child: buildRecoveredMaintenancePartsList()),
+        ],
       ),
     );
   }
@@ -157,17 +154,32 @@ class _RecoveredMaintenancePartsPageState
           return const Center(child: CircularProgressIndicator());
         }
         if (state.returnHandReceiptStatus == ReturnHandReceiptStatus.failure) {
-          return const Center(child: Text('فشلت العملية'));
+          return Center(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.8,
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
         }
         if (state.returnHandReceiptStatus == ReturnHandReceiptStatus.success) {
           return ListView.builder(
-            shrinkWrap: true,
-            physics: const BouncingScrollPhysics(),
-            itemCount: state.returnHandReceipts.length,
+            controller: _scrollController,
+            itemCount: state.hasReachedEnd
+                ? state.returnHandReceipts.length
+                : state.returnHandReceipts.length + 1,
             itemBuilder: (context, index) {
-              return ItemsRecoveredMaintenancePart(
-                part: state.returnHandReceipts[index],
-              );
+              if (index < state.returnHandReceipts.length) {
+                return ItemsRecoveredMaintenancePart(
+                  part: state.returnHandReceipts[index],
+                );
+              } else {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
             },
           );
         }

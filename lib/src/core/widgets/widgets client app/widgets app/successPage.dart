@@ -1,5 +1,8 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/home_delivery_maintenance/home_delivery_maintenance_screen.dart';
+import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/home_delivery/home_delivery_shop_screen.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/home_maintenance/home_maintenance_screen.dart';
 
 class SuccessPage extends StatelessWidget {
   final String message;
@@ -41,10 +44,59 @@ class SuccessPage extends StatelessWidget {
             const SizedBox(height: 20),
             CustomButton(
                 text: "العودة لصفحة الرئيسية",
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const HomePage()),
-                  );
+                onPressed: () async {
+                  SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+
+                  String? token = prefs.getString('token');
+                  String? role = prefs.getString('role');
+
+                  if (token != null && role != null) {
+                    if (role == 'MaintenanceTechnician') {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomeMaintenanceScreen(),
+                        ),
+                      );
+                    } else if (role == 'Customer') {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomePage(),
+                        ),
+                      );
+                    } else if (role == 'DeliveryShop') {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomeDeliveryScreen(),
+                        ),
+                      );
+                    } else if (role == 'DeliveryMaintenance') {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const HomeDeliveryMaintenanceScreen(),
+                        ),
+                      );
+                    } else {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomePage(),
+                        ),
+                      );
+                    }
+                  } else {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomePage(),
+                      ),
+                    );
+                  }
                 })
           ],
         ),

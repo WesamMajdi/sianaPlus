@@ -15,4 +15,8 @@ class FetchProfileUseCase {
   Future<Either<Failure, void>> createProblem(String text) {
     return repository.createProblem(text);
   }
+
+  Future<Either<Failure, void>> changeName(String fullName) {
+    return repository.changeName(fullName);
+  }
 }

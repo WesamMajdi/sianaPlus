@@ -96,6 +96,10 @@ class OrderCubit extends Cubit<OrderState> {
     ));
   }
 
+  void resetOrderStatus() {
+    emit(state.copyWith(itemOrdersStatus: ItemOrdersStatus.initial));
+  }
+
   Future<void> createOrderMaintenance(
       CreateOrderRequest createOrderRequest) async {
     emit(state.copyWith(orderCreationStatus: OrderCreationStatus.loading));
@@ -116,7 +120,7 @@ class OrderCubit extends Cubit<OrderState> {
 
   Future<void> getOrderMaintenanceByUserNew({bool refresh = false}) async {
     emit(state.copyWith(orderStatus: OrderStatus.loading));
-    final page = refresh ? 1 : state.orderCurrentPage;
+    final page = refresh ? 1 : 1;
     final result = await orderUseCase
         .getOrderMaintenanceByUserNew(PaginationParams(page: page));
     result.fold(
@@ -127,34 +131,15 @@ class OrderCubit extends Cubit<OrderState> {
   }
 
   Future<void> getOrderMaintenanceByUserOld({bool refresh = false}) async {
-    emit(state.copyWith(orderStatus: OrderStatus.loading));
-    final page = refresh ? 1 : state.orderCurrentPage;
+    emit(state.copyWith(orderOldStatus: OrderStatus.loading));
+    final page = refresh ? 1 : 1;
     final result = await orderUseCase
         .getOrderMaintenanceByUserOld(PaginationParams(page: page));
     result.fold(
-      (failure) => emit(state.copyWith(orderStatus: OrderStatus.failure)),
+      (failure) => emit(state.copyWith(orderOldStatus: OrderStatus.failure)),
       (orders) => emit(state.copyWith(
-          orderStatus: OrderStatus.success, ordersItemsOld: orders.items)),
+          orderOldStatus: OrderStatus.success, ordersItemsOld: orders.items)),
     );
-  }
-
-  Future<void> getNewOrderId() async {
-    emit(state.copyWith(orderStatus: OrderStatus.loading));
-
-    try {
-      final result = await orderUseCase.getNewOrderId();
-
-      result.fold(
-        (failure) => emit(state.copyWith(orderStatus: OrderStatus.failure)),
-        (orderId) => emit(state.copyWith(
-          orderStatus: OrderStatus.success,
-          newOrderId: orderId,
-        )),
-      );
-    } catch (e) {
-      emit(state.copyWith(orderStatus: OrderStatus.failure));
-      print('Error: $e');
-    }
   }
 
   Future<void> getNewOrderMaintenance() async {
@@ -275,18 +260,44 @@ class OrderCubit extends Cubit<OrderState> {
 
       result.fold(
         (failure) {
-          emit(state.copyWith(orderProductStatus: OrderProductStatus.failure));
-        },
-        (order) {
           emit(state.copyWith(
-            orderProductStatus: OrderProductStatus.success,
-            basket: order,
+            orderProductStatus: OrderProductStatus.failure,
           ));
+        },
+        (data) {
+          print(data.length);
+          print("ssssssssssssssssssss");
+          if (data.isEmpty) {
+            emit(state.copyWith(
+              orderProductStatus: OrderProductStatus.success,
+              basket: data,
+            ));
+          } else {
+            emit(state.copyWith(
+              orderProductStatus: OrderProductStatus.success,
+              basket: data,
+            ));
+            print("ddddddddddd");
+
+            print(state.basket[0].orders.length);
+          }
         },
       );
     } catch (e) {
-      emit(state.copyWith(orderProductStatus: OrderProductStatus.failure));
-      print('Error: $e');
+      emit(state.copyWith(
+        orderProductStatus: OrderProductStatus.failure,
+      ));
     }
+  }
+
+  Future<void> payWithApp(int orderMaintenancId) async {
+    emit(state.copyWith(payWithApp: OrderPayWithAppStatus.loading));
+    final result = await orderUseCase.payWithApp(orderMaintenancId);
+    result.fold(
+      (failure) => emit(state.copyWith(
+        payWithApp: OrderPayWithAppStatus.failure,
+      )),
+      (_) => getOrderMaintenanceByUserNew(),
+    );
   }
 }

@@ -20,16 +20,14 @@ class ProductDetailsPage extends StatefulWidget {
 }
 
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
-  late int _quantity = 1;
   @override
   void initState() {
     super.initState();
-    _quantity = widget.product.count ?? 0;
+    context.read<CategoryCubit>().resetSelectedIndex();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: ListView(
         children: [
@@ -51,19 +49,19 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 //     fit: BoxFit.fill,
                 //   ),
 
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    // color: Colors.amber,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: CachedNetworkImageProvider(
-                          IMAGE_URL + widget.product.image!,
-                        ),
-                        fit: BoxFit.cover,
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  // color: Colors.amber,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider(
+                        IMAGE_URL + widget.product.image!,
                       ),
+                      fit: BoxFit.cover,
                     ),
                   ),
+                ),
                 // ),
               ),
             ),
@@ -155,32 +153,35 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         fontFamily: "Tajawal",
                       )),
                 ),
-                if(widget.product.productColors!.isNotEmpty)
-                  ...[
-                    const Padding(
-                      padding: EdgeInsets.only(top: 7, bottom: 15),
-                      child: Row(
-                        children: [
-                          CustomStyledText(
-                            text: "ألوان المنتج المتوفرة:",
-                            textColor: AppColors.secondaryColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                          AppSizedBox.kWSpace10,
-
-                        ],
-                      ),
+                if (widget.product.productColors!.isNotEmpty) ...[
+                  const Padding(
+                    padding: EdgeInsets.only(top: 7, bottom: 15),
+                    child: Row(
+                      children: [
+                        CustomStyledText(
+                          text: "ألوان المنتج المتوفرة:",
+                          textColor: AppColors.secondaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                        AppSizedBox.kWSpace10,
+                      ],
                     ),
-                    Row(
-                      children: List.generate(widget.product.productColors!.length, (index) {
-                        Color color = Color(int.parse(widget.product.productColors![index].hex!.replaceAll('#', 'FF'), radix: 16));
+                  ),
+                  Row(
+                    children: List.generate(
+                      widget.product.productColors!.length,
+                      (index) {
+                        Color color = Color(int.parse(
+                            widget.product.productColors![index].hex!
+                                .replaceAll('#', 'FF'),
+                            radix: 16));
 
                         return GestureDetector(
-                          child:  Stack(
+                          child: Stack(
                             alignment: Alignment.center,
                             children: [
-                              BlocBuilder<CategoryCubit,CategoryState>(
+                              BlocBuilder<CategoryCubit, CategoryState>(
                                 builder: (context, state) {
                                   return Container(
                                     height: 40,
@@ -189,10 +190,12 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                         boxShadow: shadowList,
                                         borderRadius: BorderRadius.circular(30),
                                         border: Border.all(
-                                          color:state.selectedIndex==index ? AppColors.secondaryColor : Colors.transparent,
+                                          color: state.selectedIndex == index
+                                              ? AppColors.secondaryColor
+                                              : Colors.transparent,
                                           width: 2,
                                         ),
-                                        color:Colors.white),
+                                        color: Colors.white),
                                   );
                                 },
                               ),
@@ -200,7 +203,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                 height: 30,
                                 width: 30,
                                 alignment: Alignment.center,
-                                margin: const EdgeInsets.symmetric(horizontal: 10),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 10),
                                 decoration: BoxDecoration(
                                     boxShadow: shadowList,
                                     borderRadius: BorderRadius.circular(30),
@@ -209,13 +213,17 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                             ],
                           ),
                           onTap: () {
-                            context.read<CategoryCubit>().selectProductColor(index:index,productColor: widget.product.productColors![index],productId: widget.product.id!);
+                            context.read<CategoryCubit>().selectProductColor(
+                                index: index,
+                                productColor:
+                                    widget.product.productColors![index],
+                                productId: widget.product.id!);
                           },
                         );
-                      },),
-                    )
-                  ]
-
+                      },
+                    ),
+                  )
+                ]
               ],
             ),
           ),

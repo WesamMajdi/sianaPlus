@@ -203,37 +203,27 @@ class ProductRemoteDataSource {
     }
   }
 
-  Future<void> createOrder(
-    Map<String, Product> cartItems, {
-    required int? region,
-    required int? city,
-    required int? village,
-    required String addressLine1,
-    required String addressLine2,
-  }) async {
+  Future<void> createOrder(Map<String, Product> cartItems,
+      {required int? region,
+      required int? city,
+      required int? village,
+      required String addressLine1,
+      required String addressLine2,
+      required int orderId,
+      required double totalAmount}) async {
     String? token = await TokenManager.getToken();
 
     if (await internetConnectionChecker.hasConnection) {
       try {
-        final response = await apiController
-            .post(Uri.parse(ApiSetting.createOrder), headers: {
-          'accept': '*/*',
-          'Authorization': 'Bearer $token'
-        }, body: {
-          'total': NavigationService.navigatorKey.currentContext!
-              .read<CategoryCubit>()
-              .state
-              .totalAmount,
+        final orderData = {
+          'total': totalAmount,
           'regionId': region,
           'cityId': city,
           'villageId': village,
           'addressLine1': addressLine1,
           'addressLine2': addressLine2,
           'discount': 0,
-          'orderId': NavigationService.navigatorKey.currentContext!
-              .read<OrderCubit>()
-              .state
-              .newOrderId,
+          'orderId': orderId,
           'orders': cartItems.values
               .map(
                 (e) => {
@@ -246,12 +236,22 @@ class ProductRemoteDataSource {
                 },
               )
               .toList()
-        });
-        print(response.body);
+        };
+
+        debugPrint("Order Data: ${jsonEncode(orderData)}");
+
+        final response = await apiController.post(
+          Uri.parse(ApiSetting.createOrder),
+          headers: {'accept': '*/*', 'Authorization': 'Bearer $token'},
+          body: orderData,
+        );
+
+        print(response);
         print(response.statusCode);
 
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         debugPrint(responseBody.toString());
+
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
@@ -269,7 +269,8 @@ class ProductRemoteDataSource {
     if (await internetConnectionChecker.hasConnection) {
       try {
         final response = await apiController.get(
-          Uri.parse('${ApiSetting.getSearch}?page=${1}&perPage=${100000}'),
+          Uri.parse(
+              '${ApiSetting.getSearch}?page=${paginationParams.page}&perPage=${paginationParams.perPage}'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token'
@@ -320,6 +321,46 @@ class ProductRemoteDataSource {
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
+      } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<PaginatedResponse<SearchCategoryModel>> getSubCategory(
+      PaginationParams paginationParams) async {
+    String? token = await TokenManager.getToken();
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.get(
+          Uri.parse(
+              '${ApiSetting.getSubCategory}?page=${paginationParams.page}&perPage=${paginationParams.perPage}'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+        );
+        debugPrint(response.statusCode.toString());
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        debugPrint(responseBody.toString());
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+        final searchResponse =
+            BaseResponse<PaginatedResponse<SearchCategoryModel>>.fromJson(
+          responseBody,
+          (json) {
+            return PaginatedResponse<SearchCategoryModel>.fromJson(
+              json,
+              (p0) {
+                return SearchCategoryModel.fromJson(p0);
+              },
+            );
+          },
+        );
+        return searchResponse.data!;
       } on TimeOutExeption {
         rethrow;
       }

@@ -131,4 +131,22 @@ class AuthCubit extends Cubit<AuthState> {
           errorMessage: 'Unexpected error occurred: $e'));
     }
   }
+
+  void updatePhone(String phone) async {
+    emit(state.copyWith(status: AuthStatus.loading));
+    try {
+      final result = await authUseCase.updatePhone(phone);
+      result.fold(
+        (failure) => emit(state.copyWith(
+            status: AuthStatus.failure, errorMessage: failure.message)),
+        (_) => emit(state.copyWith(
+            status: AuthStatus.success,
+            successMessage: 'تم تعديل رقم الهاتف بنجاح')),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+          status: AuthStatus.failure,
+          errorMessage: 'Unexpected error occurred: $e'));
+    }
+  }
 }

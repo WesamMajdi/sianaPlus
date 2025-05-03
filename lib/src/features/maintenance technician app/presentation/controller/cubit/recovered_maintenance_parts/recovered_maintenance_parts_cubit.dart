@@ -8,34 +8,49 @@ class ReturnHandReceiptCubit extends Cubit<ReturnHandReceiptState> {
 
   ReturnHandReceiptCubit(this.returnHandReceiptUseCase)
       : super(ReturnHandReceiptState());
-
   Future<void> getAllReturnHandReceiptItems({
     bool refresh = false,
     String searchQuery = '',
     String barcode = '',
   }) async {
-    emit(state.copyWith(
-        returnHandReceiptStatus: ReturnHandReceiptStatus.loading));
     try {
-      final page = refresh ? 1 : 1;
+      final page = refresh ? 1 : state.currentPage;
+      if (refresh ||
+          state.returnHandReceiptStatus != ReturnHandReceiptStatus.success) {
+        emit(state.copyWith(
+            returnHandReceiptStatus: ReturnHandReceiptStatus.loading));
+      }
+
       final result =
           await returnHandReceiptUseCase.getAllReturnHandReceiptItems(
-        PaginationParams(page: page),
+        PaginationParams(page: page, perPage: 10),
         barcode,
         searchQuery,
       );
+
       result.fold(
         (failure) => emit(state.copyWith(
-            returnHandReceiptStatus: ReturnHandReceiptStatus.failure,
-            errorMessage: failure.message)),
-        (returnHandReceipts) => emit(state.copyWith(
+          returnHandReceiptStatus: ReturnHandReceiptStatus.failure,
+          errorMessage: failure.message,
+        )),
+        (returnHandReceipts) {
+          final updatedList = refresh
+              ? returnHandReceipts.items
+              : [...state.returnHandReceipts, ...returnHandReceipts.items];
+
+          emit(state.copyWith(
             returnHandReceiptStatus: ReturnHandReceiptStatus.success,
-            returnHandReceipts: returnHandReceipts.items)),
+            returnHandReceipts: updatedList,
+            hasReachedEnd: returnHandReceipts.items.length < 10,
+            currentPage: page + 1,
+          ));
+        },
       );
     } catch (e) {
       emit(state.copyWith(
-          returnHandReceiptStatus: ReturnHandReceiptStatus.failure,
-          errorMessage: 'Unexpected error occurred: $e'));
+        returnHandReceiptStatus: ReturnHandReceiptStatus.failure,
+        errorMessage: 'Unexpected error occurred: $e',
+      ));
     }
   }
 

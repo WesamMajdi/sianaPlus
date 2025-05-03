@@ -7,34 +7,48 @@ class HandReceiptCubit extends Cubit<HandReceiptState> {
   final HandReceiptUseCase handReceiptUseCase;
 
   HandReceiptCubit(this.handReceiptUseCase) : super(HandReceiptState());
-
   Future<void> fetchHandReceipts({
     bool refresh = false,
     String searchQuery = '',
     String barcode = '',
   }) async {
     emit(state.copyWith(handReceiptStatus: HandReceiptStatus.loading));
+
     try {
-      final page = refresh ? 1 : 1;
+      final page = refresh ? 1 : (state.page + 1);
+
       final result = await handReceiptUseCase.getAllHandHandReceiptItem(
         PaginationParams(
           page: page,
+          perPage: 10,
         ),
         searchQuery,
         barcode,
       );
+
       result.fold(
         (failure) => emit(state.copyWith(
-            handReceiptStatus: HandReceiptStatus.failure,
-            errorMessage: failure.message)),
-        (handReceipts) => emit(state.copyWith(
+          handReceiptStatus: HandReceiptStatus.failure,
+          errorMessage: failure.message,
+        )),
+        (handReceipts) {
+          final updatedList = refresh
+              ? handReceipts.items
+              : [...state.receipts, ...handReceipts.items];
+
+          emit(state.copyWith(
             handReceiptStatus: HandReceiptStatus.success,
-            receipts: handReceipts.items)),
+            receipts: updatedList,
+            page: page,
+            hasReachedMax: handReceipts.items.length < 10,
+          ));
+        },
       );
     } catch (e) {
       emit(state.copyWith(
-          handReceiptStatus: HandReceiptStatus.failure,
-          errorMessage: 'Unexpected error occurred: $e'));
+        handReceiptStatus: HandReceiptStatus.failure,
+        errorMessage: 'Unexpected error: $e',
+      ));
     }
   }
 

@@ -82,4 +82,35 @@ class ProfileRemoteDataSource {
       throw OfflineException(errorMessage: 'No Internet Connection');
     }
   }
+
+  Future<void> changeName(String fullName) async {
+    String? token = await TokenManager.getToken();
+
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final url = Uri.parse(
+          '${ApiSetting.changeName}?FullName=$fullName',
+        );
+
+        final response = await apiController.post(
+          url,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        debugPrint(responseBody.toString());
+
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+      } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
 }

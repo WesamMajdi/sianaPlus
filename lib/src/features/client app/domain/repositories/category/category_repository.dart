@@ -20,4 +20,5 @@ abstract class CategoryRepository {
       int regionId);
   Future<Either<Failure, BaseResponse<List<BaseViewModel>>>> getVillage(
       int cityId);
+  Future<Either<Failure, int>> getNewOrderId();
 }

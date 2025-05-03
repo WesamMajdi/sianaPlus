@@ -7,7 +7,7 @@ class PaginationParams {
 
   const PaginationParams({
     required this.page,
-    this.perPage = 100,
+    this.perPage = 10,
     this.mainCategoryId = 0,
     this.productId = 0,
     this.handReceiptId = 0,

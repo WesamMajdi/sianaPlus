@@ -27,9 +27,13 @@ enum ItemsStatus { initial, loading, success, failure }
 
 enum CompaniesStatus { initial, loading, success, failure }
 
+enum OrderPayWithAppStatus { initial, loading, success, failure }
+
 class OrderState extends Equatable {
   final OrderCreationStatus orderCreationStatus;
   final OrderStatus orderStatus;
+  final OrderStatus orderOldStatus;
+  final OrderPayWithAppStatus payWithApp;
   final OrderProductStatus orderProductStatus;
   final OrderForApprovalStatus orderApprovalStatus;
   final ItemOrdersStatus itemOrdersStatus;
@@ -49,7 +53,6 @@ class OrderState extends Equatable {
   final OrderEntery? selectedCompany;
   late bool notifyCustomerOfTheCost;
   final List<BaseViewModel> listofRegion;
-  final int newOrderId;
   final int newOrderMaintenanceId;
   final double fees;
   final List<OrderProductModel>? ordersProductItemsNew;
@@ -59,12 +62,14 @@ class OrderState extends Equatable {
   OrderState(
       {this.orderCreationStatus = OrderCreationStatus.initial,
       this.colorStatus = ColorStatus.initial,
+      this.orderOldStatus = OrderStatus.initial,
       this.orderProductStatus = OrderProductStatus.initial,
       this.orderStatus = OrderStatus.initial,
       this.itemOrdersStatus = ItemOrdersStatus.initial,
       this.orderApprovalStatus = OrderForApprovalStatus.initial,
       this.itemsStatus = ItemsStatus.initial,
       this.companiesStatus = CompaniesStatus.initial,
+      this.payWithApp = OrderPayWithAppStatus.initial,
       this.colorsList = const <OrderEntery>[],
       this.itemsList = const <OrderEntery>[],
       this.ordersProductItemsNew = const <OrderProductModel>[],
@@ -78,7 +83,6 @@ class OrderState extends Equatable {
       this.selectedItem,
       this.notifyCustomerOfTheCost = false,
       this.selectedCompany,
-      this.newOrderId = 0,
       this.newOrderMaintenanceId = 0,
       this.fees = 0,
       this.basket = const <BasketModel>[],
@@ -89,8 +93,10 @@ class OrderState extends Equatable {
       {OrderCreationStatus? orderCreationStatus,
       OrderForApprovalStatus? orderApprovalStatus,
       ColorStatus? colorStatus,
+      OrderStatus? orderOldStatus,
       OrderProductStatus? orderProductStatus,
       ItemOrdersStatus? itemOrdersStatus,
+      OrderPayWithAppStatus? payWithApp,
       ItemsStatus? itemsStatus,
       OrderStatus? orderStatus,
       int? orderCurrentPage,
@@ -109,7 +115,6 @@ class OrderState extends Equatable {
       OrderEntery? selectedCompany,
       bool? notifyCustomerOfTheCost,
       List<BaseViewModel>? listofRegion,
-      int? newOrderId,
       int? newOrderMaintenanceId,
       List<BasketModel>? basket,
       double? fees}) {
@@ -117,6 +122,7 @@ class OrderState extends Equatable {
         orderCreationStatus: orderCreationStatus ?? this.orderCreationStatus,
         colorStatus: colorStatus ?? this.colorStatus,
         orderCurrentPage: orderCurrentPage ?? this.orderCurrentPage,
+        orderOldStatus: orderOldStatus ?? this.orderOldStatus,
         itemOrdersStatus: itemOrdersStatus ?? this.itemOrdersStatus,
         itemsStatus: itemsStatus ?? this.itemsStatus,
         companiesStatus: companiesStatus ?? this.companiesStatus,
@@ -133,7 +139,6 @@ class OrderState extends Equatable {
         selectedItem: selectedItem ?? this.selectedItem,
         selectedCompany: selectedCompany ?? this.selectedCompany,
         listofRegion: listofRegion ?? this.listofRegion,
-        newOrderId: newOrderId ?? this.newOrderId,
         newOrderMaintenanceId:
             newOrderMaintenanceId ?? this.newOrderMaintenanceId,
         fees: fees ?? this.fees,
@@ -144,7 +149,8 @@ class OrderState extends Equatable {
         ordersProductItemsNew:
             ordersProductItemsNew ?? this.ordersProductItemsNew,
         orderProductStatus: orderProductStatus ?? this.orderProductStatus,
-        basket: basket ?? this.basket);
+        basket: basket ?? this.basket,
+        payWithApp: payWithApp ?? this.payWithApp);
   }
 
   @override
@@ -167,7 +173,6 @@ class OrderState extends Equatable {
         orderCurrentPage,
         notifyCustomerOfTheCost,
         listofRegion,
-        newOrderId,
         newOrderMaintenanceId,
         fees,
         orderApprovalStatus,
@@ -175,6 +180,8 @@ class OrderState extends Equatable {
         ordersProductItemsOld,
         ordersProductItemsNew,
         orderProductStatus,
-        basket
+        basket,
+        payWithApp,
+        orderOldStatus
       ];
 }

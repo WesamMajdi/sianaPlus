@@ -7,6 +7,7 @@ import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/d
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/branch_model.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/create_order_request.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/order_maintenances_details_model.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/receipt_item_convert_model.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/order_maintenances_details_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/receive_order_Maintenance_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/repositories/delivery_maintenance.dart';
@@ -144,6 +145,132 @@ class DeliveryMaintenanceRepositoryImpl
     try {
       await remoteDataSource.payWithCash(orderMaintenancId);
       return const Right(null);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
+      getAllForAllDeliveryConvert(PaginationParams paginationParams) async {
+    try {
+      final response =
+          await remoteDataSource.getAllForAllDeliveryConvert(paginationParams);
+
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
+      getAllTakeDeliveryConvert(PaginationParams paginationParams) async {
+    try {
+      final response =
+          await remoteDataSource.getAllTakeDeliveryConvert(paginationParams);
+
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
+      getAllForDeliveryConvert(PaginationParams paginationParams) async {
+    try {
+      final response =
+          await remoteDataSource.getAllForDeliveryConvert(paginationParams);
+
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> takeOrderMaintenanceConvert(
+      int orderMaintenancId) async {
+    try {
+      final response =
+          await remoteDataSource.takeOrderMaintenanceConvert(orderMaintenancId);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> updateOrderMaintenanceConvert(
+      int orderMaintenancId, int? status) async {
+    try {
+      final response = await remoteDataSource.updateOrderMaintenanceConvert(
+          orderMaintenancId, status);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
+      getAllForAllDeliveryOutSide(PaginationParams paginationParams) async {
+    try {
+      final response =
+          await remoteDataSource.getAllForAllDeliveryOutSide(paginationParams);
+
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
+      getAllTakeDeliveryOutSide(PaginationParams paginationParams) async {
+    try {
+      final response =
+          await remoteDataSource.getAllTakeDeliveryOutSide(paginationParams);
+
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
+      getAllForDeliveryOutSide(PaginationParams paginationParams) async {
+    try {
+      final response =
+          await remoteDataSource.getAllForDeliveryOutSide(paginationParams);
+
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> takeOrderMaintenanceoOutSide(
+      int orderMaintenancId) async {
+    try {
+      final response =
+          await remoteDataSource.takeOrderMaintenanceConvert(orderMaintenancId);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> updateOrderMaintenanceOutSide(
+      int orderMaintenancId, int? status) async {
+    try {
+      final response = await remoteDataSource.updateOrderMaintenanceOutSide(
+          orderMaintenancId, status);
+      return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
     }

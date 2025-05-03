@@ -1,5 +1,5 @@
 class BasketItem {
-  final int id;
+  final int? id; // جعله nullable
   final String? productName;
   final String? productImage;
   final String? productCompany;
@@ -10,77 +10,56 @@ class BasketItem {
   final double? total;
 
   BasketItem({
-    required this.id,
-    required this.productName,
-    required this.productImage,
-    required this.productCompany,
-    required this.productColor,
-    required this.count,
-    required this.price,
-    required this.discount,
-    required this.total,
+    this.id, // إزالة required
+    this.productName,
+    this.productImage,
+    this.productCompany,
+    this.productColor,
+    this.count,
+    this.price,
+    this.discount,
+    this.total,
   });
 
   factory BasketItem.fromJson(Map<String, dynamic> json) {
     return BasketItem(
-      id: json['id'],
+      id: json['id'] as int?, // تحويل صريح مع nullable
       productName: json['productName'],
       productImage: json['productImage'],
       productCompany: json['productCompany'],
       productColor: json['productColor'],
-      count: json['count'],
-      price: json['price'].toDouble(),
-      discount: json['discount'].toDouble(),
-      total: json['total'].toDouble(),
+      count: json['count'] as int?,
+      price: (json['price'] as num?)?.toDouble(), // تحويل آمن لـ double
+      discount: (json['discount'] as num?)?.toDouble(),
+      total: (json['total'] as num?)?.toDouble(),
     );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'productName': productName,
-      'productImage': productImage,
-      'productCompany': productCompany,
-      'productColor': productColor,
-      'count': count,
-      'price': price,
-      'discount': discount,
-      'total': total,
-    };
   }
 }
 
 class BasketModel {
-  final int basketId;
-  final int orderStatus;
-  final List<BasketItem>? items;
+  final int? basketId; // جعله nullable
+  final int? orderStatus;
+  final List<BasketItem> orders;
 
   BasketModel({
-    required this.basketId,
-    required this.orderStatus,
-    required this.items,
+    this.basketId,
+    this.orderStatus,
+    required this.orders, // تبقى مطلوبة لكن يمكن أن تكون فارغة
   });
 
   factory BasketModel.fromJson(Map<String, dynamic> json) {
-    var itemsFromJson = json['items'] as List;
-    List<BasketItem> itemsList =
-        itemsFromJson.map((item) => BasketItem.fromJson(item)).toList();
-
-    return BasketModel(
-      basketId: json['basketId'],
-      orderStatus: json['orderStatus'],
-      items: itemsList,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    List<Map<String, dynamic>> itemsToJson =
-        items!.map((item) => item.toJson()).toList();
-
-    return {
-      'basketId': basketId,
-      'orderStatus': orderStatus,
-      'items': itemsToJson,
-    };
+    try {
+      return BasketModel(
+        basketId: json['basketId'] as int?,
+        orderStatus: json['orderStatus'] as int?,
+        orders: (json['orders'] as List<dynamic>?)
+                ?.map((e) => BasketItem.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            [],
+      );
+    } catch (e) {
+      print('❌ خطأ في تحليل BasketModel: $e');
+      rethrow;
+    }
   }
 }

@@ -2,17 +2,19 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:maintenance_app/main.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/services/telr_service_xml.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/successPage.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20maintenance%20request/itemsMaintenanceRequest.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/showTopSnackBar.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model_request.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/shipping/shipping_screen.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/screens/webviwe/telr_order_maintenace_payment_screen.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/webviwe/telr_delevery_order_maintenace_payment_screen.dart';
 import '../map/map_picker_screen.dart';
 
 class MaintenanceRequestPage extends StatefulWidget {
-  const MaintenanceRequestPage({super.key});
-
+  const MaintenanceRequestPage({super.key, this.currentIndex = 3});
+  final int? currentIndex;
   @override
   State<MaintenanceRequestPage> createState() => _MaintenanceRequestPageState();
 }
@@ -58,7 +60,7 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<OrderCubit, OrderState>(
       builder: (context, state) => Scaffold(
-        drawer: const MyDrawer(),
+        drawer: MyDrawer(currentIndex: widget.currentIndex),
         appBar: const AppBarApplication(text: 'طلب صيانة'),
         body: Column(
           children: [
@@ -68,31 +70,52 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                   Form(
                     child: Column(
                       children: [
-                        GestureDetector(
-                          onTap: _openMapPicker,
-                          child: CustomInputFielLocation(
-                            hintText: _pickedLocation != null
-                                ? '${_pickedLocation!.longitude}, ${_pickedLocation!.latitude}'
-                                : 'حدد موقعك',
-                            enabled: false,
-                            icon: Icons.location_on_rounded,
-                            controller: locationController,
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              right: AppPadding.mediumPadding,
+                              left: AppPadding.mediumPadding,
+                              top: 10),
+                          child: ElevatedButton.icon(
+                            onPressed: _openMapPicker,
+                            icon: const Icon(
+                              Icons.location_pin,
+                              color: Colors.grey,
+                              size: 25,
+                            ),
+                            label: Container(
+                              alignment: Alignment.centerRight,
+                              child: CustomStyledText(
+                                text: _pickedLocation != null
+                                    ? '${_pickedLocation!.longitude}, ${_pickedLocation!.latitude}'
+                                    : 'ادخل موقعك ع الخريطة',
+                                fontSize: 14,
+                                textColor: Colors.grey,
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: AppPadding.mediumPadding,
+                                    vertical: 15),
+                                backgroundColor: Colors.grey.withOpacity(0.2),
+                                elevation: 0),
                           ),
                         ),
                         AppSizedBox.kVSpace10,
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: state.notifyCustomerOfTheCost,
-                              onChanged: (value) {
-                                context
-                                    .read<OrderCubit>()
-                                    .toggleNotifyCustomerOfTheCost(value!);
-                              },
-                            ),
-                            const CustomStyledText(
-                                text: 'إبلاغي بتكلفة الصيانة'),
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 14),
+                          child: ModernCheckbox(
+                            title: 'إبلاغي بتكلفة الصيانة',
+                            value: state.notifyCustomerOfTheCost,
+                            onChanged: (value) {
+                              context
+                                  .read<OrderCubit>()
+                                  .toggleNotifyCustomerOfTheCost(value!);
+                            },
+                          ),
                         ),
                         CustomButton(
                           text: 'اضافة جهاز',
@@ -112,20 +135,18 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                     ),
                   ),
                   AppSizedBox.kVSpace20,
-
-                  // Orders List
                   BlocBuilder<OrderCubit, OrderState>(
                     builder: (context, state) {
                       if (state.itemOrdersStatus == ItemOrdersStatus.loading) {
                         return const Center(child: CircularProgressIndicator());
                       }
                       if (state.itemOrdersStatus == ItemOrdersStatus.failure) {
-                        return const Center(child: Text('فشلت العملية'));
+                        return const Center(child: CircularProgressIndicator());
                       }
                       if (state.itemOrdersStatus == ItemOrdersStatus.success &&
                           state.items.isNotEmpty) {
                         return ListView.builder(
-                          shrinkWrap: true, // Important for nesting scrolls
+                          shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: state.items.length,
                           itemBuilder: (context, index) {
@@ -133,22 +154,19 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                               state: state,
                               i: index,
                               itemEntity: state.items[index],
-                              // order: ,
                             );
                           },
                         );
                       }
-                      return const Center(
-                          child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CustomStyledText(text: 'لا توجد طلبات صيانة'),
-                        ],
-                      ));
+                      return Center(
+                        child: SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.5,
+                            child: const Center(
+                                child: CustomStyledText(
+                                    text: 'لا توجد طلبات صيانة'))),
+                      );
                     },
                   ),
-
                   state.items.isNotEmpty
                       ? BlocListener<OrderCubit, OrderState>(
                           listener: (context, state) {
@@ -163,21 +181,24 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                             AppSizedBox.kVSpace20,
                             state.orderCreationStatus ==
                                     OrderCreationStatus.loading
-                                ? const Center(
-                                    child: CircularProgressIndicator(),
-                                  )
+                                ? Center(
+                                    child: CustomButton(
+                                    text: "",
+                                    onPressed: () {},
+                                    child: const SizedBox(
+                                      width: 30.0,
+                                      height: 30.0,
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ))
                                 : CustomButton(
                                     text: 'اضافة طلب',
                                     onPressed: () async {
                                       if (_pickedLocation == null) {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          const SnackBar(
-                                            backgroundColor: Colors.red,
-                                            behavior: SnackBarBehavior.floating,
-                                            content: Text('يجب تحديد الموقع'),
-                                          ),
-                                        );
+                                        showTopSnackBar(
+                                            context,
+                                            'يجب تحديد الموقع',
+                                            Colors.redAccent);
                                         return;
                                       } else {
                                         final createOrder = CreateOrderRequest(
@@ -246,7 +267,7 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                                                   ],
                                                 ),
                                                 content: const SizedBox(
-                                                  height: 45,
+                                                  height: 50,
                                                   width: 400,
                                                   child: CustomStyledText(
                                                       text:
@@ -282,7 +303,7 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                                                                       .hasData &&
                                                                   snapshot.data !=
                                                                       null) {
-                                                                return TelrMaihtenancePaymentScreen(
+                                                                return TelrDeliveryMaintenancePaymentScreen(
                                                                   paymentUrl:
                                                                       snapshot
                                                                           .data!,
@@ -298,18 +319,6 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                                                           ),
                                                         ),
                                                       );
-                                                      ScaffoldMessenger.of(
-                                                              context)
-                                                          .showSnackBar(
-                                                              const SnackBar(
-                                                        content: CustomStyledText(
-                                                            text:
-                                                                'تمت إضافة الطلب بنجاح!'),
-                                                        duration: Duration(
-                                                            seconds: 2),
-                                                        backgroundColor:
-                                                            Colors.green,
-                                                      ));
                                                     },
                                                     style: TextButton.styleFrom(
                                                       backgroundColor: AppColors
@@ -375,7 +384,7 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                                                   ],
                                                 ),
                                                 content: const SizedBox(
-                                                  height: 45,
+                                                  height: 50,
                                                   width: 400,
                                                   child: CustomStyledText(
                                                       text:
@@ -390,17 +399,14 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                                                           .read<OrderCubit>()
                                                           .createOrderMaintenance(
                                                               createOrder);
-                                                      ScaffoldMessenger.of(
-                                                              context)
-                                                          .showSnackBar(
-                                                        const SnackBar(
-                                                          content: CustomStyledText(
-                                                              text:
-                                                                  'تمت إضافة الطلب بنجاح!'),
-                                                          duration: Duration(
-                                                              seconds: 2),
-                                                          backgroundColor:
-                                                              Colors.green,
+                                                      Navigator.of(context)
+                                                          .pushReplacement(
+                                                        MaterialPageRoute(
+                                                          builder: (_) =>
+                                                              const SuccessPage(
+                                                            message:
+                                                                "تمت اضافة طلبك الصيانة بنجاح!!",
+                                                          ),
                                                         ),
                                                       );
                                                     },
@@ -439,6 +445,62 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ModernCheckbox extends StatelessWidget {
+  final bool value;
+  final ValueChanged<bool?> onChanged;
+  final String title;
+
+  const ModernCheckbox({
+    Key? key,
+    required this.value,
+    required this.onChanged,
+    required this.title,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return GestureDetector(
+      onTap: () => onChanged(!value),
+      child: Row(
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              color: value
+                  ? (isDark ? Colors.tealAccent : Colors.teal)
+                  : Colors.transparent,
+              border: Border.all(
+                color: value
+                    ? (isDark ? Colors.tealAccent : Colors.teal)
+                    : Colors.grey,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: value
+                ? Icon(
+                    Icons.check,
+                    size: 18,
+                    color: isDark ? Colors.black : Colors.white,
+                  )
+                : null,
+          ),
+          const SizedBox(width: 12),
+          CustomStyledText(
+            text: title,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ],
       ),
     );
   }

@@ -1,10 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/category/category_screen.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/screens/ordered_product/ordered_product_screen.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, this.currentIndex = 0});
+  final int? currentIndex;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -18,7 +18,7 @@ class _HomePageState extends State<HomePage> {
       appBar: const AppBarApplication(
         text: "الرئيسية",
       ),
-      drawer: const MyDrawer(),
+      drawer: const MyDrawer(currentIndex: 0),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -172,6 +172,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
+            AppSizedBox.kVSpace20,
+            AppSizedBox.kVSpace20
           ],
         ),
       ),

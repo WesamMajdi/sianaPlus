@@ -5,29 +5,21 @@ import 'package:maintenance_app/src/core/widgets/widgets%20delivery%20shop%20app
 import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/customStyledText.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/receive_order_Maintenance_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/current_order_maintenance/detiels_current_order_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class ItemsCurrentTakeMaintenancePart extends StatelessWidget {
+class ItemsMaintenancePart extends StatelessWidget {
   final ReceiveMaintenanceOrderEntity items;
-  const ItemsCurrentTakeMaintenancePart({
+  final Function() ontap;
+  const ItemsMaintenancePart({
     super.key,
     required this.items,
+    required this.ontap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CurrentMaintenanceOrdersDetailsScreen(
-                handReceiptId: items.handReceiptId!,
-                orderMaintenancId: items.id,
-                isPayid: items.isPayid!,
-                orderMaintenanceStatus: items.orderMaintenanceStatus!),
-          ),
-        );
-      },
+      onTap: ontap,
       child: Padding(
         padding: const EdgeInsets.symmetric(
             horizontal: AppPadding.mediumPadding,
@@ -90,8 +82,15 @@ class ItemsCurrentTakeMaintenancePart extends StatelessWidget {
                           ),
                         ],
                       ),
+                      AppSizedBox.kVSpace10,
                       CustomStyledText(
                         text: items.customerPhoneNumber.toString(),
+                        fontSize: 16,
+                        textColor: Colors.grey,
+                      ),
+                      AppSizedBox.kVSpace5,
+                      CustomStyledText(
+                        text: 'سعر الصيانة: ${items.total.toString()}',
                         fontSize: 16,
                         textColor: Colors.grey,
                       ),
@@ -133,25 +132,24 @@ class ItemsCurrentTakeMaintenancePart extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            CustomStyledText(
-                              text: 'تفاصيل',
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              textColor: Colors.white54,
-                            ),
-                            AppSizedBox.kWSpace10,
-                            Icon(
-                              FontAwesomeIcons.arrowLeft,
-                              size: 14,
-                              color: Colors.white54,
-                            )
-                          ],
-                        ),
+                      Column(
+                        children: [
+                          ElevatedButton.icon(
+                            icon: FaIcon(FontAwesomeIcons.whatsapp,
+                                color: Colors.green),
+                            label: const CustomLabelText(text: 'واتساب'),
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                // ignore: deprecated_member_use
+                                backgroundColor: Colors.grey.withOpacity(0.2),
+                                elevation: 0),
+                            onPressed: () async {
+                              openWhatsApp(items.customerPhoneNumber!);
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   )
@@ -160,5 +158,20 @@ class ItemsCurrentTakeMaintenancePart extends StatelessWidget {
             )),
       ),
     );
+  }
+
+  void openWhatsApp(String phone) async {
+    final Uri url = Uri.parse("https://wa.me/$phone");
+    final Uri fallbackUrl = Uri.parse("https://wa.me/$phone");
+
+    try {
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } else {
+        await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
+      }
+    } catch (e) {
+      print("Error launching WhatsApp: $e");
+    }
   }
 }

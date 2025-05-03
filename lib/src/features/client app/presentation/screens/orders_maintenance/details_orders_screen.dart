@@ -12,13 +12,13 @@ import 'package:maintenance_app/src/features/client%20app/presentation/screens/w
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/order_maintenances_details_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/cubit/delivery_maintenance_cubit.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/state/delivery_maintenance_state.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/hand_receip_maintenance_parts/hand_receipt_model.dart';
 
 class MaintenanceOrdersDetailsScreen extends StatefulWidget {
   final int handReceiptId;
   final int orderMaintenancId;
   final bool isTab;
   final bool? isPayid;
-
   final int? total;
 
   const MaintenanceOrdersDetailsScreen(
@@ -49,6 +49,7 @@ class _MaintenanceOrdersDetailsScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBarApplicationArrow(
         text: 'تفاصيل طلب',
         onBackTap: () {
@@ -86,19 +87,98 @@ class _MaintenanceOrdersDetailsScreenState
               DeliveryMaintenanceStatus.success) {
             return Column(
               children: [
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: state.selectedOrderDetilesItems.length,
-                  itemBuilder: (context, index) {
-                    final ordersCurrent =
-                        state.selectedOrderDetilesItems[index];
-                    return _buildOrderItem(context, ordersCurrent);
-                  },
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: state.selectedOrderDetilesItems.length,
+                    itemBuilder: (context, index) {
+                      final ordersCurrent =
+                          state.selectedOrderDetilesItems[index];
+                      return _buildOrderItem(context, ordersCurrent);
+                    },
+                  ),
                 ),
                 if (state.selectedOrderDetilesItems[0].orderStatus == 5 &&
                     widget.isPayid == false)
-                  isPadButton(context)
+                  GestureDetector(
+                    onTap: () async {
+                      if (widget.total == null || widget.total! <= 0) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: CustomStyledText(
+                            text: 'المبلغ غير صالح',
+                            textColor: Colors.white,
+                          )),
+                        );
+                        return;
+                      }
+
+                      try {
+                        String? paymentUrl =
+                            await TelrServiceXMLOrder.createPayment(
+                                widget.total!);
+
+                        if (paymentUrl != null && paymentUrl.isNotEmpty) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  TelrMaintenancePaymentScreen(
+                                      paymentUrl: paymentUrl,
+                                      orderMaintenanceId:
+                                          widget.orderMaintenancId),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: CustomStyledText(
+                                    text: 'فشل إنشاء رابط الدفع')),
+                          );
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: CustomStyledText(
+                                  text: 'حدث خطأ: ${e.toString()}')),
+                        );
+                      }
+                    },
+                    child: SizedBox(
+                      height: 80,
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Container(
+                              width: 200,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                color: AppColors.secondaryColor,
+                              ),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 5),
+                                      child: const CustomStyledText(
+                                        text: 'دفع سعر الصيانة',
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
               ],
             );
           }
@@ -133,6 +213,7 @@ class _MaintenanceOrdersDetailsScreenState
               itemCount: order.orders!.length,
               itemBuilder: (context, index) {
                 final orderItem = order.orders![index];
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -148,31 +229,43 @@ class _MaintenanceOrdersDetailsScreenState
                           children: [
                             ListTile(
                               contentPadding: EdgeInsets.zero,
-                              title: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   CustomStyledText(
-                                    text: orderItem.item ?? "غير محدد",
+                                    text:
+                                        "رقم الطلب #${orderItem.id.toString()}",
                                     fontSize: 18,
                                     textColor: AppColors.lightGrayColor,
                                   ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: getStatusOrderColor(
-                                          orderItem.maintenanceRequestStatus!),
-                                      borderRadius: BorderRadius.circular(25),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 2, horizontal: 10),
-                                      child: CustomStyledText(
-                                        text: getStatusOrder(orderItem
-                                            .maintenanceRequestStatus!),
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      CustomStyledText(
+                                        text: orderItem.item ?? "غير محدد",
+                                        fontSize: 18,
+                                        textColor: AppColors.lightGrayColor,
                                       ),
-                                    ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: getColor(orderItem
+                                              .maintenanceRequestStatus!),
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 2, horizontal: 10),
+                                          child: CustomStyledText(
+                                            text: getText(orderItem
+                                                .maintenanceRequestStatus!),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -181,33 +274,92 @@ class _MaintenanceOrdersDetailsScreenState
                                 children: [
                                   AppSizedBox.kVSpace10,
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      CustomStyledText(
-                                        text:
-                                            "لون القطعة: ${orderItem.color ?? "غير محدد"}",
+                                      const CustomStyledText(
+                                        text: " لون القطعة:",
                                         fontSize: 14,
+                                        textColor: AppColors.lightGrayColor,
                                       ),
                                       CustomStyledText(
                                         text:
-                                            "الشركة: ${orderItem.company ?? "غير محدد"}",
+                                            " ${orderItem.color ?? "غير محدد"}",
                                         fontSize: 14,
                                       ),
                                     ],
                                   ),
-                                  CustomStyledText(
-                                    text:
-                                        "الوصف: ${orderItem.description ?? "غير محدد"}",
-                                    fontSize: 14,
+                                  AppSizedBox.kVSpace5,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const CustomStyledText(
+                                        text: "الشركة:",
+                                        fontSize: 14,
+                                        textColor: AppColors.lightGrayColor,
+                                      ),
+                                      CustomStyledText(
+                                        text:
+                                            " ${orderItem.company ?? "غير محدد"}",
+                                        fontSize: 14,
+                                      ),
+                                    ],
                                   ),
+                                  AppSizedBox.kVSpace5,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const CustomStyledText(
+                                        text: "سعر الصيانة:",
+                                        fontSize: 14,
+                                        textColor: AppColors.lightGrayColor,
+                                      ),
+                                      Row(
+                                        children: [
+                                          CustomStyledText(
+                                            text:
+                                                " ${orderItem.costNotifiedToTheCustomer ?? "غير محدد"}",
+                                            fontSize: 14,
+                                          ),
+                                          AppSizedBox.kWSpace10,
+                                          if (orderItem
+                                                  .costNotifiedToTheCustomer ==
+                                              0)
+                                            Image.asset(
+                                              "assets/images/logoRiyal.png",
+                                              width: 16,
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.dark
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                            )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  AppSizedBox.kVSpace5,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const CustomStyledText(
+                                        text: "الوصف:",
+                                        fontSize: 14,
+                                        textColor: AppColors.lightGrayColor,
+                                      ),
+                                      CustomStyledText(
+                                        text:
+                                            " ${orderItem.description ?? "غير محدد"}",
+                                        fontSize: 14,
+                                      ),
+                                    ],
+                                  ),
+                                  AppSizedBox.kVSpace5,
                                 ],
                               ),
                             ),
                             orderItem.maintenanceRequestStatus == 4
                                 ? buildProccesOrderButtonWidget(
-                                    context,
-                                  )
+                                    context, orderItem.id)
                                 : const SizedBox.shrink(),
                           ],
                         ),
@@ -223,7 +375,7 @@ class _MaintenanceOrdersDetailsScreenState
     );
   }
 
-  Widget buildProccesOrderButtonWidget(BuildContext context) {
+  Widget buildProccesOrderButtonWidget(BuildContext context, int orderID) {
     return GestureDetector(
       onTap: () {
         final TextEditingController desController = TextEditingController();
@@ -349,6 +501,13 @@ class _MaintenanceOrdersDetailsScreenState
                           return;
                         }
 
+                        await context
+                            .read<OrderCubit>()
+                            .responseFromTheCustomer(
+                              receiptItemId: orderID,
+                              customerApproved: isApproved,
+                              reasonForRefusingMaintenance: reason,
+                            );
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: CustomStyledText(
@@ -422,66 +581,6 @@ class _MaintenanceOrdersDetailsScreenState
                         margin: const EdgeInsets.only(top: 5),
                         child: const CustomStyledText(
                           text: 'العمليات',
-                          fontSize: 20,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget isPadButton(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FutureBuilder<String?>(
-              future: TelrServiceXMLOrder.createPayment(widget.total!),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (snapshot.hasData && snapshot.data != null) {
-                  return TelrPaymentScreen(
-                    paymentUrl: snapshot.data!,
-                  );
-                } else {
-                  return const Center(child: Text('Payment creation failed'));
-                }
-              },
-            ),
-          ),
-        );
-      },
-      child: SizedBox(
-        height: 80,
-        child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Container(
-                width: 200,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(25),
-                  color: AppColors.secondaryColor,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 5),
-                        child: const CustomStyledText(
-                          text: 'دفع سعر الصيانة',
                           fontSize: 20,
                         ),
                       ),

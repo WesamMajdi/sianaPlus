@@ -44,4 +44,21 @@ class ProfileCubit extends Cubit<ProfileState> {
       )),
     );
   }
+
+  Future<void> changeName(String fullName) async {
+    emit(state.copyWith(changeNameStatus: ChangeNameStatus.loading));
+
+    final result = await profileUseCase.changeName(fullName);
+
+    result.fold(
+      (failure) => emit(state.copyWith(
+        changeNameStatus: ChangeNameStatus.failure,
+        errorMessage: failure.message,
+      )),
+      (_) => emit(state.copyWith(
+        changeNameStatus: ChangeNameStatus.success,
+        name: fullName,
+      )),
+    );
+  }
 }

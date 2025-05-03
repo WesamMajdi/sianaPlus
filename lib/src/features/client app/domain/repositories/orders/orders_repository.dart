@@ -22,7 +22,6 @@ abstract class OrderRepository {
       getOrderMaintenanceByUserNew(PaginationParams paginationParams);
   Future<Either<Failure, PaginatedResponse<OrderEntity>>>
       getOrderMaintenanceByUserOld(PaginationParams paginationParams);
-  Future<Either<Failure, int>> getNewOrderId();
   Future<Either<Failure, OrderMaintenanceRequest>> getNewOrderMaintenance();
   Future<Either<Failure, PaginatedResponse<OrderEntity>>>
       getOrderMaintenanceRequestsForApproval(PaginationParams paginationParams);
@@ -40,4 +39,5 @@ abstract class OrderRepository {
   Future<Either<Failure, PaginatedResponse<OrderProductModel>>>
       getOrderProductByUserNew(PaginationParams paginationParams);
   Future<Either<Failure, List<BasketModel>>> getAllItemByOrder(int basketId);
+  Future<Either<Failure, bool>> payWithApp(int orderMaintenancId);
 }

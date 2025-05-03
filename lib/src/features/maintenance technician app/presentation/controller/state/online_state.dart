@@ -13,30 +13,34 @@ class OnlineState extends Equatable {
   final String successMessage;
   final String malfunctionDescription;
   final double? maintenanceCost;
+  final int currentPage;
+  final bool hasReachedEnd;
   final OnlineEntity? onlineItem;
 
-  OnlineState({
-    this.onlineStatus = OnlineStatus.initial,
-    this.receiptsOnline = const <OnlineEntity>[],
-    this.errorMessage = '',
-    this.isUpdating = false,
-    this.successMessage = '',
-    this.malfunctionDescription = '',
-    this.maintenanceCost,
-    this.onlineItem,
-  });
+  OnlineState(
+      {this.onlineStatus = OnlineStatus.initial,
+      this.receiptsOnline = const <OnlineEntity>[],
+      this.errorMessage = '',
+      this.isUpdating = false,
+      this.successMessage = '',
+      this.malfunctionDescription = '',
+      this.maintenanceCost,
+      this.onlineItem,
+      this.currentPage = 0,
+      this.hasReachedEnd = false});
 
   factory OnlineState.initial() {
     return OnlineState(
-      onlineStatus: OnlineStatus.initial,
-      receiptsOnline: const [],
-      errorMessage: '',
-      isUpdating: false,
-      successMessage: '',
-      malfunctionDescription: '',
-      maintenanceCost: null,
-      onlineItem: null,
-    );
+        onlineStatus: OnlineStatus.initial,
+        receiptsOnline: const [],
+        errorMessage: '',
+        isUpdating: false,
+        successMessage: '',
+        malfunctionDescription: '',
+        maintenanceCost: null,
+        onlineItem: null,
+        hasReachedEnd: false,
+        currentPage: 0);
   }
 
   OnlineState copyWith({
@@ -48,6 +52,8 @@ class OnlineState extends Equatable {
     String? malfunctionDescription,
     double? maintenanceCost,
     OnlineEntity? onlineItem,
+    int? currentPage,
+    bool? hasReachedEnd,
   }) {
     return OnlineState(
       onlineStatus: onlineStatus ?? this.onlineStatus,
@@ -59,6 +65,8 @@ class OnlineState extends Equatable {
           malfunctionDescription ?? this.malfunctionDescription,
       maintenanceCost: maintenanceCost ?? this.maintenanceCost,
       onlineItem: onlineItem ?? this.onlineItem,
+      currentPage: currentPage ?? this.currentPage,
+      hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
     );
   }
 
@@ -72,5 +80,7 @@ class OnlineState extends Equatable {
         malfunctionDescription,
         maintenanceCost,
         onlineItem,
+        currentPage,
+        hasReachedEnd
       ];
 }

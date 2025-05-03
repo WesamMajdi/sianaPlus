@@ -1,4 +1,5 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/showTopSnackBar.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/category_state.dart';
 
@@ -15,7 +16,6 @@ class BottombarToProductDetailes extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CategoryCubit, CategoryState>(
       builder: (context, state) {
-        state.subTotalAmount = product.price * product.userCount;
         return BottomAppBar(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -27,7 +27,7 @@ class BottombarToProductDetailes extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 10),
                       child: CustomStyledText(
-                        text: "${state.subTotalAmount}",
+                        text: "${product.price * product.userCount}",
                         fontSize: 24,
                         fontWeight: FontWeight.w900,
                       ),
@@ -61,16 +61,8 @@ class BottombarToProductDetailes extends StatelessWidget {
                           ),
                         );
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            duration: Duration(seconds: 2),
-                            content: CustomStyledText(
-                              text: "يجب اختيار اللون",
-                              textColor: Colors.white,
-                            ),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
+                        showTopSnackBar(
+                            context, "يجب اختيار اللون", Colors.redAccent);
                       }
                     },
                     icon: const Icon(

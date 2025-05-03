@@ -38,4 +38,8 @@ class CategoriesUseCase {
       int cityId) {
     return repository.getVillage(cityId);
   }
+
+  Future<Either<Failure, int>> getNewOrderId() {
+    return repository.getNewOrderId();
+  }
 }

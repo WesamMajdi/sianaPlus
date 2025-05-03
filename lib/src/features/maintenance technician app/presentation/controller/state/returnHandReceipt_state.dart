@@ -12,30 +12,34 @@ class ReturnHandReceiptState extends Equatable {
   final String successMessage;
   final String malfunctionDescription;
   final double? maintenanceCost;
+  final int currentPage;
+  final bool hasReachedEnd;
   final ReturnHandReceiptEntity? returnHandReceiptItem;
 
-  ReturnHandReceiptState({
-    this.returnHandReceiptStatus = ReturnHandReceiptStatus.initial,
-    this.returnHandReceipts = const <ReturnHandReceiptEntity>[],
-    this.errorMessage = '',
-    this.isUpdating = false,
-    this.successMessage = '',
-    this.malfunctionDescription = '',
-    this.maintenanceCost,
-    this.returnHandReceiptItem,
-  });
+  ReturnHandReceiptState(
+      {this.returnHandReceiptStatus = ReturnHandReceiptStatus.initial,
+      this.returnHandReceipts = const <ReturnHandReceiptEntity>[],
+      this.errorMessage = '',
+      this.isUpdating = false,
+      this.successMessage = '',
+      this.malfunctionDescription = '',
+      this.maintenanceCost,
+      this.returnHandReceiptItem,
+      this.currentPage = 0,
+      this.hasReachedEnd = false});
 
   factory ReturnHandReceiptState.initial() {
     return ReturnHandReceiptState(
-      returnHandReceiptStatus: ReturnHandReceiptStatus.initial,
-      returnHandReceipts: [],
-      errorMessage: '',
-      isUpdating: false,
-      successMessage: '',
-      malfunctionDescription: '',
-      maintenanceCost: null,
-      returnHandReceiptItem: null,
-    );
+        returnHandReceiptStatus: ReturnHandReceiptStatus.initial,
+        returnHandReceipts: [],
+        errorMessage: '',
+        isUpdating: false,
+        successMessage: '',
+        malfunctionDescription: '',
+        maintenanceCost: null,
+        returnHandReceiptItem: null,
+        hasReachedEnd: false,
+        currentPage: 0);
   }
 
   ReturnHandReceiptState copyWith({
@@ -47,6 +51,8 @@ class ReturnHandReceiptState extends Equatable {
     String? malfunctionDescription,
     double? maintenanceCost,
     ReturnHandReceiptEntity? returnHandReceiptItem,
+    int? currentPage,
+    bool? hasReachedEnd,
   }) {
     return ReturnHandReceiptState(
       returnHandReceiptStatus:
@@ -60,6 +66,8 @@ class ReturnHandReceiptState extends Equatable {
       maintenanceCost: maintenanceCost ?? this.maintenanceCost,
       returnHandReceiptItem:
           returnHandReceiptItem ?? this.returnHandReceiptItem,
+      currentPage: currentPage ?? this.currentPage,
+      hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
     );
   }
 
@@ -73,5 +81,7 @@ class ReturnHandReceiptState extends Equatable {
         malfunctionDescription,
         maintenanceCost,
         returnHandReceiptItem,
+        currentPage,
+        hasReachedEnd
       ];
 }

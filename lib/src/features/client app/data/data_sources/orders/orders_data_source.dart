@@ -390,36 +390,6 @@ class OrderRemoteDataSource {
     }
   }
 
-  Future<int> getNewOrderId() async {
-    if (await internetConnectionChecker.hasConnection) {
-      try {
-        String? token = await TokenManager.getToken();
-        final response = await apiController.get(
-          Uri.parse(ApiSetting.getNewOrderId),
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token'
-          },
-        );
-
-        debugPrint('Response Status Code: ${response.statusCode}');
-        debugPrint('Response Body: ${response.body}');
-
-        final Map<String, dynamic> responseBody = jsonDecode(response.body);
-
-        if (response.statusCode >= 400) {
-          HandleHttpError.handleHttpError(responseBody);
-          throw Exception('HTTP Error');
-        }
-        return responseBody['data'] as int;
-      } on TimeOutExeption {
-        rethrow;
-      }
-    } else {
-      throw OfflineException(errorMessage: 'No Internet Connection');
-    }
-  }
-
   Future<OrderMaintenanceRequest> getNewOrderMaintenance() async {
     if (await internetConnectionChecker.hasConnection) {
       try {
@@ -490,17 +460,13 @@ class OrderRemoteDataSource {
   }
 
   Future<Map<String, dynamic>> responseFromTheCustomer(int receiptItemId,
-      bool? customerApproved, String reasonForRefusingMaintenance) async {
+      bool? customerApproved, String? reasonForRefusingMaintenance) async {
     print(receiptItemId);
     print(customerApproved);
 
     String? token = await TokenManager.getToken();
     if (token == null) {
       throw Exception('Authorization token is missing or expired');
-    }
-
-    if (reasonForRefusingMaintenance.isEmpty) {
-      throw Exception('reasonForRefusingMaintenance is required');
     }
 
     if (!await internetConnectionChecker.hasConnection) {
@@ -511,20 +477,21 @@ class OrderRemoteDataSource {
       final requestBody = {
         'receiptItemId': receiptItemId,
         'customerApproved': customerApproved,
-        'reasonForRefusingMaintenance': reasonForRefusingMaintenance,
+        'reasonForRefusingMaintenance': reasonForRefusingMaintenance!,
       };
 
       final response = await apiController.post(
-        Uri.parse(ApiSetting.defineMalfunctionForHandReceiptItem),
+        Uri.parse(ApiSetting.responseFromTheCustomer),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
         body: requestBody,
       );
+      print("wwwwwwwwww");
+      print(response.statusCode);
 
       final Map<String, dynamic> responseBody = jsonDecode(response.body);
-      print(requestBody);
       if (response.statusCode >= 400) {
         HandleHttpError.handleHttpError(responseBody);
       }
@@ -663,6 +630,8 @@ class OrderRemoteDataSource {
             'Authorization': 'Bearer $token',
           },
         );
+        print(basketId);
+        print(response.body);
 
         if (response.statusCode >= 400) {
           final Map<String, dynamic> responseBody = jsonDecode(response.body);
@@ -671,7 +640,6 @@ class OrderRemoteDataSource {
               'Error: ${responseBody['message'] ?? 'Unknown error'}');
         }
 
-        // تحليل الـ JSON من الاستجابة
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         final data = responseBody['data'];
 
@@ -680,13 +648,49 @@ class OrderRemoteDataSource {
         }
 
         final List<dynamic> ordersJson = data['orders'];
-        List<BasketModel> baskets = ordersJson.map((json) {
-          return BasketModel.fromJson(json);
+
+        List<BasketItem> orders = ordersJson.map((json) {
+          return BasketItem.fromJson(json);
         }).toList();
 
-        return baskets;
+        BasketModel basket = BasketModel(
+          basketId: basketId,
+          orders: orders,
+        );
+
+        return [basket];
       } catch (e) {
         throw Exception("An error occurred: $e");
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<bool> payWithApp(int orderMaintenancId) async {
+    String? token = await TokenManager.getToken();
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.post(
+          Uri.parse(
+              '${ApiSetting.payWithApp}?OrderMaintenancId=$orderMaintenancId'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+        );
+
+        debugPrint(response.statusCode.toString());
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        debugPrint(responseBody.toString());
+
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+
+        return true;
+      } on TimeOutExeption {
+        rethrow;
       }
     } else {
       throw OfflineException(errorMessage: 'No Internet Connection');

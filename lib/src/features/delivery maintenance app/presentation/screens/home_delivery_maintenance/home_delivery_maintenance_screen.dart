@@ -2,7 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/network/global_token.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/convert_order_maintenance/convert_current_order_maintenance_screen.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/convert_order_maintenance/convert_order_maintenance.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/convert_order_maintenance/convert_pervious_order_maintenance_screen.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/current_order_maintenance/current_order_maintenance_screen.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/outSide_order_maintenance/outside_current_order_maintenance_screen.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/outSide_order_maintenance/outside_order_maintenance.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/outSide_order_maintenance/outside_pervious_order_maintenance_screen.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/pervious_order_maintenance/pervious_order_maintenance_screen.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/receive_maintenances_order/receive_order_maintenances_screen.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/home_delivery/home_delivery_shop_screen.dart';
@@ -180,21 +186,36 @@ final List<Map<String, Object>> shortcutsMaintenance = [
     'label': 'الطلبات السابقة',
     'page': const PerviousOrderMaintenanceScreen(),
   },
-  // {
-  //   'icon': FontAwesomeIcons.rightLeft,
-  //   'label': 'طلبات التحويل ',
-  //   'page': const ReceiveOrderMaintenancesScreen(),
-  // },
-  // {
-  //   'icon': FontAwesomeIcons.rightLeft,
-  //   'label': 'طلبات تحويل القطع الحالية',
-  //   'page': const CurrentTakeOrderMaintenanceScreen(),
-  // },
-  // {
-  //   'icon': FontAwesomeIcons.rightLeft,
-  //   'label': 'طلبات تحويل القطع السابقة',
-  //   'page': const PerviousOrderMaintenanceScreen(),
-  // },
+  {
+    'icon': FontAwesomeIcons.rightLeft,
+    'label': 'طلبات التحويل ',
+    'page': const ConvertOrderMaintenancesScreen(),
+  },
+  {
+    'icon': FontAwesomeIcons.rightLeft,
+    'label': 'تحويل القطع الحالية',
+    'page': const CurrentTakeOrderMaintenanceConvertScreen(),
+  },
+  {
+    'icon': FontAwesomeIcons.rightLeft,
+    'label': 'تحويل القطع السابقة',
+    'page': const PerviousTakeOrderMaintenanceConvertScreen(),
+  },
+  {
+    'icon': FontAwesomeIcons.doorOpen,
+    'label': 'طلبات تحويل لخارج ',
+    'page': const OutSideOrderMaintenancesScreen(),
+  },
+  {
+    'icon': FontAwesomeIcons.doorOpen,
+    'label': 'القطع الحالية لخارج',
+    'page': const CurrentTakeOrderMaintenanceOutSideScreen(),
+  },
+  {
+    'icon': FontAwesomeIcons.doorOpen,
+    'label': 'القطع السابقة لخارج',
+    'page': const PerviousTakeOrderMaintenanceOutSideScreen(),
+  },
   {
     'icon': FontAwesomeIcons.gear,
     'label': 'الإعدادت',

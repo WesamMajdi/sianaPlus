@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/basket_Model.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/product/search_product_model.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/search_product_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/repositories/product/product_repository.dart';
@@ -71,21 +72,23 @@ class ProductRepositoryImpl implements ProductRepository {
   }
 
   @override
-  Future<Either<Failure, void>> createOrder(
-    Map<String, Product> cartItems, {
-    required int? region,
-    required int? city,
-    required int? village,
-    required String addressLine1,
-    required String addressLine2,
-  }) async {
+  Future<Either<Failure, void>> createOrder(Map<String, Product> cartItems,
+      {required int? region,
+      required int? city,
+      required int? village,
+      required String addressLine1,
+      required String addressLine2,
+      required int orderId,
+      required double totalAmount}) async {
     try {
       final response = await remoteDataSource.createOrder(cartItems,
+          totalAmount: totalAmount,
           region: region,
           city: city,
           village: village,
           addressLine1: addressLine1,
-          addressLine2: addressLine2);
+          addressLine2: addressLine2,
+          orderId: orderId);
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
@@ -98,6 +101,17 @@ class ProductRepositoryImpl implements ProductRepository {
     try {
       final response =
           await remoteDataSource.getSearchProduct(paginationParams);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PaginatedResponse<SearchCategoryEntity>>>
+      getSubCategory(PaginationParams paginationParams) async {
+    try {
+      final response = await remoteDataSource.getSubCategory(paginationParams);
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));

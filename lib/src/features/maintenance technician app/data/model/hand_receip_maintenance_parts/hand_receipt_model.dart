@@ -34,7 +34,7 @@ String getText(int status) {
   } else if (status == 4) {
     return "إبلاغ بالتكلفة";
   } else if (status == 5) {
-    return "تمت الموافقة عليه";
+    return "تمت الموافقة";
   } else if (status == 6) {
     return "رفض العميل";
   } else if (status == 7) {
@@ -42,13 +42,13 @@ String getText(int status) {
   } else if (status == 8) {
     return "لا يمكن صيانة العنصر";
   } else if (status == 9) {
-    return "إخبار العميل بعدم القدرة على الصيانة";
+    return "عدم القدرة على الصيانة";
   } else if (status == 10) {
     return "أدخل تكلفة الصيانة";
   } else if (status == 11) {
     return "مكتمل";
   } else if (status == 12) {
-    return "إخبار العميل بنهاية الصيانة";
+    return "ابلاغ بنهاية الصيانة";
   } else if (status == 13) {
     return "تم التوصيل";
   } else if (status == 14) {

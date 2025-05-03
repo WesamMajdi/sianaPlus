@@ -5,13 +5,13 @@ class ReceiveOrderMaintenancesModel
     extends ReceiveOrderMaintenancesDetielsEntity {
   ReceiveOrderMaintenancesModel.fromJson(Map<String, dynamic> json)
       : super(
-          id: json['id'],
-          item: json['item'],
-          company: json['company'],
-          color: json['color'],
-          description: json['description'],
-          maintenanceRequestStatus: json['maintenanceRequestStatus'],
-        );
+            id: json['id'],
+            item: json['item'],
+            company: json['company'],
+            color: json['color'],
+            description: json['description'],
+            maintenanceRequestStatus: json['maintenanceRequestStatus'],
+            costNotifiedToTheCustomer: json['costNotifiedToTheCustomer']);
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -19,6 +19,7 @@ class ReceiveOrderMaintenancesModel
         'company': company,
         'color': color,
         'description': description,
-        'maintenanceRequestStatus': maintenanceRequestStatus
+        'maintenanceRequestStatus': maintenanceRequestStatus,
+        'costNotifiedToTheCustomer': costNotifiedToTheCustomer
       };
 }

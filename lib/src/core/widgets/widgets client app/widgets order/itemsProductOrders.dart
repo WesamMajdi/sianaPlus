@@ -21,13 +21,13 @@ class ProductOrdersPage extends StatelessWidget {
       children: [
         InkWell(
           onTap: () {
-            // Navigator.push(
-            //     context,
-            //     MaterialPageRoute(
-            //       builder: (context) => PrductOrdersDetailsScreen(
-            //         basketId: orderProductEntity.id,
-            //       ),
-            //     ));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PrductOrdersDetailsScreen(
+                    basketId: orderProductEntity.id,
+                  ),
+                ));
           },
           child: Padding(
               padding: const EdgeInsets.symmetric(

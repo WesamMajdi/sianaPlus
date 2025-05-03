@@ -1,5 +1,6 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/network/global_token.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/showTopSnackBar.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/screens/login_screen.dart';
 
 class UserSettingProfile extends StatefulWidget {
@@ -10,6 +11,43 @@ class UserSettingProfile extends StatefulWidget {
 }
 
 class _UserSettingProfileState extends State<UserSettingProfile> {
+  bool notificationsEnabled = true;
+  String? userRole;
+  @override
+  void initState() {
+    super.initState();
+    _loadNotificationStatus();
+    _loadUserType();
+  }
+
+  Future<void> _loadNotificationStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      notificationsEnabled = prefs.getBool('notificationsEnabled') ?? true;
+    });
+  }
+
+  Future<void> _loadUserType() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userRole = prefs.getString('role');
+    });
+  }
+
+  Future<void> _toggleNotifications(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('notificationsEnabled', value);
+
+    setState(() {
+      notificationsEnabled = value;
+    });
+    showTopSnackBar(
+      context,
+      value ? "تم تفعيل الإشعارات" : "تم إيقاف الإشعارات",
+      value ? Colors.green : Colors.red,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,11 +114,20 @@ class _UserSettingProfileState extends State<UserSettingProfile> {
                 color: Colors.white.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(20)),
             child: Column(children: [
-              UserProfileMenu(
-                icon: FontAwesomeIcons.solidBell,
-                text: "الاشعارات",
-                onTap: () {},
-                isVisibl: true,
+              ListTile(
+                leading: const Icon(
+                  FontAwesomeIcons.solidBell,
+                  size: 22,
+                  color: Colors.grey,
+                ),
+                title: const CustomStyledText(
+                  text: "الإشعارات",
+                  fontWeight: FontWeight.bold,
+                ),
+                trailing: Switch(
+                  value: notificationsEnabled,
+                  onChanged: _toggleNotifications,
+                ),
               ),
               const Divider(),
               UserProfileMenu(
@@ -98,62 +145,65 @@ class _UserSettingProfileState extends State<UserSettingProfile> {
             ]),
           ),
           AppSizedBox.kVSpace10,
-          Container(
-            margin: const EdgeInsets.only(right: 10),
-            child: const CustomStyledText(
-              text: "الدعم وحول التطبيق",
-              fontWeight: FontWeight.bold,
-              textColor: AppColors.secondaryColor,
-              fontSize: 16,
+          if (userRole == "Customer") ...[
+            AppSizedBox.kVSpace10,
+            Container(
+              margin: const EdgeInsets.only(right: 10),
+              child: const CustomStyledText(
+                text: "الدعم وحول التطبيق",
+                fontWeight: FontWeight.bold,
+                textColor: AppColors.secondaryColor,
+                fontSize: 16,
+              ),
             ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            decoration: BoxDecoration(
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(20)),
-            child: Column(children: [
-              UserProfileMenu(
-                icon: FontAwesomeIcons.solidFlag,
-                text: "الابلاغ عن مشكلة",
-                onTap: () {
-                  Navigator.push(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(children: [
+                UserProfileMenu(
+                  icon: FontAwesomeIcons.solidFlag,
+                  text: "الابلاغ عن مشكلة",
+                  onTap: () {
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ReportProblemPage(),
-                      ));
-                },
-                isVisibl: true,
-              ),
-              const Divider(),
-              UserProfileMenu(
-                isVisibl: true,
-                text: "تواصل معنا",
-                icon: FontAwesomeIcons.phone,
-                onTap: () {
-                  Navigator.push(
+                          builder: (context) => const ReportProblemPage()),
+                    );
+                  },
+                  isVisibl: true,
+                ),
+                const Divider(),
+                UserProfileMenu(
+                  isVisibl: true,
+                  text: "تواصل معنا",
+                  icon: FontAwesomeIcons.phone,
+                  onTap: () {
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ConcatInfoPage(),
-                      ));
-                },
-              ),
-              const Divider(),
-              UserProfileMenu(
-                icon: FontAwesomeIcons.circleExclamation,
-                text: "الشروط والسياسات",
-                onTap: () {
-                  Navigator.push(
+                          builder: (context) => const ConcatInfoPage()),
+                    );
+                  },
+                ),
+                const Divider(),
+                UserProfileMenu(
+                  icon: FontAwesomeIcons.circleExclamation,
+                  text: "الشروط والسياسات",
+                  onTap: () {
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PrivacyPolicyPage(),
-                      ));
-                },
-                isVisibl: true,
-              ),
-            ]),
-          ),
-          AppSizedBox.kVSpace10,
+                          builder: (context) => PrivacyPolicyPage()),
+                    );
+                  },
+                  isVisibl: true,
+                ),
+              ]),
+            ),
+          ],
           Container(
             margin: const EdgeInsets.only(right: 10),
             child: const CustomStyledText(

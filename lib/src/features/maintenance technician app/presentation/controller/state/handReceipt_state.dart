@@ -9,33 +9,37 @@ class HandReceiptState extends Equatable {
   final List<HandReceiptEntity> receipts;
   final String errorMessage;
   final bool isUpdating;
+  final int page;
+  final bool hasReachedMax;
   final String successMessage;
   final String malfunctionDescription;
   final double? maintenanceCost;
   final HandReceiptEntity? handReceiptItem;
 
-  HandReceiptState({
-    this.handReceiptStatus = HandReceiptStatus.initial,
-    this.receipts = const <HandReceiptEntity>[],
-    this.errorMessage = '',
-    this.isUpdating = false,
-    this.successMessage = '',
-    this.malfunctionDescription = '',
-    this.maintenanceCost,
-    this.handReceiptItem,
-  });
+  HandReceiptState(
+      {this.handReceiptStatus = HandReceiptStatus.initial,
+      this.receipts = const <HandReceiptEntity>[],
+      this.errorMessage = '',
+      this.isUpdating = false,
+      this.successMessage = '',
+      this.malfunctionDescription = '',
+      this.maintenanceCost,
+      this.handReceiptItem,
+      this.page = 1,
+      this.hasReachedMax = false});
 
   factory HandReceiptState.initial() {
     return HandReceiptState(
-      handReceiptStatus: HandReceiptStatus.initial,
-      receipts: [],
-      errorMessage: '',
-      isUpdating: false,
-      successMessage: '',
-      malfunctionDescription: '',
-      maintenanceCost: null,
-      handReceiptItem: null,
-    );
+        handReceiptStatus: HandReceiptStatus.initial,
+        receipts: [],
+        errorMessage: '',
+        isUpdating: false,
+        successMessage: '',
+        malfunctionDescription: '',
+        maintenanceCost: null,
+        handReceiptItem: null,
+        page: 1,
+        hasReachedMax: false);
   }
 
   HandReceiptState copyWith({
@@ -47,6 +51,8 @@ class HandReceiptState extends Equatable {
     String? malfunctionDescription,
     double? maintenanceCost,
     HandReceiptEntity? handReceiptItem,
+    int? page,
+    bool? hasReachedMax,
   }) {
     return HandReceiptState(
       handReceiptStatus: handReceiptStatus ?? this.handReceiptStatus,
@@ -58,6 +64,8 @@ class HandReceiptState extends Equatable {
           malfunctionDescription ?? this.malfunctionDescription,
       maintenanceCost: maintenanceCost ?? this.maintenanceCost,
       handReceiptItem: handReceiptItem ?? this.handReceiptItem,
+      page: page ?? this.page,
+      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
     );
   }
 
@@ -71,5 +79,7 @@ class HandReceiptState extends Equatable {
         malfunctionDescription,
         maintenanceCost,
         handReceiptItem,
+        page,
+        hasReachedMax
       ];
 }

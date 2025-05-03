@@ -3,6 +3,7 @@ import 'package:maintenance_app/src/features/client%20app/presentation/controlle
 
 import '../../controller/states/category_state.dart';
 
+// ignore: must_be_immutable
 class ProductPage extends StatefulWidget {
   int categoryId;
   ProductPage({super.key, required this.categoryId});

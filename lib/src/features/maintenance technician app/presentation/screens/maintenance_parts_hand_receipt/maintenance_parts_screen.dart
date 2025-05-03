@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/itemsToMaintenancePart.dart';
@@ -16,6 +18,32 @@ class MaintenancePartsPage extends StatefulWidget {
 class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
   String barcodeResult = "لم يتم مسح الباركود";
   TextEditingController searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      BlocProvider.of<HandReceiptCubit>(context)
+          .fetchHandReceipts(refresh: true);
+    });
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent - 200 &&
+          !context.read<HandReceiptCubit>().state.hasReachedMax &&
+          context.read<HandReceiptCubit>().state.handReceiptStatus !=
+              HandReceiptStatus.loading) {
+        fetchHandReceipts();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   Future<void> scanBarcode() async {
     showDialog(
@@ -23,10 +51,7 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
       builder: (_) {
         return Dialog(
           child: MobileScanner(
-            controller: MobileScannerController(
-              facing: CameraFacing.back,
-              torchEnabled: false,
-            ),
+            controller: MobileScannerController(facing: CameraFacing.back),
             onDetect: (barcodeCapture) {
               final code = barcodeCapture.barcodes.first.rawValue;
               if (code != null) {
@@ -53,9 +78,8 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
                 ),
               );
             },
-            placeholderBuilder: (context, child) => const Center(
-              child: CircularProgressIndicator(),
-            ),
+            placeholderBuilder: (context, child) =>
+                const Center(child: CircularProgressIndicator()),
             fit: BoxFit.cover,
           ),
         );
@@ -63,25 +87,14 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() {
-      // ignore: use_build_context_synchronously
-      BlocProvider.of<HandReceiptCubit>(context).fetchHandReceipts();
-    });
-  }
-
   Future<void> fetchHandReceipts({bool refresh = false}) async {
     final searchQuery = searchController.text;
     final barcode = barcodeResult != "لم يتم مسح الباركود" ? barcodeResult : '';
-
     context.read<HandReceiptCubit>().fetchHandReceipts(
           refresh: refresh,
           searchQuery: searchQuery,
           barcode: barcode,
         );
-    print('🔍 Barcode Scan Result: $barcodeResult');
   }
 
   @override
@@ -94,33 +107,27 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const HomeMaintenanceScreen(),
-            ),
+                builder: (context) => const HomeMaintenanceScreen()),
           );
         },
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 3),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: buildSearchBar(),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(left: 20),
-                    child: buildBarcodeScanner(),
-                  ),
-                ],
-              ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 3),
+            child: Row(
+              children: [
+                Expanded(child: buildSearchBar()),
+                Container(
+                  margin: const EdgeInsets.only(left: 20),
+                  child: buildBarcodeScanner(),
+                ),
+              ],
             ),
-            AppSizedBox.kVSpace10,
-            buildMaintenancePartsList(),
-          ],
-        ),
+          ),
+          AppSizedBox.kVSpace10,
+          Expanded(child: buildMaintenancePartsList()),
+        ],
       ),
     );
   }
@@ -128,43 +135,40 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
   Widget buildSearchBar() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextFormField(
-              controller: searchController,
-              cursorColor: Colors.black,
-              onChanged: (value) {
-                fetchHandReceipts(refresh: true);
-              },
-              decoration: InputDecoration(
-                filled: true,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                  borderSide: BorderSide.none,
-                ),
-                prefixIcon: const Icon(
-                  FontAwesomeIcons.magnifyingGlass,
-                  size: 20,
-                  color: Colors.grey,
-                ),
-                suffixIcon: searchController.text.isEmpty
-                    ? null
-                    : const Icon(
-                        Icons.cancel_sharp,
-                        color: Colors.black,
-                      ),
-                hintText: "ابحث عن القطعة او اسم الزبون ",
-                hintStyle: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  fontFamily: "Tajawal",
-                ),
-              ),
-            ),
+      child: TextFormField(
+        controller: searchController,
+        cursorColor: Colors.black,
+        onChanged: (value) {
+          fetchHandReceipts(refresh: true);
+        },
+        decoration: InputDecoration(
+          filled: true,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide.none,
           ),
-        ],
+          prefixIcon: const Icon(
+            FontAwesomeIcons.magnifyingGlass,
+            size: 20,
+            color: Colors.grey,
+          ),
+          suffixIcon: searchController.text.isEmpty
+              ? null
+              : IconButton(
+                  icon: const Icon(Icons.cancel, color: Colors.black),
+                  onPressed: () {
+                    searchController.clear();
+                    fetchHandReceipts(refresh: true);
+                  },
+                ),
+          hintText: "ابحث عن القطعة او اسم الزبون",
+          hintStyle: const TextStyle(
+            color: Colors.grey,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            fontFamily: "Tajawal",
+          ),
+        ),
       ),
     );
   }
@@ -186,26 +190,48 @@ class _MaintenancePartsPageState extends State<MaintenancePartsPage> {
   Widget buildMaintenancePartsList() {
     return BlocBuilder<HandReceiptCubit, HandReceiptState>(
       builder: (context, state) {
-        if (state.handReceiptStatus == HandReceiptStatus.loading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (state.handReceiptStatus == HandReceiptStatus.failure) {
-          return const Center(child: Text('فشلت العملية'));
-        }
-        if (state.handReceiptStatus == HandReceiptStatus.success) {
-          return ListView.builder(
-            shrinkWrap: true,
-            physics: const BouncingScrollPhysics(),
-            itemCount: state.receipts.length,
-            itemBuilder: (context, index) {
-              return ItemsMaintenancePart(
-                items: state.receipts[index],
-              );
-            },
+        if (state.handReceiptStatus == HandReceiptStatus.loading &&
+            state.receipts.isEmpty) {
+          return Center(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.8,
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
           );
         }
-        return const Center(
-            child: CustomStyledText(text: 'لا توجد إيصالات استلام'));
+
+        if (state.handReceiptStatus == HandReceiptStatus.failure) {
+          return SizedBox(
+            height: MediaQuery.of(context).size.height * 0.8,
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        if (state.receipts.isEmpty) {
+          return const Center(
+              child: CustomStyledText(text: 'لا توجد إيصالات استلام'));
+        }
+
+        return ListView.builder(
+          controller: _scrollController,
+          itemCount: state.hasReachedMax
+              ? state.receipts.length
+              : state.receipts.length + 1,
+          itemBuilder: (context, index) {
+            if (index < state.receipts.length) {
+              return ItemsMaintenancePart(items: state.receipts[index]);
+            } else {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+          },
+        );
       },
     );
   }

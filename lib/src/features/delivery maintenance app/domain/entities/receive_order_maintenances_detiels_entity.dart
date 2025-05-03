@@ -5,6 +5,7 @@ class ReceiveOrderMaintenancesDetielsEntity {
   final String? color;
   final String? description;
   final int? maintenanceRequestStatus;
+  final int? costNotifiedToTheCustomer;
 
   ReceiveOrderMaintenancesDetielsEntity(
       {required this.id,
@@ -12,7 +13,8 @@ class ReceiveOrderMaintenancesDetielsEntity {
       required this.company,
       required this.color,
       required this.description,
-      required this.maintenanceRequestStatus});
+      required this.maintenanceRequestStatus,
+      required this.costNotifiedToTheCustomer});
 
   @override
   String toString() {

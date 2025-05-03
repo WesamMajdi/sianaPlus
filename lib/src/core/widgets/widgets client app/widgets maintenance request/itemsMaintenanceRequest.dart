@@ -50,7 +50,7 @@ class ItemsMaintenanceRequest extends StatelessWidget {
             child: Column(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CustomStyledText(
                       text: 'رقم الطلب #${i + 1}',
@@ -62,6 +62,38 @@ class ItemsMaintenanceRequest extends StatelessWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       textColor: AppColors.secondaryColor,
+                    ),
+                  ],
+                ),
+                AppSizedBox.kVSpace10,
+                Row(
+                  children: [
+                    const CustomStyledText(
+                      text: 'لون القطعة : ',
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      textColor: AppColors.lightGrayColor,
+                    ),
+                    CustomStyledText(
+                      text: itemEntity.color!.name!,
+                      fontSize: 16,
+                      textColor: Colors.grey,
+                    ),
+                  ],
+                ),
+                AppSizedBox.kVSpace10,
+                Row(
+                  children: [
+                    const CustomStyledText(
+                      text: 'شركة القطعة : ',
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      textColor: AppColors.lightGrayColor,
+                    ),
+                    CustomStyledText(
+                      text: itemEntity.company!.name!,
+                      fontSize: 16,
+                      textColor: Colors.grey,
                     ),
                   ],
                 ),

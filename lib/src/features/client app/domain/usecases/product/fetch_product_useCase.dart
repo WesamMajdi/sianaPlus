@@ -42,20 +42,22 @@ class ProductsUseCase {
     return repository.deleteAllFavorite();
   }
 
-  Future<Either<Failure, void>> createOrder(
-    Map<String, Product> cartItems, {
-    required int? region,
-    required int? city,
-    required int? village,
-    required String addressLine1,
-    required String addressLine2,
-  }) {
+  Future<Either<Failure, void>> createOrder(Map<String, Product> cartItems,
+      {required int? region,
+      required int? city,
+      required int? village,
+      required String addressLine1,
+      required String addressLine2,
+      required int orderId,
+      required double totalAmount}) {
     return repository.createOrder(cartItems,
         region: region,
         city: city,
         village: village,
         addressLine1: addressLine1,
-        addressLine2: addressLine2);
+        addressLine2: addressLine2,
+        orderId: orderId,
+        totalAmount: totalAmount);
   }
 
   Future<Either<Failure, PaginatedResponse<SearchProductEntity>>>
@@ -65,5 +67,10 @@ class ProductsUseCase {
 
   Future<Either<Failure, void>> createSearch(String searchText) {
     return repository.createSearch(searchText);
+  }
+
+  Future<Either<Failure, PaginatedResponse<SearchCategoryEntity>>>
+      getSubCategory(PaginationParams paginationParams) {
+    return repository.getSubCategory(paginationParams);
   }
 }

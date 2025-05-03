@@ -203,4 +203,34 @@ class CategoryRemoteDataSource {
       throw OfflineException(errorMessage: 'No Internet Connection');
     }
   }
+
+  Future<int> getNewOrderId() async {
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        String? token = await TokenManager.getToken();
+        final response = await apiController.get(
+          Uri.parse(ApiSetting.getNewOrderId),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+        );
+
+        debugPrint('Response Status Code: ${response.statusCode}');
+        debugPrint('Response Body: ${response.body}');
+
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+          throw Exception('HTTP Error');
+        }
+        return responseBody['data'] as int;
+      } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
 }
