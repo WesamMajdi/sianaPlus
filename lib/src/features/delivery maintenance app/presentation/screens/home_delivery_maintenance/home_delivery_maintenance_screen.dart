@@ -186,36 +186,36 @@ final List<Map<String, Object>> shortcutsMaintenance = [
     'label': 'الطلبات السابقة',
     'page': const PerviousOrderMaintenanceScreen(),
   },
-  {
-    'icon': FontAwesomeIcons.rightLeft,
-    'label': 'طلبات التحويل ',
-    'page': const ConvertOrderMaintenancesScreen(),
-  },
-  {
-    'icon': FontAwesomeIcons.rightLeft,
-    'label': 'تحويل القطع الحالية',
-    'page': const CurrentTakeOrderMaintenanceConvertScreen(),
-  },
-  {
-    'icon': FontAwesomeIcons.rightLeft,
-    'label': 'تحويل القطع السابقة',
-    'page': const PerviousTakeOrderMaintenanceConvertScreen(),
-  },
-  {
-    'icon': FontAwesomeIcons.doorOpen,
-    'label': 'طلبات تحويل لخارج ',
-    'page': const OutSideOrderMaintenancesScreen(),
-  },
-  {
-    'icon': FontAwesomeIcons.doorOpen,
-    'label': 'القطع الحالية لخارج',
-    'page': const CurrentTakeOrderMaintenanceOutSideScreen(),
-  },
-  {
-    'icon': FontAwesomeIcons.doorOpen,
-    'label': 'القطع السابقة لخارج',
-    'page': const PerviousTakeOrderMaintenanceOutSideScreen(),
-  },
+  // {
+  //   'icon': FontAwesomeIcons.rightLeft,
+  //   'label': 'طلبات التحويل ',
+  //   'page': const ConvertOrderMaintenancesScreen(),
+  // },
+  // {
+  //   'icon': FontAwesomeIcons.rightLeft,
+  //   'label': 'تحويل القطع الحالية',
+  //   'page': const CurrentTakeOrderMaintenanceConvertScreen(),
+  // },
+  // {
+  //   'icon': FontAwesomeIcons.rightLeft,
+  //   'label': 'تحويل القطع السابقة',
+  //   'page': const PerviousTakeOrderMaintenanceConvertScreen(),
+  // },
+  // {
+  //   'icon': FontAwesomeIcons.doorOpen,
+  //   'label': 'طلبات تحويل لخارج ',
+  //   'page': const OutSideOrderMaintenancesScreen(),
+  // },
+  // {
+  //   'icon': FontAwesomeIcons.doorOpen,
+  //   'label': 'القطع الحالية لخارج',
+  //   'page': const CurrentTakeOrderMaintenanceOutSideScreen(),
+  // },
+  // {
+  //   'icon': FontAwesomeIcons.doorOpen,
+  //   'label': 'القطع السابقة لخارج',
+  //   'page': const PerviousTakeOrderMaintenanceOutSideScreen(),
+  // },
   {
     'icon': FontAwesomeIcons.gear,
     'label': 'الإعدادت',

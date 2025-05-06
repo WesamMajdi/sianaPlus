@@ -158,21 +158,21 @@ class _HomeMaintenanceScreenState extends State<HomeMaintenanceScreen> {
 }
 
 final List<Map<String, Object>> shortcuts = [
-  {
-    'icon': FontAwesomeIcons.screwdriverWrench,
-    'label': 'قطع الصيانة المستلمة',
-    'page': const MaintenancePartsPage(),
-  },
+  // {
+  //   'icon': FontAwesomeIcons.screwdriverWrench,
+  //   'label': 'قطع الصيانة المستلمة',
+  //   'page': const MaintenancePartsPage(),
+  // },
   {
     'icon': FontAwesomeIcons.screwdriverWrench,
     'label': 'قطع الصيانة اونلاين',
     'page': const MaintenancePartsOnlinePage(),
   },
-  {
-    'icon': FontAwesomeIcons.arrowRotateLeft,
-    'label': 'العناصر المعادة',
-    'page': const RecoveredMaintenancePartsPage(),
-  },
+  // {
+  //   'icon': FontAwesomeIcons.arrowRotateLeft,
+  //   'label': 'العناصر المعادة',
+  //   'page': const RecoveredMaintenancePartsPage(),
+  // },
   // {
   //   'icon': FontAwesomeIcons.car,
   //   'label': 'القطع المحولة إلى الفرع',
