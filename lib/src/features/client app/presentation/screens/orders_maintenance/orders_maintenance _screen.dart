@@ -104,7 +104,7 @@ class _OrdersMaintenancePageState extends State<OrdersMaintenancePage> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (state.orderOldStatus == OrderStatus.failure) {
-                  return const Center(child: Text("data"));
+                  return const Center(child: CircularProgressIndicator());
                 }
                 if (state.orderOldStatus == OrderStatus.success &&
                     state.ordersItemsOld.isNotEmpty) {

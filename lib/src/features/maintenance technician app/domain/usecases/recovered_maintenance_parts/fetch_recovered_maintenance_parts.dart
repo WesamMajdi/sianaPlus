@@ -43,6 +43,13 @@ class ReturnHandReceiptUseCases {
   }
 
   Future<Either<Failure, Map<String, dynamic>>>
+      customerRefuseMaintenanceForReturnHandReceiptItem(
+          int receiptItemId, String reasonForRefusingMaintenance) {
+    return repository.customerRefuseMaintenanceForReturnHandReceiptItem(
+        receiptItemId, reasonForRefusingMaintenance);
+  }
+
+  Future<Either<Failure, Map<String, dynamic>>>
       defineMalfunctionForReturnHandReceiptItem({
     required int receiptItemId,
     required String? description,

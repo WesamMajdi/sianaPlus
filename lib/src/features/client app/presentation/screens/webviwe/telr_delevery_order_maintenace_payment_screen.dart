@@ -59,7 +59,7 @@ class _TelrDeliveryMaintenancePaymentScreenState
   void _handlePaymentResult(String url) {
     if (_paymentCompleted) return;
 
-    if (url.contains("payment-success")) {
+    if (url.contains("pp2_acs_return")) {
       _handleSuccess();
     } else if (url.contains("payment-cancelled")) {
       _handleCancellation();

@@ -142,7 +142,9 @@ class _RecoveredMaintenancePartsPageState
           size: 32,
           color: AppColors.secondaryColor,
         ),
-        onPressed: () {},
+        onPressed: () {
+          fetcReturnhHandReceipts(refresh: true);
+        },
       ),
     );
   }

@@ -59,4 +59,18 @@ class HandReceiptUseCase {
   ) {
     return repository.reopenMaintenanceHandReceiptItem(receiptItemId);
   }
+
+  Future<Either<Failure, Map<String, dynamic>>>
+      customerRefuseMaintenanceForHandReceiptItem(
+          int receiptItemId, String reasonForRefusingMaintenance) {
+    return repository.customerRefuseMaintenanceForHandReceiptItem(
+        receiptItemId, reasonForRefusingMaintenance);
+  }
+
+  Future<Either<Failure, PaginatedResponse<HandReceiptEntity>>>
+      getAllConvertFromBranch(PaginationParams paginationParams,
+          String searchQuery, String barcode) {
+    return repository.getAllConvertFromBranch(
+        paginationParams, searchQuery, barcode);
+  }
 }

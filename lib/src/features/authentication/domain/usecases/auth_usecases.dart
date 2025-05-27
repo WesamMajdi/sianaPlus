@@ -17,7 +17,8 @@ class AuthUseCase {
     return repository.login(createLoginRequest);
   }
 
-  Future<Either<Failure, UserEntity>> signup(SignupModel createSignupRequest) {
+  Future<Either<Failure, SignupResponseData>> signup(
+      SignupModel createSignupRequest) {
     return repository.signup(createSignupRequest);
   }
 
@@ -31,17 +32,27 @@ class AuthUseCase {
     return repository.updateEmail(updateEmailRequest);
   }
 
-  Future<Either<Failure, void>> forgotPassword(
+  Future<Either<Failure, String>> forgotPassword(
       ForgotPasswordModel forgotPasswordRequest) {
     return repository.forgotPassword(forgotPasswordRequest);
   }
 
-  Future<Either<Failure, void>> resetPassword(
+  Future<Either<Failure, UserEntity>> resetPassword(
       ResetPasswordModel resetPasswordRequest) {
     return repository.resetPassword(resetPasswordRequest);
   }
 
+  Future<Either<Failure, void>> verifyResetCode(
+      ResetVerifyResetCodeModel resetPasswordRequest) {
+    return repository.verifyResetCode(resetPasswordRequest);
+  }
+
   Future<Either<Failure, void>> updatePhone(String phone) {
     return repository.updatePhone(phone);
+  }
+
+  Future<Either<Failure, UserEntity>> sendVerificationCode(
+      SignupModel request, String verificationCode) {
+    return repository.sendVerificationCode(request, verificationCode);
   }
 }

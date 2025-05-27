@@ -26,6 +26,11 @@ class TokenManager {
     await prefs.remove('token');
   }
 
+  static Future<void> removefcmToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('fcmToken');
+  }
+
   static Future<void> saveName(String username) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('username', username);

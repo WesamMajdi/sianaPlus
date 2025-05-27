@@ -1,8 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/successPage.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/showTopSnackBar.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/reset_password_model.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/controller/cubit/auth_cubit.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/screens/login_screen.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/home_delivery_maintenance/home_delivery_maintenance_screen.dart';
+import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/home_delivery/home_delivery_shop_screen.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/home_maintenance/home_maintenance_screen.dart';
 
 import '../controller/state/auth_state.dart';
 
@@ -15,7 +21,7 @@ class ResetPasswordScreen extends StatefulWidget {
 
 final _formKey = GlobalKey<FormState>();
 TextEditingController usernameController = TextEditingController();
-TextEditingController codeController = TextEditingController();
+TextEditingController passwordController = TextEditingController();
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   @override
@@ -52,58 +58,84 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     ),
                   ),
                   AppSizedBox.kVSpace20,
-                  const CustomLabelText(text: 'البريد الإلكتروني'),
+                  const CustomLabelText(text: 'رقم الجوال'),
                   CustomInputField(
                     validators: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'عفوا.البريد الإلكتروني مطلوب';
+                        return 'عفوا.رقم الجوال  مطلوب';
                       }
-                      if (!RegExp(
-                              r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
-                          .hasMatch(value)) {
-                        return 'عفوا.البريد الإلكتروني غير صحيح';
-                      }
+
                       return null;
                     },
                     controller: usernameController,
-                    hintText: "أدخل البريد الالكتروني",
+                    hintText: "أدخل رقم الجوال",
                     icon: Icons.email,
                   ),
-                  const CustomLabelText(text: 'الكود'),
-                  CustomInputField(
-                    hintText: 'ادخل الكود',
-                    icon: CupertinoIcons.person_alt_circle,
+                  const CustomLabelText(text: 'كلمة المرور'),
+                  CustomInputFieldPassword(
+                    hintText: 'ادخل كلمة المرور',
+                    icon: CupertinoIcons.lock_circle_fill,
                     validators: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'عفوا.الكود مطلوب';
+                        return 'عفوا.كلمة المرور مطلوب';
                       }
                       return null;
                     },
-                    controller: codeController,
+                    controller: passwordController,
                   ),
                   BlocListener<AuthCubit, AuthState>(
                     listener: (context, state) {
-                      if (state.status == AuthStatus.failure) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              backgroundColor: Colors.red,
-                              content: CustomStyledText(
-                                  text: state.errorMessage ?? "حدث خطأ ما")),
-                        );
+                      if (state.resetPasswordStatus ==
+                          ResetPasswordStatus.failure) {
+                        showTopSnackBar(context,
+                            "فشل تسجيل دخول , يرجي اعادة المحاولة", Colors.red);
                       }
-                      if (state.status == AuthStatus.success) {
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (_) => const SuccessPage(
-                              message: "تم تغيير كلمة المرور بنجاح!!",
+                      if (state.resetPasswordStatus ==
+                          ResetPasswordStatus.success) {
+                        if (state.user!.role == 'MaintenanceTechnician') {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const HomeMaintenanceScreen(),
                             ),
-                          ),
-                        );
+                          );
+                        } else if (state.user!.role == 'Customer') {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomePage(),
+                            ),
+                          );
+                        } else if (state.user!.role == 'DeliveryShop') {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomeDeliveryScreen(),
+                            ),
+                          );
+                        } else if (state.user!.role == 'DeliveryMaintenance') {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const HomeDeliveryMaintenanceScreen(),
+                            ),
+                          );
+                        } else {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LoginScreen(),
+                            ),
+                          );
+                        }
                       }
                     },
                     child: BlocBuilder<AuthCubit, AuthState>(
                       builder: (context, state) {
-                        if (state.status == AuthStatus.loading) {
+                        if (state.resetPasswordStatus ==
+                            ResetPasswordStatus.loading) {
                           return CustomButton(
                             text: "",
                             onPressed: () {},
@@ -120,8 +152,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             if (_formKey.currentState!.validate()) {
                               context.read<AuthCubit>().resetPassword(
                                   ResetPasswordModel(
-                                      email: usernameController.text.trim(),
-                                      code: codeController.text.trim()));
+                                      phoneNumber:
+                                          usernameController.text.trim(),
+                                      newPassword:
+                                          passwordController.text.trim()));
                             }
                           },
                         );

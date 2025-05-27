@@ -1,10 +1,11 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/showTopSnackBar.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/signup_model.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/controller/cubit/auth_cubit.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/screens/login_screen.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/screens/verification_screen.dart';
 
 import '../controller/state/auth_state.dart';
 
@@ -207,7 +208,6 @@ class _SignupScreenState extends State<SignupScreen> {
                     if (value.length < 6) {
                       return 'عفوا.يجب أن تكون كلمة المرور 6 أحرف وأكثر';
                     }
-
                     return null;
                   },
                   hintText: 'ادخل كلمة المرور',
@@ -224,7 +224,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       return 'عفوا.كلمة المرور مطلوبة';
                     }
                     if (value.length < 6) {
-                      return 'عفوا.يجب أن تكون كلمة المرور 8 أحرف وأكثر';
+                      return 'عفوا.يجب أن تكون كلمة المرور 6 أحرف وأكثر';
                     }
 
                     return null;
@@ -244,24 +244,32 @@ class _SignupScreenState extends State<SignupScreen> {
           AppSizedBox.kVSpace10,
           BlocListener<AuthCubit, AuthState>(
             listener: (context, state) {
-              if (state.status == AuthStatus.failure) {
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: CustomStyledText(
-                      text: "فشل تسجيل دخول , يرجي اعادة المحاولة",
-                    ),
-                    backgroundColor: Colors.red));
+              if (state.signUpStatus == SignUpStatus.failure) {
+                showTopSnackBar(context, "فشل تسجيل دخول , يرجي اعادة المحاولة",
+                    Colors.red);
               }
-              if (state.status == AuthStatus.success) {
+              if (state.signUpStatus == SignUpStatus.success) {
+                selectedCountryCode = selectedCountryCode?.replaceAll("+", "");
+
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (_) => const HomePage(),
+                    builder: (_) => VerificationScreen(
+                      user: SignupModel(
+                        fullName: fullnameController.text,
+                        email: usernameController.text,
+                        password: passwordController.text,
+                        confirmPassword: confirmpasswordController.text,
+                        phoneNumber: mobileNumberController.text,
+                        countryCode: "970",
+                      ),
+                    ),
                   ),
                 );
               }
             },
             child: BlocBuilder<AuthCubit, AuthState>(
               builder: (context, state) {
-                if (state.status == AuthStatus.loading) {
+                if (state.signUpStatus == SignUpStatus.loading) {
                   return CustomButton(
                     text: "",
                     onPressed: () {},
@@ -278,15 +286,13 @@ class _SignupScreenState extends State<SignupScreen> {
                     if (_formKey.currentState!.validate()) {
                       selectedCountryCode =
                           selectedCountryCode?.replaceAll("+", "");
-
                       context.read<AuthCubit>().signup(SignupModel(
-                            fullName: fullnameController.text,
-                            email: usernameController.text,
-                            password: passwordController.text,
-                            confirmPassword: confirmpasswordController.text,
-                            phoneNumber: mobileNumberController.text,
-                            countryCode: selectedCountryCode!,
-                          ));
+                          fullName: fullnameController.text,
+                          email: usernameController.text,
+                          password: passwordController.text,
+                          confirmPassword: confirmpasswordController.text,
+                          phoneNumber: mobileNumberController.text,
+                          countryCode: "970"));
                     }
                   },
                 );

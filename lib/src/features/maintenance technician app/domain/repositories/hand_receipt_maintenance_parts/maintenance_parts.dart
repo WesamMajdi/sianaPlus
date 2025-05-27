@@ -33,5 +33,13 @@ abstract class HandReceiptRepository {
           int receiptItemId, String? maintenanceSuspensionReason);
 
   Future<Either<Failure, Map<String, dynamic>>>
+      customerRefuseMaintenanceForHandReceiptItem(
+          int receiptItemId, String reasonForRefusingMaintenance);
+
+  Future<Either<Failure, Map<String, dynamic>>>
       reopenMaintenanceHandReceiptItem(int receiptItemId);
+
+  Future<Either<Failure, PaginatedResponse<HandReceiptEntity>>>
+      getAllConvertFromBranch(PaginationParams paginationParams,
+          String? searchQuery, String? barcode);
 }

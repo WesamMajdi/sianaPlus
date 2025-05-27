@@ -8,6 +8,7 @@ import 'package:maintenance_app/src/features/authentication/data/model/reset_pas
 import 'package:maintenance_app/src/features/authentication/data/model/signup_model.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/update_email_model.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/update_password_model.dart';
+import 'package:maintenance_app/src/features/authentication/data/model/user_model.dart';
 import 'package:maintenance_app/src/features/authentication/domain/entities/user_entity.dart';
 import 'package:maintenance_app/src/features/authentication/domain/repositories/auth_repository.dart';
 
@@ -27,10 +28,22 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, UserEntity>> signup(
+  Future<Either<Failure, SignupResponseData>> signup(
       SignupModel createSignupRequest) async {
     try {
       final response = await remoteDataSource.signup(createSignupRequest);
+      return Right(response.data!);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserModel>> sendVerificationCode(
+      SignupModel request, String verificationCode) async {
+    try {
+      final response = await remoteDataSource.sendVerificationCode(
+          verificationCode, request);
       return Right(response.data!);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
@@ -62,13 +75,14 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> forgotPassword(
+  Future<Either<Failure, String>> forgotPassword(
       ForgotPasswordModel forgotPasswordRequest) async {
     try {
-      await remoteDataSource.forgotPassword(forgotPasswordRequest);
-      return const Right(null);
+      final response =
+          await remoteDataSource.forgotPassword(forgotPasswordRequest);
+      return Right(response.data ?? '');
     } catch (e) {
-      debugPrint('Error in updateEmail: $e');
+      debugPrint('Error in forgotPassword: $e');
       return Left(ServerFailure(message: e.toString()));
     }
   }
@@ -85,10 +99,23 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> resetPassword(
+  Future<Either<Failure, UserEntity>> resetPassword(
       ResetPasswordModel resetPasswordRequest) async {
     try {
-      await remoteDataSource.resetPassword(resetPasswordRequest);
+      final response =
+          await remoteDataSource.resetPassword(resetPasswordRequest);
+      return Right(response.data!);
+    } catch (e) {
+      debugPrint('Error in resetPassword: $e');
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> verifyResetCode(
+      ResetVerifyResetCodeModel resetPasswordRequest) async {
+    try {
+      await remoteDataSource.verifyResetCode(resetPasswordRequest);
       return const Right(null);
     } catch (e) {
       debugPrint('Error in updateEmail: $e');

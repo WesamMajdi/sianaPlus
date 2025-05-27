@@ -92,7 +92,7 @@ String getTextOrderStatusMaintenanceConvert(int? status) {
     case 5:
       return "اخذ من الفرع";
     case 6:
-      return "إرجاع من الفرع المحول";
+      return "إرجاع الى الفرع المحول";
     case 7:
       return "مكتمل";
     default:

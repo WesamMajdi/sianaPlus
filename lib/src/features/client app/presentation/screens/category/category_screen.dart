@@ -1,4 +1,7 @@
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20categorys/itemsMainCategorys.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20categorys/itemsSubCategorys.dart';
@@ -20,45 +23,20 @@ class CategoryPage extends StatefulWidget {
 }
 
 class _CategoryPageState extends State<CategoryPage> {
+  bool _isInitialized = false;
+
   @override
   void initState() {
     super.initState();
-    _initializeData();
-  }
-
-  void _initializeData() {
     context.read<CategoryCubit>().getDiscount();
     context.read<CategoryCubit>().fetchCategories();
-
-    if (!widget.fromHomeScreen) {
-      final categories = context.read<CategoryCubit>().state.categories;
-      if (categories.isNotEmpty) {
-        _onCategorySelected(categories.first.id);
-      } else {
-        print('No categories available');
-      }
-    }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: MyDrawer(
-        currentIndex: widget.currentIndex,
-      ),
-      appBar: const AppBarApplication(
-        text: 'تسوق اونلاين',
-      ),
-      body: Column(
-        children: [
-          _buildMainCategoriesHeader(),
-          _buildMainCategoriesList(),
-          AppSizedBox.kVSpace20,
-          _buildSubCategoriesHeader(),
-          _buildSubCategoriesList(),
-        ],
-      ),
-    );
+  void _onCategorySelected(int categoryId) async {
+    context.read<CategoryCubit>().selectCategory(categoryId: categoryId);
+    await context.read<CategoryCubit>().fetchSubCategories(
+          mainCategoryId: categoryId,
+        );
   }
 
   Widget _buildMainCategoriesHeader() {
@@ -82,7 +60,7 @@ class _CategoryPageState extends State<CategoryPage> {
             return const Center(child: CircularProgressIndicator());
 
           case MainCategoryStatus.failure:
-            return Text(state.errorMessage!);
+            return const Center(child: CircularProgressIndicator());
 
           case MainCategoryStatus.success:
             return SizedBox(
@@ -105,13 +83,6 @@ class _CategoryPageState extends State<CategoryPage> {
         }
       },
     );
-  }
-
-  void _onCategorySelected(int categoryId) async {
-    context.read<CategoryCubit>().selectCategory(categoryId: categoryId);
-    await context.read<CategoryCubit>().fetchSubCategories(
-          mainCategoryId: categoryId,
-        );
   }
 
   Widget _buildSubCategoriesHeader() {
@@ -147,6 +118,41 @@ class _CategoryPageState extends State<CategoryPage> {
             },
           );
         },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<CategoryCubit, CategoryState>(
+      listener: (context, state) {
+        if (!_isInitialized &&
+            state.mainCategoryStatus == MainCategoryStatus.success &&
+            !widget.fromHomeScreen) {
+          _isInitialized = true;
+          if (state.categories.isNotEmpty) {
+            _onCategorySelected(state.categories.first.id);
+          } else {
+            print('لا يوجد تصنيفات');
+          }
+        }
+      },
+      child: Scaffold(
+        drawer: MyDrawer(
+          currentIndex: widget.currentIndex,
+        ),
+        appBar: const AppBarApplication(
+          text: 'تسوق اونلاين',
+        ),
+        body: Column(
+          children: [
+            _buildMainCategoriesHeader(),
+            _buildMainCategoriesList(),
+            AppSizedBox.kVSpace20,
+            _buildSubCategoriesHeader(),
+            _buildSubCategoriesList(),
+          ],
+        ),
       ),
     );
   }

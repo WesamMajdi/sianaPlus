@@ -60,7 +60,7 @@ class _TelrMaintenancePaymentScreenState
   void _handlePaymentResult(String url) {
     if (_paymentCompleted) return;
 
-    if (url.contains("payment-success")) {
+    if (url.contains("pp2_acs_return")) {
       _handleSuccess();
     } else if (url.contains("payment-cancelled")) {
       _handleCancellation();
@@ -127,7 +127,7 @@ class _TelrMaintenancePaymentScreenState
       },
       child: Scaffold(
         appBar: AppBarApplicationArrow(
-            text: "اتمام الدفع", onBackTap: _handleCancellation),
+            text: "إتمام الدفع", onBackTap: _handleCancellation),
         body: Stack(
           children: [
             if (widget.paymentUrl == null)

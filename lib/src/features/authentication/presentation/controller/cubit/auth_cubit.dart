@@ -17,13 +17,13 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit(this.authUseCase) : super(AuthState());
 
   void login(LoginModel createLoginRequest) async {
-    emit(state.copyWith(status: AuthStatus.loading));
+    emit(state.copyWith(status: LoginStatus.loading));
     try {
       final result = await authUseCase.login(createLoginRequest);
 
       result.fold(
         (failure) => emit(state.copyWith(
-            status: AuthStatus.failure, errorMessage: failure.message)),
+            status: LoginStatus.failure, errorMessage: failure.message)),
         (user) async {
           final prefs = await SharedPreferences.getInstance();
 
@@ -34,118 +34,180 @@ class AuthCubit extends Cubit<AuthState> {
             await prefs.setBool(FIRST_TIME_KEY, false);
           }
 
-          emit(state.copyWith(status: AuthStatus.success, user: user));
+          emit(state.copyWith(status: LoginStatus.success, user: user));
         },
       );
     } catch (e) {
       emit(state.copyWith(
-          status: AuthStatus.failure,
+          status: LoginStatus.failure,
           errorMessage: 'Unexpected error occurred: $e'));
     }
   }
 
   void signup(SignupModel createSignupRequest) async {
-    emit(state.copyWith(status: AuthStatus.loading));
+    emit(state.copyWith(signUpStatus: SignUpStatus.loading));
     try {
       final result = await authUseCase.signup(createSignupRequest);
       result.fold(
         (failure) => emit(state.copyWith(
-            status: AuthStatus.failure, errorMessage: failure.message)),
-        (user) => emit(state.copyWith(status: AuthStatus.success, user: user)),
+            signUpStatus: SignUpStatus.failure, errorMessage: failure.message)),
+        (user) => emit(state.copyWith(
+            signUpStatus: SignUpStatus.success, userSignup: user)),
       );
     } catch (e) {
       emit(state.copyWith(
-          status: AuthStatus.failure,
+          signUpStatus: SignUpStatus.failure,
           errorMessage: 'Unexpected error occurred: $e'));
     }
   }
 
   void updatePassword(UpdtePasswordModel updatePasswordRequest) async {
-    emit(state.copyWith(status: AuthStatus.loading));
+    emit(state.copyWith(updatePasswordStatus: UpdatePasswordStatus.loading));
     try {
       final result = await authUseCase.updatePassword(updatePasswordRequest);
       result.fold(
         (failure) => emit(state.copyWith(
-            status: AuthStatus.failure, errorMessage: failure.message)),
+            status: LoginStatus.failure, errorMessage: failure.message)),
         (_) => emit(state.copyWith(
-            status: AuthStatus.success,
+            updatePasswordStatus: UpdatePasswordStatus.success,
             successMessage: 'تم تغيير كلمة المرور بنجاح')),
       );
     } catch (e) {
       emit(state.copyWith(
-          status: AuthStatus.failure,
+          updatePasswordStatus: UpdatePasswordStatus.failure,
           errorMessage: 'Unexpected error occurred: $e'));
     }
   }
 
+  void sendVerificationCode(SignupModel request, String code) async {
+    emit(state.copyWith(verificationStatus: VerificationStatus.loading));
+    print('Sending verification code: $code for ${request.phoneNumber}');
+
+    try {
+      final result = await authUseCase.sendVerificationCode(request, code);
+      result.fold(
+        (failure) {
+          emit(state.copyWith(
+            verificationStatus: VerificationStatus.failure,
+            errorMessage: 'كود التحقق غير صحيح',
+          ));
+        },
+        (user) {
+          emit(state.copyWith(
+            verificationStatus: VerificationStatus.success,
+            user: user,
+          ));
+        },
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        verificationStatus: VerificationStatus.failure,
+        errorMessage: 'حدث خطأ تقني، يرجى المحاولة لاحقاً',
+      ));
+    }
+  }
+
   void updateEmail(UpdateEmailModel updateEmailRequest) async {
-    emit(state.copyWith(status: AuthStatus.loading));
+    emit(state.copyWith(updateEmailStatus: UpdateEmailStatus.loading));
     try {
       final result = await authUseCase.updateEmail(updateEmailRequest);
       result.fold(
         (failure) => emit(state.copyWith(
-            status: AuthStatus.failure, errorMessage: failure.message)),
+            updateEmailStatus: UpdateEmailStatus.failure,
+            errorMessage: failure.message)),
         (_) => emit(state.copyWith(
-            status: AuthStatus.success,
+            updateEmailStatus: UpdateEmailStatus.success,
             successMessage: 'تم تحديث البريد الإلكتروني بنجاح')),
       );
     } catch (e) {
       emit(state.copyWith(
-          status: AuthStatus.failure,
+          updateEmailStatus: UpdateEmailStatus.failure,
           errorMessage: 'Unexpected error occurred: $e'));
     }
   }
 
   void forgotPassword(ForgotPasswordModel forgotPasswordRequest) async {
-    emit(state.copyWith(status: AuthStatus.loading));
+    emit(state.copyWith(forgotPasswordStatus: ForgotPasswordStatus.loading));
     try {
       final result = await authUseCase.forgotPassword(forgotPasswordRequest);
       result.fold(
         (failure) => emit(state.copyWith(
-            status: AuthStatus.failure, errorMessage: failure.message)),
-        (_) => emit(state.copyWith(
-          status: AuthStatus.success,
+            forgotPasswordStatus: ForgotPasswordStatus.failure,
+            errorMessage: failure.message)),
+        (result) => emit(state.copyWith(
+          forgotPasswordStatus: ForgotPasswordStatus.success,
+          phone: result,
         )),
       );
     } catch (e) {
       emit(state.copyWith(
-          status: AuthStatus.failure,
+          status: LoginStatus.failure,
           errorMessage: 'Unexpected error occurred: $e'));
     }
   }
 
   void resetPassword(ResetPasswordModel resetPasswordRequest) async {
-    emit(state.copyWith(status: AuthStatus.loading));
+    emit(state.copyWith(resetPasswordStatus: ResetPasswordStatus.loading));
     try {
       final result = await authUseCase.resetPassword(resetPasswordRequest);
       result.fold(
         (failure) => emit(state.copyWith(
-            status: AuthStatus.failure, errorMessage: failure.message)),
+            resetPasswordStatus: ResetPasswordStatus.failure,
+            errorMessage: failure.message)),
+        (user) async {
+          final prefs = await SharedPreferences.getInstance();
+
+          final isFirstTime = prefs.getBool(FIRST_TIME_KEY) ?? true;
+
+          if (isFirstTime) {
+            await prefs.setBool(FIRST_TIME_KEY, false);
+          }
+
+          emit(state.copyWith(
+              resetPasswordStatus: ResetPasswordStatus.success, user: user));
+        },
+      );
+    } catch (e) {
+      emit(state.copyWith(
+          resetPasswordStatus: ResetPasswordStatus.failure,
+          errorMessage: 'Unexpected error occurred: $e'));
+    }
+  }
+
+  void verifyResetCode(ResetVerifyResetCodeModel resetPasswordRequest) async {
+    emit(state.copyWith(verificationStatus: VerificationStatus.loading));
+    try {
+      final result = await authUseCase.verifyResetCode(resetPasswordRequest);
+      result.fold(
+        (failure) => emit(state.copyWith(
+            verificationStatus: VerificationStatus.failure,
+            errorMessage: failure.message)),
         (_) => emit(state.copyWith(
-            status: AuthStatus.success,
+            status: LoginStatus.success,
             successMessage: 'تم استعادة كلمة المرور بنجاح')),
       );
     } catch (e) {
       emit(state.copyWith(
-          status: AuthStatus.failure,
+          verificationStatus: VerificationStatus.failure,
           errorMessage: 'Unexpected error occurred: $e'));
     }
   }
 
   void updatePhone(String phone) async {
-    emit(state.copyWith(status: AuthStatus.loading));
+    emit(state.copyWith(updatePhone: UpdatePhoneStatus.loading));
     try {
       final result = await authUseCase.updatePhone(phone);
       result.fold(
         (failure) => emit(state.copyWith(
-            status: AuthStatus.failure, errorMessage: failure.message)),
+            updatePhone: UpdatePhoneStatus.failure,
+            errorMessage: failure.message)),
         (_) => emit(state.copyWith(
-            status: AuthStatus.success,
+            updatePhone: UpdatePhoneStatus.success,
             successMessage: 'تم تعديل رقم الهاتف بنجاح')),
       );
     } catch (e) {
       emit(state.copyWith(
-          status: AuthStatus.failure,
+          updatePhone: UpdatePhoneStatus.failure,
           errorMessage: 'Unexpected error occurred: $e'));
     }
   }

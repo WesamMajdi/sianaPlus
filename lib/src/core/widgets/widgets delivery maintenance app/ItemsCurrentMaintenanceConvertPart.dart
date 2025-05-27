@@ -1,4 +1,5 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customInputDialog.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customSureDialog.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/receipt_item_convert_model.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/receive_order_Maintenance_entity.dart';
@@ -319,16 +320,6 @@ class ItemsCurrentMaintenanceConvertPart extends StatelessWidget {
       return [
         ListTile(
           title: const CustomStyledText(
-            text: "انتظار نهاية الصيانة",
-            fontSize: 20,
-          ),
-          onTap: () {},
-        ),
-      ];
-    } else if (status == 3) {
-      return [
-        ListTile(
-          title: const CustomStyledText(
             text: "نهاية الصيانة",
             fontSize: 20,
           ),
@@ -340,7 +331,7 @@ class ItemsCurrentMaintenanceConvertPart extends StatelessWidget {
                   final cubit = context.read<DeliveryMaintenanceCubit>();
                   try {
                     await cubit.updateOrderMaintenanceConvert(
-                        orderMaintenancId: item.id, status: 5);
+                        orderMaintenancId: item.id, status: 4);
                     await context
                         .read<DeliveryMaintenanceCubit>()
                         .fetchAllTakeDeliveryConvert(refresh: true);
@@ -366,11 +357,50 @@ class ItemsCurrentMaintenanceConvertPart extends StatelessWidget {
           },
         ),
       ];
+    } else if (status == 4) {
+      return [
+        ListTile(
+          title: const CustomStyledText(
+            text: "أخذ من الفرع",
+            fontSize: 20,
+          ),
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CustomSureDialog(onConfirm: () async {
+                  final cubit = context.read<DeliveryMaintenanceCubit>();
+                  try {
+                    await cubit.updateOrderMaintenanceConvert(
+                        orderMaintenancId: item.id, status: 5);
+
+                    Navigator.pushReplacement(
+                      // ignore: use_build_context_synchronously
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const CurrentTakeOrderMaintenanceConvertScreen(),
+                      ),
+                    );
+                    await context
+                        .read<DeliveryMaintenanceCubit>()
+                        .fetchAllTakeDeliveryConvert(refresh: true);
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Failed to update status: $e')),
+                    );
+                  }
+                });
+              },
+            );
+          },
+        ),
+      ];
     } else if (status == 5) {
       return [
         ListTile(
           title: const CustomStyledText(
-            text: "أخذ إلى الفرع",
+            text: "ارجاع الى الفرع المحول منه",
             fontSize: 20,
           ),
           onTap: () {
@@ -382,6 +412,9 @@ class ItemsCurrentMaintenanceConvertPart extends StatelessWidget {
                   try {
                     await cubit.updateOrderMaintenanceConvert(
                         orderMaintenancId: item.id, status: 6);
+                    await context
+                        .read<DeliveryMaintenanceCubit>()
+                        .fetchAllTakeDeliveryConvert(refresh: true);
 
                     Navigator.pushReplacement(
                       // ignore: use_build_context_synchronously

@@ -1,5 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:maintenance_app/src/core/error/failure.dart';
+import 'package:maintenance_app/src/core/pagination/paginated_response.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/profile/slider_model.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/profile/profile_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/repositories/profile/profile_repository.dart';
 
@@ -18,5 +20,10 @@ class FetchProfileUseCase {
 
   Future<Either<Failure, void>> changeName(String fullName) {
     return repository.changeName(fullName);
+  }
+
+  Future<Either<Failure, PaginatedResponse<ImageModel>>>
+      getAllImageInHome() async {
+    return await repository.getAllImageInHome();
   }
 }

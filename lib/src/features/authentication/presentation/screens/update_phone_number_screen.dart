@@ -1,5 +1,6 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/successPage.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/showTopSnackBar.dart';
 
 import 'package:maintenance_app/src/features/authentication/presentation/controller/cubit/auth_cubit.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/controller/state/auth_state.dart';
@@ -21,7 +22,7 @@ class _ChangePhoneNumberScreenState extends State<ChangePhoneNumberScreen> {
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state.status == AuthStatus.success) {
+        if (state.updatePhone == UpdatePhoneStatus.success) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (_) => const SuccessPage(
@@ -29,12 +30,9 @@ class _ChangePhoneNumberScreenState extends State<ChangePhoneNumberScreen> {
               ),
             ),
           );
-        } else if (state.status == AuthStatus.failure) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: CustomStyledText(
-                    text: state.errorMessage ?? 'حدث خطأ أثناء التعديل')),
-          );
+        } else if (state.updatePhone == UpdatePhoneStatus.failure) {
+          showTopSnackBar(
+              context, "فشل تسجيل دخول , يرجي اعادة المحاولة", Colors.red);
         }
       },
       child: Scaffold(
@@ -98,7 +96,7 @@ class _ChangePhoneNumberScreenState extends State<ChangePhoneNumberScreen> {
                     AppSizedBox.kVSpace20,
                     BlocBuilder<AuthCubit, AuthState>(
                       builder: (context, state) {
-                        return state.status == AuthStatus.loading
+                        return state.updatePhone == UpdatePhoneStatus.loading
                             ? CustomButton(
                                 text: "",
                                 onPressed: () {},

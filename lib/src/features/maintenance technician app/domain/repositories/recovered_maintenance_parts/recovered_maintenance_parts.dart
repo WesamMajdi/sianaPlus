@@ -31,6 +31,9 @@ abstract class ReturnHandReceiptRepository {
     required int warrantyDaysNumber,
   });
 
+  Future<Either<Failure, Map<String, dynamic>>>
+      customerRefuseMaintenanceForReturnHandReceiptItem(
+          int receiptItemId, String reasonForRefusingMaintenance);
   Future<Either<Failure, ReturnHandReceiptEntity>> getReturnHandReceiptItem(
       int id);
   Future<Either<Failure, Map<String, dynamic>>>

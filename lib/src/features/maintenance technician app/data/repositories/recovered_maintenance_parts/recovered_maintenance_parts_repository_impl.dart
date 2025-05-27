@@ -104,6 +104,23 @@ class ReturnHandReceiptRepositoryImpl implements ReturnHandReceiptRepository {
 
   @override
   Future<Either<Failure, Map<String, dynamic>>>
+      customerRefuseMaintenanceForReturnHandReceiptItem(
+    int receiptItemId,
+    String reasonForRefusingMaintenance,
+  ) async {
+    try {
+      final response = await remoteDataSource
+          .customerRefuseMaintenanceForReturnHandReceiptItem(
+              receiptItemId: receiptItemId,
+              reasonForRefusingMaintenance: reasonForRefusingMaintenance);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>>
       reOpenMaintenanceForReturnHandReceiptItem(
           {required int receiptItemId}) async {
     try {

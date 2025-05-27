@@ -138,6 +138,7 @@ class _MyAppState extends State<MyApp> {
     if (message != null && message.data.containsKey('page_id')) {
       String pageId = message.data['page_id']!;
       int id = int.tryParse(pageId) ?? 0;
+      // ignore: use_build_context_synchronously
       navigateToPageById(context, id);
     }
   }
@@ -151,7 +152,7 @@ class _MyAppState extends State<MyApp> {
         break;
       case 2:
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => CategoryPage()),
+          MaterialPageRoute(builder: (_) => const CategoryPage()),
         );
         break;
       case 3:
@@ -166,6 +167,7 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
         providers: [

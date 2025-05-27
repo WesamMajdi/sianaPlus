@@ -1,13 +1,27 @@
 class ResetPasswordModel {
-  final String email;
-  final String code;
+  final String phoneNumber;
+  final String newPassword;
 
   ResetPasswordModel({
-    required this.email,
+    required this.phoneNumber,
+    required this.newPassword,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {"phoneNumber": phoneNumber, "newPassword": newPassword};
+  }
+}
+
+class ResetVerifyResetCodeModel {
+  final String phoneNumber;
+  final String code;
+
+  ResetVerifyResetCodeModel({
+    required this.phoneNumber,
     required this.code,
   });
 
   Map<String, dynamic> toJson() {
-    return {"email": email, "code": code};
+    return {"phoneNumber": phoneNumber, "code": code};
   }
 }

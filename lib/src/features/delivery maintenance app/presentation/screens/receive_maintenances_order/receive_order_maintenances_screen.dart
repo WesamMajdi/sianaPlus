@@ -25,8 +25,9 @@ class _ReceiveOrderMaintenancesScreenState
 
     super.initState();
     Future.microtask(() {
+      // ignore: use_build_context_synchronously
       BlocProvider.of<DeliveryMaintenanceCubit>(context)
-          .fetchReceiveMaintenanceOrder();
+          .fetchReceiveMaintenanceOrder(refresh: true);
     });
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
@@ -54,6 +55,7 @@ class _ReceiveOrderMaintenancesScreenState
     super.dispose();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,

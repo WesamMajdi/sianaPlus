@@ -1,68 +1,136 @@
-// import 'package:barcode_scan2/barcode_scan2.dart';
-import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/itemsToTransferredMaintenancePart.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/itemsToMaintenancePart.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/hand_receipt_maintenance_parts/maintenance_parts_cubit.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/state/handReceipt_state.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/home_maintenance/home_maintenance_screen.dart';
 
 class TransferredMaintenancePartsPage extends StatefulWidget {
-  const TransferredMaintenancePartsPage({
-    Key? key,
-  }) : super(key: key);
+  const TransferredMaintenancePartsPage({Key? key}) : super(key: key);
 
   @override
   State<TransferredMaintenancePartsPage> createState() =>
-      _TransferredMaintenancePartsPageState();
+      _MaintenancePartsPageState();
 }
 
-class _TransferredMaintenancePartsPageState
+class _MaintenancePartsPageState
     extends State<TransferredMaintenancePartsPage> {
   String barcodeResult = "لم يتم مسح الباركود";
-
-  // Future<void> scanBarcode() async {
-  //   try {
-  //     var result = await BarcodeScanner.scan();
-  //     setState(() {
-  //       barcodeResult = result.rawContent.isEmpty
-  //           ? "لم يتم العثور على نتيجة"
-  //           : result.rawContent;
-  //     });
-  //   } catch (e) {
-  //     setState(() {
-  //       barcodeResult = "حدث خطأ أثناء مسح الباركود: $e";
-  //     });
-  //   }
-  // }
-
   TextEditingController searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      BlocProvider.of<HandReceiptCubit>(context)
+          .fetchConvertFromBranch(refresh: true);
+    });
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent - 200 &&
+          !context.read<HandReceiptCubit>().state.hasReachedMax &&
+          context.read<HandReceiptCubit>().state.convertFromBranchStatus !=
+              ConvertFromBranchStatus.loading) {
+        fetchConvertFromBranch();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  Future<void> scanBarcode() async {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return Dialog(
+          child: MobileScanner(
+            controller: MobileScannerController(facing: CameraFacing.back),
+            onDetect: (barcodeCapture) {
+              final code = barcodeCapture.barcodes.first.rawValue;
+              if (code != null) {
+                setState(() {
+                  barcodeResult = code;
+                });
+                Navigator.of(context).pop();
+                fetchConvertFromBranch(refresh: true);
+              }
+            },
+            errorBuilder: (context, error, child) {
+              return Center(child: Text('خطأ بالكاميرا: ${error.errorCode}'));
+            },
+            overlayBuilder: (context, constraints) {
+              return Align(
+                alignment: Alignment.center,
+                child: Container(
+                  width: 250,
+                  height: 250,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.green, width: 2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              );
+            },
+            placeholderBuilder: (context, child) =>
+                const Center(child: CircularProgressIndicator()),
+            fit: BoxFit.cover,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> fetchConvertFromBranch({bool refresh = false}) async {
+    final searchQuery = searchController.text;
+    final barcode = barcodeResult != "لم يتم مسح الباركود" ? barcodeResult : '';
+    context.read<HandReceiptCubit>().fetchConvertFromBranch(
+          refresh: refresh,
+          searchQuery: searchQuery,
+          barcode: barcode,
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBarApplicationArrow(text: 'القطع المحولة الي الفرع'),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            AppSizedBox.kVSpace15,
-            buildSearchBar(),
-            AppSizedBox.kVSpace10,
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  // Expanded(
-                  //     child: buildSearchDropdownStatus(
-                  //   orderStatuses,
-                  //   'ابحث عن الحالة ',
-                  //   (OrderStatus? selectedStatus) {},
-                  // )),
-                  Container(child: buildBarcodeScanner()),
-                ],
-              ),
+      appBar: AppBarApplicationArrow(
+        text: 'قطع المحولة',
+        onBackTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const HomeMaintenanceScreen()),
+          );
+        },
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 3),
+            child: Row(
+              children: [
+                Expanded(child: buildSearchBar()),
+                Container(
+                  margin: const EdgeInsets.only(left: 20),
+                  child: buildBarcodeScanner(),
+                ),
+              ],
             ),
-            AppSizedBox.kVSpace10,
-            // buildPortableMaintenancePartsList(),
-          ],
-        ),
+          ),
+          AppSizedBox.kVSpace10,
+          Expanded(child: buildMaintenancePartsList()),
+        ],
       ),
     );
   }
@@ -70,50 +138,40 @@ class _TransferredMaintenancePartsPageState
   Widget buildSearchBar() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextFormField(
-              cursorColor: Colors.black,
-              controller: searchController,
-              decoration: InputDecoration(
-                filled: true,
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide.none),
-                prefixIcon: const Icon(
-                  FontAwesomeIcons.magnifyingGlass,
-                  size: 20,
-                  color: Colors.grey,
-                ),
-                suffixIcon: searchController.text.isEmpty
-                    ? null
-                    : const Icon(
-                        Icons.cancel_sharp,
-                        color: Colors.black,
-                      ),
-                hintText: "ابحث عن القطعة او اسم الزبون ",
-                hintStyle: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: "Tajawal"),
-              ),
-            ),
+      child: TextFormField(
+        controller: searchController,
+        cursorColor: Colors.black,
+        onChanged: (value) {
+          fetchConvertFromBranch(refresh: true);
+        },
+        decoration: InputDecoration(
+          filled: true,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide.none,
           ),
-          Container(
-              margin: const EdgeInsets.only(right: 5),
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: AppColors.secondaryColor,
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: IconButton(
-                icon: const Icon(Icons.tune, color: Colors.white),
-                onPressed: () {},
-              ))
-        ],
+          prefixIcon: const Icon(
+            FontAwesomeIcons.magnifyingGlass,
+            size: 20,
+            color: Colors.grey,
+          ),
+          suffixIcon: searchController.text.isEmpty
+              ? null
+              : IconButton(
+                  icon: const Icon(Icons.cancel, color: Colors.black),
+                  onPressed: () {
+                    searchController.clear();
+                    fetchConvertFromBranch(refresh: true);
+                  },
+                ),
+          hintText: "ابحث عن القطعة او اسم الزبون",
+          hintStyle: const TextStyle(
+            color: Colors.grey,
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            fontFamily: "Tajawal",
+          ),
+        ),
       ),
     );
   }
@@ -127,22 +185,58 @@ class _TransferredMaintenancePartsPageState
           size: 32,
           color: AppColors.secondaryColor,
         ),
-        onPressed: () {},
+        onPressed: scanBarcode,
       ),
     );
   }
 
-  // Widget buildPortableMaintenancePartsList() {
-  //   return ListView.builder(
-  //     shrinkWrap: true,
-  //     physics: const BouncingScrollPhysics(),
-  //     itemCount: maintenanceParts.length,
-  //     itemBuilder: (context, index) {
-  //       final part = maintenanceParts[index];
-  //       return ItemsTransferredMaintenancePart(
-  //         part: part,
-  //       );
-  //     },
-  //   );
-  // }
+  Widget buildMaintenancePartsList() {
+    return BlocBuilder<HandReceiptCubit, HandReceiptState>(
+      builder: (context, state) {
+        if (state.handReceiptStatus == HandReceiptStatus.loading &&
+            state.receipts.isEmpty) {
+          return Center(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height * 0.8,
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        }
+
+        if (state.handReceiptStatus == HandReceiptStatus.failure) {
+          return SizedBox(
+            height: MediaQuery.of(context).size.height * 0.8,
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        if (state.receipts.isEmpty) {
+          return const Center(
+              child: CustomStyledText(text: 'لا توجد إيصالات استلام'));
+        }
+
+        return ListView.builder(
+          controller: _scrollController,
+          itemCount: state.hasReachedMaxTransferre
+              ? state.listconvertFromBranch.length
+              : state.listconvertFromBranch.length + 1,
+          itemBuilder: (context, index) {
+            if (index < state.listconvertFromBranch.length) {
+              return ItemsTransferredMaintenancePart(
+                  items: state.listconvertFromBranch[index]);
+            } else {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+          },
+        );
+      },
+    );
+  }
 }

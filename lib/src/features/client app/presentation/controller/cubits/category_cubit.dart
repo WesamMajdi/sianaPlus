@@ -295,11 +295,9 @@ class CategoryCubit extends Cubit<CategoryState> {
     final updatedItems = Map<String, Product>.from(state.cartItems);
 
     if (updatedItems.containsKey(productId)) {
-      // زيادة الكمية
       updatedItems[productId]!.userCount =
           updatedItems[productId]!.userCount! + 1;
 
-      // حساب المجموع الفرعي لجميع العناصر في السلة
       final subTotalAmount = updatedItems.values.fold(0.0, (sum, item) {
         return sum + (item.basePrice! * item.userCount!);
       });

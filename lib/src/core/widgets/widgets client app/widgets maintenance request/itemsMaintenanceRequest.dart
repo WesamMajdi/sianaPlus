@@ -2,6 +2,7 @@ import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20maintenance%20request/mainteanceRequestDetalies.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model_request.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/orders/orders_entity.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
 
 import '../../../../features/client app/presentation/controller/states/order_state.dart';
 
@@ -48,6 +49,7 @@ class ItemsMaintenanceRequest extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(AppPadding.largePadding),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -57,13 +59,22 @@ class ItemsMaintenanceRequest extends StatelessWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
-                    CustomStyledText(
-                      text: 'اصلاح ${itemEntity.item!.name}',
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      textColor: AppColors.secondaryColor,
-                    ),
+                    IconButton(
+                      icon:
+                          const Icon(FontAwesomeIcons.xmark, color: Colors.red),
+                      onPressed: () {
+                        context
+                            .read<OrderCubit>()
+                            .deleteItem(itemsEntity: itemEntity);
+                      },
+                    )
                   ],
+                ),
+                CustomStyledText(
+                  text: 'اصلاح ${itemEntity.item!.name}',
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  textColor: AppColors.secondaryColor,
                 ),
                 AppSizedBox.kVSpace10,
                 Row(
@@ -99,6 +110,7 @@ class ItemsMaintenanceRequest extends StatelessWidget {
                 ),
                 AppSizedBox.kVSpace10,
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CustomStyledText(
                       text: truncateTextDescription(itemEntity.description!),

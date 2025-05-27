@@ -57,7 +57,27 @@ class _ReportProblemPageState extends State<ReportProblemPage> {
                 },
               ),
               AppSizedBox.kVSpace10,
-              BlocBuilder<ProfileCubit, ProfileState>(
+              BlocListener<ProfileCubit, ProfileState>(
+                  listener: (context, state) {
+                if (state.problemStatus == ProblemStatus.failure) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        backgroundColor: Colors.red,
+                        content: CustomStyledText(
+                            text: state.errorMessage ?? "حدث خطأ ما")),
+                  );
+                }
+                if (state.problemStatus == ProblemStatus.success) {
+                  context.read<ProfileCubit>().resetProblemStatus();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          const SuccessPage(message: "تمت العملية بنجاح"),
+                    ),
+                  );
+                }
+              }, child: BlocBuilder<ProfileCubit, ProfileState>(
                 builder: (context, state) {
                   if (state.problemStatus == ProblemStatus.loading) {
                     return CustomButton(
@@ -77,18 +97,11 @@ class _ReportProblemPageState extends State<ReportProblemPage> {
                         context
                             .read<ProfileCubit>()
                             .createProblem(problemController.text);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const SuccessPage(message: "تمت العملية بنجاح"),
-                          ),
-                        );
                       }
                     },
                   );
                 },
-              )
+              )),
             ],
           )),
     );

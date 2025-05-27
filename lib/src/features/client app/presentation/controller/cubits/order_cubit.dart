@@ -29,6 +29,38 @@ class OrderCubit extends Cubit<OrderState> {
     // orderItems=[];
   }
 
+  void deleteItem({required ItemsEntity itemsEntity}) async {
+    try {
+      // Start loading state
+      emit(state.copyWith(
+        itemOrdersStatus: ItemOrdersStatus.loading,
+      ));
+
+      // Create a new list without the deleted item
+      final newItems = List<ItemsEntity>.from(state.items)
+        ..removeWhere((item) => item.item == itemsEntity.item);
+
+      // Emit the updated state
+      emit(state.copyWith(
+        items: newItems,
+        itemOrdersStatus: ItemOrdersStatus.success,
+      ));
+
+      // Optional: Call API to delete from server
+      // await orderRepository.deleteItem(itemsEntity.id!);
+    } catch (e) {
+      // Handle errors
+      emit(state.copyWith(
+        itemOrdersStatus: ItemOrdersStatus.failure,
+      ));
+
+      // Revert to previous state on error
+      emit(state.copyWith(
+        itemOrdersStatus: ItemOrdersStatus.success,
+      ));
+    }
+  }
+
   Future<void> initOrdersRequirements() async {
     await Future.wait([
       fetchColorList(),

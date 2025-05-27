@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/successPage.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/showTopSnackBar.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/update_email_model.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/controller/cubit/auth_cubit.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/controller/state/auth_state.dart';
@@ -80,17 +81,14 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
                   ),
                   BlocListener<AuthCubit, AuthState>(
                     listener: (context, state) {
-                      if (state.status == AuthStatus.failure) {
+                      if (state.updateEmailStatus ==
+                          UpdateEmailStatus.failure) {
                         Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              backgroundColor: Colors.red,
-                              content: CustomStyledText(
-                                  text: state.errorMessage ??
-                                      'فشل تغيير البريد')),
-                        );
+                        showTopSnackBar(context,
+                            "فشل تسجيل دخول , يرجي اعادة المحاولة", Colors.red);
                       }
-                      if (state.status == AuthStatus.success) {
+                      if (state.updateEmailStatus ==
+                          UpdateEmailStatus.success) {
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
                             builder: (_) => const SuccessPage(
@@ -102,7 +100,8 @@ class _UpdateEmailScreenState extends State<UpdateEmailScreen> {
                     },
                     child: BlocBuilder<AuthCubit, AuthState>(
                       builder: (context, state) {
-                        if (state.status == AuthStatus.loading) {
+                        if (state.updateEmailStatus ==
+                            UpdateEmailStatus.loading) {
                           return CustomButton(
                             text: "",
                             onPressed: () {},

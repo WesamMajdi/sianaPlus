@@ -1,13 +1,15 @@
 class ApiSetting {
-  static String get baseUrl => 'http://ebrahim995-001-site3.ktempurl.com/api';
+  static String get baseUrl =>
+      'http://ebrahim1989-002-site2.anytempurl.com/api';
 
 // authentication
   static String get login => '$baseUrl/account/login';
   static String get signup => '$baseUrl/account/registerCustomer';
   static String get updatePassword => '$baseUrl/account/ChangePassword';
   static String get updateEmail => '$baseUrl/account/ChangeEmail';
-  static String get forgotPassword => '$baseUrl/account/ChangePassword';
-  static String get resetPassword => '$baseUrl/account/VerifyCode';
+  static String get forgotPassword => '$baseUrl/account/request-reset-code';
+  static String get resetPassword => '$baseUrl/account/update-password';
+  static String get verifyResetCode => '$baseUrl/account/verify-reset-code';
   static String get creatToken => '$baseUrl/account/CreateToken';
   static String get getMainCategory => '$baseUrl/Categories/GetMainCategories';
   static String get getSubCategory =>
@@ -64,6 +66,8 @@ class ApiSetting {
 
   static String get reOpenMaintenanceForHandReceiptItem =>
       "$baseUrl/Maintenances/ReOpenMaintenanceForHandReceiptItem";
+  static String get customerRefuseMaintenanceForHandReceiptItem =>
+      "$baseUrl/Maintenances/CustomerRefuseMaintenanceForHandReceiptItem";
   ///////////////////////////////////////////////////
   static String get getAllReturnHandReceiptItems =>
       '$baseUrl/Maintenances/GetAllReturnHandReceiptItems';
@@ -188,4 +192,13 @@ class ApiSetting {
       "$baseUrl/Convert/GetAllForDeliveryOutSide";
   static String get updateOrderMaintenanceOutSide =>
       "$baseUrl/Convert/UpdateOrderMaintenanceOutSide";
+  static String get setMaintenancePrice =>
+      '$baseUrl/Convert/SetMaintenancePrice';
+  static String get sendVerificationCode =>
+      "$baseUrl/account/verifyCustomerCode";
+
+  static String get getAllConvertFromBranch =>
+      "$baseUrl/Maintenances/GetAllConvertFromBranch";
+
+  static String get getHomePage => "$baseUrl/Pages/GetHomePage";
 }

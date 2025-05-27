@@ -5,7 +5,6 @@ class SignupModel {
   final String password;
   final String confirmPassword;
   final String phoneNumber;
-
   final String countryCode;
 
   SignupModel({
@@ -26,5 +25,33 @@ class SignupModel {
       "phoneNumber": phoneNumber,
       "countryCode": countryCode,
     };
+  }
+
+  factory SignupModel.fromJson(Map<String, dynamic> json) {
+    return SignupModel(
+      fullName: json['fullName'] ?? '',
+      email: json['email'] ?? '',
+      password: json['password'] ?? '',
+      confirmPassword: json['confirmPassword'] ?? '',
+      phoneNumber: json['phoneNumber'] ?? '',
+      countryCode: json['countryCode'] ?? '',
+    );
+  }
+}
+
+class SignupResponseData {
+  final SignupModel user;
+  final String code;
+
+  SignupResponseData({
+    required this.user,
+    required this.code,
+  });
+
+  factory SignupResponseData.fromJson(Map<String, dynamic> json) {
+    return SignupResponseData(
+      user: SignupModel.fromJson(json['user']),
+      code: json['code'] ?? '',
+    );
   }
 }

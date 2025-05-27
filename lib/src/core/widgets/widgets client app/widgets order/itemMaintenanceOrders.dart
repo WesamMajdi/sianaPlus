@@ -2,6 +2,7 @@ import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/orders/orders_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/orders_maintenance/details_orders_screen.dart';
+import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/receive_order_maintenance_entity.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/hand_receip_maintenance_parts/hand_receipt_model.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/online_maintenance_parts/online_maintenance_parts.dart';
 
@@ -78,16 +79,20 @@ class MaintenanceOrders extends StatelessWidget {
                                 ),
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: getColorStatusOnline(
-                                        orderEntity.orderMaintenanceStatus!),
+                                    color:
+                                        getColorOrderStatusDeliveryMaintenance(
+                                            orderEntity
+                                                .orderMaintenanceStatus!),
                                     borderRadius: BorderRadius.circular(25),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 2, horizontal: 10),
                                     child: CustomStyledText(
-                                      text: getTextStatusOnline(
-                                          orderEntity.orderMaintenanceStatus!),
+                                      text:
+                                          getTextOrderStatusDeliveryMaintenance(
+                                              orderEntity
+                                                  .orderMaintenanceStatus!),
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                     ),

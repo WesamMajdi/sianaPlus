@@ -7,6 +7,7 @@ class ReceiptItemConvertModel {
   final String? convertToBranchName;
   final String itemBarcode;
   final String? address;
+  final double? maintenancePrice;
   final int receiptItemConvertStatus;
 
   ReceiptItemConvertModel({
@@ -18,9 +19,9 @@ class ReceiptItemConvertModel {
     required this.convertToBranchName,
     required this.itemBarcode,
     this.address,
+    this.maintenancePrice,
     required this.receiptItemConvertStatus,
   });
-
   factory ReceiptItemConvertModel.fromJson(Map<String, dynamic> json) {
     return ReceiptItemConvertModel(
       id: json['id'] as int,
@@ -32,6 +33,9 @@ class ReceiptItemConvertModel {
       itemBarcode: json['itemBarcode'] as String,
       address: json['address'] as String?,
       receiptItemConvertStatus: json['receiptItemConvertStatus'] as int,
+      maintenancePrice: json['maintenancePrice'] != null
+          ? (json['maintenancePrice'] as num).toDouble()
+          : null,
     );
   }
 
@@ -46,6 +50,7 @@ class ReceiptItemConvertModel {
       'itemBarcode': itemBarcode,
       'address': address,
       'receiptItemConvertStatus': receiptItemConvertStatus,
+      'maintenancePrice': maintenancePrice
     };
   }
 }

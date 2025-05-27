@@ -51,6 +51,23 @@ class HandReceiptRepositoryImpl implements HandReceiptRepository {
 
   @override
   Future<Either<Failure, Map<String, dynamic>>>
+      customerRefuseMaintenanceForHandReceiptItem(
+    int receiptItemId,
+    String reasonForRefusingMaintenance,
+  ) async {
+    try {
+      final response =
+          await remoteDataSource.customerRefuseMaintenanceForHandReceiptItem(
+              receiptItemId: receiptItemId,
+              reasonForRefusingMaintenance: reasonForRefusingMaintenance);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>>
       enterMaintenanceCostForHandReceiptItem({
     required int receiptItemId,
     required double costNotifiedToTheCustomer,
@@ -101,6 +118,19 @@ class HandReceiptRepositoryImpl implements HandReceiptRepository {
   Future<Either<Failure, HandReceiptEntity>> getHandReceiptItem(int id) async {
     try {
       final response = await remoteDataSource.getHandReceiptItem(id);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PaginatedResponse<HandReceiptEntity>>>
+      getAllConvertFromBranch(PaginationParams paginationParams,
+          String? searchQuery, String? barcode) async {
+    try {
+      final response = await remoteDataSource.getAllConvertFromBranch(
+          paginationParams, searchQuery, barcode);
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));

@@ -15,9 +15,7 @@ abstract class DeliveryMaintenanceRepository {
   );
   Future<Either<Failure, List<Branch>>> getBranches();
   Future<Either<Failure, PaginatedResponse<ReceiveMaintenanceOrderEntity>>>
-      getAllTakeDelivery(
-    PaginationParams paginationParams,
-  );
+      getAllTakeDelivery(PaginationParams paginationParams);
 
   Future<Either<Failure, PaginatedResponse<ReceiveMaintenanceOrderEntity>>>
       getAllTakePerviousOrder(
@@ -46,12 +44,10 @@ abstract class DeliveryMaintenanceRepository {
 
   Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
       getAllForAllDeliveryConvert(
-    PaginationParams paginationParams,
-  );
+          PaginationParams paginationParams, String barcode);
   Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
       getAllTakeDeliveryConvert(
-    PaginationParams paginationParams,
-  );
+          PaginationParams paginationParams, String barcode);
   Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
       getAllForDeliveryConvert(
     PaginationParams paginationParams,
@@ -63,12 +59,10 @@ abstract class DeliveryMaintenanceRepository {
 
   Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
       getAllForAllDeliveryOutSide(
-    PaginationParams paginationParams,
-  );
+          PaginationParams paginationParams, String barcode);
   Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
       getAllTakeDeliveryOutSide(
-    PaginationParams paginationParams,
-  );
+          PaginationParams paginationParams, String barcode);
   Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
       getAllForDeliveryOutSide(
     PaginationParams paginationParams,
@@ -77,4 +71,9 @@ abstract class DeliveryMaintenanceRepository {
       int orderMaintenancId);
   Future<Either<Failure, Map<String, dynamic>>> updateOrderMaintenanceOutSide(
       int orderMaintenancId, int? status);
+
+  Future<Either<Failure, Map<String, dynamic>>> setMaintenancePrice({
+    required int convertHandReceiptItemId,
+    required double maintenancePrice,
+  });
 }

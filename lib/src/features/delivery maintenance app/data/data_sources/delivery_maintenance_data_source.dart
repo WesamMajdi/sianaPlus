@@ -68,8 +68,7 @@ class DeliveryMaintenanceRemoteDataSource {
   }
 
   Future<PaginatedResponse<ReceiveMaintenanceOrderModel>> getAllTakeDelivery(
-    PaginationParams paginationParams,
-  ) async {
+      PaginationParams paginationParams) async {
     String? token = await TokenManager.getToken();
     if (await internetConnectionChecker.hasConnection) {
       try {
@@ -336,8 +335,7 @@ class DeliveryMaintenanceRemoteDataSource {
   }
 
   Future<PaginatedResponse<HandReceiptModel>> getAllForAllDeliveryTransfer(
-    PaginationParams paginationParams,
-  ) async {
+      PaginationParams paginationParams) async {
     String? token = await TokenManager.getToken();
     if (await internetConnectionChecker.hasConnection) {
       try {
@@ -504,14 +502,13 @@ class DeliveryMaintenanceRemoteDataSource {
 
   Future<PaginatedResponse<ReceiptItemConvertModel>>
       getAllForAllDeliveryConvert(
-    PaginationParams paginationParams,
-  ) async {
+          PaginationParams paginationParams, String barcode) async {
     String? token = await TokenManager.getToken();
     if (await internetConnectionChecker.hasConnection) {
       try {
         final response = await apiController.get(
           Uri.parse(
-              '${ApiSetting.getAllForAllDeliveryConvert}?page=${paginationParams.page}&perPage=${paginationParams.perPage}'),
+              '${ApiSetting.getAllForAllDeliveryConvert}?page=${paginationParams.page}&perPage=${paginationParams.perPage}&barcode=$barcode'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token'
@@ -547,14 +544,13 @@ class DeliveryMaintenanceRemoteDataSource {
   }
 
   Future<PaginatedResponse<ReceiptItemConvertModel>> getAllTakeDeliveryConvert(
-    PaginationParams paginationParams,
-  ) async {
+      PaginationParams paginationParams, String barcode) async {
     String? token = await TokenManager.getToken();
     if (await internetConnectionChecker.hasConnection) {
       try {
         final response = await apiController.get(
           Uri.parse(
-              '${ApiSetting.getAllTakeDeliveryConvert}?page=${paginationParams.page}&perPage=${paginationParams.perPage}'),
+              '${ApiSetting.getAllTakeDeliveryConvert}?page=${paginationParams.page}&perPage=${paginationParams.perPage}&barcode=$barcode'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token'
@@ -590,9 +586,46 @@ class DeliveryMaintenanceRemoteDataSource {
     }
   }
 
+  Future<Map<String, dynamic>> setMaintenancePrice({
+    required int convertHandReceiptItemId,
+    required double maintenancePrice,
+  }) async {
+    String? token = await TokenManager.getToken();
+    if (token == null) {
+      throw Exception('Authorization token is missing or expired');
+    }
+
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.post(
+          Uri.parse(
+              "${ApiSetting.setMaintenancePrice}?convertHandReceiptItemId=$convertHandReceiptItemId&maintenancePrice=$maintenancePrice"),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+
+        print(response.body);
+        print(response.statusCode);
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+        return responseBody;
+      } on TimeoutException catch (_) {
+        throw TimeoutException('Request timed out');
+      } catch (e) {
+        throw Exception('Unexpected error occurred: $e');
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
   Future<PaginatedResponse<ReceiptItemConvertModel>> getAllForDeliveryConvert(
-    PaginationParams paginationParams,
-  ) async {
+      PaginationParams paginationParams) async {
     String? token = await TokenManager.getToken();
     if (await internetConnectionChecker.hasConnection) {
       try {
@@ -696,14 +729,13 @@ class DeliveryMaintenanceRemoteDataSource {
 
   Future<PaginatedResponse<ReceiptItemConvertModel>>
       getAllForAllDeliveryOutSide(
-    PaginationParams paginationParams,
-  ) async {
+          PaginationParams paginationParams, String barcode) async {
     String? token = await TokenManager.getToken();
     if (await internetConnectionChecker.hasConnection) {
       try {
         final response = await apiController.get(
           Uri.parse(
-              '${ApiSetting.getAllForAllDeliveryOutSide}?page=${paginationParams.page}&perPage=${paginationParams.perPage}'),
+              '${ApiSetting.getAllForAllDeliveryOutSide}?page=${paginationParams.page}&perPage=${paginationParams.perPage}&barcode=$barcode'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token'
@@ -739,14 +771,13 @@ class DeliveryMaintenanceRemoteDataSource {
   }
 
   Future<PaginatedResponse<ReceiptItemConvertModel>> getAllTakeDeliveryOutSide(
-    PaginationParams paginationParams,
-  ) async {
+      PaginationParams paginationParams, String barcode) async {
     String? token = await TokenManager.getToken();
     if (await internetConnectionChecker.hasConnection) {
       try {
         final response = await apiController.get(
           Uri.parse(
-              '${ApiSetting.getAllTakeDeliveryOutSide}?page=${paginationParams.page}&perPage=${paginationParams.perPage}'),
+              '${ApiSetting.getAllTakeDeliveryOutSide}?page=${paginationParams.page}&perPage=${paginationParams.perPage}&barcode=$barcode'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token'
@@ -783,8 +814,7 @@ class DeliveryMaintenanceRemoteDataSource {
   }
 
   Future<PaginatedResponse<ReceiptItemConvertModel>> getAllForDeliveryOutSide(
-    PaginationParams paginationParams,
-  ) async {
+      PaginationParams paginationParams) async {
     String? token = await TokenManager.getToken();
     if (await internetConnectionChecker.hasConnection) {
       try {

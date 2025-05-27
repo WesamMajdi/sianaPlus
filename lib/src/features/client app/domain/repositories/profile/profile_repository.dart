@@ -1,5 +1,7 @@
 // profile_repository.dart
 import 'package:dartz/dartz.dart';
+import 'package:maintenance_app/src/core/pagination/paginated_response.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/profile/slider_model.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/profile/profile_entity.dart';
 
 import '../../../../../core/error/failure.dart';
@@ -8,4 +10,5 @@ abstract class ProfileRepository {
   Future<Either<Failure, ProfileEntity>> getUserProfile();
   Future<Either<Failure, void>> createProblem(String text);
   Future<Either<Failure, void>> changeName(String fullName);
+  Future<Either<Failure, PaginatedResponse<ImageModel>>> getAllImageInHome();
 }

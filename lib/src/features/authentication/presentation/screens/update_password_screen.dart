@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/successPage.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/showTopSnackBar.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/update_password_model.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/controller/cubit/auth_cubit.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/controller/state/auth_state.dart';
@@ -29,7 +30,7 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
       ),
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
-          if (state.status == AuthStatus.success) {
+          if (state.updatePasswordStatus == UpdatePasswordStatus.success) {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (_) => const SuccessPage(
@@ -37,14 +38,10 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
                 ),
               ),
             );
-          } else if (state.status == AuthStatus.failure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: CustomStyledText(
-                    text: state.errorMessage ?? "حدث خطأ غير متوقع"),
-                backgroundColor: Colors.red,
-              ),
-            );
+          } else if (state.updatePasswordStatus ==
+              UpdatePasswordStatus.failure) {
+            showTopSnackBar(
+                context, "فشل تسجيل دخول , يرجي اعادة المحاولة", Colors.red);
           }
         },
         builder: (context, state) {
@@ -72,12 +69,12 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      margin: EdgeInsets.only(right: 10),
+                      margin: const EdgeInsets.only(right: 10),
                       child: const CustomStyledText(
                         text: 'هل تريد تغيير كلمة المرور الخاصة بك؟',
                         fontSize: 17,
                         fontWeight: FontWeight.w900,
-                        textColor: AppColors.primaryColor,
+                        textColor: AppColors.secondaryColor,
                       ),
                     ),
                     AppSizedBox.kVSpace20,
@@ -96,7 +93,7 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
                       icon: CupertinoIcons.lock_shield_fill,
                     ),
                     AppSizedBox.kVSpace20,
-                    state.status == AuthStatus.loading
+                    state.updatePasswordStatus == UpdatePasswordStatus.loading
                         ? CustomButton(
                             text: "",
                             onPressed: () {},

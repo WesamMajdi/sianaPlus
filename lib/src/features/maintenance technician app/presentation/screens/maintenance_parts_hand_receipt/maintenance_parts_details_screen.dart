@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/services.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customInputDialog.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customSureDialog.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/showTopSnackBar.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/hand_receip_maintenance_parts/hand_receipt_model.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/hand_receipt_maintenance_parts/maintenance_parts_cubit.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/maintenance_parts_hand_receipt/maintenance_parts_screen.dart';
@@ -79,17 +81,45 @@ class _MaintenancePartsDetailsPageState
                             buildTableRow('اسم العميل',
                                 handReceiptItem?.customer?.name ?? "غير متوفر"),
                             buildTableRow(
-                                'رقم العميل',
-                                handReceiptItem?.customer?.phoneNumber ??
-                                    "غير متوفر"),
+                              'رقم العميل',
+                              InkWell(
+                                onLongPress: () {
+                                  String phoneNumber =
+                                      handReceiptItem?.customer?.phoneNumber ??
+                                          "";
+                                  if (phoneNumber.isNotEmpty &&
+                                      phoneNumber != "غير متوفر") {
+                                    Clipboard.setData(
+                                        ClipboardData(text: phoneNumber));
+                                    showTopSnackBar(
+                                        context,
+                                        'تم نسخ رقم العميل',
+                                        Colors.green.shade800);
+                                  }
+                                },
+                                child: CustomStyledText(
+                                  text:
+                                      handReceiptItem?.customer?.phoneNumber ??
+                                          "",
+                                ),
+                              ),
+                            ),
                             buildTableRow('اسم القطعة',
                                 handReceiptItem?.item ?? "غير متوفر"),
+                            buildTableRow(
+                                'الباركود',
+                                handReceiptItem?.itemBarcode?.toString() ??
+                                    "غير متوفر"),
                             buildTableRow('الشركة',
                                 handReceiptItem?.company ?? "غير متوفر"),
                             buildTableRow(
                                 'اللون', handReceiptItem?.color ?? "غير متوفر"),
                             buildTableRow('الوصف',
                                 handReceiptItem?.description ?? "غير متوفر"),
+                            buildTableRow(
+                                'السعر',
+                                handReceiptItem?.specifiedCost?.toString() ??
+                                    "غير متوفر"),
                             buildTableRow(
                                 'عدد أيام الضمان',
                                 handReceiptItem?.warrantyDaysNumber
@@ -817,18 +847,50 @@ class _MaintenancePartsDetailsPageState
               showDialog(
                 context: context,
                 builder: (BuildContext context) {
+                  final TextEditingController
+                      reasonForRefusingMaintenanceController =
+                      TextEditingController();
                   return CustomInputDialog(
                     titleDialog: 'رفض العميل',
                     text: 'سبب رفض العميل للصيانة:',
                     hintText: 'ادخل سبب رفض العميل للصيانة',
-                    // controller: ,
+                    controller: reasonForRefusingMaintenanceController,
                     validators: (value) {
                       if (value == null || value.isEmpty) {
                         return 'عفوا.سبب مطلوب';
                       }
                       return null;
                     },
-                    onConfirm: () {},
+                    onConfirm: () async {
+                      final cubit = context.read<HandReceiptCubit>();
+                      try {
+                        await cubit.customerRefuseMaintenanceForHandReceiptItem(
+                            receiptItemId: widget.partId,
+                            reasonForRefusingMaintenance:
+                                reasonForRefusingMaintenanceController.text);
+                        Navigator.pushReplacement(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MaintenancePartsDetailsPage(
+                                partId: widget.partId),
+                          ),
+                        );
+                        Navigator.push(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MaintenancePartsPage(),
+                          ),
+                        );
+                      } catch (e) {
+                        // ignore: use_build_context_synchronously
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Failed to update status: $e')),
+                        );
+                      }
+                    },
                   );
                 },
               );

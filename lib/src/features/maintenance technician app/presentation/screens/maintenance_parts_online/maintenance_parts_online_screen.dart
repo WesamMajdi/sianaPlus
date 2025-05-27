@@ -242,8 +242,9 @@ class _MaintenancePartsOnlinePageState
                   items: state.receiptsOnline[index],
                 );
               } else {
-                return const Center(
-                  child: CircularProgressIndicator(),
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Center(child: CircularProgressIndicator()),
                 );
               }
             },

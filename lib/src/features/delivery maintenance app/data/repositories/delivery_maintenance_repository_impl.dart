@@ -152,10 +152,11 @@ class DeliveryMaintenanceRepositoryImpl
 
   @override
   Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
-      getAllForAllDeliveryConvert(PaginationParams paginationParams) async {
+      getAllForAllDeliveryConvert(
+          PaginationParams paginationParams, String barcode) async {
     try {
-      final response =
-          await remoteDataSource.getAllForAllDeliveryConvert(paginationParams);
+      final response = await remoteDataSource.getAllForAllDeliveryConvert(
+          paginationParams, barcode);
 
       return Right(response);
     } catch (e) {
@@ -165,10 +166,11 @@ class DeliveryMaintenanceRepositoryImpl
 
   @override
   Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
-      getAllTakeDeliveryConvert(PaginationParams paginationParams) async {
+      getAllTakeDeliveryConvert(
+          PaginationParams paginationParams, String barcode) async {
     try {
-      final response =
-          await remoteDataSource.getAllTakeDeliveryConvert(paginationParams);
+      final response = await remoteDataSource.getAllTakeDeliveryConvert(
+          paginationParams, barcode);
 
       return Right(response);
     } catch (e) {
@@ -215,10 +217,11 @@ class DeliveryMaintenanceRepositoryImpl
 
   @override
   Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
-      getAllForAllDeliveryOutSide(PaginationParams paginationParams) async {
+      getAllForAllDeliveryOutSide(
+          PaginationParams paginationParams, String barcode) async {
     try {
-      final response =
-          await remoteDataSource.getAllForAllDeliveryOutSide(paginationParams);
+      final response = await remoteDataSource.getAllForAllDeliveryOutSide(
+          paginationParams, barcode);
 
       return Right(response);
     } catch (e) {
@@ -228,10 +231,11 @@ class DeliveryMaintenanceRepositoryImpl
 
   @override
   Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
-      getAllTakeDeliveryOutSide(PaginationParams paginationParams) async {
+      getAllTakeDeliveryOutSide(
+          PaginationParams paginationParams, String barcode) async {
     try {
-      final response =
-          await remoteDataSource.getAllTakeDeliveryOutSide(paginationParams);
+      final response = await remoteDataSource.getAllTakeDeliveryOutSide(
+          paginationParams, barcode);
 
       return Right(response);
     } catch (e) {
@@ -270,6 +274,22 @@ class DeliveryMaintenanceRepositoryImpl
     try {
       final response = await remoteDataSource.updateOrderMaintenanceOutSide(
           orderMaintenancId, status);
+      return Right(response);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> setMaintenancePrice({
+    required int convertHandReceiptItemId,
+    required double maintenancePrice,
+  }) async {
+    try {
+      final response = await remoteDataSource.setMaintenancePrice(
+        convertHandReceiptItemId: convertHandReceiptItemId,
+        maintenancePrice: maintenancePrice,
+      );
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));

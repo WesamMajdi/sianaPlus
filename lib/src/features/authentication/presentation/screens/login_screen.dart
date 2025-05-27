@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/showTopSnackBar.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/login_model.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/controller/cubit/auth_cubit.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/controller/state/auth_state.dart';
@@ -109,7 +110,15 @@ class _LoginScreenState extends State<LoginScreen> {
             AppSizedBox.kVSpace10,
             BlocListener<AuthCubit, AuthState>(
               listener: (context, state) {
-                if (state.status == AuthStatus.success) {
+                if (state.loginStatus == LoginStatus.success) {
+                  if (state.user!.token.isEmpty || state.user!.role.isEmpty) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                    );
+                  }
                   if (state.user!.role == 'MaintenanceTechnician') {
                     Navigator.pushReplacement(
                       context,
@@ -143,21 +152,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const HomePage(),
+                        builder: (context) => const LoginScreen(),
                       ),
                     );
                   }
-                } else if (state.status == AuthStatus.failure) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: CustomStyledText(
-                        text: "فشل تسجيل دخول, يرجي اعادة المحاولة",
-                      ),
-                      backgroundColor: Colors.red));
+                } else if (state.loginStatus == LoginStatus.failure) {
+                  showTopSnackBar(context,
+                      "فشل تسجيل دخول , يرجي اعادة المحاولة", Colors.red);
                 }
               },
               child: BlocBuilder<AuthCubit, AuthState>(
                 builder: (context, state) {
-                  if (state.status == AuthStatus.loading) {
+                  if (state.loginStatus == LoginStatus.loading) {
                     return CustomButton(
                       text: "",
                       onPressed: () {},

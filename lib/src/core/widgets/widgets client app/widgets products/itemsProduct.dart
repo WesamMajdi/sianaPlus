@@ -137,13 +137,14 @@ class _ItemsProductState extends State<ItemsProduct> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      child: CustomStyledText(
-                        text: truncateTextDescription(
-                            widget.products[index].details!),
-                        fontSize: 12,
-                        textColor: Colors.grey,
+                    Flexible(
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        child: CustomStyledText(
+                          text: widget.products[index].details.toString(),
+                          fontSize: 12,
+                          textColor: Colors.grey,
+                        ),
                       ),
                     ),
                     Padding(
@@ -154,22 +155,21 @@ class _ItemsProductState extends State<ItemsProduct> {
                         children: [
                           widget.products[index].discount! > 0
                               ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    // CustomStyledText(
-                                    //   text:"\$${widget.products[index].originalPrice}",
-                                    //   fontWeight: FontWeight.bold,
-                                    //   fontSize: 22,
-                                    // ),
-                                    Text(
-                                      "\$${widget.products[index].originalPrice}",
-                                      style: const TextStyle(
-                                          fontSize: 15,
-                                          // fontWeight: FontWeight.bold,
-                                          decoration:
-                                              TextDecoration.lineThrough),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "${widget.products[index].originalPrice}",
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              // fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                              decoration:
+                                                  TextDecoration.lineThrough),
+                                        ),
+                                        AppSizedBox.kWSpace10,
+                                      ],
                                     ),
                                     Row(
                                       children: [
@@ -177,13 +177,12 @@ class _ItemsProductState extends State<ItemsProduct> {
                                           text:
                                               "${widget.products[index].price}",
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 22,
+                                          fontSize: 18,
                                         ),
                                         AppSizedBox.kWSpace10,
                                         Image.asset(
                                           "assets/images/logoRiyal.png",
-                                          width: 25,
-                                          color: AppColors.primaryColor,
+                                          width: 20,
                                         )
                                       ],
                                     )

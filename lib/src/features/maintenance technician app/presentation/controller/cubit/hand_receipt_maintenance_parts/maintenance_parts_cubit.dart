@@ -203,4 +203,74 @@ class HandReceiptCubit extends Cubit<HandReceiptState> {
           errorMessage: 'Unexpected error occurred: $e'));
     }
   }
+
+  Future<void> customerRefuseMaintenanceForHandReceiptItem(
+      {required int receiptItemId,
+      required String reasonForRefusingMaintenance}) async {
+    emit(state.copyWith(handReceiptStatus: HandReceiptStatus.loading));
+    try {
+      final result =
+          await handReceiptUseCase.customerRefuseMaintenanceForHandReceiptItem(
+              receiptItemId, reasonForRefusingMaintenance);
+      result.fold(
+        (failure) => emit(state.copyWith(
+            handReceiptStatus: HandReceiptStatus.failure,
+            errorMessage: failure.message)),
+        (response) => emit(state.copyWith(
+          handReceiptStatus: HandReceiptStatus.success,
+          successMessage: 'Maintenance suspended successfully',
+        )),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+          handReceiptStatus: HandReceiptStatus.failure,
+          errorMessage: 'Unexpected error occurred: $e'));
+    }
+  }
+
+  Future<void> fetchConvertFromBranch({
+    bool refresh = false,
+    String searchQuery = '',
+    String barcode = '',
+  }) async {
+    emit(state.copyWith(
+        convertFromBranchStatus: ConvertFromBranchStatus.loading));
+
+    try {
+      final page = refresh ? 1 : (state.pageTransferre + 1);
+
+      final result = await handReceiptUseCase.getAllConvertFromBranch(
+        PaginationParams(
+          page: page,
+          perPage: 10,
+        ),
+        searchQuery,
+        barcode,
+      );
+
+      result.fold(
+        (failure) => emit(state.copyWith(
+          convertFromBranchStatus: ConvertFromBranchStatus.failure,
+          errorMessage: failure.message,
+        )),
+        (convertFromBranch) {
+          final updatedList = refresh
+              ? convertFromBranch.items
+              : [...state.listconvertFromBranch, ...convertFromBranch.items];
+
+          emit(state.copyWith(
+            convertFromBranchStatus: ConvertFromBranchStatus.success,
+            listconvertFromBranch: updatedList,
+            pageTransferre: page,
+            hasReachedMaxTransferre: convertFromBranch.items.length < 10,
+          ));
+        },
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        convertFromBranchStatus: ConvertFromBranchStatus.failure,
+        errorMessage: 'Unexpected error: $e',
+      ));
+    }
+  }
 }

@@ -200,6 +200,31 @@ class ReturnHandReceiptCubit extends Cubit<ReturnHandReceiptState> {
     }
   }
 
+  Future<void> customerRefuseMaintenanceForHandReceiptItem(
+      {required int receiptItemId,
+      required String reasonForRefusingMaintenance}) async {
+    emit(state.copyWith(
+        returnHandReceiptStatus: ReturnHandReceiptStatus.loading));
+    try {
+      final result = await returnHandReceiptUseCase
+          .customerRefuseMaintenanceForReturnHandReceiptItem(
+              receiptItemId, reasonForRefusingMaintenance);
+      result.fold(
+        (failure) => emit(state.copyWith(
+            returnHandReceiptStatus: ReturnHandReceiptStatus.failure,
+            errorMessage: failure.message)),
+        (response) => emit(state.copyWith(
+          returnHandReceiptStatus: ReturnHandReceiptStatus.success,
+          successMessage: 'Maintenance suspended successfully',
+        )),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+          returnHandReceiptStatus: ReturnHandReceiptStatus.failure,
+          errorMessage: 'Unexpected error occurred: $e'));
+    }
+  }
+
   Future<void> reopenMaintenanceForReturnHandReceiptItem({
     required int receiptItemId,
   }) async {

@@ -5,7 +5,10 @@ import '../states/profile_state.dart';
 class ProfileCubit extends Cubit<ProfileState> {
   final FetchProfileUseCase profileUseCase;
 
-  ProfileCubit(this.profileUseCase) : super(ProfileState());
+  ProfileCubit(this.profileUseCase) : super(const ProfileState());
+  void reset() {
+    emit(ProfileState.initial());
+  }
 
   Future<void> getUserProfile() async {
     emit(state.copyWith(profileStatus: ProfileStatus.loading));
@@ -45,6 +48,10 @@ class ProfileCubit extends Cubit<ProfileState> {
     );
   }
 
+  void resetProblemStatus() {
+    emit(state.copyWith(problemStatus: ProblemStatus.initial));
+  }
+
   Future<void> changeName(String fullName) async {
     emit(state.copyWith(changeNameStatus: ChangeNameStatus.loading));
 
@@ -60,5 +67,35 @@ class ProfileCubit extends Cubit<ProfileState> {
         name: fullName,
       )),
     );
+  }
+
+  Future<void> fetchHomeImage({
+    bool refresh = false,
+    String searchQuery = '',
+    String barcode = '',
+  }) async {
+    emit(state.copyWith(homePageStatus: HomePageStatus.loading));
+
+    try {
+      final result = await profileUseCase.getAllImageInHome();
+
+      result.fold(
+        (failure) => emit(state.copyWith(
+          homePageStatus: HomePageStatus.failure,
+          errorMessage: failure.message,
+        )),
+        (imageList) {
+          emit(state.copyWith(
+            homePageStatus: HomePageStatus.success,
+            imageList: imageList.items,
+          ));
+        },
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        homePageStatus: HomePageStatus.failure,
+        errorMessage: 'Unexpected error: $e',
+      ));
+    }
   }
 }

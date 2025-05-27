@@ -62,7 +62,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     ),
                   ),
                 ),
-                // ),
               ),
             ),
           ),
@@ -84,74 +83,81 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     ],
                   ),
                 ),
+
+                // Padding(
+                //   padding: const EdgeInsets.only(top: 5, bottom: 10),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       Row(
+                //         children: [
+                //           InkWell(
+                //             onTap: () => {
+                //               print(widget.product.id),
+                //               context.read<CategoryCubit>().increaseQuantity(
+                //                   widget.product.id.toString()),
+                //             },
+                //             child: Container(
+                //               padding: const EdgeInsets.all(5),
+                //               decoration: BoxDecoration(
+                //                 color: Colors.grey.withOpacity(0.2),
+                //                 borderRadius: BorderRadius.circular(20),
+                //               ),
+                //               child: const Icon(
+                //                 color: AppColors.secondaryColor,
+                //                 CupertinoIcons.plus,
+                //                 size: 20,
+                //               ),
+                //             ),
+                //           ),
+                //           BlocBuilder<CategoryCubit, CategoryState>(
+                //             builder: (context, state) => Container(
+                //               margin:
+                //                   const EdgeInsets.symmetric(horizontal: 10),
+                //               child: CustomStyledText(
+                //                 text: "${widget.product.userCount}",
+                //                 fontWeight: FontWeight.bold,
+                //                 fontSize: 20,
+                //                 textColor: AppColors.secondaryColor,
+                //               ),
+                //             ),
+                //           ),
+                //           InkWell(
+                //             onTap: () => {
+                //               print(widget.product.id),
+                //               context.read<CategoryCubit>().decreaseQuantity(
+                //                   widget.product.id.toString()),
+                //             },
+                //             child: Container(
+                //               padding: const EdgeInsets.all(5),
+                //               decoration: BoxDecoration(
+                //                 color: Colors.grey.withOpacity(0.2),
+                //                 borderRadius: BorderRadius.circular(20),
+                //               ),
+                //               child: const Icon(
+                //                 color: AppColors.secondaryColor,
+                //                 CupertinoIcons.minus,
+                //                 size: 20,
+                //               ),
+                //             ),
+                //           ),
+                //         ],
+                //       )
+                //     ],
+                //   ),
+                // ),
+
                 Padding(
-                  padding: const EdgeInsets.only(top: 5, bottom: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          InkWell(
-                            onTap: () => context
-                                .read<CategoryCubit>()
-                                .increaseQuantity(widget.product.id.toString()),
-                            child: Container(
-                              padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: const Icon(
-                                color: AppColors.secondaryColor,
-                                CupertinoIcons.plus,
-                                size: 20,
-                              ),
-                            ),
-                          ),
-                          BlocBuilder<CategoryCubit, CategoryState>(
-                            builder: (context, state) => Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              child: CustomStyledText(
-                                text: "${widget.product.userCount}",
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                textColor: AppColors.secondaryColor,
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () => context
-                                .read<CategoryCubit>()
-                                .decreaseQuantity(widget.product.id.toString()),
-                            child: Container(
-                              padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: const Icon(
-                                color: AppColors.secondaryColor,
-                                CupertinoIcons.minus,
-                                size: 20,
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: CustomStyledText(
+                      text: widget.product.details!,
+                      textColor: Colors.grey,
+                      fontSize: 16,
+                      fontFamily: "Tajawal",
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Text(
-                      textAlign: TextAlign.justify,
-                      widget.product.details!,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 17,
-                        fontFamily: "Tajawal",
-                      )),
                 ),
                 if (widget.product.productColors!.isNotEmpty) ...[
                   const Padding(

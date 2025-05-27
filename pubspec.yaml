@@ -52,6 +52,7 @@ dependencies:
   webview_flutter: ^4.10.0
   xml: ^6.5.0
   mobile_scanner: ^6.0.7
+  shimmer: ^3.0.0
   # flutter_barcode_scanner: ^2.0.0 
 
 dev_dependencies:
@@ -68,7 +69,7 @@ flutter:
     - assets/images/
 #    - assets/icons/
     - assets/animations/
-    - assets/brands/
+
   fonts:
     - family: Almarai
       fonts:

@@ -3,15 +3,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:maintenance_app/src/core/constants/constants.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/customStyledText.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/hand_receip_maintenance_parts/hand_receipt_model.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/data/model/recovered_maintenance_parts/recovered_maintenance_parts_model.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/entities/recovered_maintenance_parts/recovered_maintenance_parts_entity.dart';
-import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/recovered_maintenance_parts/recovered_maintenance_parts_details_page.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/domain/entities/hand_receipt_maintenance_parts/hand_receipt_maintenance_parts_entitie.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/maintenance_parts_hand_receipt/maintenance_parts_details_screen.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/maintenance_parts_hand_receipt/maintenance_parts_screen.dart';
+import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/transferred_maintenance_parts/transferred_maintenance_parts_details_screen.dart';
 
-class ItemsRecoveredMaintenancePart extends StatelessWidget {
-  final ReturnHandReceiptEntity part;
-  const ItemsRecoveredMaintenancePart({
+class ItemsTransferredMaintenancePart extends StatelessWidget {
+  final HandReceiptEntity items;
+  const ItemsTransferredMaintenancePart({
     super.key,
-    required this.part,
+    required this.items,
   });
 
   @override
@@ -21,8 +22,9 @@ class ItemsRecoveredMaintenancePart extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                RecoveredMaintenancePartsDetailsPage(partId: part.id!),
+            builder: (context) => TransferredMaintenancePartsDetailsPage(
+              partId: items.id!,
+            ),
           ),
         );
       },
@@ -51,23 +53,21 @@ class ItemsRecoveredMaintenancePart extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       CustomStyledText(
-                        text: part.customer?.name ?? "اسم غير معروف",
+                        text: items.item ?? 'غير معروف',
                         fontSize: 18,
                         textColor: AppColors.secondaryColor,
                         fontWeight: FontWeight.bold,
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: getColorConverter(
-                              part.maintenanceRequestStatus ?? 0),
+                          color: getColor(items.maintenanceRequestStatus ?? 0),
                           borderRadius: BorderRadius.circular(25),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 2, horizontal: 10),
                           child: CustomStyledText(
-                            text: getTextConverter(
-                                part.maintenanceRequestStatus ?? 0),
+                            text: getText(items.maintenanceRequestStatus ?? 0),
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -82,13 +82,13 @@ class ItemsRecoveredMaintenancePart extends StatelessWidget {
                       Column(
                         children: [
                           CustomStyledText(
-                            text: part.customer?.name ?? "لا يوجد اسم",
+                            text: items.customer?.name ?? 'غير معروف',
                             fontSize: 16,
                             textColor: Colors.grey,
                           ),
                           AppSizedBox.kVSpace5,
                           CustomStyledText(
-                            text: part.customer?.phoneNumber ?? "لا يوجد رقم",
+                            text: items.customer?.phoneNumber ?? 'غير معروف',
                             fontSize: 16,
                             textColor: Colors.grey,
                           ),

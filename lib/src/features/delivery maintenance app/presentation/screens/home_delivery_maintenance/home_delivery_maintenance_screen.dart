@@ -126,6 +126,19 @@ class _HomeDeliveryMaintenanceScreenState
                   ),
                 ),
               ),
+              // Row(
+              //   children: [
+              //     Container(
+              //       alignment: Alignment.centerRight,
+              //       margin:
+              //           const EdgeInsets.only(top: 10, right: 30, bottom: 15),
+              //       child: const CustomStyledText(
+              //         text: 'الاختصارات',
+              //         fontSize: 20,
+              //       ),
+              //     ),
+              //   ],
+              // ),
               Row(
                 children: [
                   Container(
@@ -133,8 +146,9 @@ class _HomeDeliveryMaintenanceScreenState
                     margin:
                         const EdgeInsets.only(top: 10, right: 30, bottom: 15),
                     child: const CustomStyledText(
-                      text: 'الاختصارات',
-                      fontSize: 20,
+                      text: 'طلبات اونلاين',
+                      fontSize: 18,
+                      textColor: AppColors.secondaryColor,
                     ),
                   ),
                 ],
@@ -145,7 +159,7 @@ class _HomeDeliveryMaintenanceScreenState
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, childAspectRatio: 1.1),
+                      crossAxisCount: 2, childAspectRatio: 1.4),
                   itemCount: shortcutsMaintenance.length,
                   itemBuilder: (context, index) {
                     return ShortcutHomeCard(
@@ -160,6 +174,96 @@ class _HomeDeliveryMaintenanceScreenState
                       },
                       icon: shortcutsMaintenance[index]['icon'] as IconData,
                       label: shortcutsMaintenance[index]['label'] as String,
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Divider(
+                  color: Colors.grey.shade300,
+                ),
+              ),
+              Row(
+                children: [
+                  Container(
+                    alignment: Alignment.centerRight,
+                    margin:
+                        const EdgeInsets.only(top: 10, right: 30, bottom: 15),
+                    child: const CustomStyledText(
+                      text: 'طلبات التحويل',
+                      fontSize: 18,
+                      textColor: AppColors.secondaryColor,
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, childAspectRatio: 1.4),
+                  itemCount: convertOrderMaintenance.length,
+                  itemBuilder: (context, index) {
+                    return ShortcutHomeCard(
+                      onTapAction: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => convertOrderMaintenance[index]
+                                ['page'] as Widget,
+                          ),
+                        );
+                      },
+                      icon: convertOrderMaintenance[index]['icon'] as IconData,
+                      label: convertOrderMaintenance[index]['label'] as String,
+                    );
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Divider(
+                  color: Colors.grey.shade300,
+                ),
+              ),
+              Row(
+                children: [
+                  Container(
+                    alignment: Alignment.centerRight,
+                    margin:
+                        const EdgeInsets.only(top: 10, right: 30, bottom: 15),
+                    child: const CustomStyledText(
+                      text: 'طلبات التحويل خارج المؤسسة',
+                      fontSize: 18,
+                      textColor: AppColors.secondaryColor,
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, childAspectRatio: 1.4),
+                  itemCount: outSideOrderMaintenance.length,
+                  itemBuilder: (context, index) {
+                    return ShortcutHomeCard(
+                      onTapAction: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => outSideOrderMaintenance[index]
+                                ['page'] as Widget,
+                          ),
+                        );
+                      },
+                      icon: outSideOrderMaintenance[index]['icon'] as IconData,
+                      label: outSideOrderMaintenance[index]['label'] as String,
                     );
                   },
                 ),
@@ -186,36 +290,41 @@ final List<Map<String, Object>> shortcutsMaintenance = [
     'label': 'الطلبات السابقة',
     'page': const PerviousOrderMaintenanceScreen(),
   },
-  // {
-  //   'icon': FontAwesomeIcons.rightLeft,
-  //   'label': 'طلبات التحويل ',
-  //   'page': const ConvertOrderMaintenancesScreen(),
-  // },
-  // {
-  //   'icon': FontAwesomeIcons.rightLeft,
-  //   'label': 'تحويل القطع الحالية',
-  //   'page': const CurrentTakeOrderMaintenanceConvertScreen(),
-  // },
-  // {
-  //   'icon': FontAwesomeIcons.rightLeft,
-  //   'label': 'تحويل القطع السابقة',
-  //   'page': const PerviousTakeOrderMaintenanceConvertScreen(),
-  // },
-  // {
-  //   'icon': FontAwesomeIcons.doorOpen,
-  //   'label': 'طلبات تحويل لخارج ',
-  //   'page': const OutSideOrderMaintenancesScreen(),
-  // },
-  // {
-  //   'icon': FontAwesomeIcons.doorOpen,
-  //   'label': 'القطع الحالية لخارج',
-  //   'page': const CurrentTakeOrderMaintenanceOutSideScreen(),
-  // },
-  // {
-  //   'icon': FontAwesomeIcons.doorOpen,
-  //   'label': 'القطع السابقة لخارج',
-  //   'page': const PerviousTakeOrderMaintenanceOutSideScreen(),
-  // },
+];
+final List<Map<String, Object>> convertOrderMaintenance = [
+  {
+    'icon': FontAwesomeIcons.rightLeft,
+    'label': 'طلبات التحويل ',
+    'page': const ConvertOrderMaintenancesScreen(),
+  },
+  {
+    'icon': FontAwesomeIcons.rightLeft,
+    'label': 'تحويل القطع الحالية',
+    'page': const CurrentTakeOrderMaintenanceConvertScreen(),
+  },
+  {
+    'icon': FontAwesomeIcons.rightLeft,
+    'label': 'تحويل القطع السابقة',
+    'page': const PerviousTakeOrderMaintenanceConvertScreen(),
+  },
+];
+
+final List<Map<String, Object>> outSideOrderMaintenance = [
+  {
+    'icon': FontAwesomeIcons.doorOpen,
+    'label': 'طلبات تحويل لخارج ',
+    'page': const OutSideOrderMaintenancesScreen(),
+  },
+  {
+    'icon': FontAwesomeIcons.doorOpen,
+    'label': 'القطع الحالية لخارج',
+    'page': const CurrentTakeOrderMaintenanceOutSideScreen(),
+  },
+  {
+    'icon': FontAwesomeIcons.doorOpen,
+    'label': 'القطع السابقة لخارج',
+    'page': const PerviousTakeOrderMaintenanceOutSideScreen(),
+  },
   {
     'icon': FontAwesomeIcons.gear,
     'label': 'الإعدادت',

@@ -4,7 +4,6 @@ import 'package:maintenance_app/src/core/constants/constants.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20delivery%20shop%20app/ItemsReceiveOrderPart.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/customStyledText.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/receive_order_Maintenance_entity.dart';
-import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/current_order_maintenance/detiels_current_order_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ItemsMaintenancePart extends StatelessWidget {
@@ -135,7 +134,7 @@ class ItemsMaintenancePart extends StatelessWidget {
                       Column(
                         children: [
                           ElevatedButton.icon(
-                            icon: FaIcon(FontAwesomeIcons.whatsapp,
+                            icon: const FaIcon(FontAwesomeIcons.whatsapp,
                                 color: Colors.green),
                             label: const CustomLabelText(text: 'واتساب'),
                             style: ElevatedButton.styleFrom(

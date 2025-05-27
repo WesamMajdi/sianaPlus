@@ -1,6 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:maintenance_app/src/core/error/failure.dart';
+import 'package:maintenance_app/src/core/pagination/paginated_response.dart';
 import 'package:maintenance_app/src/features/client%20app/data/data_sources/profile/user_profile_data_source.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/profile/slider_model.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/profile/profile_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/repositories/profile/profile_repository.dart';
 
@@ -36,6 +38,17 @@ class UserProfileRepositoryImpl implements ProfileRepository {
       return const Right(null);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PaginatedResponse<ImageModel>>>
+      getAllImageInHome() async {
+    try {
+      final result = await remoteDataSource.getAllImageInHome();
+      return Right(result);
+    } catch (e) {
+      return Left(ServerFailure(message: 'There is an error'));
     }
   }
 }

@@ -79,15 +79,17 @@ class DeliveryMaintenanceUseCase {
   Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
       getAllForAllDeliveryConvert(
     PaginationParams paginationParams,
+    String barcode,
   ) {
-    return repository.getAllForAllDeliveryConvert(paginationParams);
+    return repository.getAllForAllDeliveryConvert(paginationParams, barcode);
   }
 
   Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
       getAllTakeDeliveryConvert(
     PaginationParams paginationParams,
+    String barcode,
   ) {
-    return repository.getAllTakeDeliveryConvert(paginationParams);
+    return repository.getAllTakeDeliveryConvert(paginationParams, barcode);
   }
 
   Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
@@ -110,15 +112,17 @@ class DeliveryMaintenanceUseCase {
   Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
       getAllForAllDeliveryOutSide(
     PaginationParams paginationParams,
+    String barcode,
   ) {
-    return repository.getAllForAllDeliveryOutSide(paginationParams);
+    return repository.getAllForAllDeliveryOutSide(paginationParams, barcode);
   }
 
   Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
       getAllTakeDeliveryOutSide(
     PaginationParams paginationParams,
+    String barcode,
   ) {
-    return repository.getAllTakeDeliveryOutSide(paginationParams);
+    return repository.getAllTakeDeliveryOutSide(paginationParams, barcode);
   }
 
   Future<Either<Failure, PaginatedResponse<ReceiptItemConvertModel>>>
@@ -136,5 +140,14 @@ class DeliveryMaintenanceUseCase {
   Future<Either<Failure, Map<String, dynamic>>> takeOrderMaintenanceoOutSide(
       int orderMaintenancId) {
     return repository.takeOrderMaintenanceoOutSide(orderMaintenancId);
+  }
+
+  Future<Either<Failure, Map<String, dynamic>>> setMaintenancePrice({
+    required int convertHandReceiptItemId,
+    required double maintenancePrice,
+  }) {
+    return repository.setMaintenancePrice(
+        convertHandReceiptItemId: convertHandReceiptItemId,
+        maintenancePrice: maintenancePrice);
   }
 }

@@ -287,4 +287,85 @@ class HandReceiptRemoteDataSource {
       throw Exception('Unexpected error occurred: $e');
     }
   }
+
+  Future<Map<String, dynamic>> customerRefuseMaintenanceForHandReceiptItem({
+    required int receiptItemId,
+    required String reasonForRefusingMaintenance,
+  }) async {
+    String? token = await TokenManager.getToken();
+
+    if (!await internetConnectionChecker.hasConnection) {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+
+    try {
+      final response = await apiController.post(
+          Uri.parse(ApiSetting.customerRefuseMaintenanceForHandReceiptItem),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: {
+            "receiptItemId": receiptItemId,
+            "reasonForRefusingMaintenance": reasonForRefusingMaintenance
+          });
+
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      if (response.statusCode >= 400) {
+        HandleHttpError.handleHttpError(responseBody);
+      }
+
+      return responseBody;
+    } on TimeoutException catch (_) {
+      throw TimeoutException('Request timed out');
+    } catch (e) {
+      throw Exception('Unexpected error occurred: $e');
+    }
+  }
+
+  Future<PaginatedResponse<HandReceiptModel>> getAllConvertFromBranch(
+      PaginationParams paginationParams,
+      String? searchQuery,
+      String? barcode) async {
+    String? token = await TokenManager.getToken();
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.get(
+          Uri.parse(
+              '${ApiSetting.getAllConvertFromBranch}?page=${paginationParams.page}&perPage=${paginationParams.perPage}&generalSearch=$searchQuery&barcode=$barcode'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token'
+          },
+        );
+
+        debugPrint('Status Code: ${response.statusCode}');
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+        final handReceiptResponse =
+            BaseResponse<PaginatedResponse<HandReceiptModel>>.fromJson(
+          responseBody,
+          (json) {
+            return PaginatedResponse<HandReceiptModel>.fromJson(
+              json,
+              (p0) => HandReceiptModel.fromJson(p0),
+            );
+          },
+        );
+
+        return handReceiptResponse.data!;
+      } on TimeOutExeption catch (e) {
+        debugPrint('Timeout Exception: $e');
+        rethrow;
+      } catch (e) {
+        debugPrint('Unexpected Error: $e');
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
 }

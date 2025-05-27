@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:flutter/services.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customInputDialog.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customSureDialog.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/showTopSnackBar.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/cubit/online_maintenance_parts/online_maintenance_parts_cubit.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/controller/state/online_state.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/maintenance_parts_hand_receipt/maintenance_parts_screen.dart';
@@ -72,8 +74,29 @@ class _MaintenancePartsOnlineDetailsPageState
                             buildTableRow('اسم العميل',
                                 onlineItem?.customer?.name ?? "غير متوفر"),
                             buildTableRow(
-                                'رقم العميل',
-                                onlineItem?.customer?.phoneNumber ??
+                              'رقم العميل',
+                              InkWell(
+                                onLongPress: () {
+                                  String phoneNumber =
+                                      onlineItem?.customer?.phoneNumber ?? "";
+                                  if (phoneNumber.isNotEmpty &&
+                                      phoneNumber != "غير متوفر") {
+                                    Clipboard.setData(
+                                        ClipboardData(text: phoneNumber));
+                                    showTopSnackBar(
+                                        context,
+                                        'تم نسخ رقم العميل',
+                                        Colors.green.shade800);
+                                  }
+                                },
+                                child: CustomStyledText(
+                                  text: onlineItem?.customer?.phoneNumber ?? "",
+                                ),
+                              ),
+                            ),
+                            buildTableRow(
+                                'الباركود',
+                                onlineItem?.itemBarcode?.toString() ??
                                     "غير متوفر"),
                             buildTableRow(
                                 'اسم القطعة', onlineItem?.item ?? "غير متوفر"),
@@ -86,6 +109,10 @@ class _MaintenancePartsOnlineDetailsPageState
                             buildTableRow(
                                 'عدد أيام الضمان',
                                 onlineItem?.warrantyDaysNumber?.toString() ??
+                                    "غير متوفر"),
+                            buildTableRow(
+                                'السعر',
+                                onlineItem?.specifiedCost?.toString() ??
                                     "غير متوفر"),
                             buildTableRow('مستعجل',
                                 onlineItem?.urgent?.toString() ?? "غير متوفر"),

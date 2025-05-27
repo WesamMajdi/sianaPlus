@@ -4,13 +4,19 @@ import 'package:maintenance_app/src/features/maintenance%20technician%20app/doma
 
 enum HandReceiptStatus { initial, loading, success, failure }
 
+enum ConvertFromBranchStatus { initial, loading, success, failure }
+
 class HandReceiptState extends Equatable {
   final HandReceiptStatus handReceiptStatus;
+  final ConvertFromBranchStatus convertFromBranchStatus;
   final List<HandReceiptEntity> receipts;
+  final List<HandReceiptEntity> listconvertFromBranch;
   final String errorMessage;
   final bool isUpdating;
   final int page;
+  final int pageTransferre;
   final bool hasReachedMax;
+  final bool hasReachedMaxTransferre;
   final String successMessage;
   final String malfunctionDescription;
   final double? maintenanceCost;
@@ -18,7 +24,9 @@ class HandReceiptState extends Equatable {
 
   HandReceiptState(
       {this.handReceiptStatus = HandReceiptStatus.initial,
+      this.convertFromBranchStatus = ConvertFromBranchStatus.initial,
       this.receipts = const <HandReceiptEntity>[],
+      this.listconvertFromBranch = const <HandReceiptEntity>[],
       this.errorMessage = '',
       this.isUpdating = false,
       this.successMessage = '',
@@ -26,12 +34,16 @@ class HandReceiptState extends Equatable {
       this.maintenanceCost,
       this.handReceiptItem,
       this.page = 1,
-      this.hasReachedMax = false});
+      this.pageTransferre = 1,
+      this.hasReachedMax = false,
+      this.hasReachedMaxTransferre = false});
 
   factory HandReceiptState.initial() {
     return HandReceiptState(
         handReceiptStatus: HandReceiptStatus.initial,
+        convertFromBranchStatus: ConvertFromBranchStatus.initial,
         receipts: [],
+        listconvertFromBranch: [],
         errorMessage: '',
         isUpdating: false,
         successMessage: '',
@@ -39,12 +51,16 @@ class HandReceiptState extends Equatable {
         maintenanceCost: null,
         handReceiptItem: null,
         page: 1,
-        hasReachedMax: false);
+        pageTransferre: 1,
+        hasReachedMax: false,
+        hasReachedMaxTransferre: false);
   }
 
   HandReceiptState copyWith({
     HandReceiptStatus? handReceiptStatus,
     List<HandReceiptEntity>? receipts,
+    ConvertFromBranchStatus? convertFromBranchStatus,
+    List<HandReceiptEntity>? listconvertFromBranch,
     String? errorMessage,
     bool? isUpdating,
     String? successMessage,
@@ -52,21 +68,29 @@ class HandReceiptState extends Equatable {
     double? maintenanceCost,
     HandReceiptEntity? handReceiptItem,
     int? page,
+    int? pageTransferre,
     bool? hasReachedMax,
+    bool? hasReachedMaxTransferre,
   }) {
     return HandReceiptState(
-      handReceiptStatus: handReceiptStatus ?? this.handReceiptStatus,
-      receipts: receipts ?? this.receipts,
-      errorMessage: errorMessage ?? this.errorMessage,
-      isUpdating: isUpdating ?? this.isUpdating,
-      successMessage: successMessage ?? this.successMessage,
-      malfunctionDescription:
-          malfunctionDescription ?? this.malfunctionDescription,
-      maintenanceCost: maintenanceCost ?? this.maintenanceCost,
-      handReceiptItem: handReceiptItem ?? this.handReceiptItem,
-      page: page ?? this.page,
-      hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-    );
+        handReceiptStatus: handReceiptStatus ?? this.handReceiptStatus,
+        convertFromBranchStatus:
+            convertFromBranchStatus ?? this.convertFromBranchStatus,
+        listconvertFromBranch:
+            listconvertFromBranch ?? this.listconvertFromBranch,
+        receipts: receipts ?? this.receipts,
+        errorMessage: errorMessage ?? this.errorMessage,
+        isUpdating: isUpdating ?? this.isUpdating,
+        successMessage: successMessage ?? this.successMessage,
+        malfunctionDescription:
+            malfunctionDescription ?? this.malfunctionDescription,
+        maintenanceCost: maintenanceCost ?? this.maintenanceCost,
+        handReceiptItem: handReceiptItem ?? this.handReceiptItem,
+        page: page ?? this.page,
+        hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+        hasReachedMaxTransferre:
+            hasReachedMaxTransferre ?? this.hasReachedMaxTransferre,
+        pageTransferre: pageTransferre ?? this.pageTransferre);
   }
 
   @override
@@ -80,6 +104,10 @@ class HandReceiptState extends Equatable {
         maintenanceCost,
         handReceiptItem,
         page,
-        hasReachedMax
+        hasReachedMax,
+        listconvertFromBranch,
+        convertFromBranchStatus,
+        hasReachedMaxTransferre,
+        pageTransferre,
       ];
 }

@@ -7,6 +7,7 @@ import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/network/api_controller.dart';
 import 'package:maintenance_app/src/core/network/api_setting.dart';
 import 'package:maintenance_app/src/core/network/global_token.dart';
+import 'package:maintenance_app/src/core/services/notification_service.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/forgot_password_model.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/login_model.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/reset_password_model.dart';
@@ -72,19 +73,67 @@ class AuthRemoteDataSource {
     }
   }
 
-  Future<BaseResponse<UserModel>> signup(
+  Future<BaseResponse<SignupResponseData>> signup(
       SignupModel createSignupRequest) async {
-    if (await internetConnectionChecker.hasConnection) {
-      if (createSignupRequest.password != createSignupRequest.confirmPassword) {
-        throw Exception('Password and Confirm Password do not match.');
-      }
+    if (!await internetConnectionChecker.hasConnection) {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
 
-      try {
-        final response = await apiController.post(Uri.parse(ApiSetting.signup),
+    if (createSignupRequest.password != createSignupRequest.confirmPassword) {
+      throw Exception('Password and Confirm Password do not match.');
+    }
+
+    try {
+      final response = await apiController
+          .post(
+            Uri.parse(ApiSetting.signup),
             headers: {
               'Content-Type': 'application/json',
             },
-            body: createSignupRequest.toJson());
+            body: createSignupRequest.toJson(),
+          )
+          .timeout(const Duration(seconds: 30));
+
+      final responseBody = jsonDecode(response.body);
+
+      if (response.statusCode >= 400) {
+        HandleHttpError.handleHttpError(responseBody);
+      }
+
+      final isDeviceRegistered = await registerDevice();
+      if (isDeviceRegistered) {
+        print("Device registered successfully after signup.");
+      } else {
+        print("Device registration failed after signup.");
+      }
+
+      return BaseResponse<SignupResponseData>.fromJson(
+        responseBody,
+        (data) => SignupResponseData.fromJson(data),
+      );
+    } on TimeoutException catch (e) {
+      debugPrint('Timeout Exception: $e');
+      throw TimeoutException('Request timed out, please try again.');
+    } catch (e) {
+      debugPrint('Unexpected Error: $e');
+      throw Exception('An unexpected error occurred: $e');
+    }
+  }
+
+  Future<BaseResponse<UserModel>> sendVerificationCode(
+      String code, SignupModel user) async {
+    final Map<String, dynamic> requestBody = {
+      "code": code,
+      "user": user.toJson(),
+    };
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response =
+            await apiController.post(Uri.parse(ApiSetting.sendVerificationCode),
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: requestBody);
 
         final responseBody = jsonDecode(response.body);
 
@@ -195,16 +244,17 @@ class AuthRemoteDataSource {
     }
   }
 
-  Future<BaseResponse<void>> forgotPassword(
+  Future<BaseResponse<String>> forgotPassword(
       ForgotPasswordModel forgotPasswordRequest) async {
     if (await internetConnectionChecker.hasConnection) {
       try {
-        final response =
-            await apiController.post(Uri.parse(ApiSetting.forgotPassword),
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: forgotPasswordRequest.toJson());
+        final response = await apiController.post(
+          Uri.parse(ApiSetting.forgotPassword),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: forgotPasswordRequest.toJson(),
+        );
 
         final responseBody = jsonDecode(response.body);
 
@@ -212,9 +262,9 @@ class AuthRemoteDataSource {
           HandleHttpError.handleHttpError(responseBody);
         }
 
-        return BaseResponse<void>.fromJson(
+        return BaseResponse<String>.fromJson(
           responseBody,
-          (data) {},
+          (data) => data.toString(),
         );
       } on TimeoutException catch (e) {
         debugPrint('Timeout Exception: $e');
@@ -228,7 +278,7 @@ class AuthRemoteDataSource {
     }
   }
 
-  Future<BaseResponse<void>> resetPassword(
+  Future<BaseResponse<UserModel>> resetPassword(
       ResetPasswordModel resetPasswordRequest) async {
     if (await internetConnectionChecker.hasConnection) {
       try {
@@ -241,6 +291,57 @@ class AuthRemoteDataSource {
 
         final responseBody = jsonDecode(response.body);
 
+        if (response.body.isEmpty) {
+          throw Exception("Empty response from server");
+        }
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+
+        String token = responseBody['data']['token'];
+        String name = responseBody['data']['username'];
+        String role = responseBody['data']['role'];
+        await TokenManager.saveToken(token);
+        await TokenManager.saveName(name);
+        await TokenManager.saveRole(role);
+
+        print(token);
+        final isDeviceRegistered = await registerDevice();
+        if (isDeviceRegistered) {
+          print("Device registered successfully after login.");
+        } else {
+          print("Device registration failed after login.");
+        }
+
+        return BaseResponse<UserModel>.fromJson(
+          responseBody,
+          (data) => UserModel.fromJson(data),
+        );
+      } on TimeoutException catch (e) {
+        debugPrint('Timeout Exception: $e');
+        throw TimeoutException('Request timed out, please try again.');
+      } catch (e) {
+        debugPrint('Unexpected Error: $e');
+        throw Exception('An unexpected error occurred.');
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<BaseResponse<void>> verifyResetCode(
+      ResetVerifyResetCodeModel resetVerifyResetCodeModelRequest) async {
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response =
+            await apiController.post(Uri.parse(ApiSetting.verifyResetCode),
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: resetVerifyResetCodeModelRequest.toJson());
+
+        final responseBody = jsonDecode(response.body);
+        print(responseBody);
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
@@ -317,7 +418,9 @@ class AuthRemoteDataSource {
       // Get Tokens
       String? token = await TokenManager.getToken();
       String? fcmToken = await TokenManager.getFcmToken();
-
+      print("lllllllllllllllllllllllllllllllllllllllllllll");
+      print(token);
+      print(fcmToken);
       if (token == null || fcmToken == null) {
         print('Token or FCM Token is null');
         return false;

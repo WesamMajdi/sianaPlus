@@ -1,12 +1,11 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customInputDialog.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customSureDialog.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/data/model/receipt_item_convert_model.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/receive_order_Maintenance_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/cubit/delivery_maintenance_cubit.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/state/delivery_maintenance_state.dart';
-import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/convert_order_maintenance/convert_order_maintenance.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/outSide_order_maintenance/outside_current_order_maintenance_screen.dart';
-import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/outSide_order_maintenance/outside_order_maintenance.dart';
 
 class ItemsCurrentMaintenanceOutSidePart extends StatelessWidget {
   final ReceiptItemConvertModel item;
@@ -347,6 +346,63 @@ class ItemsCurrentMaintenanceOutSidePart extends StatelessWidget {
           },
         ),
       ];
+    } else if (status == 4 && item.maintenancePrice == null) {
+      return [
+        ListTile(
+          title: const CustomStyledText(
+            text: 'سعر صيانة',
+            fontSize: 20,
+          ),
+          onTap: () {
+            final TextEditingController priceController =
+                TextEditingController();
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return CustomInputDialog(
+                  titleDialog: 'تحديد السعر',
+                  text: 'السعر:',
+                  hintText: 'ادخل السعر',
+                  controller: priceController,
+                  validators: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'عفوا.السعر مطلوب';
+                    }
+                    return null;
+                  },
+                  onConfirm: () {
+                    if (priceController.text.isNotEmpty) {
+                      final double price =
+                          double.tryParse(priceController.text) ?? 0.0;
+                      print("ssssssssssssssssssssssssssssssssssssssssssss");
+                      context
+                          .read<DeliveryMaintenanceCubit>()
+                          .setMaintenancePrice(
+                            convertHandReceiptItemId: item.id,
+                            maintenancePrice: price,
+                          );
+
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const CurrentTakeOrderMaintenanceOutSideScreen(),
+                        ),
+                      );
+                      BlocProvider.of<DeliveryMaintenanceCubit>(context)
+                          .fetchAllTakeDeliveryOutSide(refresh: true);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('الرجاء إدخال السعر')),
+                      );
+                    }
+                  },
+                );
+              },
+            );
+          },
+        ),
+      ];
     } else if (status == 4) {
       return [
         ListTile(
@@ -401,7 +457,8 @@ class ItemsCurrentMaintenanceOutSidePart extends StatelessWidget {
                   try {
                     await cubit.updateOrderMaintenanceOutSide(
                         orderMaintenancId: item.id, status: 7);
-
+                    BlocProvider.of<DeliveryMaintenanceCubit>(context)
+                        .fetchAllTakeDeliveryOutSide(refresh: true);
                     Navigator.pushReplacement(
                       // ignore: use_build_context_synchronously
                       context,
@@ -410,8 +467,6 @@ class ItemsCurrentMaintenanceOutSidePart extends StatelessWidget {
                             const CurrentTakeOrderMaintenanceOutSideScreen(),
                       ),
                     );
-                    BlocProvider.of<DeliveryMaintenanceCubit>(context)
-                        .fetchAllTakeDeliveryOutSide(refresh: true);
                   } catch (e) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Failed to update status: $e')),

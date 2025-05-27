@@ -3,6 +3,7 @@ import 'package:maintenance_app/src/core/widgets/widgets%20delivery%20maintenanc
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/cubit/delivery_maintenance_cubit.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/state/delivery_maintenance_state.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/home_delivery_maintenance/home_delivery_maintenance_screen.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class CurrentTakeOrderMaintenanceOutSideScreen extends StatefulWidget {
   const CurrentTakeOrderMaintenanceOutSideScreen({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class CurrentTakeOrderMaintenanceOutSideScreen extends StatefulWidget {
 class _CurrentTakeOrderMaintenanceOutSideScreenState
     extends State<CurrentTakeOrderMaintenanceOutSideScreen> {
   final ScrollController _scrollController = ScrollController();
-
+  String barcodeResult = "لم يتم مسح الباركود";
   @override
   void initState() {
     super.initState();
@@ -39,6 +40,62 @@ class _CurrentTakeOrderMaintenanceOutSideScreenState
     });
   }
 
+  Future<void> scanBarcode() async {
+    showDialog(
+      context: context,
+      builder: (_) {
+        return Dialog(
+          child: MobileScanner(
+            controller: MobileScannerController(facing: CameraFacing.back),
+            onDetect: (barcodeCapture) {
+              final code = barcodeCapture.barcodes.first.rawValue;
+              if (code != null) {
+                setState(() {
+                  barcodeResult = code;
+                });
+                Navigator.of(context).pop();
+                fetchAllTakeDeliveryOutSide(refresh: true);
+              }
+            },
+            errorBuilder: (context, error, child) {
+              return Center(child: Text('خطأ بالكاميرا: ${error.errorCode}'));
+            },
+            overlayBuilder: (context, constraints) {
+              return Align(
+                alignment: Alignment.center,
+                child: Container(
+                  width: 250,
+                  height: 250,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.green, width: 2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              );
+            },
+            placeholderBuilder: (context, child) =>
+                const Center(child: CircularProgressIndicator()),
+            fit: BoxFit.cover,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildBarcodeScanner() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: IconButton(
+        icon: const Icon(
+          Icons.qr_code_scanner,
+          size: 32,
+          color: AppColors.secondaryColor,
+        ),
+        onPressed: scanBarcode,
+      ),
+    );
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -46,9 +103,10 @@ class _CurrentTakeOrderMaintenanceOutSideScreenState
   }
 
   Future<void> fetchAllTakeDeliveryOutSide({bool refresh = false}) async {
-    context.read<DeliveryMaintenanceCubit>().fetchAllTakeDeliveryOutSide(
-          refresh: refresh,
-        );
+    final barcode = barcodeResult != "لم يتم مسح الباركود" ? barcodeResult : '';
+    context
+        .read<DeliveryMaintenanceCubit>()
+        .fetchAllTakeDeliveryOutSide(refresh: refresh, barcode: barcode);
   }
 
   @override
@@ -68,6 +126,10 @@ class _CurrentTakeOrderMaintenanceOutSideScreenState
       ),
       body: Column(
         children: [
+          Container(
+            margin: const EdgeInsets.only(left: 20),
+            child: buildBarcodeScanner(),
+          ),
           Expanded(
             child: buildCurrentTakeOrderList(),
           ),

@@ -292,6 +292,7 @@ class DeliveryMaintenanceCubit extends Cubit<DeliveryMaintenanceState> {
 
   Future<void> fetchAllForAllDeliveryConvert({
     bool refresh = false,
+    String barcode = '',
   }) async {
     emit(state.copyWith(
         deliveryMaintenanceConvertStatus:
@@ -300,11 +301,13 @@ class DeliveryMaintenanceCubit extends Cubit<DeliveryMaintenanceState> {
       final page =
           (state.ordersConvert.isEmpty || refresh) ? 1 : (state.page + 1);
 
-      final result = await deliveryMaintenanceUseCase
-          .getAllForAllDeliveryConvert(PaginationParams(
-        page: page,
-        perPage: 10,
-      ));
+      final result =
+          await deliveryMaintenanceUseCase.getAllForAllDeliveryConvert(
+              PaginationParams(
+                page: page,
+                perPage: 10,
+              ),
+              barcode);
 
       result.fold(
           (failure) => emit(state.copyWith(
@@ -334,6 +337,7 @@ class DeliveryMaintenanceCubit extends Cubit<DeliveryMaintenanceState> {
 
   Future<void> fetchAllTakeDeliveryConvert({
     bool refresh = false,
+    String barcode = '',
   }) async {
     emit(state.copyWith(
         deliveryMaintenanceConvertCurrentStatus:
@@ -343,11 +347,11 @@ class DeliveryMaintenanceCubit extends Cubit<DeliveryMaintenanceState> {
       final page = refresh ? 1 : 1;
 
       final result = await deliveryMaintenanceUseCase.getAllTakeDeliveryConvert(
-        PaginationParams(
-          page: page,
-          perPage: 10,
-        ),
-      );
+          PaginationParams(
+            page: page,
+            perPage: 10,
+          ),
+          barcode);
 
       result.fold(
         (failure) => emit(state.copyWith(
@@ -459,6 +463,7 @@ class DeliveryMaintenanceCubit extends Cubit<DeliveryMaintenanceState> {
 
   Future<void> fetchAllForAllDeliveryOutSide({
     bool refresh = false,
+    String barcode = '',
   }) async {
     emit(state.copyWith(
         deliveryMaintenanceOutSideStatus:
@@ -467,11 +472,13 @@ class DeliveryMaintenanceCubit extends Cubit<DeliveryMaintenanceState> {
       final page =
           (state.ordersOutSide.isEmpty || refresh) ? 1 : (state.page + 1);
 
-      final result = await deliveryMaintenanceUseCase
-          .getAllForAllDeliveryOutSide(PaginationParams(
-        page: page,
-        perPage: 10,
-      ));
+      final result =
+          await deliveryMaintenanceUseCase.getAllForAllDeliveryOutSide(
+              PaginationParams(
+                page: page,
+                perPage: 10,
+              ),
+              barcode);
 
       result.fold(
           (failure) => emit(state.copyWith(
@@ -499,8 +506,42 @@ class DeliveryMaintenanceCubit extends Cubit<DeliveryMaintenanceState> {
     }
   }
 
+  Future<void> setMaintenancePrice(
+      {required int convertHandReceiptItemId,
+      required double maintenancePrice}) async {
+    emit(state.copyWith(
+        deliveryMaintenanceOutSideStatus:
+            DeliveryMaintenanceOutSideStatus.loading));
+
+    print(convertHandReceiptItemId);
+    print(maintenancePrice);
+
+    try {
+      final result = await deliveryMaintenanceUseCase.setMaintenancePrice(
+          convertHandReceiptItemId: convertHandReceiptItemId,
+          maintenancePrice: maintenancePrice);
+      result.fold(
+        (failure) => emit(state.copyWith(
+            deliveryMaintenanceOutSideStatus:
+                DeliveryMaintenanceOutSideStatus.failure,
+            errorMessage: failure.message)),
+        (response) => emit(state.copyWith(
+          deliveryMaintenanceOutSideStatus:
+              DeliveryMaintenanceOutSideStatus.success,
+          successMessage: 'Maintenance suspended successfully',
+        )),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+          deliveryMaintenanceOutSideStatus:
+              DeliveryMaintenanceOutSideStatus.failure,
+          errorMessage: 'Unexpected error occurred: $e'));
+    }
+  }
+
   Future<void> fetchAllTakeDeliveryOutSide({
     bool refresh = false,
+    String barcode = '',
   }) async {
     emit(state.copyWith(
         deliveryMaintenanceCurrentOutSideStatus:
@@ -510,11 +551,11 @@ class DeliveryMaintenanceCubit extends Cubit<DeliveryMaintenanceState> {
       final page = refresh ? 1 : 1;
 
       final result = await deliveryMaintenanceUseCase.getAllTakeDeliveryOutSide(
-        PaginationParams(
-          page: page,
-          perPage: 10,
-        ),
-      );
+          PaginationParams(
+            page: page,
+            perPage: 10,
+          ),
+          barcode);
 
       result.fold(
         (failure) => emit(state.copyWith(

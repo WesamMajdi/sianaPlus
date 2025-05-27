@@ -41,14 +41,12 @@ class NotificationService {
       await _setupNotificationChannels();
 
       // Get initial token
-      String? fcmToken = await _firebaseMessaging.getToken();
-      if (kDebugMode) {
-        print(fcmToken);
+      String? savedFcmToken = await TokenManager.getFcmToken();
+      if (savedFcmToken == null) {
+        savedFcmToken = await FirebaseMessaging.instance.getToken();
+        await TokenManager.saveFcmToken(savedFcmToken!);
       }
-      if (fcmToken != null) {
-        await TokenManager.saveFcmToken(fcmToken);
-      }
-
+      print("FCM Token: $savedFcmToken");
       // Listen for token refresh
       // _firebaseMessaging.onTokenRefresh.listen(_registerDevice);
 

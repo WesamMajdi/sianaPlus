@@ -1,7 +1,9 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/network/global_token.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/showTopSnackBar.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/screens/login_screen.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/profile_cubit.dart';
 
 class UserSettingProfile extends StatefulWidget {
   const UserSettingProfile({super.key});
@@ -285,29 +287,51 @@ class _UserSettingProfileState extends State<UserSettingProfile> {
 
                   if (confirmLogout == true) {
                     try {
-                      Future<void> resetFirstTimeStatus() async {
-                        final prefs = await SharedPreferences.getInstance();
-                        await prefs.setBool(FIRST_TIME_KEY, true);
-                      }
+                      // Reset flags
+                      resetFirstTime = true;
 
-                      await TokenManager.removeToken();
-                      // ignore: dead_code
-                      if (resetFirstTime) {
-                        await resetFirstTimeStatus();
-                      }
-                    } catch (e) {}
-                    final SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    await prefs.remove('token');
-                    await prefs.clear();
+                      // حذف التوكنات القديمة
+                      String? currentFcmToken =
+                          await FirebaseMessaging.instance.getToken();
+                      print('📦 FCM Token قبل الحذف: $currentFcmToken');
+                      String? savedToken = await TokenManager.getToken();
+                      print('💾 TokenManager قبل الحذف: $savedToken');
 
-                    Navigator.pushAndRemoveUntil(
+                      await Future.wait([
+                        FirebaseMessaging.instance.deleteToken(),
+                        TokenManager.removefcmToken(),
+                        TokenManager.removeToken(),
+                        SharedPreferences.getInstance().then((prefs) async {
+                          if (resetFirstTime) {
+                            await prefs.setBool(FIRST_TIME_KEY, true);
+                          }
+                          await prefs.clear();
+                        }),
+                      ]);
+
+                      await Future.delayed(const Duration(milliseconds: 300));
+                      String? newFcmToken =
+                          await FirebaseMessaging.instance.getToken();
+                      print("🎯 New FCM Token بعد الحذف: $newFcmToken");
+                      await TokenManager.saveFcmToken(newFcmToken!);
                       // ignore: use_build_context_synchronously
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginScreen()),
-                      (Route<dynamic> route) => false,
-                    );
+                      context.read<ProfileCubit>().reset();
+                      // ignore: use_build_context_synchronously
+                      context.read<ProfileCubit>().getUserProfile();
+
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()),
+                        (Route<dynamic> route) => false,
+                      );
+                    } catch (e) {
+                      print('حدث خطأ أثناء تسجيل الخروج: $e');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('حدث خطأ أثناء تسجيل الخروج')),
+                      );
+                    }
                   }
                 },
               ),

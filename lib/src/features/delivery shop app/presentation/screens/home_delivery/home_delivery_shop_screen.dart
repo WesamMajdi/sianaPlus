@@ -186,12 +186,14 @@ final List<Map<String, Object>> shortcuts = [
 class ShortcutHomeCard extends StatelessWidget {
   final IconData icon;
   final String label;
+  final Color? color;
   final GestureTapCallback onTapAction;
 
   const ShortcutHomeCard(
       {super.key,
       required this.icon,
       required this.label,
+      this.color = AppColors.secondaryColor,
       required this.onTapAction});
 
   @override
@@ -207,7 +209,7 @@ class ShortcutHomeCard extends StatelessWidget {
             shape: const CircleBorder(),
             color: Colors.transparent,
             child: CircleAvatar(
-              backgroundColor: AppColors.secondaryColor,
+              backgroundColor: color,
               radius: 45,
               child: Icon(
                 icon,

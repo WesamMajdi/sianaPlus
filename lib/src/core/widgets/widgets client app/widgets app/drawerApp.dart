@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/network/global_token.dart';
 import 'package:maintenance_app/src/features/authentication/data/data_source/auth_data_source.dart';
@@ -279,30 +280,64 @@ class _MyDrawerState extends State<MyDrawer> {
                   ],
                 ),
               );
-
+              print("confirmLogout 22222222222222222222222222222222");
+              print(confirmLogout);
               if (confirmLogout == true) {
                 try {
-                  Future<void> resetFirstTimeStatus() async {
-                    final prefs = await SharedPreferences.getInstance();
-                    await prefs.setBool(FIRST_TIME_KEY, true);
-                  }
+                  resetFirstTime = true;
+                  print("resetFirstTime 555555555555555");
 
-                  await TokenManager.removeToken();
-                  // ignore: dead_code
-                  if (resetFirstTime) {
-                    await resetFirstTimeStatus();
-                  }
-                } catch (e) {}
-                final SharedPreferences prefs =
-                    await SharedPreferences.getInstance();
-                await prefs.remove('token');
-                await prefs.clear();
+                  print(resetFirstTime);
+                  String? currentFcmToken =
+                      await FirebaseMessaging.instance.getToken();
+                  print('📦 FCM Token قبل الحذف: $currentFcmToken');
 
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
-                  (Route<dynamic> route) => false,
-                );
+                  String? savedToken = await TokenManager.getToken();
+                  print('💾 TokenManager قبل الحذف: $savedToken');
+
+                  await Future.wait([
+                    FirebaseMessaging.instance.deleteToken(),
+
+                    TokenManager.removefcmToken(),
+                    TokenManager.removeToken(),
+
+                    SharedPreferences.getInstance().then((prefs) async {
+                      if (resetFirstTime) {
+                        await prefs.setBool(FIRST_TIME_KEY, true);
+                      }
+                      await prefs.clear();
+                    }),
+
+                    // 4. إعلام الخادم بإلغاء التسجيل (اختياري)
+                    // unregisterDeviceOnServer(),
+                  ]);
+                  await Future.delayed(const Duration(milliseconds: 300));
+                  String? fcmTokenAfterDelete =
+                      await TokenManager.getFcmToken();
+
+                  print(
+                      '📦 FCM Token بعد الحذف (مفترض يكون جديد أو null): $fcmTokenAfterDelete');
+
+                  String? savedTokenAfter = await TokenManager.getToken();
+                  print('💾 TokenManager بعد الحذف: $savedTokenAfter');
+                  String? newFcmToken =
+                      await FirebaseMessaging.instance.getToken();
+                  print("🎯 New FCM Token بعد تسجيل الدخول: $newFcmToken");
+
+                  await TokenManager.saveFcmToken(newFcmToken!);
+
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()),
+                    (Route<dynamic> route) => false,
+                  );
+                } catch (e) {
+                  print('حدث خطأ أثناء تسجيل الخروج: $e');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('حدث خطأ أثناء تسجيل الخروج')),
+                  );
+                }
               }
             },
           ),
