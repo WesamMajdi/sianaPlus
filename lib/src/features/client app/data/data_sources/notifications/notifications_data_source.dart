@@ -4,8 +4,6 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:maintenance_app/src/core/network/global_token.dart';
-import 'package:maintenance_app/src/features/client%20app/data/model/product/product_model.dart';
-
 import '../../../../../core/error/exception.dart';
 import '../../../../../core/error/handle_http_error.dart';
 import '../../../../../core/network/api_controller.dart';
@@ -13,7 +11,6 @@ import '../../../../../core/network/base_response.dart';
 import '../../../../../core/network/api_setting.dart';
 import '../../../../../core/pagination/paginated_response.dart';
 import '../../../../../core/pagination/pagination_params.dart';
-import '../../model/category/category_model.dart';
 import '../../model/notifications/notification_model.dart';
 
 class NotificationsDataSource {
@@ -44,12 +41,12 @@ class NotificationsDataSource {
         }
 
         final notificationResponse =
-        BaseResponse<PaginatedResponse<NotificationModel>>.fromJson(
+            BaseResponse<PaginatedResponse<NotificationModel>>.fromJson(
           responseBody,
-              (json) {
+          (json) {
             return PaginatedResponse<NotificationModel>.fromJson(
               json,
-                  (p0) {
+              (p0) {
                 return NotificationModel.fromJson(p0);
               },
             );
@@ -60,8 +57,7 @@ class NotificationsDataSource {
         rethrow;
       }
     } else {
-      throw OfflineException(errorMessage: 'No Internet Connection');
+      throw OfflineException(errorMessage: 'لا يوجد انترنت');
     }
   }
-
 }

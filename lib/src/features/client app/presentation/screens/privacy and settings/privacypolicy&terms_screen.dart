@@ -128,7 +128,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                     height: 1.6,
                     fontSize: 13.1,
                     text:
-                        "إذا كان لديك أي أسئلة أو اقتراحات حول الشروط والأحكام الخاصة بنا، فلا تتردد في الاتصال بنا على  wesammajdi.2003@gmail.com"),
+                        "إذا كان لديك أي أسئلة أو اقتراحات حول الشروط والأحكام الخاصة بنا، فلا تتردد في الاتصال بنا على  sianaplus3@gmail.com"),
                 AppSizedBox.kVSpace10,
                 CustomStyledText(
                     height: 1.6,

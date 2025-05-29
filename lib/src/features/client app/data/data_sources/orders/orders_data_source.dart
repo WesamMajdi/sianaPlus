@@ -199,7 +199,7 @@ class OrderRemoteDataSource {
         rethrow;
       }
     } else {
-      throw OfflineException(errorMessage: 'No Internet Connection');
+      throw OfflineException(errorMessage: 'لا يوجد انترنت');
     }
   }
 
@@ -229,7 +229,7 @@ class OrderRemoteDataSource {
         rethrow;
       }
     } else {
-      throw OfflineException(errorMessage: 'No Internet Connection');
+      throw OfflineException(errorMessage: 'لا يوجد انترنت');
     }
   }
 
@@ -269,7 +269,7 @@ class OrderRemoteDataSource {
         rethrow;
       }
     } else {
-      throw OfflineException(errorMessage: 'No Internet Connection');
+      throw OfflineException(errorMessage: 'لا يوجد انترنت');
     }
   }
 
@@ -312,7 +312,7 @@ class OrderRemoteDataSource {
         rethrow;
       }
     } else {
-      throw OfflineException(errorMessage: 'No Internet Connection');
+      throw OfflineException(errorMessage: 'لا يوجد انترنت');
     }
   }
 
@@ -355,7 +355,7 @@ class OrderRemoteDataSource {
         rethrow;
       }
     } else {
-      throw OfflineException(errorMessage: 'No Internet Connection');
+      throw OfflineException(errorMessage: 'لا يوجد انترنت');
     }
   }
 
@@ -386,7 +386,7 @@ class OrderRemoteDataSource {
         rethrow;
       }
     } else {
-      throw OfflineException(errorMessage: 'No Internet Connection');
+      throw OfflineException(errorMessage: 'لا يوجد انترنت');
     }
   }
 
