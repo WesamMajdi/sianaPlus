@@ -34,7 +34,7 @@ apply plugin: 'com.google.gms.google-services'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    namespace "com.example.maintenance_app"
+    namespace "com.sianaplus.maintenance_app"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion = "25.1.8937393"
 
@@ -53,7 +53,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.maintenance_app"
+        applicationId "com.sianaplus.maintenance_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion flutter.minSdkVersion
