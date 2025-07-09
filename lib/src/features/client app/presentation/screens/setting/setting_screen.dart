@@ -98,6 +98,78 @@ class _UserSettingProfileState extends State<UserSettingProfile> {
                 },
                 isVisibl: true,
               ),
+              const Divider(),
+              UserProfileMenu(
+                isVisibl: false,
+                text: "حذف الحساب",
+                icon: FontAwesomeIcons.trash,
+                onTap: () async {
+                  final bool? confirmLogin = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      title: const Row(
+                        children: [
+                          Icon(FontAwesomeIcons.trash,
+                              color: Colors.red, size: 20.0),
+                          AppSizedBox.kWSpace10,
+                          Center(
+                            child: CustomStyledText(
+                              text: 'تأكيد على حذف الحساب',
+                              textColor: AppColors.secondaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      content: const CustomStyledText(
+                        text: 'هل أنت متأكد أنك تريد حذف هذا الحساب؟',
+                        fontSize: 14,
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                          child: const CustomStyledText(
+                              text: "حذف الحساب",
+                              textColor: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.grey[200],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                          child: const CustomStyledText(
+                              text: "إلغاء",
+                              fontSize: 12,
+                              textColor: AppColors.darkGrayColor,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (confirmLogin == true) {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()),
+                      (Route<dynamic> route) => false,
+                    );
+                  }
+                },
+              ),
             ]),
           ),
           AppSizedBox.kVSpace10,

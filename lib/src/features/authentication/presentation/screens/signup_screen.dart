@@ -198,7 +198,31 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                   ],
                 ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  child: Row(
+                    children: [
+                      CustomStyledText(
+                        text: "*",
+                        fontSize: 24,
+                        textColor: Colors.red,
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Flexible(
+                        child: CustomStyledText(
+                          text:
+                              "نستخدم رقم الموبايل فقط لإرسال رمز التحقق لضمان أمان حسابك. لن نشاركه مع أي طرف ثالث.",
+                          fontSize: 12,
+                          textColor: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 const CustomLabelText(text: 'كلمة المرور'),
+
                 CustomInputFieldPassword(
                   controller: passwordController,
                   validators: (value) {
@@ -260,7 +284,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         password: passwordController.text,
                         confirmPassword: confirmpasswordController.text,
                         phoneNumber: mobileNumberController.text,
-                        countryCode: "970",
+                        countryCode: selectedCountryCode!,
                       ),
                     ),
                   ),
@@ -292,7 +316,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           password: passwordController.text,
                           confirmPassword: confirmpasswordController.text,
                           phoneNumber: mobileNumberController.text,
-                          countryCode: "970"));
+                          countryCode: selectedCountryCode!));
                     }
                   },
                 );

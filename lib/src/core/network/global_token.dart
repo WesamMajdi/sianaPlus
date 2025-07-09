@@ -36,20 +36,20 @@ class TokenManager {
     await prefs.setString('username', username);
   }
 
-  // static Future<void> saveEmail(String email) async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   await prefs.setString('email', email);
-  // }
+  static Future<void> saveEmail(String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('email', email);
+  }
 
   static Future<String?> getName() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('username');
   }
 
-  // static Future<String?> getEmail() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   return prefs.getString('email');
-  // }
+  static Future<String?> getEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('email');
+  }
 
   static Future<void> saveRole(String role) async {
     final prefs = await SharedPreferences.getInstance();
@@ -59,5 +59,15 @@ class TokenManager {
   static Future<void> getRole(String role) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('role', role);
+  }
+
+  static Future<String?> getPhone() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('phone');
+  }
+
+  static Future<void> savePhone(String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('phone', email);
   }
 }

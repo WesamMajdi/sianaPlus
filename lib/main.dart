@@ -130,6 +130,17 @@ class _MyAppState extends State<MyApp> {
       }
     });
     checkInitialMessage();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      if (message.notification != null) {
+        if (!mounted) return;
+
+        showTopSnackBar(
+          context,
+          message.notification!.title ?? "إشعار جديد",
+          Colors.green,
+        );
+      }
+    });
   }
 
   void checkInitialMessage() async {
@@ -222,7 +233,7 @@ class _MyAppState extends State<MyApp> {
       BuildContext context, ConnectivityStatus disconnected) {
     switch (disconnected) {
       case ConnectivityStatus.connected:
-        showTopSnackBar(context, 'تم الاتصال بالانترنت', Colors.green.shade800);
+        // showTopSnackBar(context, 'تم الاتصال بالانترنت', Colors.green.shade800);
         break;
       case ConnectivityStatus.disconnected:
         showTopSnackBar(context, 'لا يوجد اتصال بالإنترنت', Colors.red);

@@ -15,6 +15,7 @@ import 'package:maintenance_app/src/features/authentication/data/model/signup_mo
 import 'package:maintenance_app/src/features/authentication/data/model/update_email_model.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/update_password_model.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/user_model.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../core/network/base_response.dart';
 
@@ -46,10 +47,13 @@ class AuthRemoteDataSource {
         String token = responseBody['data']['token'];
         String name = responseBody['data']['username'];
         String role = responseBody['data']['role'];
+        String email = responseBody['data']['email'];
+        // String phone = responseBody['data']['phone'];
         await TokenManager.saveToken(token);
         await TokenManager.saveName(name);
         await TokenManager.saveRole(role);
-
+        await TokenManager.saveEmail(email);
+        // await TokenManager.savePhone(phone);
         final isDeviceRegistered = await registerDevice();
         if (isDeviceRegistered) {
           print("Device registered successfully after login.");

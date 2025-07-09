@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/showTopSnackBar.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/login_model.dart';
@@ -10,6 +11,7 @@ import 'package:maintenance_app/src/features/client%20app/presentation/screens/h
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/home_delivery_maintenance/home_delivery_maintenance_screen.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/home_delivery/home_delivery_shop_screen.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/home_maintenance/home_maintenance_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({
@@ -38,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           children: [
             Container(
-              margin: const EdgeInsets.only(top: 80, bottom: 20),
+              margin: const EdgeInsets.only(top: 60, bottom: 20),
               child: Image.asset(
                 Theme.of(context).brightness == Brightness.dark
                     ? 'assets/images/logoWhit.png'
@@ -56,6 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Form(
               key: _formKey,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomInputField(
                       hintText: 'ادخل البريد الإلكتروني',
@@ -86,6 +89,37 @@ class _LoginScreenState extends State<LoginScreen> {
                     icon: CupertinoIcons.lock_circle_fill,
                   ),
                   AppSizedBox.kVSpace10,
+                  Padding(
+                    padding: const EdgeInsets.only(right: 20),
+                    child: Text.rich(
+                      TextSpan(
+                        text: 'بالتسجيل، فإنك توافق على ',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                            fontFamily: "Tajawal"),
+                        children: [
+                          TextSpan(
+                            text: 'سياسة الخصوصية',
+                            style: const TextStyle(
+                                color: AppColors.secondaryColor),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const PrivacyPolicyPage(),
+                                  ),
+                                );
+                              },
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  AppSizedBox.kVSpace5,
                   InkWell(
                     onTap: () {
                       Navigator.push(
@@ -191,7 +225,66 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
               ),
             ),
-            AppSizedBox.kVSpace5,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Stack(
+                clipBehavior: Clip.none,
+                alignment: AlignmentDirectional.center,
+                children: [
+                  Positioned(
+                    left: 0,
+                    child: Container(
+                      width: 15,
+                      height: 15,
+                      margin: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          style: BorderStyle.solid,
+                          width: 4,
+                          color: const Color.fromARGB(255, 237, 228, 253),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    right: 0,
+                    child: Container(
+                      width: 15,
+                      height: 15,
+                      margin: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          style: BorderStyle.solid,
+                          width: 4,
+                          color: const Color.fromARGB(255, 237, 228, 253),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 27),
+                    height: 5,
+                    color: const Color.fromARGB(255, 237, 228, 253),
+                  ),
+                  const CircleAvatar(
+                      radius: 25, child: CustomStyledText(text: 'أو')),
+                ],
+              ),
+            ),
+            CustomButton(
+              text: "الدخول كضيف",
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const HomePage(), // ← غيرها إذا أردت توجيه الضيف لمكان مختلف
+                  ),
+                );
+              },
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -217,7 +310,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     )),
               ],
             ),
-            AppSizedBox.kVSpace20,
             AppSizedBox.kVSpace20,
             Column(
               mainAxisAlignment: MainAxisAlignment.center,

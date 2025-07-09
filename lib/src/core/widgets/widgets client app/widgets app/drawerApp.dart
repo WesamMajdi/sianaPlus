@@ -28,7 +28,7 @@ class _MyDrawerState extends State<MyDrawer> {
     // String? storedEmail = await TokenManager.getEmail();
 
     setState(() {
-      username = storedName ?? 'User';
+      username = storedName ?? 'ضيف التطبيق';
       // email = storedEmail ?? 'user@gmail.com';
     });
   }
@@ -53,7 +53,83 @@ class _MyDrawerState extends State<MyDrawer> {
             height: 60,
           ),
           ListTile(
-            onTap: () {
+            onTap: () async {
+              String? token = await TokenManager.getToken();
+              if (token == null) {
+                final bool? confirmLogin = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    title: const Row(
+                      children: [
+                        Icon(FontAwesomeIcons.circleExclamation,
+                            color: Color.fromARGB(255, 255, 173, 51),
+                            size: 24.0),
+                        AppSizedBox.kWSpace10,
+                        Center(
+                          child: CustomStyledText(
+                            text: 'يتطلب تسجيل الدخول',
+                            textColor: AppColors.secondaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    content: const CustomStyledText(
+                      text: 'يرجى تسجيل الدخول لمشاهدة الملف الشخصي .',
+                      fontSize: 14,
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: AppColors.secondaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const CustomStyledText(
+                          text: "تسجيل الدخول",
+                          textColor: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.grey[200],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const CustomStyledText(
+                          text: "إلغاء",
+                          fontSize: 12,
+                          textColor: AppColors.darkGrayColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (confirmLogin == true) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()),
+                    (Route<dynamic> route) => false,
+                  );
+                }
+
+                return;
+              }
+
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -156,7 +232,83 @@ class _MyDrawerState extends State<MyDrawer> {
             icon: FontAwesomeIcons.solidCircleCheck,
             title: ' طلبات الموافقة',
             isActive: widget.currentIndex == 4,
-            onTap: () {
+            onTap: () async {
+              String? token = await TokenManager.getToken();
+              if (token == null) {
+                final bool? confirmLogin = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    title: const Row(
+                      children: [
+                        Icon(FontAwesomeIcons.circleExclamation,
+                            color: Color.fromARGB(255, 255, 173, 51),
+                            size: 24.0),
+                        AppSizedBox.kWSpace10,
+                        Center(
+                          child: CustomStyledText(
+                            text: 'يتطلب تسجيل الدخول',
+                            textColor: AppColors.secondaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    content: const CustomStyledText(
+                      text:
+                          'يرجى تسجيل الدخول لمشاهدة طلبات الموافقة الشخصية .',
+                      fontSize: 14,
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: AppColors.secondaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const CustomStyledText(
+                          text: "تسجيل الدخول",
+                          textColor: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.grey[200],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const CustomStyledText(
+                          text: "إلغاء",
+                          fontSize: 12,
+                          textColor: AppColors.darkGrayColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (confirmLogin == true) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()),
+                    (Route<dynamic> route) => false,
+                  );
+                }
+
+                return;
+              }
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -170,7 +322,82 @@ class _MyDrawerState extends State<MyDrawer> {
             icon: FontAwesomeIcons.toolbox,
             title: 'طلبات الصيانة',
             isActive: widget.currentIndex == 5,
-            onTap: () {
+            onTap: () async {
+              String? token = await TokenManager.getToken();
+              if (token == null) {
+                final bool? confirmLogin = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    title: const Row(
+                      children: [
+                        Icon(FontAwesomeIcons.circleExclamation,
+                            color: Color.fromARGB(255, 255, 173, 51),
+                            size: 24.0),
+                        AppSizedBox.kWSpace10,
+                        Center(
+                          child: CustomStyledText(
+                            text: 'يتطلب تسجيل الدخول',
+                            textColor: AppColors.secondaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    content: const CustomStyledText(
+                      text: 'يرجى تسجيل الدخول لمشاهدة طلبات الصيانة الشخصية .',
+                      fontSize: 14,
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: AppColors.secondaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const CustomStyledText(
+                          text: "تسجيل الدخول",
+                          textColor: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.grey[200],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const CustomStyledText(
+                          text: "إلغاء",
+                          fontSize: 12,
+                          textColor: AppColors.darkGrayColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (confirmLogin == true) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()),
+                    (Route<dynamic> route) => false,
+                  );
+                }
+
+                return;
+              }
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -183,7 +410,83 @@ class _MyDrawerState extends State<MyDrawer> {
             isActive: widget.currentIndex == 6,
             icon: FontAwesomeIcons.boxOpen,
             title: ' طلبات المنتجات',
-            onTap: () {
+            onTap: () async {
+              String? token = await TokenManager.getToken();
+              if (token == null) {
+                final bool? confirmLogin = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    title: const Row(
+                      children: [
+                        Icon(FontAwesomeIcons.circleExclamation,
+                            color: Color.fromARGB(255, 255, 173, 51),
+                            size: 24.0),
+                        AppSizedBox.kWSpace10,
+                        Center(
+                          child: CustomStyledText(
+                            text: 'يتطلب تسجيل الدخول',
+                            textColor: AppColors.secondaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    content: const CustomStyledText(
+                      text:
+                          'يرجى تسجيل الدخول لمشاهدة طلبات المنتجات الشخصية .',
+                      fontSize: 14,
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: AppColors.secondaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const CustomStyledText(
+                          text: "تسجيل الدخول",
+                          textColor: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.grey[200],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const CustomStyledText(
+                          text: "إلغاء",
+                          fontSize: 12,
+                          textColor: AppColors.darkGrayColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (confirmLogin == true) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()),
+                    (Route<dynamic> route) => false,
+                  );
+                }
+
+                return;
+              }
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -196,7 +499,84 @@ class _MyDrawerState extends State<MyDrawer> {
             isActive: widget.currentIndex == 7,
             icon: FontAwesomeIcons.solidUser,
             title: 'الملف الشخصية',
-            onTap: () {
+            onTap: () async {
+              String? token = await TokenManager.getToken();
+
+              if (token == null) {
+                final bool? confirmLogin = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    title: const Row(
+                      children: [
+                        Icon(FontAwesomeIcons.circleExclamation,
+                            color: Color.fromARGB(255, 255, 173, 51),
+                            size: 24.0),
+                        AppSizedBox.kWSpace10,
+                        Center(
+                          child: CustomStyledText(
+                            text: 'يتطلب تسجيل الدخول',
+                            textColor: AppColors.secondaryColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    content: const CustomStyledText(
+                      text: 'يرجى تسجيل الدخول لمشاهدة الملف الشخصي .',
+                      fontSize: 14,
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: AppColors.secondaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const CustomStyledText(
+                          text: "تسجيل الدخول",
+                          textColor: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.grey[200],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: const CustomStyledText(
+                          text: "إلغاء",
+                          fontSize: 12,
+                          textColor: AppColors.darkGrayColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (confirmLogin == true) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()),
+                    (Route<dynamic> route) => false,
+                  );
+                }
+
+                return; // إيقاف باقي التنفيذ
+              }
+
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -218,129 +598,129 @@ class _MyDrawerState extends State<MyDrawer> {
               );
             },
           ),
-          SideMenuTile(
-            icon: FontAwesomeIcons.rightFromBracket,
-            title: 'تسجيل خروج',
-            onTap: () async {
-              bool resetFirstTime = false;
-              final bool? confirmLogout = await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  title: const Row(
-                    children: [
-                      Icon(FontAwesomeIcons.rightFromBracket,
-                          color: Color.fromARGB(255, 162, 148, 199),
-                          size: 24.0),
-                      AppSizedBox.kWSpace10,
-                      Center(
-                        child: CustomStyledText(
-                          text: 'تأكيد تسجيل الخروج',
-                          textColor: AppColors.secondaryColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  content: const CustomStyledText(
-                    text: 'هل أنت متأكد أنك تريد تسجيل الخروج؟',
-                    fontSize: 14,
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      style: TextButton.styleFrom(
-                        backgroundColor: AppColors.secondaryColor,
+          FutureBuilder<String?>(
+            future: TokenManager.getToken(),
+            builder: (context, snapshot) {
+              final isLoggedIn = snapshot.hasData && snapshot.data != null;
+
+              if (isLoggedIn) {
+                // المستخدم مسجل دخول → عرض زر "تسجيل خروج"
+                return SideMenuTile(
+                  icon: FontAwesomeIcons.rightFromBracket,
+                  title: 'تسجيل خروج',
+                  onTap: () async {
+                    bool resetFirstTime = false;
+                    final bool? confirmLogout = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                          borderRadius: BorderRadius.circular(12.0),
                         ),
-                      ),
-                      child: const CustomStyledText(
-                          text: "تسجيل الخروج",
-                          textColor: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.grey[200],
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                        title: const Row(
+                          children: [
+                            Icon(FontAwesomeIcons.rightFromBracket,
+                                color: Color.fromARGB(255, 162, 148, 199),
+                                size: 24.0),
+                            AppSizedBox.kWSpace10,
+                            Center(
+                              child: CustomStyledText(
+                                text: 'تأكيد تسجيل الخروج',
+                                textColor: AppColors.secondaryColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
+                        content: const CustomStyledText(
+                          text: 'هل أنت متأكد أنك تريد تسجيل الخروج؟',
+                          fontSize: 14,
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            style: TextButton.styleFrom(
+                              backgroundColor: AppColors.secondaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                            child: const CustomStyledText(
+                                text: "تسجيل الخروج",
+                                textColor: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.grey[200],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                            child: const CustomStyledText(
+                                text: "إلغاء",
+                                fontSize: 12,
+                                textColor: AppColors.darkGrayColor,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                      child: const CustomStyledText(
-                          text: "إلغاء",
-                          fontSize: 12,
-                          textColor: AppColors.darkGrayColor,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              );
-              print("confirmLogout 22222222222222222222222222222222");
-              print(confirmLogout);
-              if (confirmLogout == true) {
-                try {
-                  resetFirstTime = true;
-                  print("resetFirstTime 555555555555555");
+                    );
 
-                  print(resetFirstTime);
-                  String? currentFcmToken =
-                      await FirebaseMessaging.instance.getToken();
-                  print('📦 FCM Token قبل الحذف: $currentFcmToken');
+                    if (confirmLogout == true) {
+                      try {
+                        resetFirstTime = true;
 
-                  String? savedToken = await TokenManager.getToken();
-                  print('💾 TokenManager قبل الحذف: $savedToken');
+                        await Future.wait([
+                          FirebaseMessaging.instance.deleteToken(),
+                          TokenManager.removefcmToken(),
+                          TokenManager.removeToken(),
+                          SharedPreferences.getInstance().then((prefs) async {
+                            if (resetFirstTime) {
+                              await prefs.setBool(FIRST_TIME_KEY, true);
+                            }
+                            await prefs.clear();
+                          }),
+                        ]);
 
-                  await Future.wait([
-                    FirebaseMessaging.instance.deleteToken(),
+                        String? newFcmToken =
+                            await FirebaseMessaging.instance.getToken();
+                        if (newFcmToken != null) {
+                          await TokenManager.saveFcmToken(newFcmToken);
+                        }
 
-                    TokenManager.removefcmToken(),
-                    TokenManager.removeToken(),
-
-                    SharedPreferences.getInstance().then((prefs) async {
-                      if (resetFirstTime) {
-                        await prefs.setBool(FIRST_TIME_KEY, true);
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginScreen()),
+                          (route) => false,
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('حدث خطأ أثناء تسجيل الخروج')),
+                        );
                       }
-                      await prefs.clear();
-                    }),
-
-                    // 4. إعلام الخادم بإلغاء التسجيل (اختياري)
-                    // unregisterDeviceOnServer(),
-                  ]);
-                  await Future.delayed(const Duration(milliseconds: 300));
-                  String? fcmTokenAfterDelete =
-                      await TokenManager.getFcmToken();
-
-                  print(
-                      '📦 FCM Token بعد الحذف (مفترض يكون جديد أو null): $fcmTokenAfterDelete');
-
-                  String? savedTokenAfter = await TokenManager.getToken();
-                  print('💾 TokenManager بعد الحذف: $savedTokenAfter');
-                  String? newFcmToken =
-                      await FirebaseMessaging.instance.getToken();
-                  print("🎯 New FCM Token بعد تسجيل الدخول: $newFcmToken");
-
-                  await TokenManager.saveFcmToken(newFcmToken!);
-
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const LoginScreen()),
-                    (Route<dynamic> route) => false,
-                  );
-                } catch (e) {
-                  print('حدث خطأ أثناء تسجيل الخروج: $e');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('حدث خطأ أثناء تسجيل الخروج')),
-                  );
-                }
+                    }
+                  },
+                );
+              } else {
+                // المستخدم غير مسجل دخول → عرض زر "تسجيل دخول"
+                return SideMenuTile(
+                  icon: FontAwesomeIcons.rightToBracket,
+                  title: 'تسجيل دخول',
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginScreen()),
+                    );
+                  },
+                );
               }
             },
-          ),
+          )
         ],
       ),
     );

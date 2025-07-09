@@ -95,7 +95,7 @@ class _OrdersProductPageState extends State<OrdersProductPage> {
                 }
                 return const Center(
                     child:
-                        CustomStyledText(text: 'لا توجد طلبات منتجات سابقة'));
+                        CustomStyledText(text: 'لا توجد طلبات منتجات حالية'));
               },
             ),
             BlocBuilder<OrderCubit, OrderState>(

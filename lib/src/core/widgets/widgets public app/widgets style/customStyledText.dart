@@ -7,16 +7,17 @@ class CustomStyledText extends StatelessWidget {
   final double? height;
   final FontWeight fontWeight;
   final String fontFamily;
+  final TextAlign? textAlign;
 
-  const CustomStyledText({
-    super.key,
-    required this.text,
-    this.textColor,
-    this.fontSize = 16,
-    this.height,
-    this.fontWeight = FontWeight.w500,
-    this.fontFamily = "Tajawal",
-  });
+  const CustomStyledText(
+      {super.key,
+      required this.text,
+      this.textColor,
+      this.fontSize = 16,
+      this.height,
+      this.fontWeight = FontWeight.w500,
+      this.fontFamily = "Tajawal",
+      this.textAlign});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class CustomStyledText extends StatelessWidget {
 
     return Text(
       text,
-      // textAlign: TextAlign.justify,
+      textAlign: textAlign,
       style: TextStyle(
         height: height,
         color: effectiveTextColor,

@@ -1,10 +1,26 @@
 import 'package:http/http.dart' as http;
+import 'package:maintenance_app/src/core/network/global_token.dart';
 import 'package:xml/xml.dart';
 
 class TelrServiceXMLOrder {
   static Future<String?> createPayment(int totalAmount) async {
+    String firstName = 'Customer';
+    String lastName = '';
     print("📤 المبلغ المطلوب: $totalAmount");
+    String? fullName = await TokenManager.getName();
+    if (fullName != null && fullName.trim().contains(' ')) {
+      final parts = fullName.trim().split(' ');
+      firstName = parts.first;
+      lastName = parts.sublist(1).join(' ');
+    } else if (fullName != null) {
+      firstName = fullName.trim();
+    }
 
+    print(fullName);
+    String? email = await TokenManager.getEmail();
+    print(email);
+
+    String? phone = await TokenManager.getPhone();
     final builder = XmlBuilder();
     builder.processing('xml', 'version="1.0" encoding="UTF-8"');
 
@@ -26,7 +42,7 @@ class TelrServiceXMLOrder {
         builder.element('id', nest: 'install-id-abc987');
       });
       builder.element('tran', nest: () {
-        builder.element('test', nest: '1');
+        builder.element('test', nest: '0');
         builder.element('type', nest: 'paypage');
         builder.element('class', nest: 'ecom');
         builder.element('cartid', nest: '123456');
@@ -36,11 +52,26 @@ class TelrServiceXMLOrder {
         builder.element('ref', nest: 'ref');
       });
       builder.element('billing', nest: () {
-        builder.element('name', nest: 'Ibrahim Al-Amri');
-        builder.element('email', nest: 'ibrahim@example.com');
+        builder.element('name', nest: () {
+          builder.element('title', nest: "Mr");
+          builder.element('first', nest: firstName);
+          builder.element('last', nest: lastName);
+        });
+
+        builder.element('address', nest: () {
+          builder.element('line1', nest: 'Olaya Street');
+          builder.element('line2', nest: 'Building 5');
+          builder.element('line3', nest: 'Near Kingdom Tower');
+          builder.element('city', nest: 'Riyadh');
+          builder.element('region', nest: 'Central');
+          builder.element('country', nest: 'SA');
+          builder.element('zip', nest: '11564');
+        });
+
         builder.element('phone', nest: '966501234567');
-        builder.element('country', nest: 'SA');
+        builder.element('email', nest: email);
       });
+
       builder.element('return', nest: () {
         builder.element('success', nest: 'maintenanceplus://payment-success');
         builder.element('fail', nest: 'maintenanceplus://payment-failed');

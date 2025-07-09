@@ -1,9 +1,11 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/foundation.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/network/global_token.dart';
 import 'package:maintenance_app/src/core/services/telr_service.dart';
 import 'package:maintenance_app/src/core/services/telr_service_xml.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/successPage.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/screens/login_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/region/region_model.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/shipping/shipping_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/webviwe/telr_payment_screen.dart';
@@ -212,6 +214,88 @@ class _BottomBarCartTotalState extends State<BottomBarCartTotal> {
                           ),
                         ),
                         onPressed: () async {
+                          String? token = await TokenManager.getToken();
+
+                          if (token == null) {
+                            final bool? confirmLogin = await showDialog<bool>(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                ),
+                                title: const Row(
+                                  children: [
+                                    Icon(FontAwesomeIcons.circleExclamation,
+                                        color:
+                                            Color.fromARGB(255, 255, 173, 51),
+                                        size: 24.0),
+                                    AppSizedBox.kWSpace10,
+                                    Center(
+                                      child: CustomStyledText(
+                                        text: 'يتطلب تسجيل الدخول',
+                                        textColor: AppColors.secondaryColor,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                content: const CustomStyledText(
+                                  text:
+                                      'يرجى تسجيل الدخول للمتابعة في عملية الدفع.',
+                                  fontSize: 14,
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(true);
+                                    },
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: AppColors.secondaryColor,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                      ),
+                                    ),
+                                    child: const CustomStyledText(
+                                      text: "تسجيل الدخول",
+                                      textColor: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(context).pop(false),
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.grey[200],
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                      ),
+                                    ),
+                                    child: const CustomStyledText(
+                                      text: "إلغاء",
+                                      fontSize: 12,
+                                      textColor: AppColors.darkGrayColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+
+                            if (confirmLogin == true) {
+                              Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const LoginScreen()),
+                                (Route<dynamic> route) => false,
+                              );
+                            }
+
+                            return; // إيقاف باقي التنفيذ
+                          }
+
                           final totalAmount = discountWithFee +
                               ((discountWithFee) * (discountEntity.tax! / 100));
                           if (totalAmount != 0) {

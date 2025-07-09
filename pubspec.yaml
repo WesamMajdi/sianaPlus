@@ -2,7 +2,7 @@ name: maintenance_app
 description: It is an electronic store application and a request for maintenance of electrical appliances specific to the user.
 publish_to: 'none'
 
-version: 1.0.0+2
+version: 1.0.0+8
 
 environment:
   sdk: '>=3.0.6 <4.0.0'
@@ -53,6 +53,7 @@ dependencies:
   xml: ^6.5.0
   mobile_scanner: ^6.0.7
   shimmer: ^3.0.0
+
   # flutter_barcode_scanner: ^2.0.0 
 
 dev_dependencies:

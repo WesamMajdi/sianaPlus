@@ -9,8 +9,6 @@ import 'package:maintenance_app/src/core/network/global_token.dart';
 import 'package:maintenance_app/src/core/pagination/paginated_response.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/product/product_model.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/product/search_product_model.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/category_cubit.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
 import '../../../../../core/error/exception.dart';
 import '../../../../../core/error/handle_http_error.dart';
 import '../../../../../core/network/api_controller.dart';

@@ -77,7 +77,7 @@ class _TelrPaymentScreenState extends State<TelrPaymentScreen> {
 
     debugPrint('Checking URL for payment result: $url');
 
-    if (url.contains('pp2_acs_return')) {
+    if (url.contains('webview_close')) {
       _handleSuccess();
     } else if (url.contains('payment-cancelled') || url.contains('cancel')) {
       _handleCancellation();

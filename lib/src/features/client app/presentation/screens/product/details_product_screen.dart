@@ -68,85 +68,101 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 8, bottom: 10, right: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CustomStyledText(
-                        text: widget.product.name!,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        textColor: AppColors.secondaryColor,
-                      ),
-                    ],
+                  child: CustomStyledText(
+                    text: widget.product.name!,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    textColor: AppColors.secondaryColor,
                   ),
                 ),
+                if (widget.product.productColors!.isNotEmpty) ...[
+                  const Padding(
+                    padding: EdgeInsets.only(top: 7, bottom: 15),
+                    child: Row(
+                      children: [
+                        CustomStyledText(
+                          text: "ألوان المنتج المتوفرة:",
+                          textColor: AppColors.lightGrayColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                        AppSizedBox.kWSpace10,
+                      ],
+                    ),
+                  ),
+                  Row(
+                    children: List.generate(
+                      widget.product.productColors!.length,
+                      (index) {
+                        Color color;
+                        try {
+                          final hex = widget.product.productColors![index].hex;
+                          if (hex != null && hex.isNotEmpty) {
+                            color = Color(int.parse(hex.replaceAll('#', 'FF'),
+                                radix: 16));
+                          } else {
+                            color = Colors.grey;
+                          }
+                        } catch (e) {
+                          color = Colors.grey;
+                        }
 
-                // Padding(
-                //   padding: const EdgeInsets.only(top: 5, bottom: 10),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       Row(
-                //         children: [
-                //           InkWell(
-                //             onTap: () => {
-                //               print(widget.product.id),
-                //               context.read<CategoryCubit>().increaseQuantity(
-                //                   widget.product.id.toString()),
-                //             },
-                //             child: Container(
-                //               padding: const EdgeInsets.all(5),
-                //               decoration: BoxDecoration(
-                //                 color: Colors.grey.withOpacity(0.2),
-                //                 borderRadius: BorderRadius.circular(20),
-                //               ),
-                //               child: const Icon(
-                //                 color: AppColors.secondaryColor,
-                //                 CupertinoIcons.plus,
-                //                 size: 20,
-                //               ),
-                //             ),
-                //           ),
-                //           BlocBuilder<CategoryCubit, CategoryState>(
-                //             builder: (context, state) => Container(
-                //               margin:
-                //                   const EdgeInsets.symmetric(horizontal: 10),
-                //               child: CustomStyledText(
-                //                 text: "${widget.product.userCount}",
-                //                 fontWeight: FontWeight.bold,
-                //                 fontSize: 20,
-                //                 textColor: AppColors.secondaryColor,
-                //               ),
-                //             ),
-                //           ),
-                //           InkWell(
-                //             onTap: () => {
-                //               print(widget.product.id),
-                //               context.read<CategoryCubit>().decreaseQuantity(
-                //                   widget.product.id.toString()),
-                //             },
-                //             child: Container(
-                //               padding: const EdgeInsets.all(5),
-                //               decoration: BoxDecoration(
-                //                 color: Colors.grey.withOpacity(0.2),
-                //                 borderRadius: BorderRadius.circular(20),
-                //               ),
-                //               child: const Icon(
-                //                 color: AppColors.secondaryColor,
-                //                 CupertinoIcons.minus,
-                //                 size: 20,
-                //               ),
-                //             ),
-                //           ),
-                //         ],
-                //       )
-                //     ],
-                //   ),
-                // ),
-
+                        return GestureDetector(
+                          onTap: () {
+                            context.read<CategoryCubit>().selectProductColor(
+                                  index: index,
+                                  productColor:
+                                      widget.product.productColors![index],
+                                  productId: widget.product.id!,
+                                );
+                          },
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              BlocBuilder<CategoryCubit, CategoryState>(
+                                builder: (context, state) {
+                                  return Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                      boxShadow: shadowList,
+                                      borderRadius: BorderRadius.circular(30),
+                                      border: Border.all(
+                                        color: state.selectedIndex == index
+                                            ? AppColors.secondaryColor
+                                            : Colors.transparent,
+                                        width: 2,
+                                      ),
+                                      color: Colors.white,
+                                    ),
+                                  );
+                                },
+                              ),
+                              Container(
+                                height: 30,
+                                width: 30,
+                                alignment: Alignment.center,
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                decoration: BoxDecoration(
+                                  boxShadow: shadowList,
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: color,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  AppSizedBox.kVSpace10
+                ],
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   child: Align(
@@ -159,77 +175,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     ),
                   ),
                 ),
-                if (widget.product.productColors!.isNotEmpty) ...[
-                  const Padding(
-                    padding: EdgeInsets.only(top: 7, bottom: 15),
-                    child: Row(
-                      children: [
-                        CustomStyledText(
-                          text: "ألوان المنتج المتوفرة:",
-                          textColor: AppColors.secondaryColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                        AppSizedBox.kWSpace10,
-                      ],
-                    ),
-                  ),
-                  Row(
-                    children: List.generate(
-                      widget.product.productColors!.length,
-                      (index) {
-                        Color color = Color(int.parse(
-                            widget.product.productColors![index].hex!
-                                .replaceAll('#', 'FF'),
-                            radix: 16));
-
-                        return GestureDetector(
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              BlocBuilder<CategoryCubit, CategoryState>(
-                                builder: (context, state) {
-                                  return Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: BoxDecoration(
-                                        boxShadow: shadowList,
-                                        borderRadius: BorderRadius.circular(30),
-                                        border: Border.all(
-                                          color: state.selectedIndex == index
-                                              ? AppColors.secondaryColor
-                                              : Colors.transparent,
-                                          width: 2,
-                                        ),
-                                        color: Colors.white),
-                                  );
-                                },
-                              ),
-                              Container(
-                                height: 30,
-                                width: 30,
-                                alignment: Alignment.center,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 10),
-                                decoration: BoxDecoration(
-                                    boxShadow: shadowList,
-                                    borderRadius: BorderRadius.circular(30),
-                                    color: color),
-                              ),
-                            ],
-                          ),
-                          onTap: () {
-                            context.read<CategoryCubit>().selectProductColor(
-                                index: index,
-                                productColor:
-                                    widget.product.productColors![index],
-                                productId: widget.product.id!);
-                          },
-                        );
-                      },
-                    ),
-                  )
-                ]
               ],
             ),
           ),

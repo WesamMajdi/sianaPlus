@@ -1,8 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model_request.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/failedScreen.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/successPage.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
@@ -17,6 +15,7 @@ class TelrDeliveryMaintenancePaymentScreen extends StatefulWidget {
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _TelrDeliveryMaintenancePaymentScreenState createState() =>
       _TelrDeliveryMaintenancePaymentScreenState();
 }
@@ -59,7 +58,7 @@ class _TelrDeliveryMaintenancePaymentScreenState
   void _handlePaymentResult(String url) {
     if (_paymentCompleted) return;
 
-    if (url.contains("pp2_acs_return")) {
+    if (url.contains("webview_close")) {
       _handleSuccess();
     } else if (url.contains("payment-cancelled")) {
       _handleCancellation();
