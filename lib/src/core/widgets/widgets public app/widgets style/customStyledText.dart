@@ -8,6 +8,7 @@ class CustomStyledText extends StatelessWidget {
   final FontWeight fontWeight;
   final String fontFamily;
   final TextAlign? textAlign;
+  final TextDecoration? decoration;
 
   const CustomStyledText(
       {super.key,
@@ -17,7 +18,8 @@ class CustomStyledText extends StatelessWidget {
       this.height,
       this.fontWeight = FontWeight.w500,
       this.fontFamily = "Tajawal",
-      this.textAlign});
+      this.textAlign,
+      this.decoration});
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,7 @@ class CustomStyledText extends StatelessWidget {
       style: TextStyle(
         height: height,
         color: effectiveTextColor,
+        decoration: decoration,
         fontSize: fontSize,
         fontWeight: fontWeight,
         fontFamily: fontFamily,

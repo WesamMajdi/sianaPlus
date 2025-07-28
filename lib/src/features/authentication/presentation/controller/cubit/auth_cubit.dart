@@ -44,6 +44,23 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  void signupWithPhone(SignupModel createSignupRequest) async {
+    emit(state.copyWith(signUpStatus: SignUpStatus.loading));
+    try {
+      final result = await authUseCase.signupWithPhone(createSignupRequest);
+      result.fold(
+        (failure) => emit(state.copyWith(
+            signUpStatus: SignUpStatus.failure, errorMessage: failure.message)),
+        (user) => emit(state.copyWith(
+            signUpStatus: SignUpStatus.success, userSignup: user)),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+          signUpStatus: SignUpStatus.failure,
+          errorMessage: 'Unexpected error occurred: $e'));
+    }
+  }
+
   void signup(SignupModel createSignupRequest) async {
     emit(state.copyWith(signUpStatus: SignUpStatus.loading));
     try {
@@ -51,8 +68,8 @@ class AuthCubit extends Cubit<AuthState> {
       result.fold(
         (failure) => emit(state.copyWith(
             signUpStatus: SignUpStatus.failure, errorMessage: failure.message)),
-        (user) => emit(state.copyWith(
-            signUpStatus: SignUpStatus.success, userSignup: user)),
+        (user) => emit(
+            state.copyWith(signUpStatus: SignUpStatus.success, user: user)),
       );
     } catch (e) {
       emit(state.copyWith(
@@ -209,6 +226,60 @@ class AuthCubit extends Cubit<AuthState> {
       emit(state.copyWith(
           updatePhone: UpdatePhoneStatus.failure,
           errorMessage: 'Unexpected error occurred: $e'));
+    }
+  }
+
+  void phoneNumberVerify(String phoneNumber, String code) async {
+    emit(state.copyWith(phoneVerifyStatus: PhoneVerifyStatus.loading));
+
+    try {
+      final response = await authUseCase.phoneNumberVerify(phoneNumber, code);
+      response.fold(
+        (failure) {
+          emit(state.copyWith(
+            phoneVerifyStatus: PhoneVerifyStatus.failure,
+            errorMessage: failure.message,
+          ));
+        },
+        (successMessage) {
+          emit(state.copyWith(
+            phoneVerifyStatus: PhoneVerifyStatus.success,
+          ));
+        },
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        phoneVerifyStatus: PhoneVerifyStatus.failure,
+        errorMessage: e.toString(),
+      ));
+    }
+  }
+
+  Future<void> sendVerificationCode2(String phone, String code) async {
+    emit(state.copyWith(
+        sendVerificationCode2Status: SendVerificationCode2Status.loading));
+
+    try {
+      final response = await authUseCase.sendVerificationCode2(phone, code);
+      response.fold(
+        (failure) {
+          emit(state.copyWith(
+            sendVerificationCode2Status: SendVerificationCode2Status.failure,
+            errorMessage: failure.message,
+          ));
+        },
+        (successResponse) {
+          emit(state.copyWith(
+            sendVerificationCode2Status: SendVerificationCode2Status.success,
+            phone: phone,
+          ));
+        },
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        sendVerificationCode2Status: SendVerificationCode2Status.failure,
+        errorMessage: e.toString(),
+      ));
     }
   }
 }

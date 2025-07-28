@@ -1,4 +1,5 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/category/category_screen.dart';
 
 class FloatingButtonInBottomBar extends StatelessWidget {
   const FloatingButtonInBottomBar({
@@ -16,21 +17,17 @@ class FloatingButtonInBottomBar extends StatelessWidget {
       maintainState: true,
       child: FloatingActionButton(
         shape: const CircleBorder(),
-        backgroundColor: (Theme.of(context).brightness == Brightness.dark
-            ? AppColors.lightGrayColor
-            : AppColors.primaryColor),
+        backgroundColor: AppColors.secondaryColor,
         onPressed: () {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const SearchProductPage()),
+            MaterialPageRoute(builder: (context) => const CategoryPage()),
           );
         },
         child: Icon(
-          FontAwesomeIcons.magnifyingGlass,
+          FontAwesomeIcons.store,
           size: 20,
-          color: (Theme.of(context).brightness == Brightness.dark
-              ? AppColors.primaryColor
-              : AppColors.lightGrayColor),
+          color: Colors.white,
         ),
       ),
     );

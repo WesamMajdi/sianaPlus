@@ -16,6 +16,7 @@ class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
 
   AuthRepositoryImpl(this.remoteDataSource);
+
   @override
   Future<Either<Failure, UserEntity>> login(
       LoginModel createLoginRequest) async {
@@ -28,7 +29,19 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, SignupResponseData>> signup(
+  Future<Either<Failure, SignupResponseData>> signupWithPhone(
+      SignupModel createSignupRequest) async {
+    try {
+      final response =
+          await remoteDataSource.signupWithPhone(createSignupRequest);
+      return Right(response.data!);
+    } catch (e) {
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserModel>> signup(
       SignupModel createSignupRequest) async {
     try {
       final response = await remoteDataSource.signup(createSignupRequest);
@@ -119,6 +132,33 @@ class AuthRepositoryImpl implements AuthRepository {
       return const Right(null);
     } catch (e) {
       debugPrint('Error in updateEmail: $e');
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> sendVerificationCode2(
+      String phoneNumber, String code) async {
+    try {
+      await remoteDataSource.sendVerificationCode2(phoneNumber, code);
+      return const Right(null);
+    } catch (e) {
+      debugPrint('Error in updateEmail: $e');
+      return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, PhoneNumberVerifyModel>> phoneNumberVerify(
+      String? countryCode, String? phoneNumber) async {
+    try {
+      final response = await remoteDataSource.phoneNumberVerify(
+        countryCode!,
+        phoneNumber!,
+      );
+      return Right(response.data!);
+    } catch (e) {
+      debugPrint('Error in phoneNumberVerify: $e');
       return Left(ServerFailure(message: e.toString()));
     }
   }

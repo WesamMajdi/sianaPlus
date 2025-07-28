@@ -11,7 +11,6 @@ import 'package:maintenance_app/src/features/client%20app/presentation/screens/h
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/screens/home_delivery_maintenance/home_delivery_maintenance_screen.dart';
 import 'package:maintenance_app/src/features/delivery%20shop%20app/presentation/screens/home_delivery/home_delivery_shop_screen.dart';
 import 'package:maintenance_app/src/features/maintenance%20technician%20app/presentation/screens/home_maintenance/home_maintenance_screen.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({
@@ -145,7 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
             BlocListener<AuthCubit, AuthState>(
               listener: (context, state) {
                 if (state.loginStatus == LoginStatus.success) {
-                  if (state.user!.token.isEmpty || state.user!.role.isEmpty) {
+                  if (state.user!.token!.isEmpty || state.user!.role!.isEmpty) {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(

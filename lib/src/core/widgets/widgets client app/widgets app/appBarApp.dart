@@ -46,7 +46,7 @@ class AppBarApplicationArrow extends StatelessWidget
   final List<Widget>? actions;
   final VoidCallback? onBackTap;
   final bool isHome;
-  AppBarApplicationArrow({
+  const AppBarApplicationArrow({
     super.key,
     required this.text,
     this.actions,
@@ -88,7 +88,7 @@ class AppBarApplicationArrow extends StatelessWidget
                   ? AppColors.lightGrayColor
                   : AppColors.primaryColor),
               fontWeight: FontWeight.bold,
-              fontSize: 22,
+              fontSize: 20,
             ),
           ),
         ),

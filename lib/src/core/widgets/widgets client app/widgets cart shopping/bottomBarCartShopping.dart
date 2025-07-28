@@ -1,12 +1,12 @@
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/network/global_token.dart';
-import 'package:maintenance_app/src/core/services/telr_service.dart';
 import 'package:maintenance_app/src/core/services/telr_service_xml.dart';
-import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/successPage.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/controller/cubit/auth_cubit.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/controller/state/auth_state.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/screens/login_screen.dart';
-import 'package:maintenance_app/src/features/client%20app/data/model/region/region_model.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/screens/verification_screen_2.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/shipping/shipping_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/webviwe/telr_payment_screen.dart';
 import '../../../../features/client app/domain/entities/product/discount_entity.dart';
@@ -29,6 +29,17 @@ class _BottomBarCartTotalState extends State<BottomBarCartTotal> {
     // context.read<CategoryCubit>().clearCart();
   }
 
+  String? selectedCountryCode = '+966';
+  TextEditingController mobileNumberController = TextEditingController();
+
+  final List<String> gulfCountryCodes = [
+    '+966',
+    '+971',
+    '+965',
+    '+973',
+    '+968',
+    '+974',
+  ];
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
@@ -292,46 +303,296 @@ class _BottomBarCartTotalState extends State<BottomBarCartTotal> {
                                 (Route<dynamic> route) => false,
                               );
                             }
-
-                            return; // إيقاف باقي التنفيذ
                           }
 
+                          String phone = await TokenManager.getPhone() ?? "";
+
+                          if (phone == "") {
+                            await showDialog(
+                              context: context,
+                              builder: (context) => SizedBox(
+                                width: 800,
+                                child: AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12.0),
+                                  ),
+                                  title: const Row(
+                                    children: [
+                                      Icon(Icons.phone,
+                                          color: AppColors.secondaryColor,
+                                          size: 24.0),
+                                      AppSizedBox.kWSpace10,
+                                      Center(
+                                        child: CustomStyledText(
+                                            text: 'إدخال رقم الهاتف',
+                                            textColor: AppColors.secondaryColor,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  content: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const CustomStyledText(
+                                        text: 'يرجى إدخال رقم الهاتف للمتابعة',
+                                        fontSize: 14,
+                                      ),
+                                      const SizedBox(height: 20),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: AppPadding.mediumPadding,
+                                            horizontal:
+                                                AppPadding.mediumPadding),
+                                        child: DropdownSearch<String>(
+                                          items: gulfCountryCodes,
+                                          selectedItem: selectedCountryCode,
+                                          dropdownDecoratorProps:
+                                              DropDownDecoratorProps(
+                                            dropdownSearchDecoration:
+                                                InputDecoration(
+                                              hintText: "أختر رقم",
+                                              filled: true,
+                                              hintStyle: const TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: "Tajawal",
+                                              ),
+                                              fillColor:
+                                                  Colors.grey.withOpacity(0.2),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide.none,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide.none,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 18,
+                                                horizontal: 18,
+                                              ),
+                                            ),
+                                          ),
+                                          popupProps: PopupProps.menu(
+                                            showSearchBox: true,
+                                            menuProps: MenuProps(
+                                              elevation: 2,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            searchFieldProps: TextFieldProps(
+                                              decoration: InputDecoration(
+                                                hintText:
+                                                    "ابحث عن رمز الدولة ..",
+                                                filled: true,
+                                                hintStyle: TextStyle(
+                                                  fontSize: 14,
+                                                  fontFamily: "Tajawal",
+                                                ),
+                                                fillColor: Colors.grey
+                                                    .withOpacity(0.2),
+                                                enabledBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: BorderSide.none,
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                focusedBorder:
+                                                    OutlineInputBorder(
+                                                  borderSide: BorderSide.none,
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                contentPadding:
+                                                    const EdgeInsets.symmetric(
+                                                  vertical: 18,
+                                                  horizontal: 18,
+                                                ),
+                                              ),
+                                              style: TextStyle(
+                                                fontFamily: "Tajawal",
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            itemBuilder:
+                                                (context, item, isSelected) {
+                                              return ListTile(
+                                                title: Text(
+                                                  item,
+                                                  style: const TextStyle(
+                                                    fontFamily: "Tajawal",
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                                selected: isSelected,
+                                              );
+                                            },
+                                          ),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              selectedCountryCode = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 450,
+                                        child: CustomInputField(
+                                          hintText: 'ادخل رقم الموبايل',
+                                          icon: CupertinoIcons.phone_solid,
+                                          controller: mobileNumberController,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  actions: [
+                                    Builder(
+                                      builder: (dialogContext) {
+                                        return BlocListener<AuthCubit,
+                                            AuthState>(
+                                          listener: (context, state) async {
+                                            if (state.phoneVerifyStatus ==
+                                                PhoneVerifyStatus.success) {
+                                              final cleanedCountryCode =
+                                                  selectedCountryCode
+                                                          ?.replaceAll(
+                                                              "+", "") ??
+                                                      "";
+
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Verification2Screen(
+                                                    selectedCountryCode:
+                                                        cleanedCountryCode,
+                                                    phone:
+                                                        mobileNumberController
+                                                            .text,
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          child:
+                                              BlocBuilder<AuthCubit, AuthState>(
+                                            builder: (context, state) {
+                                              if (state.phoneVerifyStatus ==
+                                                  PhoneVerifyStatus.loading) {
+                                                return CustomButton(
+                                                  text: "",
+                                                  onPressed: () {},
+                                                  child: const SizedBox(
+                                                    width: 30.0,
+                                                    height: 30.0,
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  ),
+                                                );
+                                              }
+
+                                              return CustomButton(
+                                                text: "حفظ",
+                                                onPressed: () {
+                                                  if (mobileNumberController
+                                                      .text.isEmpty) {
+                                                    ScaffoldMessenger.of(
+                                                            dialogContext)
+                                                        .showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text(
+                                                            'يرجى إدخال رقم الهاتف'),
+                                                      ),
+                                                    );
+                                                    return;
+                                                  }
+
+                                                  if (selectedCountryCode ==
+                                                      null) {
+                                                    ScaffoldMessenger.of(
+                                                            dialogContext)
+                                                        .showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text(
+                                                            'يرجى اختيار كود الدولة'),
+                                                      ),
+                                                    );
+                                                    return;
+                                                  }
+
+                                                  dialogContext
+                                                      .read<AuthCubit>()
+                                                      .phoneNumberVerify(
+                                                        mobileNumberController
+                                                            .text,
+                                                        selectedCountryCode!,
+                                                      );
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
                           final totalAmount = discountWithFee +
-                              ((discountWithFee) * (discountEntity.tax! / 100));
-                          if (totalAmount != 0) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    CheckoutPage(onConfirm: () async {
-                                  String? paymentUrl =
+                              (discountWithFee * (discountEntity.tax! / 100));
+
+                          if (totalAmount == 0) return;
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => CheckoutPage(
+                                onConfirm: () async {
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (_) => const Center(
+                                        child: CircularProgressIndicator()),
+                                  );
+
+                                  final telrResponse =
                                       await TelrServiceXML.createPayment(
                                           totalAmount);
-                                  if (paymentUrl != null) {
+
+                                  if (context.mounted) {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pop();
+                                  }
+
+                                  if (telrResponse != null && context.mounted) {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => TelrPaymentScreen(
-                                          paymentUrl: paymentUrl,
+                                        builder: (_) => TelrPaymentScreen(
+                                          paymentUrl: telrResponse.paymentUrl,
+                                          closeUrl: telrResponse.closeUrl,
+                                          abortUrl: telrResponse.abortUrl,
+                                          transactionCode:
+                                              telrResponse.transactionCode,
                                           totalAmount: totalAmount,
                                         ),
                                       ),
                                     );
-                                  } else {
+                                  } else if (context.mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: CustomStyledText(
-                                          text: "فشل في إنشاء رابط الدفع",
-                                          textColor: Colors.white,
-                                        ),
-                                        backgroundColor: Colors.red,
-                                      ),
+                                      const SnackBar(
+                                          content:
+                                              Text('فشل إنشاء رابط الدفع')),
                                     );
                                   }
-                                }),
+                                },
                               ),
-                            );
-                          }
+                            ),
+                          );
                         },
                         icon: const Icon(
                           FontAwesomeIcons.creditCard,

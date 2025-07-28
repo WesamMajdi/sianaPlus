@@ -5,7 +5,7 @@ export 'package:maintenance_app/src/core/theme/themechangerbloc.dart';
 export 'package:maintenance_app/src/features/client%20app/presentation/screens/splash/splash_screen.dart';
 export 'package:maintenance_app/src/localization/Localization.dart';
 export 'package:shared_preferences/shared_preferences.dart';
-export 'package:flutter_gen/gen_l10n/app_localizations.dart';
+// export 'package:flutter_gen/gen_l10n/app_localizations.dart';
 export 'package:flutter_screenutil/flutter_screenutil.dart';
 export 'package:internet_connection_checker/internet_connection_checker.dart';
 export 'package:connectivity_plus/connectivity_plus.dart';

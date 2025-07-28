@@ -1,13 +1,26 @@
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:maintenance_app/src/core/network/global_token.dart';
 import 'package:xml/xml.dart';
 
+class TelrPaymentResponse {
+  final String paymentUrl;
+  final String closeUrl;
+  final String abortUrl;
+  final String transactionCode;
+
+  TelrPaymentResponse({
+    required this.paymentUrl,
+    required this.closeUrl,
+    required this.abortUrl,
+    required this.transactionCode,
+  });
+}
+
 class TelrServiceXML {
-  static Future<String?> createPayment(double totalAmount) async {
-    print("📤 المبلغ المطلوب: $totalAmount");
-    String firstName = 'Customer';
+  static Future<TelrPaymentResponse?> createPayment(double totalAmount) async {
+    String firstName = '';
     String lastName = '';
-    print("📤 المبلغ المطلوب: $totalAmount");
     String? fullName = await TokenManager.getName();
     if (fullName != null && fullName.trim().contains(' ')) {
       final parts = fullName.trim().split(' ');
@@ -17,12 +30,8 @@ class TelrServiceXML {
       firstName = fullName.trim();
     }
 
-    print(fullName);
     String? email = await TokenManager.getEmail();
-    print(email);
-
-    // String? phone = await TokenManager.getPhone();
-
+    // String? phone = await TokenManager.getEmail();
     final builder = XmlBuilder();
     builder.processing('xml', 'version="1.0" encoding="UTF-8"');
 
@@ -93,14 +102,25 @@ class TelrServiceXML {
 
       print('📥 Status code: ${response.statusCode}');
       print('📥 Response body: ${response.body}');
-
       if (response.statusCode == 200) {
-        // final document = XmlDocument.parse();
-        // final ref = document.findAllElements('ref').first.innerText;
-        // final paymentUrl = document.findAllElements('url').first.innerText;
         final document = XmlDocument.parse(response.body);
-        final startElement = document.findAllElements('start').firstOrNull;
-        return startElement?.innerText;
+
+        final start = document.findAllElements('start').firstOrNull?.innerText;
+        final close = document.findAllElements('close').firstOrNull?.innerText;
+        final abort = document.findAllElements('abort').firstOrNull?.innerText;
+        final code = document.findAllElements('code').firstOrNull?.innerText;
+
+        if (start != null && close != null && abort != null && code != null) {
+          return TelrPaymentResponse(
+            paymentUrl: start,
+            closeUrl: close,
+            abortUrl: abort,
+            transactionCode: code,
+          );
+        } else {
+          debugPrint("⚠️ One or more required XML elements are missing.");
+          return null;
+        }
       } else {
         print("❌ خطأ في الطلب: ${response.statusCode}");
         return null;
@@ -109,5 +129,54 @@ class TelrServiceXML {
       print("❗ فشل الاتصال بـ Telr: $e");
       return null;
     }
+  }
+
+  static Future<Map<String, dynamic>?> completePayment({
+    required String orderRef,
+  }) async {
+    final xmlRequest = _buildCompleteRequestXml(orderRef);
+
+    try {
+      final response = await http.post(
+        Uri.parse('https://secure.telr.com/gateway/mobile_complete.xml'),
+        headers: {'Content-Type': 'application/xml'},
+        body: xmlRequest,
+      );
+
+      if (response.statusCode == 200) {
+        final document = XmlDocument.parse(response.body);
+
+        final status =
+            document.findAllElements('status').firstOrNull?.innerText;
+        final code = document.findAllElements('code').firstOrNull?.innerText;
+        final message =
+            document.findAllElements('message').firstOrNull?.innerText;
+
+        return {
+          'status': status,
+          'code': code,
+          'message': message ?? '',
+        };
+      } else {
+        debugPrint("❌ Telr HTTP error: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      debugPrint("❌ Exception during completePayment: $e");
+      return null;
+    }
+  }
+
+  static const String _storeId = "32217";
+  static const String _authKey = "RCXvL-8XWT~xLNrm";
+  static String _buildCompleteRequestXml(String orderRef) {
+    final builder = XmlBuilder();
+    builder.processing('xml', 'version="1.0" encoding="UTF-8"');
+    builder.element('mobile', nest: () {
+      builder.element('store', nest: _storeId);
+      builder.element('key', nest: _authKey);
+      builder.element('complete', nest: orderRef);
+    });
+    return builder.buildDocument().toXmlString(pretty: true);
   }
 }

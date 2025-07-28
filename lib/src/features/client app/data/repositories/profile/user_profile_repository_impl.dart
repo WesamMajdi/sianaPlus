@@ -42,13 +42,13 @@ class UserProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<Either<Failure, PaginatedResponse<ImageModel>>>
-      getAllImageInHome() async {
+  Future<Either<Failure, HomeModel>> getHomePage() async {
     try {
-      final result = await remoteDataSource.getAllImageInHome();
+      final result = await remoteDataSource.getHomePage();
       return Right(result);
     } catch (e) {
-      return Left(ServerFailure(message: 'There is an error'));
+      return Left(
+          ServerFailure(message: 'حدث خطأ أثناء تحميل الصفحة الرئيسية'));
     }
   }
 }

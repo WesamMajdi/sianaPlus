@@ -7,7 +7,6 @@ import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/network/api_controller.dart';
 import 'package:maintenance_app/src/core/network/api_setting.dart';
 import 'package:maintenance_app/src/core/network/global_token.dart';
-import 'package:maintenance_app/src/core/services/notification_service.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/forgot_password_model.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/login_model.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/reset_password_model.dart';
@@ -15,7 +14,7 @@ import 'package:maintenance_app/src/features/authentication/data/model/signup_mo
 import 'package:maintenance_app/src/features/authentication/data/model/update_email_model.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/update_password_model.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/user_model.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:maintenance_app/src/features/authentication/domain/entities/user_entity.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import '../../../../core/network/base_response.dart';
 
@@ -49,6 +48,7 @@ class AuthRemoteDataSource {
         String role = responseBody['data']['role'];
         String email = responseBody['data']['email'];
         // String phone = responseBody['data']['phone'];
+
         await TokenManager.saveToken(token);
         await TokenManager.saveName(name);
         await TokenManager.saveRole(role);
@@ -77,7 +77,7 @@ class AuthRemoteDataSource {
     }
   }
 
-  Future<BaseResponse<SignupResponseData>> signup(
+  Future<BaseResponse<UserModel>> signup(
       SignupModel createSignupRequest) async {
     if (!await internetConnectionChecker.hasConnection) {
       throw OfflineException(errorMessage: 'No Internet Connection');
@@ -91,6 +91,64 @@ class AuthRemoteDataSource {
       final response = await apiController
           .post(
             Uri.parse(ApiSetting.signup),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: createSignupRequest.toJson(),
+          )
+          .timeout(const Duration(seconds: 30));
+
+      final responseBody = jsonDecode(response.body);
+
+      if (response.statusCode >= 400) {
+        HandleHttpError.handleHttpError(responseBody);
+      }
+      String token = responseBody['data']['token'];
+      String name = responseBody['data']['username'];
+      String role = responseBody['data']['role'];
+      String email = responseBody['data']['email'];
+      String phone = responseBody['data']['phone'];
+
+      await TokenManager.saveToken(token);
+      await TokenManager.saveName(name);
+      await TokenManager.saveRole(role);
+      await TokenManager.saveEmail(email);
+      await TokenManager.savePhone(phone);
+
+      final isDeviceRegistered = await registerDevice();
+      if (isDeviceRegistered) {
+        print("Device registered successfully after signup.");
+      } else {
+        print("Device registration failed after signup.");
+      }
+
+      return BaseResponse<UserModel>.fromJson(
+        responseBody,
+        (data) => UserModel.fromJson(data),
+      );
+    } on TimeoutException catch (e) {
+      debugPrint('Timeout Exception: $e');
+      throw TimeoutException('Request timed out, please try again.');
+    } catch (e) {
+      debugPrint('Unexpected Error: $e');
+      throw Exception('An unexpected error occurred: $e');
+    }
+  }
+
+  Future<BaseResponse<SignupResponseData>> signupWithPhone(
+      SignupModel createSignupRequest) async {
+    if (!await internetConnectionChecker.hasConnection) {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+
+    if (createSignupRequest.password != createSignupRequest.confirmPassword) {
+      throw Exception('Password and Confirm Password do not match.');
+    }
+
+    try {
+      final response = await apiController
+          .post(
+            Uri.parse(ApiSetting.signupWithPhone),
             headers: {
               'Content-Type': 'application/json',
             },
@@ -141,20 +199,25 @@ class AuthRemoteDataSource {
 
         final responseBody = jsonDecode(response.body);
 
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+
         String token = responseBody['data']['token'];
         String name = responseBody['data']['username'];
         String role = responseBody['data']['role'];
+        String phone = responseBody['data']['phone'];
+
         await TokenManager.saveToken(token);
         await TokenManager.saveName(name);
         await TokenManager.saveRole(role);
+        await TokenManager.savePhone(phone);
+
         final isDeviceRegistered = await registerDevice();
         if (isDeviceRegistered) {
           print("Device registered successfully after login.");
         } else {
           print("Device registration failed after login.");
-        }
-        if (response.statusCode >= 400) {
-          HandleHttpError.handleHttpError(responseBody);
         }
 
         return BaseResponse<UserModel>.fromJson(
@@ -493,5 +556,91 @@ class AuthRemoteDataSource {
   Future<void> resetFirstTimeStatus() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(FIRST_TIME_KEY, true);
+  }
+
+  Future<BaseResponse<PhoneNumberVerifyModel>> phoneNumberVerify(
+      String countryCode, String phoneNumber) async {
+    String? token = await TokenManager.getToken();
+
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final uri = Uri.parse(
+            '${ApiSetting.phoneNumberVerify}?CountryCode=$countryCode&PhoneNumber=$phoneNumber');
+
+        final response = await apiController.post(
+          uri,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+
+        final responseBody = jsonDecode(response.body);
+
+        print(responseBody);
+        print(response.statusCode);
+
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+
+        return BaseResponse<PhoneNumberVerifyModel>.fromJson(
+          responseBody,
+          (data) => PhoneNumberVerifyModel.fromJson(data),
+        );
+      } on TimeoutException catch (e) {
+        debugPrint('Timeout Exception: $e');
+        throw TimeoutException('Request timed out, please try again.');
+      } catch (e) {
+        debugPrint('Unexpected Error: $e');
+        throw Exception('An unexpected error occurred.');
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<BaseResponse<UserModel>> sendVerificationCode2(
+      String phoneNumber, String code) async {
+    if (await internetConnectionChecker.hasConnection) {
+      String? token = await TokenManager.getToken();
+
+      try {
+        final response = await apiController.post(
+          Uri.parse(
+            '${ApiSetting.sendVerificationCode2}?phone=$phoneNumber&code=$code',
+          ),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+
+        if (response.body.isEmpty) {
+          throw Exception('Empty response from server.');
+        }
+
+        final responseBody = jsonDecode(response.body);
+
+        if (response.statusCode >= 400) {
+          throw Exception(responseBody['message'] ?? 'Verification failed');
+        }
+        String phone = responseBody['data']['phone'];
+        await TokenManager.savePhone(phone);
+
+        return BaseResponse<UserModel>.fromJson(
+          responseBody,
+          (data) => UserModel.fromJson(data),
+        );
+      } on TimeoutException catch (e) {
+        debugPrint('Timeout Exception: $e');
+        throw TimeoutException('Request timed out, please try again.');
+      } catch (e) {
+        debugPrint('Unexpected Error: $e');
+        throw Exception(e.toString());
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
   }
 }

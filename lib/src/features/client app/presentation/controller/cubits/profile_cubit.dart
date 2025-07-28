@@ -69,7 +69,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     );
   }
 
-  Future<void> fetchHomeImage({
+  Future<void> fetchHomePage({
     bool refresh = false,
     String searchQuery = '',
     String barcode = '',
@@ -77,17 +77,19 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(state.copyWith(homePageStatus: HomePageStatus.loading));
 
     try {
-      final result = await profileUseCase.getAllImageInHome();
+      final result = await profileUseCase.getHomePage();
 
       result.fold(
         (failure) => emit(state.copyWith(
           homePageStatus: HomePageStatus.failure,
           errorMessage: failure.message,
         )),
-        (imageList) {
+        (homeModel) {
           emit(state.copyWith(
             homePageStatus: HomePageStatus.success,
-            imageList: imageList.items,
+            imageList: homeModel.images.items,
+            usedProductList: homeModel.usedProduct,
+            sparePartsList: homeModel.spareParts,
           ));
         },
       );

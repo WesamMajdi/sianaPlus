@@ -117,31 +117,29 @@ class ProfileRemoteDataSource {
     }
   }
 
-  Future<PaginatedResponse<ImageModel>> getAllImageInHome() async {
+  Future<HomeModel> getHomePage() async {
     String? token = await TokenManager.getToken();
+
     if (await internetConnectionChecker.hasConnection) {
       try {
         final response = await apiController.get(
           Uri.parse(ApiSetting.getHomePage),
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token'
+            'Authorization': 'Bearer $token',
           },
         );
 
         debugPrint('Status Code: ${response.statusCode}');
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
+
         if (response.statusCode >= 400) {
           HandleHttpError.handleHttpError(responseBody);
         }
-        return BaseResponse<PaginatedResponse<ImageModel>>.fromJson(
+
+        return BaseResponse<HomeModel>.fromJson(
           responseBody,
-          (json) {
-            return PaginatedResponse<ImageModel>.fromJson(
-              json,
-              (p0) => ImageModel.fromJson(p0),
-            );
-          },
+          (json) => HomeModel.fromJson(json),
         ).data!;
       } on TimeOutExeption catch (e) {
         debugPrint('Timeout Exception: $e');

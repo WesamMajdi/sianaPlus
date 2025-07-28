@@ -22,8 +22,7 @@ class FetchProfileUseCase {
     return repository.changeName(fullName);
   }
 
-  Future<Either<Failure, PaginatedResponse<ImageModel>>>
-      getAllImageInHome() async {
-    return await repository.getAllImageInHome();
+  Future<Either<Failure, HomeModel>> getHomePage() async {
+    return await repository.getHomePage();
   }
 }

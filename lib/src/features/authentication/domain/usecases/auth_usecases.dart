@@ -6,6 +6,7 @@ import 'package:maintenance_app/src/features/authentication/data/model/reset_pas
 import 'package:maintenance_app/src/features/authentication/data/model/signup_model.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/update_email_model.dart';
 import 'package:maintenance_app/src/features/authentication/data/model/update_password_model.dart';
+import 'package:maintenance_app/src/features/authentication/data/model/user_model.dart';
 import 'package:maintenance_app/src/features/authentication/domain/entities/user_entity.dart';
 import '../repositories/auth_repository.dart';
 
@@ -17,8 +18,12 @@ class AuthUseCase {
     return repository.login(createLoginRequest);
   }
 
-  Future<Either<Failure, SignupResponseData>> signup(
-      SignupModel createSignupRequest) {
+  Future<Either<Failure, SignupResponseData>> signupWithPhone(
+      SignupModel model) {
+    return repository.signupWithPhone(model);
+  }
+
+  Future<Either<Failure, UserModel>> signup(SignupModel createSignupRequest) {
     return repository.signup(createSignupRequest);
   }
 
@@ -54,5 +59,14 @@ class AuthUseCase {
   Future<Either<Failure, UserEntity>> sendVerificationCode(
       SignupModel request, String verificationCode) {
     return repository.sendVerificationCode(request, verificationCode);
+  }
+
+  Future<Either<Failure, void>> phoneNumberVerify(String phone, String code) {
+    return repository.phoneNumberVerify(phone, code);
+  }
+
+  Future<Either<Failure, void>> sendVerificationCode2(
+      String phoneNumber, String verificationCode) {
+    return repository.sendVerificationCode2(phoneNumber, verificationCode);
   }
 }

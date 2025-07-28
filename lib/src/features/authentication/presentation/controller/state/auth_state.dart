@@ -18,9 +18,16 @@ enum UpdatePasswordStatus { initial, loading, success, failure }
 
 enum UpdatePhoneStatus { initial, loading, success, failure }
 
+enum PhoneVerifyStatus { initial, loading, success, failure }
+
+enum SendVerificationCode2Status { initial, loading, success, failure }
+
 class AuthState extends Equatable {
   final LoginStatus loginStatus;
+  final SendVerificationCode2Status sendVerificationCode2Status;
   final SignUpStatus signUpStatus;
+  final PhoneVerifyStatus phoneVerifyStatus;
+  final String? phoneVerifyMessage;
   final ForgotPasswordStatus forgotPasswordStatus;
   final ResetPasswordStatus resetPasswordStatus;
   final UpdateEmailStatus updateEmailStatus;
@@ -37,12 +44,15 @@ class AuthState extends Equatable {
   const AuthState(
       {this.loginStatus = LoginStatus.initial,
       this.signUpStatus = SignUpStatus.initial,
+      this.sendVerificationCode2Status = SendVerificationCode2Status.initial,
       this.forgotPasswordStatus = ForgotPasswordStatus.initial,
       this.resetPasswordStatus = ResetPasswordStatus.initial,
       this.updateEmailStatus = UpdateEmailStatus.initial,
       this.updatePasswordStatus = UpdatePasswordStatus.initial,
       this.verificationStatus = VerificationStatus.initial,
       this.updatePhone = UpdatePhoneStatus.initial,
+      this.phoneVerifyStatus = PhoneVerifyStatus.initial,
+      this.phoneVerifyMessage,
       this.errorMessage,
       this.user,
       this.phone,
@@ -53,12 +63,14 @@ class AuthState extends Equatable {
     return const AuthState(
       loginStatus: LoginStatus.initial,
       signUpStatus: SignUpStatus.initial,
+      sendVerificationCode2Status: SendVerificationCode2Status.initial,
       forgotPasswordStatus: ForgotPasswordStatus.initial,
       resetPasswordStatus: ResetPasswordStatus.initial,
       updateEmailStatus: UpdateEmailStatus.initial,
       updatePasswordStatus: UpdatePasswordStatus.initial,
       verificationStatus: VerificationStatus.initial,
       updatePhone: UpdatePhoneStatus.initial,
+      phoneVerifyStatus: PhoneVerifyStatus.initial,
       errorMessage: '',
       successMessage: '',
       userSignup: null,
@@ -70,10 +82,13 @@ class AuthState extends Equatable {
   AuthState copyWith({
     LoginStatus? status,
     SignUpStatus? signUpStatus,
+    PhoneVerifyStatus? phoneVerifyStatus,
+    String? phoneVerifyMessage,
     ForgotPasswordStatus? forgotPasswordStatus,
     ResetPasswordStatus? resetPasswordStatus,
     UpdateEmailStatus? updateEmailStatus,
     UpdatePasswordStatus? updatePasswordStatus,
+    SendVerificationCode2Status? sendVerificationCode2Status,
     UpdatePhoneStatus? updatePhone,
     String? errorMessage,
     String? successMessage,
@@ -95,7 +110,11 @@ class AuthState extends Equatable {
         verificationStatus: verificationStatus ?? this.verificationStatus,
         userSignup: userSignup ?? this.userSignup,
         phone: phone ?? this.phone,
-        updatePhone: updatePhone ?? this.updatePhone);
+        updatePhone: updatePhone ?? this.updatePhone,
+        phoneVerifyStatus: phoneVerifyStatus ?? this.phoneVerifyStatus,
+        phoneVerifyMessage: phoneVerifyMessage ?? this.phoneVerifyMessage,
+        sendVerificationCode2Status:
+            sendVerificationCode2Status ?? this.sendVerificationCode2Status);
   }
 
   @override
@@ -112,6 +131,9 @@ class AuthState extends Equatable {
         verificationStatus,
         userSignup,
         phone,
-        updatePhone
+        updatePhone,
+        phoneVerifyStatus,
+        phoneVerifyMessage,
+        sendVerificationCode2Status
       ];
 }

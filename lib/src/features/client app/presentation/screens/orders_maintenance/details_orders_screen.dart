@@ -1,14 +1,10 @@
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
 import 'package:maintenance_app/src/core/services/telr_service_xml.dart';
 import 'package:maintenance_app/src/core/services/telr_service_xml_order.dart';
-import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customInputDialog.dart';
-import 'package:maintenance_app/src/core/widgets/widgets%20maintenance%20app/customSureDialog.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/orders/orders_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/orders_maintenance/maintenance_requests_for_approval_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/webviwe/telr_order_maintenace_payment_screen.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/screens/webviwe/telr_payment_screen.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/domain/entities/order_maintenances_details_entity.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/cubit/delivery_maintenance_cubit.dart';
 import 'package:maintenance_app/src/features/delivery%20maintenance%20app/presentation/controller/state/delivery_maintenance_state.dart';
@@ -115,28 +111,34 @@ class _MaintenanceOrdersDetailsScreenState
                       }
 
                       try {
-                        String? paymentUrl =
-                            await TelrServiceXMLOrder.createPayment(
-                                widget.total!);
-
-                        if (paymentUrl != null && paymentUrl.isNotEmpty) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  TelrMaintenancePaymentScreen(
-                                      paymentUrl: paymentUrl,
-                                      orderMaintenanceId:
-                                          widget.orderMaintenancId),
-                            ),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: CustomStyledText(
-                                    text: 'فشل إنشاء رابط الدفع')),
-                          );
-                        }
+                        FutureBuilder<TelrPaymentResponse?>(
+                          future:
+                              TelrServiceXMLOrder.createPayment(widget.total!),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
+                              return const Center(
+                                  child: CustomStyledText(
+                                      text: 'فشل إنشاء رابط الدفع'));
+                            } else if (snapshot.hasData &&
+                                snapshot.data != null) {
+                              return TelrMaintenancePaymentScreen(
+                                  paymentUrl: snapshot.data!.paymentUrl,
+                                  closeUrl: snapshot.data!.closeUrl,
+                                  abortUrl: snapshot.data!.abortUrl,
+                                  transactionCode:
+                                      snapshot.data!.transactionCode,
+                                  orderMaintenanceId: widget.orderMaintenancId);
+                            } else {
+                              return const Center(
+                                  child: CustomStyledText(
+                                      text: 'فشل إنشاء رابط الدفع'));
+                            }
+                          },
+                        );
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

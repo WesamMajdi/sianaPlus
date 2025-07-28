@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
+import 'package:maintenance_app/src/core/services/telr_service_xml_order.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/failedScreen.dart';
@@ -7,25 +8,29 @@ import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
 
 class TelrMaintenancePaymentScreen extends StatefulWidget {
-  final String? paymentUrl;
+  final String paymentUrl;
+  final String closeUrl;
+  final String abortUrl;
+  final String transactionCode;
   final int orderMaintenanceId;
-  const TelrMaintenancePaymentScreen({
-    super.key,
-    this.paymentUrl,
-    required this.orderMaintenanceId,
-  });
+  const TelrMaintenancePaymentScreen(
+      {super.key,
+      required this.paymentUrl,
+      required this.closeUrl,
+      required this.abortUrl,
+      required this.transactionCode,
+      required this.orderMaintenanceId});
 
   @override
-  _TelrMaintenancePaymentScreenState createState() =>
+  State<TelrMaintenancePaymentScreen> createState() =>
       _TelrMaintenancePaymentScreenState();
 }
 
 class _TelrMaintenancePaymentScreenState
     extends State<TelrMaintenancePaymentScreen> {
-  late final WebViewController controller;
+  late WebViewController controller;
   bool _isLoading = true;
-  bool _paymentCompleted = false;
-  bool _isPaymentCancelled = false;
+  bool _paymentHandled = false;
 
   @override
   void initState() {
@@ -38,81 +43,74 @@ class _TelrMaintenancePaymentScreenState
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(
         NavigationDelegate(
-          onPageStarted: (url) => setState(() => _isLoading = true),
-          onPageFinished: (url) => setState(() => _isLoading = false),
+          onPageStarted: (_) => setState(() => _isLoading = true),
+          onPageFinished: (_) => setState(() => _isLoading = false),
           onUrlChange: (urlChange) {
-            debugPrint('Payment URL changed: ${urlChange.url}');
-            _handlePaymentResult(urlChange.url ?? '');
-          },
-          onNavigationRequest: (navigation) {
-            if (navigation.url.contains('payment-cancelled')) {
-              _isPaymentCancelled = true;
-              _handleCancellation();
-              return NavigationDecision.prevent;
-            }
-            return NavigationDecision.navigate;
+            final url = urlChange.url ?? '';
+            _handleUrlChange(url);
           },
         ),
       )
-      ..loadRequest(Uri.parse(widget.paymentUrl!));
+      ..loadRequest(Uri.parse(widget.paymentUrl));
   }
 
-  void _handlePaymentResult(String url) {
-    if (_paymentCompleted) return;
+  void _handleUrlChange(String url) async {
+    if (_paymentHandled) return;
 
-    if (url.contains("webview_close")) {
-      _handleSuccess();
-    } else if (url.contains("payment-cancelled")) {
-      _handleCancellation();
-    } else if (url.contains("payment-failed")) {
-      _handleFailure();
+    debugPrint("🔗 URL changed: $url");
+
+    if (url == widget.closeUrl) {
+      _paymentHandled = true;
+      await _confirmPayment();
+    } else if (url == widget.abortUrl || url.contains("payment-cancelled")) {
+      _paymentHandled = true;
+      _navigateToFailed("تم إلغاء الطلب أو فشلت العملية.");
     }
   }
 
-  Future<void> _handleSuccess() async {
-    if (_isPaymentCancelled || _paymentCompleted) return;
+  Future<void> _confirmPayment() async {
+    setState(() => _isLoading = true);
 
-    _paymentCompleted = true;
+    final result = await TelrServiceXMLOrder.completePayment(
+      orderRef: widget.transactionCode,
+    );
 
-    try {
-      await context.read<OrderCubit>().payWithApp(widget.orderMaintenanceId);
+    setState(() => _isLoading = false);
 
-      if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) =>
-              const SuccessPage(message: "تم دفع سعر الصيانة بنجاح"),
-        ),
-      );
-    } catch (e) {
-      debugPrint('Payment error: $e');
-      if (!mounted) return;
-      _handleFailure();
+    String message = 'فشل تأكيد الدفع.';
+
+    if (result != null) {
+      message = telrMessagesAr[result['message']] ??
+          telrMessagesAr[result['status']] ??
+          result['message'] ??
+          message;
+    }
+
+    if (result != null && result['status'] == 'A') {
+      _navigateToSuccess();
+    } else {
+      _navigateToFailed(message);
     }
   }
 
-  void _handleCancellation() {
-    if (_paymentCompleted) return;
-
-    _paymentCompleted = true;
-    _isPaymentCancelled = true;
-
-    Navigator.of(context).pushReplacement(
+  void _navigateToSuccess() async {
+    await context.read<OrderCubit>().payWithApp(widget.orderMaintenanceId);
+    print(
+        "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
+    Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
-        builder: (_) => const FailedScreen(message: "تم إلغاء عملية الدفع"),
-      ),
+          builder: (_) =>
+              const SuccessPage(message: "تم دفع سعر الصيانة بنجاح")),
+      (route) => false,
     );
   }
 
-  void _handleFailure() {
-    if (_paymentCompleted) return;
-
-    _paymentCompleted = true;
-
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => const FailedScreen(message: "فشل عملية الدفع"),
-      ),
+  void _navigateToFailed(String message) {
+    print(
+        "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => FailedScreen(message: message)),
+      (route) => false,
     );
   }
 
@@ -120,20 +118,19 @@ class _TelrMaintenancePaymentScreenState
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if (!_paymentCompleted) {
-          _handleCancellation();
+        if (!_paymentHandled) {
+          _paymentHandled = true;
+          _navigateToFailed("تم إلغاء العملية من قبل المستخدم.");
         }
         return false;
       },
       child: Scaffold(
         appBar: AppBarApplicationArrow(
-            text: "إتمام الدفع", onBackTap: _handleCancellation),
+          text: "إتمام الدفع",
+        ),
         body: Stack(
           children: [
-            if (widget.paymentUrl == null)
-              const Center(child: CircularProgressIndicator())
-            else
-              WebViewWidget(controller: controller),
+            WebViewWidget(controller: controller),
             if (_isLoading) const Center(child: CircularProgressIndicator()),
           ],
         ),
@@ -141,3 +138,14 @@ class _TelrMaintenancePaymentScreenState
     );
   }
 }
+
+final Map<String, String> telrMessagesAr = {
+  'Authorised': 'تم الدفع بنجاح.',
+  'Declined': 'تم رفض الدفع.',
+  'Cancelled': 'تم إلغاء الدفع.',
+  'Error': 'حدث خطأ أثناء عملية الدفع.',
+  'A': 'تم الدفع بنجاح.',
+  'D': 'تم رفض الدفع.',
+  'C': 'تم إلغاء الدفع.',
+  'E': 'حدث خطأ أثناء عملية الدفع.',
+};

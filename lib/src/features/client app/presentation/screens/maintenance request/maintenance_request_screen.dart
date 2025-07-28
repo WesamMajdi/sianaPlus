@@ -1,3 +1,6 @@
+import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_credit_card/extension.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:maintenance_app/main.dart';
 import 'package:maintenance_app/src/core/export%20file/exportfiles.dart';
@@ -6,11 +9,13 @@ import 'package:maintenance_app/src/core/services/telr_service_xml.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20app/successPage.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20client%20app/widgets%20maintenance%20request/itemsMaintenanceRequest.dart';
 import 'package:maintenance_app/src/core/widgets/widgets%20public%20app/widgets%20style/showTopSnackBar.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/controller/cubit/auth_cubit.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/controller/state/auth_state.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/screens/login_screen.dart';
+import 'package:maintenance_app/src/features/authentication/presentation/screens/verification_screen_2.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/orders_model_request.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/cubits/order_cubit.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/controller/states/order_state.dart';
-import 'package:maintenance_app/src/features/client%20app/presentation/screens/shipping/shipping_screen.dart';
 import 'package:maintenance_app/src/features/client%20app/presentation/screens/webviwe/telr_delevery_order_maintenace_payment_screen.dart';
 import '../map/map_picker_screen.dart';
 
@@ -23,6 +28,17 @@ class MaintenanceRequestPage extends StatefulWidget {
 
 class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
   LatLng? _pickedLocation;
+  String? selectedCountryCode = '+966';
+  TextEditingController mobileNumberController = TextEditingController();
+
+  final List<String> gulfCountryCodes = [
+    '+966',
+    '+971',
+    '+965',
+    '+973',
+    '+968',
+    '+974',
+  ];
 
   // @override
   // void didChangeDependencies() {
@@ -181,71 +197,526 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                               previous != current,
                           child: Column(children: [
                             AppSizedBox.kVSpace20,
-                            state.orderCreationStatus ==
-                                    OrderCreationStatus.loading
-                                ? Center(
-                                    child: CustomButton(
-                                    text: "",
-                                    onPressed: () {},
-                                    child: const SizedBox(
-                                      width: 30.0,
-                                      height: 30.0,
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  ))
-                                : CustomButton(
-                                    text: 'اضافة طلب',
-                                    onPressed: () async {
-                                      if (_pickedLocation == null) {
-                                        showTopSnackBar(
-                                            context,
-                                            'يجب تحديد الموقع',
-                                            Colors.redAccent);
-                                        return;
-                                      } else {
-                                        String? token =
-                                            await TokenManager.getToken();
-
-                                        if (token == null) {
-                                          final bool? confirmLogin =
-                                              await showDialog<bool>(
-                                            context: context,
-                                            builder: (context) => AlertDialog(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12.0),
+                            if (state.orderCreationStatus ==
+                                OrderCreationStatus.loading)
+                              Center(
+                                  child: CustomButton(
+                                text: "",
+                                onPressed: () {},
+                                child: const SizedBox(
+                                  width: 30.0,
+                                  height: 30.0,
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ))
+                            else
+                              CustomButton(
+                                text: 'اضافة طلب',
+                                onPressed: () async {
+                                  if (_pickedLocation == null) {
+                                    showTopSnackBar(context, 'يجب تحديد الموقع',
+                                        Colors.redAccent);
+                                    return;
+                                  } else {
+                                    String? token =
+                                        await TokenManager.getToken();
+                                    if (token == null) {
+                                      await showDialog<bool>(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12.0),
+                                          ),
+                                          title: const Row(
+                                            children: [
+                                              Icon(
+                                                  FontAwesomeIcons
+                                                      .circleExclamation,
+                                                  color: Color.fromARGB(
+                                                      255, 255, 173, 51),
+                                                  size: 24.0),
+                                              AppSizedBox.kWSpace10,
+                                              Center(
+                                                child: CustomStyledText(
+                                                  text: 'يتطلب تسجيل الدخول',
+                                                  textColor:
+                                                      AppColors.secondaryColor,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
-                                              title: const Row(
-                                                children: [
-                                                  Icon(
-                                                      FontAwesomeIcons
-                                                          .circleExclamation,
-                                                      color: Color.fromARGB(
-                                                          255, 255, 173, 51),
-                                                      size: 24.0),
-                                                  AppSizedBox.kWSpace10,
-                                                  Center(
-                                                    child: CustomStyledText(
-                                                      text:
-                                                          'يتطلب تسجيل الدخول',
+                                            ],
+                                          ),
+                                          content: const CustomStyledText(
+                                            text:
+                                                'يرجى تسجيل الدخول للمتابعة في عملية الدفع.',
+                                            fontSize: 14,
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pushAndRemoveUntil(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const LoginScreen()),
+                                                  (Route<dynamic> route) =>
+                                                      false,
+                                                );
+                                              },
+                                              style: TextButton.styleFrom(
+                                                backgroundColor:
+                                                    AppColors.secondaryColor,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
+                                                ),
+                                              ),
+                                              child: const CustomStyledText(
+                                                text: "تسجيل الدخول",
+                                                textColor: Colors.white,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context)
+                                                      .pop(false),
+                                              style: TextButton.styleFrom(
+                                                backgroundColor:
+                                                    Colors.grey[200],
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
+                                                ),
+                                              ),
+                                              child: const CustomStyledText(
+                                                text: "إلغاء",
+                                                fontSize: 12,
+                                                textColor:
+                                                    AppColors.darkGrayColor,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }
+
+                                    String phone =
+                                        await TokenManager.getPhone() ?? "";
+
+                                    if (phone == "") {
+                                      await showDialog(
+                                        context: context,
+                                        builder: (context) => SizedBox(
+                                          width: 800,
+                                          child: AlertDialog(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12.0),
+                                            ),
+                                            title: const Row(
+                                              children: [
+                                                Icon(Icons.phone,
+                                                    color: AppColors
+                                                        .secondaryColor,
+                                                    size: 24.0),
+                                                AppSizedBox.kWSpace10,
+                                                Center(
+                                                  child: CustomStyledText(
+                                                      text: 'إدخال رقم الهاتف',
                                                       textColor: AppColors
                                                           .secondaryColor,
                                                       fontWeight:
-                                                          FontWeight.bold,
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                const CustomStyledText(
+                                                  text:
+                                                      'يرجى إدخال رقم الهاتف للمتابعة',
+                                                  fontSize: 14,
+                                                ),
+                                                const SizedBox(height: 20),
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      vertical: AppPadding
+                                                          .mediumPadding,
+                                                      horizontal: AppPadding
+                                                          .mediumPadding),
+                                                  child: DropdownSearch<String>(
+                                                    items: gulfCountryCodes,
+                                                    selectedItem:
+                                                        selectedCountryCode,
+                                                    dropdownDecoratorProps:
+                                                        DropDownDecoratorProps(
+                                                      dropdownSearchDecoration:
+                                                          InputDecoration(
+                                                        hintText: "أختر رقم",
+                                                        filled: true,
+                                                        hintStyle:
+                                                            const TextStyle(
+                                                          fontSize: 14,
+                                                          fontFamily: "Tajawal",
+                                                        ),
+                                                        fillColor: Colors.grey
+                                                            .withOpacity(0.2),
+                                                        enabledBorder:
+                                                            OutlineInputBorder(
+                                                          borderSide:
+                                                              BorderSide.none,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                        focusedBorder:
+                                                            OutlineInputBorder(
+                                                          borderSide:
+                                                              BorderSide.none,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                        contentPadding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                          vertical: 18,
+                                                          horizontal: 18,
+                                                        ),
+                                                      ),
                                                     ),
+                                                    popupProps: PopupProps.menu(
+                                                      showSearchBox: true,
+                                                      menuProps: MenuProps(
+                                                        elevation: 2,
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        ),
+                                                      ),
+                                                      searchFieldProps:
+                                                          TextFieldProps(
+                                                        decoration:
+                                                            InputDecoration(
+                                                          hintText:
+                                                              "ابحث عن رمز الدولة ..",
+                                                          filled: true,
+                                                          hintStyle: TextStyle(
+                                                            fontSize: 14,
+                                                            fontFamily:
+                                                                "Tajawal",
+                                                          ),
+                                                          fillColor: Colors.grey
+                                                              .withOpacity(0.2),
+                                                          enabledBorder:
+                                                              OutlineInputBorder(
+                                                            borderSide:
+                                                                BorderSide.none,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                          ),
+                                                          focusedBorder:
+                                                              OutlineInputBorder(
+                                                            borderSide:
+                                                                BorderSide.none,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                          ),
+                                                          contentPadding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                            vertical: 18,
+                                                            horizontal: 18,
+                                                          ),
+                                                        ),
+                                                        style: TextStyle(
+                                                          fontFamily: "Tajawal",
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                      itemBuilder: (context,
+                                                          item, isSelected) {
+                                                        return ListTile(
+                                                          title: Text(
+                                                            item,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontFamily:
+                                                                  "Tajawal",
+                                                              fontSize: 14,
+                                                            ),
+                                                          ),
+                                                          selected: isSelected,
+                                                        );
+                                                      },
+                                                    ),
+                                                    onChanged: (value) {
+                                                      setState(() {
+                                                        selectedCountryCode =
+                                                            value;
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  width: 450,
+                                                  child: CustomInputField(
+                                                    hintText:
+                                                        'ادخل رقم الموبايل',
+                                                    icon: CupertinoIcons
+                                                        .phone_solid,
+                                                    controller:
+                                                        mobileNumberController,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            actions: [
+                                              Builder(
+                                                builder: (dialogContext) {
+                                                  return BlocListener<AuthCubit,
+                                                      AuthState>(
+                                                    listener:
+                                                        (context, state) async {
+                                                      if (state
+                                                              .phoneVerifyStatus ==
+                                                          PhoneVerifyStatus
+                                                              .success) {
+                                                        print(
+                                                            'Navigation triggered!');
+                                                        final cleanedCountryCode =
+                                                            selectedCountryCode
+                                                                ?.replaceAll(
+                                                                    "+", "");
+
+                                                        Navigator.of(
+                                                                dialogContext)
+                                                            .pop();
+                                                        Navigator.of(context)
+                                                            .pushReplacement(
+                                                          MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                Verification2Screen(
+                                                              selectedCountryCode:
+                                                                  cleanedCountryCode,
+                                                              phone:
+                                                                  mobileNumberController
+                                                                      .text,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }
+                                                    },
+                                                    child: BlocBuilder<
+                                                        AuthCubit, AuthState>(
+                                                      builder:
+                                                          (context, state) {
+                                                        if (state
+                                                                .phoneVerifyStatus ==
+                                                            PhoneVerifyStatus
+                                                                .loading) {
+                                                          return CustomButton(
+                                                            text: "",
+                                                            onPressed: () {},
+                                                            child:
+                                                                const SizedBox(
+                                                              width: 30.0,
+                                                              height: 30.0,
+                                                              child:
+                                                                  CircularProgressIndicator(),
+                                                            ),
+                                                          );
+                                                        }
+
+                                                        return CustomButton(
+                                                          text: "حفظ",
+                                                          onPressed: () {
+                                                            if (mobileNumberController
+                                                                .text.isEmpty) {
+                                                              ScaffoldMessenger.of(
+                                                                      dialogContext)
+                                                                  .showSnackBar(
+                                                                const SnackBar(
+                                                                    content: Text(
+                                                                        'يرجى إدخال رقم الهاتف')),
+                                                              );
+                                                              return;
+                                                            }
+
+                                                            if (selectedCountryCode ==
+                                                                null) {
+                                                              ScaffoldMessenger.of(
+                                                                      dialogContext)
+                                                                  .showSnackBar(
+                                                                const SnackBar(
+                                                                    content: Text(
+                                                                        'يرجى اختيار كود الدولة')),
+                                                              );
+                                                              return;
+                                                            }
+
+                                                            dialogContext
+                                                                .read<
+                                                                    AuthCubit>()
+                                                                .phoneNumberVerify(
+                                                                  mobileNumberController
+                                                                      .text,
+                                                                  selectedCountryCode!,
+                                                                );
+                                                          },
+                                                        );
+                                                      },
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                    if (phone.isNotEmpty) {
+                                      final createOrder = CreateOrderRequest(
+                                        total: 0,
+                                        discount: 0,
+                                        locationForDelivery:
+                                            '${_pickedLocation!.latitude},${_pickedLocation!.longitude}',
+                                        notifyCustomerOfTheCost:
+                                            state.notifyCustomerOfTheCost,
+                                        handReceipt: HandReceipt(
+                                          items: state.items
+                                              .map((e) => Items(
+                                                  itemId: e.item!.id,
+                                                  colorId: e.color!.id,
+                                                  companyId: e.company!.id,
+                                                  description: e.description!))
+                                              .toList(),
+                                        ),
+                                      );
+
+                                      double fees = NavigationService
+                                          .navigatorKey.currentContext!
+                                          .read<OrderCubit>()
+                                          .state
+                                          .fees;
+
+                                      if (fees > 0) {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Center(
+                                                    child: Container(
+                                                      width: 50,
+                                                      height: 5,
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              bottom: 15),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.grey,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const CustomStyledText(
+                                                    text: 'رسوم توصيل',
+                                                    fontSize: 20,
+                                                    textColor: AppColors
+                                                        .secondaryColor,
+                                                  ),
+                                                  Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            top: 5),
+                                                    width: double.infinity,
+                                                    color: Colors.grey,
+                                                    height: 0.5,
                                                   ),
                                                 ],
                                               ),
-                                              content: const CustomStyledText(
-                                                text:
-                                                    'يرجى تسجيل الدخول للمتابعة في عملية الدفع.',
-                                                fontSize: 14,
+                                              content: const SizedBox(
+                                                height: 50,
+                                                width: 400,
+                                                child: CustomStyledText(
+                                                    text:
+                                                        'يجب دفع رسوم التوصيل الآن لإكمال الطلب. هل ترغب في المتابعة؟'),
                                               ),
                                               actions: [
                                                 TextButton(
                                                   onPressed: () {
-                                                    Navigator.of(context)
-                                                        .pop(true);
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            FutureBuilder<
+                                                                TelrPaymentResponse?>(
+                                                          future: TelrServiceXML
+                                                              .createPayment(
+                                                                  fees),
+                                                          builder: (context,
+                                                              snapshot) {
+                                                            if (snapshot
+                                                                    .connectionState ==
+                                                                ConnectionState
+                                                                    .waiting) {
+                                                              return const Center(
+                                                                  child:
+                                                                      CircularProgressIndicator());
+                                                            } else if (snapshot
+                                                                .hasError) {
+                                                              return Center(
+                                                                  child: Text(
+                                                                      'Error: ${snapshot.error}'));
+                                                            } else if (snapshot
+                                                                    .hasData &&
+                                                                snapshot.data !=
+                                                                    null) {
+                                                              return TelrDeliveryMaintenancePaymentScreen(
+                                                                paymentUrl: snapshot
+                                                                    .data!
+                                                                    .paymentUrl,
+                                                                closeUrl: snapshot
+                                                                    .data!
+                                                                    .closeUrl,
+                                                                abortUrl: snapshot
+                                                                    .data!
+                                                                    .abortUrl,
+                                                                transactionCode:
+                                                                    snapshot
+                                                                        .data!
+                                                                        .transactionCode,
+                                                                createOrder:
+                                                                    createOrder,
+                                                              );
+                                                            } else {
+                                                              return const Center(
+                                                                  child: Text(
+                                                                      'Payment creation failed'));
+                                                            }
+                                                          },
+                                                        ),
+                                                      ),
+                                                    );
                                                   },
                                                   style: TextButton.styleFrom(
                                                     backgroundColor: AppColors
@@ -258,19 +729,85 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                                                     ),
                                                   ),
                                                   child: const CustomStyledText(
-                                                    text: "تسجيل الدخول",
+                                                    text: "تأكيد",
                                                     textColor: Colors.white,
                                                     fontSize: 12,
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Center(
+                                                    child: Container(
+                                                      width: 50,
+                                                      height: 5,
+                                                      margin:
+                                                          const EdgeInsets.only(
+                                                              bottom: 15),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.grey,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const CustomStyledText(
+                                                    text: 'هدية لك!',
+                                                    fontSize: 20,
+                                                    textColor: AppColors
+                                                        .secondaryColor,
+                                                  ),
+                                                  Container(
+                                                    margin:
+                                                        const EdgeInsets.only(
+                                                            top: 5),
+                                                    width: double.infinity,
+                                                    color: Colors.grey,
+                                                    height: 0.5,
+                                                  ),
+                                                ],
+                                              ),
+                                              content: const SizedBox(
+                                                height: 50,
+                                                width: 400,
+                                                child: CustomStyledText(
+                                                    text:
+                                                        'هدية لك! التوصيل مجاني كهدية 🎁، سيتم إرسال الطلب الآن.'),
+                                              ),
+                                              actions: [
                                                 TextButton(
-                                                  onPressed: () =>
-                                                      Navigator.of(context)
-                                                          .pop(false),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                    context
+                                                        .read<OrderCubit>()
+                                                        .createOrderMaintenance(
+                                                            createOrder);
+                                                    Navigator.of(context)
+                                                        .pushReplacement(
+                                                      MaterialPageRoute(
+                                                        builder: (_) =>
+                                                            const SuccessPage(
+                                                          message:
+                                                              "تمت اضافة طلبك الصيانة بنجاح!!",
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
                                                   style: TextButton.styleFrom(
-                                                    backgroundColor:
-                                                        Colors.grey[200],
+                                                    backgroundColor: AppColors
+                                                        .secondaryColor,
                                                     shape:
                                                         RoundedRectangleBorder(
                                                       borderRadius:
@@ -279,265 +816,21 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                                                     ),
                                                   ),
                                                   child: const CustomStyledText(
-                                                    text: "إلغاء",
+                                                    text: "تأكيد",
+                                                    textColor: Colors.white,
                                                     fontSize: 12,
-                                                    textColor:
-                                                        AppColors.darkGrayColor,
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
                                               ],
-                                            ),
-                                          );
-
-                                          if (confirmLogin == true) {
-                                            Navigator.pushAndRemoveUntil(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const LoginScreen()),
-                                              (Route<dynamic> route) => false,
                                             );
-                                          }
-
-                                          return; // إيقاف باقي التنفيذ
-                                        }
-                                        final createOrder = CreateOrderRequest(
-                                          total: 0,
-                                          discount: 0,
-                                          locationForDelivery:
-                                              '${_pickedLocation!.latitude},${_pickedLocation!.longitude}',
-                                          notifyCustomerOfTheCost:
-                                              state.notifyCustomerOfTheCost,
-                                          handReceipt: HandReceipt(
-                                            items: state.items
-                                                .map((e) => Items(
-                                                    itemId: e.item!.id,
-                                                    colorId: e.color!.id,
-                                                    companyId: e.company!.id,
-                                                    description:
-                                                        e.description!))
-                                                .toList(),
-                                          ),
+                                          },
                                         );
-
-                                        double fees = NavigationService
-                                            .navigatorKey.currentContext!
-                                            .read<OrderCubit>()
-                                            .state
-                                            .fees;
-
-                                        if (fees > 0) {
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Center(
-                                                      child: Container(
-                                                        width: 50,
-                                                        height: 5,
-                                                        margin: const EdgeInsets
-                                                            .only(bottom: 15),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: Colors.grey,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const CustomStyledText(
-                                                      text: 'رسوم توصيل',
-                                                      fontSize: 20,
-                                                      textColor: AppColors
-                                                          .secondaryColor,
-                                                    ),
-                                                    Container(
-                                                      margin:
-                                                          const EdgeInsets.only(
-                                                              top: 5),
-                                                      width: double.infinity,
-                                                      color: Colors.grey,
-                                                      height: 0.5,
-                                                    ),
-                                                  ],
-                                                ),
-                                                content: const SizedBox(
-                                                  height: 50,
-                                                  width: 400,
-                                                  child: CustomStyledText(
-                                                      text:
-                                                          'يجب دفع رسوم التوصيل الآن لإكمال الطلب. هل ترغب في المتابعة؟'),
-                                                ),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              FutureBuilder<
-                                                                  String?>(
-                                                            future: TelrServiceXML
-                                                                .createPayment(
-                                                                    fees),
-                                                            builder: (context,
-                                                                snapshot) {
-                                                              if (snapshot
-                                                                      .connectionState ==
-                                                                  ConnectionState
-                                                                      .waiting) {
-                                                                return const Center(
-                                                                    child:
-                                                                        CircularProgressIndicator());
-                                                              } else if (snapshot
-                                                                  .hasError) {
-                                                                return Center(
-                                                                    child: Text(
-                                                                        'Error: ${snapshot.error}'));
-                                                              } else if (snapshot
-                                                                      .hasData &&
-                                                                  snapshot.data !=
-                                                                      null) {
-                                                                return TelrDeliveryMaintenancePaymentScreen(
-                                                                  paymentUrl:
-                                                                      snapshot
-                                                                          .data!,
-                                                                  createOrder:
-                                                                      createOrder,
-                                                                );
-                                                              } else {
-                                                                return const Center(
-                                                                    child: Text(
-                                                                        'Payment creation failed'));
-                                                              }
-                                                            },
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                    style: TextButton.styleFrom(
-                                                      backgroundColor: AppColors
-                                                          .secondaryColor,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8.0),
-                                                      ),
-                                                    ),
-                                                    child:
-                                                        const CustomStyledText(
-                                                      text: "تأكيد",
-                                                      textColor: Colors.white,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        } else {
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Center(
-                                                      child: Container(
-                                                        width: 50,
-                                                        height: 5,
-                                                        margin: const EdgeInsets
-                                                            .only(bottom: 15),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: Colors.grey,
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const CustomStyledText(
-                                                      text: 'هدية لك!',
-                                                      fontSize: 20,
-                                                      textColor: AppColors
-                                                          .secondaryColor,
-                                                    ),
-                                                    Container(
-                                                      margin:
-                                                          const EdgeInsets.only(
-                                                              top: 5),
-                                                      width: double.infinity,
-                                                      color: Colors.grey,
-                                                      height: 0.5,
-                                                    ),
-                                                  ],
-                                                ),
-                                                content: const SizedBox(
-                                                  height: 50,
-                                                  width: 400,
-                                                  child: CustomStyledText(
-                                                      text:
-                                                          'هدية لك! التوصيل مجاني كهدية 🎁، سيتم إرسال الطلب الآن.'),
-                                                ),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      context
-                                                          .read<OrderCubit>()
-                                                          .createOrderMaintenance(
-                                                              createOrder);
-                                                      Navigator.of(context)
-                                                          .pushReplacement(
-                                                        MaterialPageRoute(
-                                                          builder: (_) =>
-                                                              const SuccessPage(
-                                                            message:
-                                                                "تمت اضافة طلبك الصيانة بنجاح!!",
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                    style: TextButton.styleFrom(
-                                                      backgroundColor: AppColors
-                                                          .secondaryColor,
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8.0),
-                                                      ),
-                                                    ),
-                                                    child:
-                                                        const CustomStyledText(
-                                                      text: "تأكيد",
-                                                      textColor: Colors.white,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        }
                                       }
-                                    },
-                                  ),
+                                    }
+                                  }
+                                },
+                              ),
                           ]),
                         )
                       : const Text(''),

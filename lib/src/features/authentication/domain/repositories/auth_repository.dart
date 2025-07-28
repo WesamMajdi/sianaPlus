@@ -12,8 +12,11 @@ import '../../../../core/error/failure.dart';
 
 abstract class AuthRepository {
   Future<Either<Failure, UserEntity>> login(LoginModel createLoginRequest);
-  Future<Either<Failure, SignupResponseData>> signup(
+
+  Future<Either<Failure, SignupResponseData>> signupWithPhone(
       SignupModel createSignupRequest);
+
+  Future<Either<Failure, UserModel>> signup(SignupModel createSignupRequest);
 
   Future<Either<Failure, void>> updatePassword(
       UpdtePasswordModel updatePasswordRequest);
@@ -23,11 +26,20 @@ abstract class AuthRepository {
 
   Future<Either<Failure, String>> forgotPassword(
       ForgotPasswordModel forgotPasswordRequest);
+
   Future<Either<Failure, void>> updatePhone(String phone);
+
   Future<Either<Failure, UserEntity>> resetPassword(
       ResetPasswordModel resetPasswordRequest);
   Future<Either<Failure, UserModel>> sendVerificationCode(
       SignupModel request, String verificationCode);
   Future<Either<Failure, void>> verifyResetCode(
       ResetVerifyResetCodeModel resetPasswordRequest);
+
+  Future<Either<Failure, PhoneNumberVerifyModel>> phoneNumberVerify(
+    String? phoneNumber,
+    String? countryCode,
+  );
+  Future<Either<Failure, void>> sendVerificationCode2(
+      String phoneNumber, String code);
 }

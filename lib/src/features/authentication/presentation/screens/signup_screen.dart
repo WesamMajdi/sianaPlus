@@ -6,7 +6,7 @@ import 'package:maintenance_app/src/features/authentication/data/model/signup_mo
 import 'package:maintenance_app/src/features/authentication/presentation/controller/cubit/auth_cubit.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/screens/login_screen.dart';
 import 'package:maintenance_app/src/features/authentication/presentation/screens/verification_screen.dart';
-
+import 'package:maintenance_app/src/features/client%20app/presentation/screens/home/home_screen.dart';
 import '../controller/state/auth_state.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -40,6 +40,8 @@ class _SignupScreenState extends State<SignupScreen> {
     '+973',
     '+968',
     '+974',
+    '+972',
+    '+970'
   ];
   @override
   Widget build(BuildContext context) {
@@ -184,15 +186,6 @@ class _SignupScreenState extends State<SignupScreen> {
                       child: CustomInputField(
                         hintText: 'ادخل رقم الموبايل',
                         icon: CupertinoIcons.phone_solid,
-                        validators: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'عفوا.رقم الموبايل مطلوب';
-                          }
-                          if (!RegExp(r'^\+?[0-9]{9,15}$').hasMatch(value)) {
-                            return 'رقم الموبايل غير صحيح';
-                          }
-                          return null;
-                        },
                         controller: mobileNumberController,
                       ),
                     ),
@@ -222,7 +215,6 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
                 const CustomLabelText(text: 'كلمة المرور'),
-
                 CustomInputFieldPassword(
                   controller: passwordController,
                   validators: (value) {
@@ -256,39 +248,39 @@ class _SignupScreenState extends State<SignupScreen> {
                   hintText: 'تاكيد كلمة المرور',
                   icon: CupertinoIcons.lock_circle_fill,
                 ),
-                // const CustomLabelText(text: 'العنوان'),
-                // CustomInputFielLocation(
-                //   hintText: 'حدد موقعك',
-                //   icon: Icons.location_off_rounded,
-                //   controller: locationController,
-                // ),
               ],
             ),
           ),
           AppSizedBox.kVSpace10,
           BlocListener<AuthCubit, AuthState>(
-            listener: (context, state) {
+            listener: (context, state) async {
               if (state.signUpStatus == SignUpStatus.failure) {
                 showTopSnackBar(context, "فشل تسجيل دخول , يرجي اعادة المحاولة",
                     Colors.red);
               }
               if (state.signUpStatus == SignUpStatus.success) {
-                selectedCountryCode = selectedCountryCode?.replaceAll("+", "");
-
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(
-                    builder: (_) => VerificationScreen(
-                      user: SignupModel(
-                        fullName: fullnameController.text,
-                        email: usernameController.text,
-                        password: passwordController.text,
-                        confirmPassword: confirmpasswordController.text,
-                        phoneNumber: mobileNumberController.text,
-                        countryCode: selectedCountryCode!,
+                if (mobileNumberController.text.isEmpty) {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (_) => const HomePage()),
+                  );
+                } else {
+                  selectedCountryCode =
+                      selectedCountryCode?.replaceAll("+", "");
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (_) => VerificationScreen(
+                        user: SignupModel(
+                          fullName: fullnameController.text,
+                          email: usernameController.text,
+                          password: passwordController.text,
+                          confirmPassword: confirmpasswordController.text,
+                          phoneNumber: mobileNumberController.text,
+                          countryCode: selectedCountryCode,
+                        ),
                       ),
                     ),
-                  ),
-                );
+                  );
+                }
               }
             },
             child: BlocBuilder<AuthCubit, AuthState>(
@@ -306,17 +298,23 @@ class _SignupScreenState extends State<SignupScreen> {
                 }
                 return CustomButton(
                   text: "تسجيل حساب",
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      selectedCountryCode =
-                          selectedCountryCode?.replaceAll("+", "");
-                      context.read<AuthCubit>().signup(SignupModel(
-                          fullName: fullnameController.text,
-                          email: usernameController.text,
-                          password: passwordController.text,
-                          confirmPassword: confirmpasswordController.text,
-                          phoneNumber: mobileNumberController.text,
-                          countryCode: selectedCountryCode!));
+                  onPressed: () async {
+                    selectedCountryCode =
+                        selectedCountryCode?.replaceAll("+", "");
+                    final model = SignupModel(
+                      fullName: fullnameController.text,
+                      email: usernameController.text,
+                      password: passwordController.text,
+                      confirmPassword: confirmpasswordController.text,
+                      phoneNumber: mobileNumberController.text,
+                      countryCode: mobileNumberController.text.isEmpty
+                          ? ""
+                          : selectedCountryCode,
+                    );
+                    if (mobileNumberController.text.isEmpty) {
+                      context.read<AuthCubit>().signup(model);
+                    } else {
+                      context.read<AuthCubit>().signupWithPhone(model);
                     }
                   },
                 );
