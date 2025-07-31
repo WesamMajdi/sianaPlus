@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/product/product_model.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/profile/slider_model.dart';
+import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
 
 enum ProfileStatus { initial, loading, success, failure }
 
@@ -8,12 +9,9 @@ enum ProblemStatus { initial, loading, success, failure }
 
 enum ChangeNameStatus { initial, loading, success, failure }
 
-enum HomePageStatus { initial, loading, success, failure }
-
 class ProfileState extends Equatable {
   final ProfileStatus profileStatus;
-  final HomePageStatus homePageStatus;
-  final List<ImageModel> imageList;
+
   final String? name;
   final String? email;
   final String? phone;
@@ -24,15 +22,9 @@ class ProfileState extends Equatable {
   final String? errorMessage;
   final ProblemStatus? problemStatus;
   final ChangeNameStatus changeNameStatus;
-  final List<ProductModel> usedProductList;
-  final List<ProductModel> sparePartsList;
 
   const ProfileState({
     this.profileStatus = ProfileStatus.initial,
-    this.homePageStatus = HomePageStatus.initial,
-    this.imageList = const <ImageModel>[],
-    this.usedProductList = const <ProductModel>[],
-    this.sparePartsList = const <ProductModel>[],
     this.name,
     this.email,
     this.phone,
@@ -47,10 +39,6 @@ class ProfileState extends Equatable {
   factory ProfileState.initial() {
     return const ProfileState(
       profileStatus: ProfileStatus.initial,
-      homePageStatus: HomePageStatus.initial,
-      imageList: <ImageModel>[],
-      sparePartsList: <ProductModel>[],
-      usedProductList: <ProductModel>[],
       name: null,
       email: null,
       phone: null,
@@ -66,7 +54,6 @@ class ProfileState extends Equatable {
 
   ProfileState copyWith({
     ProfileStatus? profileStatus,
-    HomePageStatus? homePageStatus,
     String? name,
     String? email,
     String? phone,
@@ -77,28 +64,22 @@ class ProfileState extends Equatable {
     ProblemStatus? problemStatus,
     ChangeNameStatus? changeNameStatus,
     String? errorMessage,
-    List<ImageModel>? imageList,
-    List<ProductModel>? usedProductList,
-    List<ProductModel>? sparePartsList,
   }) {
     return ProfileState(
-        profileStatus: profileStatus ?? this.profileStatus,
-        name: name ?? this.name,
-        email: email ?? this.email,
-        phone: phone ?? this.phone,
-        orderShopCount: orderShopCount ?? this.orderShopCount,
-        orderMaintenancesCount:
-            orderMaintenancesCount ?? this.orderMaintenancesCount,
-        orderShopNewCount: orderShopNewCount ?? this.orderShopNewCount,
-        orderMaintenancesNewCount:
-            orderMaintenancesNewCount ?? this.orderMaintenancesNewCount,
-        errorMessage: errorMessage ?? this.errorMessage,
-        problemStatus: problemStatus ?? this.problemStatus,
-        changeNameStatus: changeNameStatus ?? this.changeNameStatus,
-        homePageStatus: homePageStatus ?? this.homePageStatus,
-        imageList: imageList ?? this.imageList,
-        usedProductList: usedProductList ?? this.usedProductList,
-        sparePartsList: sparePartsList ?? this.sparePartsList);
+      profileStatus: profileStatus ?? this.profileStatus,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      orderShopCount: orderShopCount ?? this.orderShopCount,
+      orderMaintenancesCount:
+          orderMaintenancesCount ?? this.orderMaintenancesCount,
+      orderShopNewCount: orderShopNewCount ?? this.orderShopNewCount,
+      orderMaintenancesNewCount:
+          orderMaintenancesNewCount ?? this.orderMaintenancesNewCount,
+      errorMessage: errorMessage ?? this.errorMessage,
+      problemStatus: problemStatus ?? this.problemStatus,
+      changeNameStatus: changeNameStatus ?? this.changeNameStatus,
+    );
   }
 
   @override
@@ -114,9 +95,5 @@ class ProfileState extends Equatable {
         errorMessage,
         problemStatus,
         changeNameStatus,
-        homePageStatus,
-        imageList,
-        usedProductList,
-        sparePartsList
       ];
 }

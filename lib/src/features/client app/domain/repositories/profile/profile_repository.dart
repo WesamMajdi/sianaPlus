@@ -9,5 +9,4 @@ abstract class ProfileRepository {
   Future<Either<Failure, ProfileEntity>> getUserProfile();
   Future<Either<Failure, void>> createProblem(String text);
   Future<Either<Failure, void>> changeName(String fullName);
-  Future<Either<Failure, HomeModel>> getHomePage();
 }

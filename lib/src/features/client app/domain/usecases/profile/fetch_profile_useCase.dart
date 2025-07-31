@@ -21,8 +21,4 @@ class FetchProfileUseCase {
   Future<Either<Failure, void>> changeName(String fullName) {
     return repository.changeName(fullName);
   }
-
-  Future<Either<Failure, HomeModel>> getHomePage() async {
-    return await repository.getHomePage();
-  }
 }

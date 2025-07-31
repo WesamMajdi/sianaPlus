@@ -40,15 +40,4 @@ class UserProfileRepositoryImpl implements ProfileRepository {
       return Left(ServerFailure(message: e.toString()));
     }
   }
-
-  @override
-  Future<Either<Failure, HomeModel>> getHomePage() async {
-    try {
-      final result = await remoteDataSource.getHomePage();
-      return Right(result);
-    } catch (e) {
-      return Left(
-          ServerFailure(message: 'حدث خطأ أثناء تحميل الصفحة الرئيسية'));
-    }
-  }
 }

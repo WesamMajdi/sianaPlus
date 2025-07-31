@@ -9,6 +9,7 @@ import 'package:maintenance_app/src/core/network/global_token.dart';
 import 'package:maintenance_app/src/core/pagination/paginated_response.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/product/product_model.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/product/search_product_model.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/profile/slider_model.dart';
 import '../../../../../core/error/exception.dart';
 import '../../../../../core/error/handle_http_error.dart';
 import '../../../../../core/network/api_controller.dart';
@@ -360,6 +361,42 @@ class ProductRemoteDataSource {
         );
         return searchResponse.data!;
       } on TimeOutExeption {
+        rethrow;
+      }
+    } else {
+      throw OfflineException(errorMessage: 'No Internet Connection');
+    }
+  }
+
+  Future<HomeModel> getHomePage() async {
+    String? token = await TokenManager.getToken();
+
+    if (await internetConnectionChecker.hasConnection) {
+      try {
+        final response = await apiController.get(
+          Uri.parse(ApiSetting.getHomePage),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+
+        debugPrint('Status Code: ${response.statusCode}');
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        print(responseBody);
+        if (response.statusCode >= 400) {
+          HandleHttpError.handleHttpError(responseBody);
+        }
+
+        return BaseResponse<HomeModel>.fromJson(
+          responseBody,
+          (json) => HomeModel.fromJson(json),
+        ).data!;
+      } on TimeOutExeption catch (e) {
+        debugPrint('Timeout Exception: $e');
+        rethrow;
+      } catch (e) {
+        debugPrint('Unexpected Error: $e');
         rethrow;
       }
     } else {

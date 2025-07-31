@@ -68,36 +68,4 @@ class ProfileCubit extends Cubit<ProfileState> {
       )),
     );
   }
-
-  Future<void> fetchHomePage({
-    bool refresh = false,
-    String searchQuery = '',
-    String barcode = '',
-  }) async {
-    emit(state.copyWith(homePageStatus: HomePageStatus.loading));
-
-    try {
-      final result = await profileUseCase.getHomePage();
-
-      result.fold(
-        (failure) => emit(state.copyWith(
-          homePageStatus: HomePageStatus.failure,
-          errorMessage: failure.message,
-        )),
-        (homeModel) {
-          emit(state.copyWith(
-            homePageStatus: HomePageStatus.success,
-            imageList: homeModel.images.items,
-            usedProductList: homeModel.usedProduct,
-            sparePartsList: homeModel.spareParts,
-          ));
-        },
-      );
-    } catch (e) {
-      emit(state.copyWith(
-        homePageStatus: HomePageStatus.failure,
-        errorMessage: 'Unexpected error: $e',
-      ));
-    }
-  }
 }

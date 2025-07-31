@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/orders/basket_Model.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/product/search_product_model.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/profile/slider_model.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/search_product_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/repositories/product/product_repository.dart';
@@ -125,6 +126,17 @@ class ProductRepositoryImpl implements ProductRepository {
       return Right(response);
     } catch (e) {
       return Left(ServerFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, HomeModel>> getHomePage() async {
+    try {
+      final result = await remoteDataSource.getHomePage();
+      return Right(result);
+    } catch (e) {
+      return Left(
+          ServerFailure(message: 'حدث خطأ أثناء تحميل الصفحة الرئيسية'));
     }
   }
 }

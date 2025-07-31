@@ -23,6 +23,13 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   @override
   void initState() {
     super.initState();
+    print(widget.product.id);
+    print(widget.product.name);
+    print(widget.product.company);
+    print("Sssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
+
+    print(widget.product.selectedColor);
+
     context.read<CategoryCubit>().resetSelectedIndex();
   }
 
@@ -120,6 +127,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                       widget.product.productColors![index],
                                   productId: widget.product.id!,
                                 );
+                            print(
+                                "dddddddddddddddddddddddddddddddddddddddddddddddd");
+
+                            print(widget.product.selectedColor);
                           },
                           child: Stack(
                             alignment: Alignment.center,

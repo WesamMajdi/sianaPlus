@@ -61,8 +61,8 @@ class AuthUseCase {
     return repository.sendVerificationCode(request, verificationCode);
   }
 
-  Future<Either<Failure, void>> phoneNumberVerify(String phone, String code) {
-    return repository.phoneNumberVerify(phone, code);
+  Future<Either<Failure, void>> phoneNumberVerify(String code, String phone) {
+    return repository.phoneNumberVerify(code, phone);
   }
 
   Future<Either<Failure, void>> sendVerificationCode2(

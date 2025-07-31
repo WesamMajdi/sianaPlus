@@ -116,40 +116,4 @@ class ProfileRemoteDataSource {
       throw OfflineException(errorMessage: 'No Internet Connection');
     }
   }
-
-  Future<HomeModel> getHomePage() async {
-    String? token = await TokenManager.getToken();
-
-    if (await internetConnectionChecker.hasConnection) {
-      try {
-        final response = await apiController.get(
-          Uri.parse(ApiSetting.getHomePage),
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token',
-          },
-        );
-
-        debugPrint('Status Code: ${response.statusCode}');
-        final Map<String, dynamic> responseBody = jsonDecode(response.body);
-
-        if (response.statusCode >= 400) {
-          HandleHttpError.handleHttpError(responseBody);
-        }
-
-        return BaseResponse<HomeModel>.fromJson(
-          responseBody,
-          (json) => HomeModel.fromJson(json),
-        ).data!;
-      } on TimeOutExeption catch (e) {
-        debugPrint('Timeout Exception: $e');
-        rethrow;
-      } catch (e) {
-        debugPrint('Unexpected Error: $e');
-        rethrow;
-      }
-    } else {
-      throw OfflineException(errorMessage: 'No Internet Connection');
-    }
-  }
 }

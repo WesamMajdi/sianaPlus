@@ -229,11 +229,11 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  void phoneNumberVerify(String phoneNumber, String code) async {
+  void phoneNumberVerify(String code, String phoneNumber) async {
     emit(state.copyWith(phoneVerifyStatus: PhoneVerifyStatus.loading));
 
     try {
-      final response = await authUseCase.phoneNumberVerify(phoneNumber, code);
+      final response = await authUseCase.phoneNumberVerify(code, phoneNumber);
       response.fold(
         (failure) {
           emit(state.copyWith(

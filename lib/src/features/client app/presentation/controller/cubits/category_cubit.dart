@@ -49,19 +49,39 @@ class CategoryCubit extends Cubit<CategoryState> {
     required ProductColorEntity productColor,
     required int productId,
   }) async {
-    final updatedItems = List<Product>.from(state.products);
+    final updatedProducts = List<Product>.from(state.products);
+    final updatedUsedProducts = List<Product>.from(state.usedProductList);
+    final updatedSpareParts = List<Product>.from(state.sparePartsList);
 
-    int productIndex =
-        updatedItems.indexWhere((element) => element.id == productId);
+    Product? currentProduct;
 
-    if (productIndex != -1) {
-      updatedItems[productIndex].selectedColor = productColor;
+    final indexInProducts =
+        updatedProducts.indexWhere((p) => p.id == productId);
+    if (indexInProducts != -1) {
+      updatedProducts[indexInProducts].selectedColor = productColor;
+      currentProduct = updatedProducts[indexInProducts];
+    }
+
+    final indexInUsed =
+        updatedUsedProducts.indexWhere((p) => p.id == productId);
+    if (indexInUsed != -1) {
+      updatedUsedProducts[indexInUsed].selectedColor = productColor;
+      currentProduct ??= updatedUsedProducts[indexInUsed];
+    }
+
+    final indexInSpare = updatedSpareParts.indexWhere((p) => p.id == productId);
+    if (indexInSpare != -1) {
+      updatedSpareParts[indexInSpare].selectedColor = productColor;
+      currentProduct ??= updatedSpareParts[indexInSpare];
     }
 
     emit(state.copyWith(
       selectedIndex: index,
       productColor: productColor,
-      products: updatedItems,
+      products: updatedProducts,
+      usedProductList: updatedUsedProducts,
+      sparePartsList: updatedSpareParts,
+      currentProduct: currentProduct,
     ));
   }
 
@@ -265,7 +285,7 @@ class CategoryCubit extends Cubit<CategoryState> {
 
   void addProductToCart(Product productItem) {
     final updatedItems = Map<String, Product>.from(state.cartItems);
-
+    print(productItem.basePrice);
     if (updatedItems.containsKey(productItem.id.toString())) {
       updatedItems.update(
         productItem.id.toString(),
@@ -507,5 +527,37 @@ class CategoryCubit extends Cubit<CategoryState> {
       ..removeWhere((item) => item.id == product.id);
 
     emit(state.copyWith(listOfSearch: updatedList));
+  }
+
+  Future<void> fetchHomePage({
+    bool refresh = false,
+    String searchQuery = '',
+    String barcode = '',
+  }) async {
+    emit(state.copyWith(homePageStatus: HomePageStatus.loading));
+
+    try {
+      final result = await productsUseCase.getHomePage();
+
+      result.fold(
+        (failure) => emit(state.copyWith(
+          homePageStatus: HomePageStatus.failure,
+          errorMessage: failure.message,
+        )),
+        (homeModel) {
+          emit(state.copyWith(
+            homePageStatus: HomePageStatus.success,
+            imageList: homeModel.images.items,
+            usedProductList: homeModel.usedProduct,
+            sparePartsList: homeModel.spareParts,
+          ));
+        },
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        homePageStatus: HomePageStatus.failure,
+        errorMessage: 'Unexpected error: $e',
+      ));
+    }
   }
 }

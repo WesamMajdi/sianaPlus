@@ -564,6 +564,8 @@ class AuthRemoteDataSource {
 
     if (await internetConnectionChecker.hasConnection) {
       try {
+        print(
+            '${ApiSetting.phoneNumberVerify}?CountryCode=$countryCode&PhoneNumber=$phoneNumber');
         final uri = Uri.parse(
             '${ApiSetting.phoneNumberVerify}?CountryCode=$countryCode&PhoneNumber=$phoneNumber');
 

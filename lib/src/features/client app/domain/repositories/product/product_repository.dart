@@ -2,6 +2,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/product/product_model.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/product/search_product_model.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/profile/slider_model.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/discount_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/search_product_entity.dart';
@@ -38,4 +39,5 @@ abstract class ProductRepository {
   Future<Either<Failure, PaginatedResponse<SearchCategoryEntity>>>
       getSubCategory(PaginationParams paginationParams);
   Future<Either<Failure, void>> createSearch(String searchText);
+  Future<Either<Failure, HomeModel>> getHomePage();
 }

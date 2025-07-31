@@ -38,6 +38,8 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
     '+973',
     '+968',
     '+974',
+    '+972',
+    '+970'
   ];
 
   // @override
@@ -568,15 +570,29 @@ class _MaintenanceRequestPageState extends State<MaintenanceRequestPage> {
                                                               );
                                                               return;
                                                             }
-
+                                                            final cleanedCountryCode =
+                                                                selectedCountryCode
+                                                                    ?.replaceAll(
+                                                                        "+",
+                                                                        "");
                                                             dialogContext
                                                                 .read<
                                                                     AuthCubit>()
                                                                 .phoneNumberVerify(
+                                                                  cleanedCountryCode!,
                                                                   mobileNumberController
                                                                       .text,
-                                                                  selectedCountryCode!,
                                                                 );
+
+                                                            print(
+                                                                "ddddddddddddddddddddddddddddddddddd");
+                                                            print(
+                                                                mobileNumberController
+                                                                    .text);
+                                                            print(
+                                                                cleanedCountryCode);
+                                                            print(
+                                                                "ddddddddddddddddddddddddddddddddddd");
                                                           },
                                                         );
                                                       },

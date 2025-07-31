@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    context.read<ProfileCubit>().fetchHomePage();
+    context.read<CategoryCubit>().fetchHomePage();
   }
 
   @override
@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       drawer: const MyDrawer(currentIndex: 0),
-      body: BlocBuilder<ProfileCubit, ProfileState>(
+      body: BlocBuilder<CategoryCubit, CategoryState>(
         builder: (context, state) {
           // Show shimmer when loading
           if (state.homePageStatus == HomePageStatus.loading) {
@@ -115,50 +115,6 @@ class _HomePageState extends State<HomePage> {
                         }).toList(),
                       ),
                       Positioned(
-                        left: 30,
-                        top: 75,
-                        child: Container(
-                          width: 35,
-                          height: 35,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: IconButton(
-                            iconSize: 16,
-                            icon: const Icon(Icons.arrow_forward_ios,
-                                color: Colors.white),
-                            onPressed: () => carouselController.nextPage(),
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(
-                                minWidth: 32, minHeight: 32),
-                            splashRadius: 20,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        right: 30,
-                        top: 75,
-                        child: Container(
-                          width: 35,
-                          height: 35,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: IconButton(
-                            iconSize: 16,
-                            icon: const Icon(Icons.arrow_back_ios,
-                                color: Colors.white),
-                            onPressed: () => carouselController.previousPage(),
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(
-                                minWidth: 32, minHeight: 32),
-                            splashRadius: 20,
-                          ),
-                        ),
-                      ),
-                      Positioned(
                         bottom: 15,
                         left: 0,
                         right: 0,
@@ -207,7 +163,16 @@ class _HomePageState extends State<HomePage> {
                             fontWeight: FontWeight.bold,
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return CategoryPage();
+                                  },
+                                ),
+                              );
+                            },
                             child: Padding(
                               padding: EdgeInsets.only(left: 8.0),
                               child: CustomStyledText(
@@ -274,7 +239,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                BlocBuilder<ProfileCubit, ProfileState>(
+                BlocBuilder<CategoryCubit, CategoryState>(
                   builder: (context, state) {
                     switch (state.homePageStatus) {
                       case HomePageStatus.initial:
@@ -331,7 +296,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                BlocBuilder<ProfileCubit, ProfileState>(
+                BlocBuilder<CategoryCubit, CategoryState>(
                   builder: (context, state) {
                     switch (state.homePageStatus) {
                       case HomePageStatus.initial:
@@ -598,7 +563,7 @@ class HouseholdServiceCard extends StatelessWidget {
                                     width: 50,
                                     height: 5,
                                     margin: const EdgeInsets.only(
-                                        bottom: 15, top: 10),
+                                        bottom: 15, top: 5),
                                     decoration: BoxDecoration(
                                       color: Colors.grey,
                                       borderRadius: BorderRadius.circular(10),
@@ -622,8 +587,8 @@ class HouseholdServiceCard extends StatelessWidget {
                               ],
                             ),
                             content: SizedBox(
-                              height: 35,
-                              width: 250,
+                              height: 30,
+                              width: 270,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -631,7 +596,7 @@ class HouseholdServiceCard extends StatelessWidget {
                                     alignment: Alignment.topRight,
                                     child: const CustomStyledText(
                                       text: 'سوف نطلق هذه الخدمة قريباً جداً!',
-                                      fontSize: 16,
+                                      fontSize: 15,
                                     ),
                                   ),
                                 ],
@@ -677,6 +642,7 @@ class ServiceCategoryItem {
   final Color bgColor;
   final Color iconColor;
   final String description;
+  final Widget screen;
 
   ServiceCategoryItem({
     required this.id,
@@ -685,6 +651,7 @@ class ServiceCategoryItem {
     required this.bgColor,
     required this.iconColor,
     required this.description,
+    required this.screen,
   });
 }
 
@@ -696,6 +663,7 @@ final List<ServiceCategoryItem> serviceCategories = [
     bgColor: Color(0xFFFFEBEE),
     iconColor: Colors.red,
     description: 'ياتيك مندوبنا فورا',
+    screen: MaintenanceRequestPage(),
   ),
   ServiceCategoryItem(
     id: 'maintenance',
@@ -704,6 +672,7 @@ final List<ServiceCategoryItem> serviceCategories = [
     bgColor: Color(0xFFE3F2FD),
     iconColor: AppColors.primaryColor,
     description: 'ياتيك مندوبنا في اسرع وقت',
+    screen: MaintenanceRequestPage(),
   ),
   ServiceCategoryItem(
     id: 'cart',
@@ -712,6 +681,7 @@ final List<ServiceCategoryItem> serviceCategories = [
     bgColor: Color(0xFFE0F7FA),
     iconColor: Colors.teal,
     description: 'مشترياتك',
+    screen: CartShoppingPage(),
   ),
   ServiceCategoryItem(
     id: 'contact',
@@ -720,6 +690,7 @@ final List<ServiceCategoryItem> serviceCategories = [
     bgColor: Color(0xFFFFF3E0),
     iconColor: Colors.orange,
     description: 'متواجدون ٢٤ ساعه',
+    screen: ConcatInfoPage(),
   ),
 ];
 
@@ -749,7 +720,14 @@ class ServiceCategoriesWidget extends StatelessWidget {
             itemBuilder: (context, index) {
               final service = serviceCategories[index];
               return GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => service.screen,
+                    ),
+                  );
+                },
                 child: Container(
                   width: 135,
                   margin: const EdgeInsets.only(right: 12),
@@ -838,33 +816,6 @@ class RecycledDevice {
   });
 }
 
-final List<RecycledDevice> recycledDevices = [
-  RecycledDevice(
-    id: 1,
-    name: 'مكنسة غسيل السجاد',
-    model: 'مجدده بحاله ٨٠٪',
-    price: '٣٥٠ ر.س',
-    originalPrice: '٦٥٠ ر.س',
-    image:
-        'https://sianaplus.com/ImageProduct/2-042b8802-2951-4533-b7bb-8ecebc12f3ac.jpg',
-    warranty: '3 شهور',
-    condition: 'ممتازة',
-    discount: 'خصم %45',
-  ),
-  RecycledDevice(
-    id: 2,
-    name: 'خلاط',
-    model: 'مجدد بحالة ٩٠٪',
-    price: '١٨٠ ر.س ',
-    originalPrice: '٣٢٠ ر.س',
-    image:
-        'https://sianaplus.com/ImageProduct/4-e0e7a2db-2dbc-41ab-bc24-e22eb84ed42f.jpg',
-    warranty: '3 شهور',
-    condition: 'جيدة',
-    discount: 'خصم %40',
-  ),
-];
-
 class RecycledDevicesWidget extends StatelessWidget {
   const RecycledDevicesWidget({super.key, required this.products});
   final List<Product> products;
@@ -941,7 +892,7 @@ class RecycledDevicesWidget extends StatelessWidget {
                           ),
                           const SizedBox(height: 4),
                           CustomStyledText(
-                            text: "مجدد بحالة 70%",
+                            text: device.details!,
                             fontSize: 12,
                             textColor: Colors.grey,
                           ),
@@ -1015,11 +966,18 @@ class RecycledDevicesWidget extends StatelessWidget {
                           CustomButton(
                             text: "عرض تفاصيل الخدمة",
                             onPressed: () {
+                              print(products[index].productColors!.length);
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => ProductDetailsPage(
-                                      product: products[index]),
+                                  builder: (context) {
+                                    final product = context
+                                        .read<CategoryCubit>()
+                                        .state
+                                        .usedProductList[index];
+                                    return ProductDetailsPage(product: product);
+                                  },
                                 ),
                               );
                             },
@@ -1134,7 +1092,18 @@ class HomeProductGrid extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           ElevatedButton.icon(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return ProductDetailsPage(
+                                      product: product,
+                                    );
+                                  },
+                                ),
+                              );
+                            },
                             icon: const Icon(
                               Icons.add_shopping_cart,
                               size: 14,
@@ -1192,24 +1161,35 @@ class HomeProductGrid extends StatelessWidget {
                   child: Column(
                     children: [
                       const SizedBox(height: 10),
+                      // GestureDetector(
+                      //   onTap: () {},
+                      //   child: Container(
+                      //     padding: const EdgeInsets.all(4),
+                      //     decoration: BoxDecoration(
+                      //       color: Colors.white.withOpacity(0.8),
+                      //       shape: BoxShape.circle,
+                      //     ),
+                      //     child: const Icon(
+                      //       Icons.favorite_border,
+                      //       size: 20,
+                      //       color: Colors.black87,
+                      //     ),
+                      //   ),
+                      // ),
+                      // const SizedBox(height: 3),
                       GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.8),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.favorite_border,
-                            size: 20,
-                            color: Colors.black87,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return ProductDetailsPage(
+                                  product: product,
+                                );
+                              },
+                            ),
+                          );
+                        },
                         child: Container(
                           padding: const EdgeInsets.all(4),
                           decoration: BoxDecoration(

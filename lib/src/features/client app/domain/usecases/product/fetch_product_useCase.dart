@@ -1,6 +1,7 @@
 // fetch_categories_usecase.dart
 import 'package:dartz/dartz.dart';
 import 'package:maintenance_app/src/features/client%20app/data/model/product/product_model.dart';
+import 'package:maintenance_app/src/features/client%20app/data/model/profile/slider_model.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/discount_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/product_entity.dart';
 import 'package:maintenance_app/src/features/client%20app/domain/entities/product/search_product_entity.dart';
@@ -72,5 +73,9 @@ class ProductsUseCase {
   Future<Either<Failure, PaginatedResponse<SearchCategoryEntity>>>
       getSubCategory(PaginationParams paginationParams) {
     return repository.getSubCategory(paginationParams);
+  }
+
+  Future<Either<Failure, HomeModel>> getHomePage() async {
+    return await repository.getHomePage();
   }
 }

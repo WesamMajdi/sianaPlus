@@ -37,8 +37,8 @@ abstract class AuthRepository {
       ResetVerifyResetCodeModel resetPasswordRequest);
 
   Future<Either<Failure, PhoneNumberVerifyModel>> phoneNumberVerify(
-    String? phoneNumber,
     String? countryCode,
+    String? phoneNumber,
   );
   Future<Either<Failure, void>> sendVerificationCode2(
       String phoneNumber, String code);

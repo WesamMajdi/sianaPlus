@@ -52,13 +52,17 @@ class BottombarToProductDetailes extends StatelessWidget {
                         backgroundColor:
                             WidgetStateProperty.all(AppColors.secondaryColor)),
                     onPressed: () {
-                      if (product.selectedColor != null) {
-                        context.read<CategoryCubit>().addProductToCart(product);
+                      final currentProduct =
+                          context.read<CategoryCubit>().state.currentProduct;
+
+                      if (currentProduct!.selectedColor != null) {
+                        context
+                            .read<CategoryCubit>()
+                            .addProductToCart(currentProduct);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const CartShoppingPage(),
-                          ),
+                              builder: (context) => const CartShoppingPage()),
                         );
                       } else {
                         showTopSnackBar(
